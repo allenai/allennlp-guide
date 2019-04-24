@@ -1,24 +1,24 @@
 {
-    "courseId": "course-starter-python",
-    "title": "My cool online course",
-    "slogan": "A free online course",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tristique libero at est congue, sed vestibulum tortor laoreet. Aenean egestas massa non commodo consequat. Curabitur faucibus, sapien vitae euismod imperdiet, arcu erat semper urna, in accumsan sapien dui ac mi. Pellentesque felis lorem, semper nec velit nec, consectetur placerat enim.",
-    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tristique libero at est congue, sed vestibulum tortor laoreet. Aenean egestas massa non commodo consequat. Curabitur faucibus, sapien vitae euismod imperdiet, arcu erat semper urna.",
-    "siteUrl": "https://course-starter-python.netlify.com",
-    "twitter": "spacy_io",
+    "courseId": "allennlp-intro-course",
+    "title": "An Introduction to AllenNLP",
+    "slogan": "NLP Research Done Right",
+    "description": "We walk through the basics of using AllenNLP, describing all of the main abstractions used and why we chose them, how to use specific functionality like configuration files or pre-trained representations, and how to build various kinds of models, from simple to complex.",
+    "bio": "Written by the AllenNLP team at the Allen Institute for Artificial Intelligence",
+    "siteUrl": "https://allennlp.org",
+    "twitter": "ai2_allennlp",
     "fonts": "IBM+Plex+Mono:500|IBM+Plex+Sans:700|Lato:400,400i,700,700i",
     "testTemplate": "from wasabi import Printer\n__msg__ = Printer()\n__solution__ = \"\"\"${solution}\"\"\"\n\n${solution}\n\n${test}\n\ntry:\n    test()\nexcept AssertionError as e:\n    __msg__.fail(e)",
     "juniper": {
-        "repo": "ines/course-starter-python",
-        "branch": "binder",
+        "repo": "allenai/allennlp-course",
+        "branch": "master",
         "lang": "python",
         "kernelType": "python3",
         "debug": false
     },
     "showProfileImage": true,
     "footerLinks": [
-        { "text": "Website", "url": "https://spacy.io" },
-        { "text": "Source", "url": "https://github.com/ines/course-starter-python" },
+        { "text": "Website", "url": "https://allennlp.org" },
+        { "text": "Source", "url": "https://github.com/allenai/allennlp-course" },
         { "text": "Built with ♥", "url": "https://github.com/ines/course-starter-python" }
     ],
     "theme": "#de7878"
