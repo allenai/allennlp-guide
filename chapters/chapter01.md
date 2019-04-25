@@ -16,9 +16,16 @@ id: 1
 
 </exercise>
 
-<exercise id="2" title="Course outline" type="slides">
+<exercise id="2" title="Your first model" type="slides">
 
-<slides source="chapter01/02_outline">
+<slides source="chapter01/02_your_first_model">
+</slides>
+
+</exercise>
+
+<exercise id="3" title="Course outline" type="slides">
+
+<slides source="chapter01/03_outline">
 </slides>
 
 </exercise>
