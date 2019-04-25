@@ -14,29 +14,19 @@ the contents of this course should be applicable for all future versions.
 
 ---
 
-# Chapter 2: AllenNLP's Main Abstractions
+# [Chapter 2: AllenNLP's Main Abstractions](/chapter02)
 
-Basic components of the training loop:
+- Basic components of the training loop (`Fields`, `Instances`, `DatasetReaders`, `Models`,
+  `Trainers`, ...)
 
-- Fields
-- Instances
-- DatasetReaders
-- Models
-- Trainers
+- How exactly is text input represented (the `TextField`, `TokenIndexers`, and `TokenEmbedders`):
 
-How exactly is text input represented:
+- Abstractions for building models (these are all pytorch `Modules`; `Seq2VecEncoder`,
+  `Seq2SeqEncoder`, `Attention`, `MatrixAttention`, `SpanEncoder`, ...)
 
-- TextField
-- TokenIndexer
-- TokenEmbedder
-
-Abstractions for building models:
-
-- Seq2VecEncoder
-- Seq2SeqEncoder
-- SpanEncoder
-- Attention
-- MatrixAttention
+Notes: This chapter describes the main abstractions we built into AllenNLP.  If you want to write
+code using AllenNLP, it's really important to understand these abstractions and what they are used
+for.
 
 ---
 
@@ -60,6 +50,24 @@ chapter will go over how those work, how to use them, and how to write your own 
 
 # Chapter 4: Using AllenNLP's configuration files
 
+```json
+{
+  "dataset_reader": {
+    "type": "snli"
+  },
+  "train_data_path": "/data/snli.json",
+  "trainer": {
+    "num_epochs": 50,
+    ....
+  }
+  ...
+}
+```
+
+Notes: AllenNLP provides a powerful and flexible mechanism for running experiments that are
+entirely driven by `jsonnet` configuration files.  This chapter describes how that works and how to
+use it.
+
 ---
 
 # Chapters 5--12: A look at building models for specific tasks with AllenNLP
@@ -81,15 +89,32 @@ time with demos that are available.
 
 ---
 
-# Chapter X: Using pretrained contextualizers like ELMo and BERT
+# Chapter 14: Using pretrained contextualizers like ELMo and BERT
 
 (I debated putting this before the task-specific stuff, because it's something people probably want
 to see right away.  But I think you won't really understand this well without understanding how at
 least one task works, so it really belongs after those chapters, even if someone who knows what
 they're doing just skips to this.)
 
+Notes: The best NLP systems today use large pre-trained contextualizers as their base inputs.  In
+this chapter we give a brief introduction to pre-trained contextualizers and talk about how to use
+them in AllenNLP.
+
 ---
 
-# Chapter X: Miscellaneous topics
+# Chapter 15: Building a demo
 
-A collection of random how-to topics that didn't fit in any other chapter.
+(Include image of a demo here)
+
+Notes: This chapter describes how AllenNLP is set up to making serving demos of your models easy,
+and gives examples of how to do this, both for simple text-in / text-out demos, and for fancy
+React-based visualizations.
+
+---
+
+# Chapter 16: Miscellaneous topics / FAQs
+
+- How do I use a GPU instead of a CPU?  What about multiple GPUs?  How does multi-GPU support work?
+
+Notes: A collection of random how-to topics and frequently asked questions that didn't fit in any other
+chapter.
