@@ -1,9 +1,11 @@
+import Prism from 'prismjs'
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
 import Marked from 'reveal.js/plugin/markdown/marked.js'
 import classNames from 'classnames'
 
 import '../styles/reveal.css'
+import '../styles/prism.css'
 import classes from '../styles/slides.module.sass'
 
 function getFiles({ allMarkdownRemark }) {
@@ -40,6 +42,7 @@ class Slides extends React.Component {
                 })
             })
         })
+        import(`prismjs/components/prism-python`).then(() => Prism.highlightAll())
     }
 
     componentWillUnmount() {
