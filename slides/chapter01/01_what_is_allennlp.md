@@ -22,6 +22,7 @@ Hello world
 - Slides can have code, bullet points, tables and pretty much all other Markdown
   elements.
 - This is another bullet point.
+- Deep link test: [go to chapter 2, exercise 1](chapter02/#1)
 
 <img src="profile.jpg" alt="This image is in /static" width="25%">
 
