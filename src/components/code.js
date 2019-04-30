@@ -6,13 +6,21 @@ import { Button } from './button'
 
 import classes from '../styles/code.module.sass'
 
-function getFiles({ allCode }) {
-    return Object.assign(
-        {},
-        ...allCode.edges.map(({ node }) => ({
-            [node.name]: node.code,
-        }))
-    )
+function getFiles({ allCode }, sourceId, solutionId, testId) {
+    var files = {}
+    allCode.edges.forEach(({ node }) => {
+        const filename = node.dir + '/' + node.name
+        if (filename.includes(sourceId)) {
+            files['sourceFile'] = node.code
+        }
+        if (filename.includes(solutionId)) {
+            files['solutionFile'] = node.code
+        }
+        if (filename.includes(testId)) {
+            files['testFile'] = node.code
+        }
+    })
+    return files
 }
 
 function makeTest(template, testFile, solution) {
@@ -62,10 +70,11 @@ class CodeBlock extends React.Component {
 
     render() {
         const { Juniper, showSolution } = this.state
-        const { id, source, solution, test, children } = this.props
-        const sourceId = source || `exc_${id}`
-        const solutionId = solution || `solution_${id}`
-        const testId = test || `test_${id}`
+        const { id, source, solution, test, executable, children } = this.props
+        const sourceId = source || `${id}_source`
+        const solutionId = solution || `${id}_solution`
+        const testId = test || `${id}_test`
+        const execute = executable !== "false"
         const juniperClassNames = {
             cell: classes.cell,
             input: classes.input,
@@ -96,6 +105,7 @@ class CodeBlock extends React.Component {
                         allCode {
                             edges {
                                 node {
+                                    dir
                                     name
                                     code
                                 }
@@ -106,10 +116,7 @@ class CodeBlock extends React.Component {
                 render={data => {
                     const { testTemplate } = data.site.siteMetadata
                     const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper
-                    const files = getFiles(data)
-                    const sourceFile = files[sourceId]
-                    const solutionFile = files[solutionId]
-                    const testFile = files[testId]
+                    const {sourceFile, solutionFile, testFile} = getFiles(data, sourceId, solutionId, testId)
                     return (
                         <div className={classes.root} key={this.state.key}>
                             {Juniper && (
@@ -123,8 +130,10 @@ class CodeBlock extends React.Component {
                                     debug={debug}
                                     actions={({ runCode }) => (
                                         <>
+                                            {execute && (
                                             <Button onClick={() => runCode()}>Run Code</Button>
-                                            {testFile && (
+                                            )}
+                                            {execute && testFile && (
                                                 <Button
                                                     variant="primary"
                                                     onClick={() =>

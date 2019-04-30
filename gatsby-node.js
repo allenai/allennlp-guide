@@ -32,6 +32,7 @@ async function onCreateNode({
             children: [],
             code: content,
             name: node.name,
+            dir: node.dir,
             internal,
         }
         createNode(codeNode)

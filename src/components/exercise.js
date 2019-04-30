@@ -16,20 +16,13 @@ const Exercise = ({ id, title, type, children }) => {
         if (isExpanded && excRef.current) {
             excRef.current.scrollIntoView()
         }
-        document.addEventListener('click', handleClickOutside, false)
         document.addEventListener('keyup', handleEscape, false)
         return () => {
-          document.removeEventListener('click', handleClickOutside, false)
           document.removeEventListener('keyup', handleEscape, false)
         }
     }, [isExpanded])
-    const handleClickOutside = ({ target }) => {
-        if (isExpanded && excRef.current && !excRef.current.contains(target)) {
-            setActiveExc(null)
-        }
-    }
     const handleEscape = (e) => {
-        if (e.keyCode == 27) {  // 27 is ESC
+        if (e.keyCode === 27) {  // 27 is ESC
             setActiveExc(null)
         }
     }
