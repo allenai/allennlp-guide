@@ -1,0 +1,85 @@
+---
+title: 'Chapter 5: Text Classification'
+description:
+  "This chapter describes text classification and walks through an example of how to do it with
+  AllenNLP."
+prev: /chapter04
+next: /chapter06
+type: chapter
+id: 5
+---
+
+<exercise id="1" title="What is Text Classification?" type="slides">
+
+<slides source="chapter05/01_what_is_text_classification" />
+
+</exercise>
+
+
+
+
+<exercise id="2" title="Varying the input/output spec">
+
+Our running example will have only a single input and a single output, but there are lots of small
+variations we could do on this theme.  Let's do some exercises to help you nail down how the
+input/output spec translates into `Fields` in AllenNLP.
+
+Let's say you're trying to detect sentiment in product reviews, which have a title in addition to a
+review body.  How would you modify our spec to add the `title`?
+
+<codeblock id="chapter05/input_output/add_title" executable="false">
+The `title` field is also text.
+</codeblock>
+
+Now, in addition to the title, say we also have the number of stars the review got.  How might you
+add that field as another input?
+
+<codeblock id="chapter05/input_output/add_stars" executable="false">
+The `stars` field is a label, not text.
+</codeblock>
+
+You might have thought giving the number of stars is basically the same as the sentiment; to make
+it clear that it's different, let's add an "aspect" that the sentiment is about (say, the review
+was positive overall, but negative about shipping).  We could decide to treat this as a model input
+or as a model output.  How would we add it in either case?
+
+<codeblock id="chapter05/input_output/add_aspect" executable="false">
+The `aspect` field should probably be from a fixed set of categories, not free text.
+</codeblock>
+
+Really, though, there are probably several different aspects that we want to get sentiment about.
+This is now getting somewhat complicated and outside the scope of "text classification", but let's
+end with an exercise on what the input/output spec would be if we wanted to find all of the aspects
+that were discussed in the review (from a fixed set of possible aspects) and the sentiment
+associated with each of them.
+
+<codeblock id="chapter05/input_output/add_list" executable="false">
+There are lots of ways to do this, which all have different modeling implications. We're just
+giving one possible option here.
+</codeblock>
+
+</exercise>
+
+
+
+<exercise id="3" title="Reading Data" type="slides">
+
+<slides source="chapter05/03_reading_data" />
+
+</exercise>
+
+
+
+
+<exercise id="4" title="Varying the input/output spec - modifying the DatasetReader">
+
+Let's take one of our simple variations from the previous exercise and modify the `DatasetReader`
+to match the new input/output spec.  How about the case where we have a title, text, number of
+stars, and an aspect as input, and we're trying to predict sentiment about that aspect.  We give
+some lines from an example input file at the top of the exercise.
+
+<codeblock id="chapter05/input_output_reader/add_fields">
+Look back at the previous exercise to see the kind of Fields that you should use.
+</codeblock>
+
+</exercise>

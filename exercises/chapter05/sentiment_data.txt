@@ -1,0 +1,5 @@
+I like this movie a lot!	positive
+This was a monstrous waste of time	negative
+AllenNLP is amazing	positive
+Why does this have to be some complicated?	negative
+This sentence expresses no sentiment	neutral
