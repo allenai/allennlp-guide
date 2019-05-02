@@ -2,12 +2,22 @@
 title: 'Chapter 5: Text Classification'
 description:
   "This chapter describes text classification and walks through an example of how to do it with
-  AllenNLP."
+  AllenNLP.  As it's the first chapter talking about doing a practical task with AllenNLP, it goes
+  into more detail about some of the basic components in AllenNLP, and how NLP works in general."
 prev: /chapter04
 next: /chapter06
 type: chapter
 id: 5
 ---
+
+<intro>
+This is presented piece by piece, explaining things as we go.  To just skip to complete code for a
+fully-featured classifier, see [this dataset
+reader](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/text_classification_json.py)
+and [this
+model](https://github.com/allenai/allennlp/blob/master/allennlp/models/basic_classifier.py) in the
+AllenNLP repository.
+</intro>
 
 <exercise id="1" title="What is Text Classification?" type="slides">
 
@@ -81,5 +91,29 @@ some lines from an example input file at the top of the exercise.
 <codeblock id="chapter05/input_output_reader/add_fields">
 Look back at the previous exercise to see the kind of Fields that you should use.
 </codeblock>
+
+</exercise>
+
+
+
+<exercise id="5" title="Designing a model" type="slides">
+
+<slides source="chapter05/05_designing_a_model" />
+
+</exercise>
+
+
+
+<exercise id="6" title="Implementing the model - the constructor" type="slides">
+
+<slides source="chapter05/06_model_constructor" />
+
+</exercise>
+
+
+
+<exercise id="7" title="Implementing the model - the forward method" type="slides">
+
+<slides source="chapter05/07_model_forward" />
 
 </exercise>
