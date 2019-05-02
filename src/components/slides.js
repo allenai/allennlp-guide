@@ -1,4 +1,6 @@
 import Prism from 'prismjs'
+import 'prismjs/plugins/line-highlight/prism-line-highlight.js'
+import 'prismjs/plugins/line-highlight/prism-line-highlight.css'
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
 import Marked from 'reveal.js/plugin/markdown/marked.js'
