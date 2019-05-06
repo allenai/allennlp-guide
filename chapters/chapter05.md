@@ -10,14 +10,16 @@ type: chapter
 id: 5
 ---
 
-<intro>
+<textblock>
+
 This is presented piece by piece, explaining things as we go.  To just skip to complete code for a
 fully-featured classifier, see [this dataset
 reader](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/text_classification_json.py)
 and [this
 model](https://github.com/allenai/allennlp/blob/master/allennlp/models/basic_classifier.py) in the
 AllenNLP repository.
-</intro>
+
+</textblock>
 
 <exercise id="1" title="What is Text Classification?" type="slides">
 
