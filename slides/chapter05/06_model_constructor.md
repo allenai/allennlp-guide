@@ -56,6 +56,8 @@ about the call to `@Model.register()`.  The upshot is that if you're using the `
 command with a configuration file, you won't ever have to call this constructor, it all gets taken
 care of for you.
 
+In the next few slides we'll go over this line by line and explain what's going on.
+
 ---
 
 # Constructing the Model

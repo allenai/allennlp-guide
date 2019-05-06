@@ -21,6 +21,8 @@ AllenNLP repository.
 
 </textblock>
 
+
+
 <exercise id="1" title="What is Text Classification?" type="slides">
 
 <slides source="chapter05/01_what_is_text_classification" />
@@ -117,5 +119,46 @@ Look back at the previous exercise to see the kind of Fields that you should use
 <exercise id="7" title="Implementing the model - the forward method" type="slides">
 
 <slides source="chapter05/07_model_forward" />
+
+</exercise>
+
+
+
+<exercise id="8" title="Putting it together">
+
+In this exercise we'll put together a simple example of reading in data and feeding it to the
+model.  We don't try to do any training, but this should let you play around with how the
+`DatasetReader` and `Model` fit together.
+
+<codeblock id="chapter05/putting_them_together/code">
+Try adding a field to the `Instances` created by the `DatasetReader` and seeing how you have to
+make corresponding changes to the `Model`.
+</codeblock>
+
+</exercise>
+
+
+
+<exercise id="9" title="Using config files">
+
+Here we'll give a simple example of creating the `DatasetReader` and `Model` from configuration
+files, so you get some idea of how it works.  This is similar to the last exercise in that we'll
+still try to put some data through the model to make sure everything works, but instead of manually
+constructing objects, we'll use AllenNLP's `FromParams` magic.
+
+<codeblock id="chapter05/putting_them_together/config">
+Try changing the configuration parameters and see how the dataset reader and model change.  In
+particular, see if you can add a character-level CNN to the `TextField` parameters.  You'll need to
+add parameters both for the `DatasetReader` (inside a `token_indexers` block) and for the
+`Model` (inside the `embedder` block).
+</codeblock>
+
+As you can see from these two exercises, if you're writing your own training script, there's not a
+lot of difference in lines of code between the two.  But being able to instantiate everything from
+config files means that we can write a general training loop for you in a way that you _never_ have
+to write the instantiation code at all - you just give a configuration file, and we take care of
+the rest.  It also makes it a lot easier to keep track of experiments that you run, because the
+configuration for each experiment is already in a separate file, instead of buried inside of a
+script somewhere.
 
 </exercise>
