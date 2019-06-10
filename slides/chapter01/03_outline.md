@@ -27,6 +27,15 @@ the contents of this course should be applicable for all future versions.
 Notes: This chapter describes the main abstractions we built into AllenNLP.  If you want to write
 code using AllenNLP, it's really important to understand these abstractions and what they are used
 for.
+---
+
+# Chapter 3: TextFields: A deep dive into the most important abstraction for NLP
+
+- The main problem when applying machine learning to text input is deciding how to represent
+  language as features in a model.
+
+- There are a lot of ways to do this: one-hot ids, character sequences, pre-trained
+  contextualizers, etc. `TextFields` are how AllenNLP abstracts away all of these options.
 
 ---
 
