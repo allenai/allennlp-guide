@@ -39,8 +39,14 @@ as we go.  First just run the code block below as is and see what comes out, the
 however you like to see what happens.
 
 After you've gotten a feel for what's going on in the given example, as an exercise, see if you can
-switch from using a single integer id to represent each word to representing words by the sequence
+switch from using a single integer id for each word to representing words by the sequence
 of characters that make them up.
+
+Notice as you're looking at the output that the words in the vocabulary all start with index 2.
+This is because index 0 is reserved for padding (which you can see once you finish the exercise),
+and index 1 is reserved for out of vocabulary (unknown) tokens.  If you change the text to include
+tokens that you don't add to your vocabulary, you'll see they get a 1 from the
+`SingleIdTokenIndexer`.
 
 <codeblock id="chapter03/data/simple">
 You'll want to use a `TokenCharactersIndexer` instead of a `SingleIdTokenIndexer`, and you'll need
@@ -59,10 +65,26 @@ You'll want to modify the `Tokenizer` and the `Vocabulary`.
 
 <exercise id="4" title="Combining multiple TokenIndexers">
 
-What happens when you provide more than one TokenIndexer, how to make it work.
+In some cases in NLP we want to use multiple separate methods to represent text as vectors, then
+combine them to get a single representation.  For instance, we might want to use pre-trained [GloVe
+vectors](https://nlp.stanford.edu/projects/glove/) along with a character convolution to handle
+unseen words (this was the approach taken by the [Bidirectional Attention
+Flow](https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/007ab5528b3bd310a80d553cccad4b78dc496b02)
+model (BiDAF), one of the first successful models on the [Stanford Question Answering
+Dataset](https://rajpurkar.github.io/SQuAD-explorer/)).  The `TextField` abstraction is built with
+this in mind, allowing you specify _any number_ of `TokenIndexers` that will get their own entries
+in the tensors that are produced by the `TextField`.
+
+In the following code, we show the setup used in BiDAF.  Run it to see what the output looks like
+(pre-trained GloVe vectors happen in the model, not here, and in a real setting AllenNLP
+automatically constructs the vocabulary in a special way that's informed by what words you have
+vectors for).  See if you can modify it to add a third kind of representation: part of speech tag
+embeddings.  Remember that the "embeddings" happen in the model, not here; we just need to get
+_indices_ for the part of speech tags that we see in the text.
 
 <codeblock id="chapter03/data/combined">
-You'll want to modify the `Tokenizer` and the `Vocabulary`.
+The `Tokenizer` needs to be modified to include part of speech tags, you need a third entry in the
+`token_indexers` dictionary, and the vocabulary needs to include part of speech tags.
 </codeblock>
 
 </exercise>

@@ -3,10 +3,10 @@ from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenCharactersIn
 from allennlp.data.tokenizers import WordTokenizer, CharacterTokenizer
 from allennlp.data import Vocabulary
 
-# Splits text into words (instead of wordpieces or characters).
+# Splits text into characters (instead of words or wordpieces).
 tokenizer = CharacterTokenizer()
 
-# Represents each token with a single id from a vocabulary.
+# Represents each token (which is a _character_) with a single id from a vocabulary.
 token_indexer = SingleIdTokenIndexer(namespace='character_vocab')
 
 vocab = Vocabulary()
@@ -19,7 +19,7 @@ print(tokens)
 
 text_field = TextField(tokens, {'token_characters': token_indexer})
 
-# In order to convert the token strings into integer ids, we to tell the
+# In order to convert the token strings into integer ids, we need to tell the
 # TextField what Vocabulary to use.
 text_field.index(vocab)
 

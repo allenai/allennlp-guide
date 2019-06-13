@@ -19,7 +19,7 @@ print(tokens)
 
 text_field = TextField(tokens, {'tokens': token_indexer})
 
-# In order to convert the token strings into integer ids, we to tell the
+# In order to convert the token strings into integer ids, we need to tell the
 # TextField what Vocabulary to use.
 text_field.index(vocab)
 
