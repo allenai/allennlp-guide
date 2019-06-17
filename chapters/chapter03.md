@@ -91,7 +91,21 @@ The `Tokenizer` needs to be modified to include part of speech tags, you need a 
 
 <exercise id="5" title="Contextualized representations in TextFields">
 
-ELMo and BERT, how they get converted to tensors, and how wordpieces are handled.
+Here we'll show how the data processing works for using ELMo and BERT with AllenNLP (and in
+principle, other pre-trained contextualizers).  They are both just different combinations of
+`Tokenizers` and `TokenIndexers`, along with `TokenEmbedders` on the model side, which we'll get to
+later.  This lets you try your modeling ideas with very simple (and quick to evaluate) word
+representations, then move to the more sophisticated (and time-consuming) contextualizers after
+you've settled on a basic model architecture, _without changing your model code_.
+
+The code below shows usage with ELMo, and if you click on "show solution", we've also included an
+example with BERT.  You can run both of these to see what the data looks like.  You'll notice that
+BERT's output is complicated, with multiple tensors corresponding to the `bert_tokens` key that we
+gave the `TextField`.  This is so that we can reconstruct token-level vectors in the model from the
+wordpiece vectors that BERT gives us.
+
+<codeblock id="chapter03/data/contextual">
+</codeblock>
 
 </exercise>
 
@@ -104,7 +118,25 @@ ELMo and BERT, how they get converted to tensors, and how wordpieces are handled
 
 <exercise id="7" title="Embedding simple TextField inputs">
 
-Cover SingleIdTokenIndexer and TokenCharactersIndexer, point to other simple ones.
+In this exercise we'll use `TextFieldEmbedders` to get a vector for each token inside a `Model`.
+Below you'll see the code for doing this in the simple case where you have a single id representing
+each token, and you just want to embed the token.  As an exercise, try converting this into using a
+character-level CNN, to match the exercise we did above in changing the data processing to use a
+`TokenCharactersIndexer`.
+
+<codeblock id="chapter03/data/contextual">
+We gave you the imports to use at the top of the file.  `CnnEncoder` takes three arguments:
+`embedding_dim: int`, `num_filters: int`, and `ngram_filter_sizes: List[int]`.
+`TokenCharactersEncoder` takes two arguments: `embedding: Embedding` and `encoder: Seq2VecEncoder`
+(of which `CnnEncoder` is one).
+</codeblock>
+
+Notice that in both cases, your model typically will just be given a `TextFieldEmbedder` - all the
+`Model` has to worry about is that it uses the `TextFieldEmbedder` to get a vector for each token,
+and it doesn't have to care about how exactly that happens.  As we'll say repeatedly throughout
+this course, this is a very important software design consideration that allows for cleaner and
+more modular code.  It also helps you think at a higher level about the important parts of your
+model as you're writing your model code.
 
 </exercise>
 

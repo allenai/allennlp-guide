@@ -1,6 +1,8 @@
 from allennlp.data.fields import TextField
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenCharactersIndexer
+from allennlp.data.token_indexers import PosTagIndexer
 from allennlp.data.tokenizers import WordTokenizer, CharacterTokenizer
+from allennlp.data.tokenizers.word_splitter import SpacyWordSplitter
 from allennlp.data import Vocabulary
 
 # Splits text into words (instead of wordpieces or characters).
