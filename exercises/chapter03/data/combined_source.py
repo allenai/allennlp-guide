@@ -22,7 +22,7 @@ text = "This is some text."
 tokens = tokenizer.tokenize(text)
 print(tokens)
 
-text_field = TextField(tokens, {'tokens': token_indexer})
+text_field = TextField(tokens, token_indexers)
 
 # In order to convert the token strings into integer ids, we need to tell the
 # TextField what Vocabulary to use.

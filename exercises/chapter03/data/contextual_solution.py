@@ -1,6 +1,7 @@
 from allennlp.data.fields import TextField
 from allennlp.data.token_indexers import PretrainedBertIndexer
 from allennlp.data.tokenizers import WordTokenizer
+from allennlp.data import Token, Vocabulary
 
 # Splits text into words (instead of wordpieces or characters).  Underneath, in
 # the model, BERT actually operates on a sequence of wordpieces, we just combine
@@ -17,17 +18,19 @@ tokenizer = WordTokenizer()
 # places).
 token_indexer = PretrainedBertIndexer(pretrained_model='bert-base-cased')
 
-# Both ELMo and BERT do their own thing with vocabularies, so nothing is needed here.
+# Both ELMo and BERT do their own thing with vocabularies, so we don't need to
+# add anything, but we do need to construct the vocab object so we can use it
+# below.
 vocab = Vocabulary()
 
-text = "[CLS] This is some text. [SEP] With BERT, just include the tags inline. [SEP]"
-tokens = tokenizer.tokenize(text)
+pre_text = "This is some text."
+post_text = "With BERT, just include the tags inline."
+pre_tokens = tokenizer.tokenize(pre_text)
+post_tokens = tokenizer.tokenize(post_text)
+tokens = [Token('[CLS]')] + pre_tokens + [Token('[SEP]')] + post_tokens
 print(tokens)
 
 text_field = TextField(tokens, {'bert_tokens': token_indexer})
-
-# In order to convert the token strings into integer ids, we need to tell the
-# TextField what Vocabulary to use.
 text_field.index(vocab)
 
 # We typically batch things together when making tensors, which requires some

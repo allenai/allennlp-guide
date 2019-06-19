@@ -99,13 +99,21 @@ representations, then move to the more sophisticated (and time-consuming) contex
 you've settled on a basic model architecture, _without changing your model code_.
 
 The code below shows usage with ELMo, and if you click on "show solution", we've also included an
-example with BERT.  You can run both of these to see what the data looks like.  You'll notice that
-BERT's output is complicated, with multiple tensors corresponding to the `bert_tokens` key that we
-gave the `TextField`.  This is so that we can reconstruct token-level vectors in the model from the
-wordpiece vectors that BERT gives us.
+example with BERT.  You can run both of these to see what the data looks like.
 
 <codeblock id="chapter03/data/contextual">
 </codeblock>
+
+For ELMo, you can see that each token gets a long sequence of 50 characters, the majority of which
+are `261`, which ELMo uses to denote padding.
+
+For BERT, each token gets split into wordpieces, then encoded with a single id.  But because the
+tokens get split into wordpieces and then modeled by BERT in a single sequence, there are
+additional keys output by the `TokenIndexer` to help the model reconstruct a single vector per
+input token: `bert_tokens-offsets` tells the model which indices in the wordpiece sequence
+correspond to the beginning of tokens.  `bert_tokens-type-ids` tells the model which side of a
+`[SEP]` token each wordpiece is on (see the BERT paper for more info on that), and `mask` is used
+to recover which tokens (not wordpieces) correspond to padding tokens.
 
 </exercise>
 
@@ -124,7 +132,7 @@ each token, and you just want to embed the token.  As an exercise, try convertin
 character-level CNN, to match the exercise we did above in changing the data processing to use a
 `TokenCharactersIndexer`.
 
-<codeblock id="chapter03/data/contextual">
+<codeblock id="chapter03/model/simple">
 We gave you the imports to use at the top of the file.  `CnnEncoder` takes three arguments:
 `embedding_dim: int`, `num_filters: int`, and `ngram_filter_sizes: List[int]`.
 `TokenCharactersEncoder` takes two arguments: `embedding: Embedding` and `encoder: Seq2VecEncoder`
@@ -142,12 +150,54 @@ model as you're writing your model code.
 
 <exercise id="8" title="Embedding text that has multiple TokenIndexers">
 
-What happens when you provide more than one TokenIndexer, how to make it work.
+Here we'll parallel what we did above with using multiple `TokenIndexers`, showing how the model
+changes to match.  We'll start with using two separate inputs, one that has single word ids, and
+one that has a sequence of characters per token.  Notice how at the end, we end up with one vector
+per input token, with both ways of encoding the tokens concatenated together.
+
+As an exercise, see if you can modify this to take a third input that has a different single id,
+corresponding to part of speech tags.  If you click on "show solution", we'll show you how the
+token and part of speech tag vocabularies are actually used in practice to construct the embedding
+layers with the right number of embeddings.
+
+<codeblock id="chapter03/model/combined">
+You'll need to add another entry in the `token_tensor` dictionary, and a corresponding entry in the
+`token_embedders` dictionary passed to the `BasicTextFieldEmbedder`.
+</codeblock>
+
+As we noted in the comments in the solution we provided, you'll see that putting together the data
+and model side of `TextFields` in AllenNLP requires coordinating the keys used in a few different
+places: (1) the vocabulary namespaces used by the `TokenIndexers` and the `TokenEmbedders` need to
+match (where applicable), so that you get the right number of embeddings for each kind of input,
+and (2) the keys used for the `TokenIndexer` dictionary in the `TextField` need to match the keys
+used for the `TokenEmbedder` dictionary in the `BasicTextFieldEmbedder`.  We try to catch
+mismatches here and give helpful error messages, but if you mismatch keys in either of these
+places, you'll have problems in your code.
 
 </exercise>
 
-<exercise id="9" title="Embedding contextualized inputs">
+<exercise id="9" title="Using pretrained embeddings">
+Below we give a simple example showing how to use pretrained embedding vectors (like GloVe) with
+AllenNLP.  It's easiest to accomplish this with `Embedding.from_params()`.
 
-ELMo and BERT, how they get converted to tensors, and how wordpieces are handled.
+<codeblock id="chapter03/model/pretrained">
+</codeblock>
+
+</exercise>
+
+<exercise id="10" title="Embedding contextualized inputs">
+
+We'll finish this chapter with an example of how AllenNLP uses ELMo and BERT to produce a single
+vector per token.  In these cases, the `TokenEmbedder` is actually operating on the entire sequence
+of tokens, instead of just each token individually, doing some contextualization _inside_ the
+`TextFieldEmbedder`.  But from your model's perspective, you still just have a `TextFieldEmbedder`
+that gives you a single vector per token in your input; nothing changes in your code.
+
+The original code shows ELMo, and if you click on "show solution" you'll see the BERT code.
+Because we don't have a toy BERT model, you can't actually run the BERT code; it'll try to download
+the huge BERT model, and it will time out.
+
+<codeblock id="chapter03/model/contextual">
+</codeblock>
 
 </exercise>
