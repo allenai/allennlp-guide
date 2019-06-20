@@ -27,7 +27,10 @@ pre_text = "This is some text."
 post_text = "With BERT, just include the tags inline."
 pre_tokens = tokenizer.tokenize(pre_text)
 post_tokens = tokenizer.tokenize(post_text)
-tokens = [Token('[CLS]')] + pre_tokens + [Token('[SEP]')] + post_tokens
+# [CLS] gets automatically added at the beginning, and [SEP] at the end, so you
+# only need to add a [SEP] in the middle if you have inputs you want to
+# separate. Try removing this and seeing what happens, or adding more than one.
+tokens = pre_tokens + [Token('[SEP]')] + post_tokens
 print(tokens)
 
 text_field = TextField(tokens, {'bert_tokens': token_indexer})

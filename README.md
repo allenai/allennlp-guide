@@ -1,3 +1,22 @@
+# AllenNLP Course
+
+I've kept below the initial documentation for Ines's starter course, which this is based on.  If
+you have questions about how the code here works, that's a good place to look.
+
+The outline for the course that I'm envisioning looks like this.  These are the main sections,
+which might themselves be several chapters long.
+
+1. Introduction to the course
+2. AllenNLP's core abstractions (at a high level, how they all fit together)
+3. Deep dives into several of the core abstractions (there's one there for `TextField` and related
+   classes).
+4. Using AllenNLP - built-in commands, configuration files, etc.
+5. Testing with AllenNLP
+6. Task-specific chapters (many of these on different tasks)
+7. Building demos with AllenNLP
+
+Some of these could maybe be combined or rearranged, but that's the basic idea.
+
 # Online course starter: Python
 
 This is a starter repo based on the

@@ -113,7 +113,10 @@ additional keys output by the `TokenIndexer` to help the model reconstruct a sin
 input token: `bert_tokens-offsets` tells the model which indices in the wordpiece sequence
 correspond to the beginning of tokens.  `bert_tokens-type-ids` tells the model which side of a
 `[SEP]` token each wordpiece is on (see the BERT paper for more info on that), and `mask` is used
-to recover which tokens (not wordpieces) correspond to padding tokens.
+to recover which tokens (not wordpieces) correspond to padding tokens.  Also note that the
+`PretrainedBertIndexer` will automatically add `[CLS]` and `[SEP]` tokens at the beginning and end
+of your text, so you don't have to do that manually.  This is why `bert_tokens-offsets` starts at
+1.
 
 </exercise>
 
