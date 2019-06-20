@@ -138,9 +138,9 @@ local ingress = {
 local readinessProbe = {
     failureThreshold: 3,
     periodSeconds: 10,
-    initialDelaySeconds: 30,  // Use a longer delay if your app loads a large model.
+    initialDelaySeconds: 1,  // Use a longer delay if your app loads a large model.
     httpGet: {
-        path: '/health?check=readiness',
+        path: '/?check=readiness',
         port: config.httpPort,
         scheme: 'HTTP',
     },
@@ -152,9 +152,9 @@ local readinessProbe = {
 local livenessProbe = {
     failureThreshold: 3,
     periodSeconds: 10,
-    initialDelaySeconds: 30,  // Use a longer delay if your app loads a large model.
+    initialDelaySeconds: 1,  // Use a longer delay if your app loads a large model.
     httpGet: {
-        path: '/health?check=liveness',
+        path: '/?check=liveness',
         port: config.httpPort,
         scheme: 'HTTP',
     },
@@ -182,18 +182,12 @@ local deployment = {
                     {
                         name: config.appName,
                         image: image,
-                        args: [ 'server/start.py', '--prod' ],
                         readinessProbe: readinessProbe,
                         livenessProbe: livenessProbe,
                         resources: {
                             requests: {
-                                // Our machines currently have 2 vCPUs, so this
-                                // will allow 4 apps to run per machine
-                                cpu: '0.5',
-                                // Each machine has 13 GB of RAM. We target 4
-                                // apps per machine, so we reserve 3 GB of RAM
-                                // for each (whether they use it our not).
-                                memory: '3Gi'
+                                cpu: '0.1',
+                                memory: '100Mi'
                             }
                         },
                         env: [
