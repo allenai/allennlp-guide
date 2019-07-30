@@ -81,7 +81,8 @@ local fullyQualifiedName = config.appName + '-' + env;
 local labels = {
     app: config.appName,
     env: env,
-    contact: config.contact
+    contact: config.contact,
+    team: config.team
 };
 
 local namespace = {
