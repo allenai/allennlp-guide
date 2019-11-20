@@ -2,7 +2,6 @@ FROM node:10.15.2
 
 COPY binder/ binder/
 COPY src/ src/
-COPY static/ static/
 COPY gatsby-browser.js .
 COPY gatsby-config.js .
 COPY gatsby-node.js .
@@ -14,6 +13,7 @@ RUN npm install -g npm
 RUN npm install -g gatsby-cli
 RUN npm install
 
+COPY static/ static/
 COPY chapters/ chapters/
 COPY exercises/ exercises/
 COPY slides/ slides/
