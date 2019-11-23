@@ -10,7 +10,7 @@ id: 201
 
 <textblock>
 
-In Part 2 of this course, we'll be using text classification as an example of an NLP task and will demonstrate how to use AllenNLP to solve it. 
+By this point, you should be familiar with what AllenNLP is and what it's useful for (see [Part 1](/overview) for review). In this section of the course, we'll give a quick start on one the most basic things you can do with AllenNLP: text classification.
 
 </textblock>
 
