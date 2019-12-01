@@ -16,11 +16,11 @@ In the previous chapter, we learned what text classification is. In this part of
 
 <exercise id="1" title="Reading data">
 
-<img src="/your-first-model/dataset-reader.png" alt="How dataset reader works" />
+<img src="/your-first-model/dataset-reader.svg" alt="How dataset reader works" />
 
 The first step for building an NLP application is to read the dataset and represent it with some internal data structure. 
 
-AllenNLP uses `DatasetReader`s to read the data, whose job it is to transform raw data files into [`Instances`](/reading-textual-data) that match the input / output spec. Our spec for text classification is:
+AllenNLP uses `DatasetReaders` to read the data, whose job it is to transform raw data files into [`Instances`](/reading-textual-data) that match the input / output spec. Our spec for text classification is:
 
 ```python
 # Inputs
@@ -32,14 +32,14 @@ label: LabelField
 
 We'll want one [`Field`](/reading-textual-data) for the input and another for the output, and our model will use the inputs to predict the outputs.
 
-We assume the dataset has a simple data fle format:
+We assume the dataset has a simple data file format:
 `[text] [TAB] [label]`, for example:
 
 ```
 I like this movie a lot! [TAB] positive
 This was a monstrous waste of time [TAB] negative
 AllenNLP is amazing [TAB] positive
-Why does this have to be some complicated? [TAB] negative
+Why does this have to be so complicated? [TAB] negative
 This sentence expresses no sentiment [TAB] neutral
 ```
 
@@ -47,7 +47,7 @@ This sentence expresses no sentiment [TAB] neutral
 
 <exercise id="2" title="Make a DatasetReader">
 
-You can implement your own `DatasetReader` by inheriting the `DatasetReader` class. At minimum, you need to override the `_read()` method, which reads the input dataset and yields `Instance`s.
+You can implement your own `DatasetReader` by inheriting from the `DatasetReader` class. At minimum, you need to override the `_read()` method, which reads the input dataset and yields `Instances`.
 
 ```python
 @DatasetReader.register('classification-tsv')
@@ -77,10 +77,19 @@ There are lots of places where this could be made better for a more flexible and
 
 </exercise>
 
-<exercise id="3" title="Building your model">
+<exercise id="3" title="Building your model" type="slides">
+
+<slides source="your-first-model/building-your-model" />
+
 </exercise>
 
-<exercise id="4" title="Writing a config file">
+<exercise id="4" title="Implementing the model — the constructor" type="slides">
+
+<slides source="your-first-model/implementing-model-constructor" />
+
+</exercise>
+
+<exercise id="5" title="Writing a config file">
 
 <codeblock id="your-first-model/config">
 Try changing the configuration parameters and see how the dataset reader and model change.  In

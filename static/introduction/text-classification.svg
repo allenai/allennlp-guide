@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="252px" viewBox="0 0 800 252" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="20.0783197%" y1="0%" x2="79.9216803%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#F0F0F0" offset="0%"></stop>
+            <stop stop-color="#CCCCCC" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-5">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-48.8%" y="-37.7%" width="197.6%" height="175.5%" filterUnits="objectBoundingBox" id="filter-7">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <rect id="path-8" x="250" y="709" width="185" height="185" rx="4"></rect>
+        <filter x="-6.5%" y="-6.5%" width="115.1%" height="115.1%" filterUnits="objectBoundingBox" id="filter-9">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <filter x="-25.3%" y="-18.7%" width="150.6%" height="137.4%" filterUnits="objectBoundingBox" id="filter-10">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="22.7443445%" y1="0%" x2="77.2556555%" y2="100%" id="linearGradient-11">
+            <stop stop-color="#F0F0F0" offset="0%"></stop>
+            <stop stop-color="#CCCCCC" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-25.3%" y="-18.7%" width="150.6%" height="137.4%" filterUnits="objectBoundingBox" id="filter-12">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-25.3%" y="-18.7%" width="150.6%" height="137.4%" filterUnits="objectBoundingBox" id="filter-13">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <filter x="-25.3%" y="-18.7%" width="150.6%" height="137.4%" filterUnits="objectBoundingBox" id="filter-14">
+            <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(0.000000, -675.000000)">
+            <text id="Class-1" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" fill="#47515C">
+                <tspan x="725.11" y="743">Class 1</tspan>
+            </text>
+            <g id="Group" filter="url(#filter-1)" transform="translate(611.000000, 708.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-3)" transform="translate(662.000000, 708.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <text id="Class-2" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" fill="#47515D">
+                <tspan x="725.11" y="810">Class 2</tspan>
+            </text>
+            <g id="Group" filter="url(#filter-4)" transform="translate(611.000000, 775.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-5)" transform="translate(662.000000, 775.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <text id="Class-3" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" fill="#47515D">
+                <tspan x="725.11" y="877">Class 3</tspan>
+            </text>
+            <g id="Group" filter="url(#filter-6)" transform="translate(611.000000, 842.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-7)" transform="translate(662.000000, 842.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M9.64455463,1 C8.88682336,1 8.15715981,1.28673383 7.60214673,1.80259927 L1.9575921,7.04901736 C1.34693024,7.61660642 1,8.41271236 1,9.24641809 L1,49 C1,50.6568542 2.34314575,52 4,52 L37,52 C38.6568542,52 40,50.6568542 40,49 L40,4 C40,2.34314575 38.6568542,1 37,1 L9.64455463,1 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                <polyline id="Path" points="9 -4.10782519e-15 9 8 1 8"></polyline>
+                <line x1="7.25961538" y1="14.5" x2="33.7403846" y2="14.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="20.5" x2="33.7403846" y2="20.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="26.5" x2="33.7403846" y2="26.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="32.5" x2="33.7403846" y2="32.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="38.5" x2="33.7403846" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="7.25961538" y1="44.5" x2="33.7403846" y2="44.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Rectangle">
+                <use fill="black" fill-opacity="1" filter="url(#filter-9)" xlink:href="#path-8"></use>
+                <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-8"></use>
+            </g>
+            <text id="Classifier" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" fill="#000000">
+                <tspan x="302.31" y="810">Classifier</tspan>
+            </text>
+            <text id="Texts" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" fill="#47515C">
+                <tspan x="50.75" y="881">Texts</tspan>
+            </text>
+            <g id="Group" filter="url(#filter-10)" transform="translate(22.000000, 715.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M17.1806011,1 C16.3987073,1 15.6477081,1.30526495 15.0875538,1.85077856 L1.90695265,14.686879 C1.32707607,15.2515994 1,16.0266773 1,16.8361005 L1,103 C1,104.656854 2.34314575,106 4,106 L75,106 C76.6568542,106 78,104.656854 78,103 L78,4 C78,2.34314575 76.6568542,1 75,1 L17.1806011,1 Z" id="Rectangle" fill="url(#linearGradient-11)"></path>
+                <polyline id="Path" points="17 1 17 16 1 16"></polyline>
+                <line x1="14.5" y1="28.5" x2="65.5" y2="28.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="38.5" x2="65.5" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="48.5" x2="65.5" y2="48.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="58.5" x2="65.5" y2="58.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="68.5" x2="65.5" y2="68.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="78.5" x2="65.5" y2="78.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="88.5" x2="65.5" y2="88.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-12)" transform="translate(32.000000, 725.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M17.1806011,1 C16.3987073,1 15.6477081,1.30526495 15.0875538,1.85077856 L1.90695265,14.686879 C1.32707607,15.2515994 1,16.0266773 1,16.8361005 L1,103 C1,104.656854 2.34314575,106 4,106 L75,106 C76.6568542,106 78,104.656854 78,103 L78,4 C78,2.34314575 76.6568542,1 75,1 L17.1806011,1 Z" id="Rectangle" fill="url(#linearGradient-11)"></path>
+                <polyline id="Path" points="17 1 17 16 1 16"></polyline>
+                <line x1="14.5" y1="28.5" x2="65.5" y2="28.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="38.5" x2="65.5" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="48.5" x2="65.5" y2="48.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="58.5" x2="65.5" y2="58.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="68.5" x2="65.5" y2="68.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="78.5" x2="65.5" y2="78.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="88.5" x2="65.5" y2="88.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-13)" transform="translate(42.000000, 735.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M17.1806011,1 C16.3987073,1 15.6477081,1.30526495 15.0875538,1.85077856 L1.90695265,14.686879 C1.32707607,15.2515994 1,16.0266773 1,16.8361005 L1,103 C1,104.656854 2.34314575,106 4,106 L75,106 C76.6568542,106 78,104.656854 78,103 L78,4 C78,2.34314575 76.6568542,1 75,1 L17.1806011,1 Z" id="Rectangle" fill="url(#linearGradient-11)"></path>
+                <polyline id="Path" points="17 1 17 16 1 16"></polyline>
+                <line x1="14.5" y1="28.5" x2="65.5" y2="28.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="38.5" x2="65.5" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="48.5" x2="65.5" y2="48.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="58.5" x2="65.5" y2="58.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="68.5" x2="65.5" y2="68.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="78.5" x2="65.5" y2="78.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="88.5" x2="65.5" y2="88.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <g id="Group" filter="url(#filter-14)" transform="translate(52.000000, 745.000000)" stroke="#47515C" stroke-width="2">
+                <path d="M17.1806011,1 C16.3987073,1 15.6477081,1.30526495 15.0875538,1.85077856 L1.90695265,14.686879 C1.32707607,15.2515994 1,16.0266773 1,16.8361005 L1,103 C1,104.656854 2.34314575,106 4,106 L75,106 C76.6568542,106 78,104.656854 78,103 L78,4 C78,2.34314575 76.6568542,1 75,1 L17.1806011,1 Z" id="Rectangle" fill="url(#linearGradient-11)"></path>
+                <polyline id="Path" points="17 1 17 16 1 16"></polyline>
+                <line x1="14.5" y1="28.5" x2="65.5" y2="28.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="38.5" x2="65.5" y2="38.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="48.5" x2="65.5" y2="48.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="58.5" x2="65.5" y2="58.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="68.5" x2="65.5" y2="68.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="78.5" x2="65.5" y2="78.5" id="Line-2" stroke-linecap="square"></line>
+                <line x1="14.5" y1="88.5" x2="65.5" y2="88.5" id="Line-2" stroke-linecap="square"></line>
+            </g>
+            <path id="Line" d="M221.07953,794.843148 L235,802 L220.922237,808.842265 L220.989,802.842 L144.988828,801.988702 L145.011298,799.988828 L221.012,800.842 L221.07953,794.843148 Z" fill="#47515C" fill-rule="nonzero"></path>
+            <path id="Path-2" d="M578.386719,727 L592.386719,734 L578.386719,741 L578.386,735 L513.224779,735 C509.439328,735 506.355681,738.004783 506.228838,741.75935 L506.224779,742 L506.224779,793 C506.224779,797.970563 502.195342,802 497.224779,802 L497.224779,802 L455.386719,802 L455.386719,800 L497.224779,800 C501.090773,800 504.224779,796.865993 504.224779,793 L504.224779,793 L504.224779,742 C504.224779,737.029437 508.254217,733 513.224779,733 L513.224779,733 L578.386,733 L578.386719,727 Z" fill="#47515C" fill-rule="nonzero"></path>
+            <path id="Path-2" d="M497.224779,800 C502.195342,800 506.224779,804.029437 506.224779,809 L506.224779,809 L506.224779,858 C506.224779,861.865993 509.358786,865 513.224779,865 L513.224779,865 L578.386,864.999 L578.386719,859 L592.386719,866 L578.386719,873 L578.386,866.999 L513.224779,867 C508.342977,867 504.368988,863.113186 504.228616,858.265362 L504.224779,858 L504.224779,809 C504.224779,805.134007 501.090773,802 497.224779,802 L497.224779,802 L455.386719,802 L455.386719,800 Z" fill="#47515C" fill-rule="nonzero"></path>
+            <path id="Path-2" d="M578.386719,794 L592.386719,801 L578.386719,808 L578.386,801.999 L455.386719,802 L455.386719,800 L578.386,799.999 L578.386719,794 Z" fill="#47515C" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>
