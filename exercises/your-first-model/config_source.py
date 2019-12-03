@@ -34,7 +34,7 @@ class ClassificationTsvReader(DatasetReader):
                 text_field = TextField(self.tokenizer.tokenize(text),
                                        self.token_indexers)
                 sentiment_field = LabelField(sentiment)
-                fields = {'text': text_field, 'sentiment': sentiment_field}
+                fields = {'text': text_field, 'label': sentiment_field}
                 yield Instance(fields)
 
 reader_params = """
@@ -91,12 +91,13 @@ model_params = """
   "embedder": {"token_embedders": {
     "tokens": {"type": "embedding", "embedding_dim": 10}
   }},
-  "encoder": {"type": "bag_of_embeddings"}
+  "encoder": {"type": "bag_of_embeddings", "embedding_dim": 10}
 }
 """
 
-model = Model.from_params(vocab, Params(json.loads(model_params)))
+model = Model.from_params(vocab=vocab, params=Params(json.loads(model_params)))
 
 for batch in iterator(instances, num_epochs=1):
-    outputs = model(batch)
+    print(batch)
+    outputs = model(**batch)
     print(f"Model outputs: {outputs}")
