@@ -1,3 +1,6 @@
+import Prism from 'prismjs'
+import 'prismjs/plugins/line-highlight/prism-line-highlight.js'
+import 'prismjs/plugins/line-highlight/prism-line-highlight.css'
 import React, { useState, useEffect } from 'react'
 import { graphql, navigate } from 'gatsby'
 import useLocalStorage from '@illinois/react-use-local-storage'
@@ -17,6 +20,7 @@ const Template = ({ data, location }) => {
     const [activeExc, setActiveExc] = useState(null)
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${id}`, [])
     const html = renderAst(htmlAst)
+    import(`prismjs/components/prism-python`).then(() => Prism.highlightAll())
     const buttons = [
         { slug: prev, text: '« Previous Chapter' },
         { slug: next, text: 'Next Chapter »' },
