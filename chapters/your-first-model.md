@@ -176,7 +176,7 @@ The upshot is that if you're using the `allennlp train` command with a configura
 
 ## Passing the vocabulary
 
-<pre data-line="4,10" class="language-python"><code class="language-python">@Model.register('simple_classifier')
+<pre data-line="5,11" class="language-python"><code class="language-python">@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -191,27 +191,9 @@ class SimpleClassifier(Model):
 
 `Vocabulary` manages mappings between vocabulary items (such as words and characters) and their integer IDs. The vocabulary gets created by AllenNLP after reading your training data, then passed to the `Model` when it gets constructed. We'll find all tokens and labels that you use and assign them all integer IDs in separate namespaces. The way that this happens is fully configurable; see the [Vocabulary section of this course](/reading-textual-data) for more information.
 
-What we did in the `DatasetReader` will put the labels in the default "labels" namespace, and we grab the number of labels from the vocabulary on line 10.
+What we did in the `DatasetReader` will put the labels in the default "labels" namespace, and we grab the number of labels from the vocabulary on line 11.
 
 ## Embedding words
-
-<pre data-line="5,8" class="language-python"><code class="language-python">@Model.register('simple_classifier')
-class SimpleClassifier(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 embedder: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder):
-        super().__init__(vocab)
-        self.embedder = embedder
-        self.encoder = encoder
-        num_labels = vocab.get_vocab_size("labels")
-        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
-</code></pre>
-
-To get an initial word embedding, we'll use AllenNLP's `TextFieldEmbedder`. This
-abstraction takes the tensors created by a `TextField` and embeds each one. This is our most complex abstraction, because there are a lot of ways to do this particular operation in NLP, and we want to be able to switch between these without changing our code.  We won't go into the details here; we have a whole [chapter of this course](/representing-text-as-features) dedicated to diving deep into how this abstraction works and how to use it. All you need to know for now is that you apply this to the `text` parameter you get in `forward()`, and you get out a tensor with shape `(batch_size, sequence_length, embedding_dim)`.
-
-## Applying a Seq2VecEncoder
 
 <pre data-line="6,9" class="language-python"><code class="language-python">@Model.register('simple_classifier')
 class SimpleClassifier(Model):
@@ -226,12 +208,30 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
 </code></pre>
 
+To get an initial word embedding, we'll use AllenNLP's `TextFieldEmbedder`. This
+abstraction takes the tensors created by a `TextField` and embeds each one. This is our most complex abstraction, because there are a lot of ways to do this particular operation in NLP, and we want to be able to switch between these without changing our code.  We won't go into the details here; we have a whole [chapter of this course](/representing-text-as-features) dedicated to diving deep into how this abstraction works and how to use it. All you need to know for now is that you apply this to the `text` parameter you get in `forward()`, and you get out a tensor with shape `(batch_size, num_tokens, embedding_dim)`.
+
+## Applying a Seq2VecEncoder
+
+<pre data-line="7,10" class="language-python"><code class="language-python">@Model.register('simple_classifier')
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        super().__init__(vocab)
+        self.embedder = embedder
+        self.encoder = encoder
+        num_labels = vocab.get_vocab_size("labels")
+        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
+</code></pre>
+
 To squash our sequence of token vectors into a single vector, we use AllenNLP's
-`Seq2VecEncoder` abstraction. As the name implies, this encapsulates an operation that takes a sequence of vectors and returns a single vector. Because all of our modules operate on batched input, this will take a tensor shaped like `(batch_size, sequence_length, embedding_dim)` and return a tensor shaped like `(batch_size, encoding_dim)`.
+`Seq2VecEncoder` abstraction. As the name implies, this encapsulates an operation that takes a sequence of vectors and returns a single vector. Because all of our modules operate on batched input, this will take a tensor shaped like `(batch_size, num_tokens, embedding_dim)` and return a tensor shaped like `(batch_size, encoding_dim)`.
 
 ## Applying a classification layer
 
-<pre data-line="11" class="language-python"><code class="language-python">@Model.register('simple_classifier')
+<pre data-line="12" class="language-python"><code class="language-python">@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
