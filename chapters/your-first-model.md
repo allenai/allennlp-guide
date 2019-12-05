@@ -404,11 +404,106 @@ And that's it! This is all you need for a simple classifier.
 
 <exercise id="6" title="Writing a config file">
 
-<codeblock id="your-first-model/config">
-Try changing the configuration parameters and see how the dataset reader and model change.  In
-particular, see if you can add a character-level CNN to the `TextField` parameters.  You'll need to
-add parameters both for the `DatasetReader` (inside a `token_indexers` block) and for the
-`Model` (inside the `embedder` block).
-</codeblock>
+As mentioned previously, in AllenNLP you don't need to worry about connecting the input files to the dataset reader, batching, feeding the data to the model, or writing the training loop. You just need to specify how individual components (such as the dataset reader, the model, the optimizer etc.) get initialized along with their parameters by writing *a configuration file*.
+
+Config files in AllenNLP are formatted in JSON (or more specifically, a superset of JSON called [Jsonnet](https://jsonnet.org/), which supports fancier features like variables and imports). A config file is just a big JSON object with several keys (or *sections*) corresponding to individual components of your project:
+
+```js
+{
+    "dataset_reader": [... config for the dataset reader ...],
+    "train_data_path": [... path to the training data ...],
+    "validation_data_path": [... path to the validation data ...],
+    "model": [... config for the model ...],
+    "iterator": [... config for the iterator ...],
+    "trainer": [... config for the trainer ...]
+}
+```
+
+## Initializing the dataset reader
+
+Usually each JSON object in a config file corresponds to a Python object. For example, in the first section, you specify how the dataset reader should be initialized:
+
+```js
+"dataset_reader" : {
+    "type": "classification-tsv",
+    "token_indexers": {
+        "tokens": {
+            "type": "single_id"
+        }
+    }
+}
+```
+
+The first key, `type`, tells which subclass of `DatasetReader` to use. Most AllenNLP classes inherit from the `Registrable` class, which allows you to refer to a subclass by its registered name. Because earlier you did:
+
+```python
+@DatasetReader.register('classification-tsv')
+class ClassificationTsvReader(DatasetReader):
+    def __init__(self,
+                 lazy: bool = False,
+                 tokenizer: Tokenizer = None,
+                 token_indexers: Dict[str, TokenIndexer] = None):
+    ...
+```
+
+when you defined your dataset reader, you can use its name `classification-tsv` in the config file. 
+
+Other keys in a config JSON object correspond to constructor parameters. Here we are telling the dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a `SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. In summary, the config section for the dataset reader above has the same effect as the following Python snippet:
+
+```python
+reader = ClassificationTsvReader(
+    token_indexers={'tokens': SingleIdTokenIndexer()})
+```
+
+## Initializing the model
+
+The section for the model works in a very similar way as the one for the dataset reader. Here's a sample config section for initializing the simple classifier we implemented:
+
+```javascript
+"model": {
+    "type": "simple_classifier",
+    "embedder": {
+        "token_embedders": {
+            "tokens": {
+                "type": "embedding",
+                "embedding_dim": 10
+            }
+        }
+    },
+    "encoder": {
+        "type": "bag_of_embeddings",
+        "embedding_dim": 10
+    }
+}
+```
+
+As with dataset readers, AllenNLP models inherit from `Registrable`, which allows you to refer to model subclasses by their registered names. Remember that earlier we did:
+
+```python
+@Model.register('simple_classifier')
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        ...
+```
+
+The model section instantiates a `simple_classifier` (which is the `SimpleClassifier` class you just defined) with the specified constructor parameters (`embedder` and `encoder`). We are not going into the details here, but the model section above has the same effect as:
+
+```python
+model = SimpleClassifier(
+    embedder=BasicTextFieldEmbedder(
+        token_embedders={
+            'tokens': Embedding(
+                num_embeddings=vocab.get_vocab_size('tokens'),
+                embedding_dim=10)}),
+    encoder=BagOfEmbeddingsEncoder(
+        embedding_dim=10))
+```
+
+Note that `vocab` is automatically handled by AllenNLP, so you don't need to pass it around explicitly. If you are interested in learning more about how config files work, see the [chapter on using config files](/using-config-files) in Part 3.
+
+In the next chapter, we'll start training and making predictions using our text classification model!
 
 </exercise>
