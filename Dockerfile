@@ -1,17 +1,18 @@
 FROM node:10.15.2
 
+COPY package.json .
+
+RUN npm install -g npm
+RUN npm install -g gatsby-cli
+RUN npm install
+
 COPY binder/ binder/
 COPY src/ src/
 COPY gatsby-browser.js .
 COPY gatsby-config.js .
 COPY gatsby-node.js .
 COPY meta.json .
-COPY package.json .
 COPY theme.sass .
-
-RUN npm install -g npm
-RUN npm install -g gatsby-cli
-RUN npm install
 
 COPY static/ static/
 COPY chapters/ chapters/
