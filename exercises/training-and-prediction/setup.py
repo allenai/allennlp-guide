@@ -1,4 +1,5 @@
 import json
+import tempfile
 from typing import Dict
 from typing import Iterable
 
@@ -7,12 +8,14 @@ from allennlp.common.params import Params
 from allennlp.data import DatasetReader, Instance
 from allennlp.data import Vocabulary
 from allennlp.data.fields import LabelField, TextField
+from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 from allennlp.data.tokenizers import Tokenizer
 from allennlp.data.tokenizers import WordTokenizer
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
+from allennlp.training import Trainer
 
 
 @DatasetReader.register('classification-tsv')
@@ -68,14 +71,65 @@ class SimpleClassifier(Model):
 
 def run_config(config):
     params = Params(json.loads(config))
-    reader = DatasetReader.from_params(params.pop('dataset_reader'))
 
-    train_data = reader.read(params.pop('train_data_path'))
+    if 'dataset_reader' in params:
+        reader = DatasetReader.from_params(params.pop('dataset_reader'))
+    else:
+        raise RuntimeError('`dataset_reader` section is required')
 
-    vocab = Vocabulary.from_instances(train_data)
+    all_instances = []
+    if 'train_data_path' in params:
+        train_data = reader.read(params.pop('train_data_path'))
+        all_instances.extend(train_data)
+    else:
+        raise RuntimeError('`train_data_path` section is required')
 
-    model = Model.from_params(vocab=vocab, params=params.pop('model'))
+    validation_data = None
+    if 'validation_data_path' in params:
+        validation_data = reader.read(params.pop('validation_data_path'))
+        all_instances.extend(validation_data)
 
-    for inst in train_data:
-        outputs = model.forward_on_instance(inst)
-        print(outputs)
+    vocab = Vocabulary.from_instances(all_instances)
+
+    if 'model' not in params:
+        # 'dataset' mode — just preview the (first 10) instances
+        for inst in all_instances[:10]:
+            print(inst)
+    else:
+        model = Model.from_params(vocab=vocab, params=params.pop('model'))
+
+        if 'trainer' not in params:
+            if 'iterator' not in params:
+                # 'forward instance' mode — feed instances to the model without training
+                for inst in train_data:
+                    outputs = model.forward_on_instance(inst)
+                    print(outputs)
+            else:
+                # 'forward batch' mode — feed batches to the model without training
+                iterator = DataIterator.from_params(params.pop('iterator'))
+                iterator.index_with(vocab)
+
+                for batch in iterator(train_data, num_epochs=1):
+                    outputs = model(**batch)
+                    print(outputs)
+        else:
+            # 'train' mode
+            if 'iterator' not in params:
+                raise RuntimeError('iterator is required for training')
+
+            if not validation_data:
+                raise RuntimeError('validation data is required for training')
+
+            iterator = DataIterator.from_params(params.pop('iterator'))
+            iterator.index_with(vocab)
+
+            # set up a temporary, empty directory for serialization
+            with tempfile.TemporaryDirectory() as serialization_dir:
+                trainer = Trainer.from_params(
+                    model=model,
+                    serialization_dir=serialization_dir,
+                    iterator=iterator,
+                    train_data=train_data,
+                    validation_data=validation_data,
+                    params=params.pop('trainer'))
+                trainer.train()

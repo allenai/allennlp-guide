@@ -280,6 +280,8 @@ Here we'll show how to use these parameters inside of `Model.forward()`, which w
 
 ## Model.forward()
 
+In `forward`, we use the parameters that we created in our constructor to transform the inputs into outputs. After we've predicted the outputs, we compute some loss function based on how close we got to the true outputs, and then return that loss (along with whatever else we want) so that we can use it to train the parameters.
+
 ```python
 class SimpleClassifier(Model):
     def forward(self,
@@ -299,8 +301,6 @@ class SimpleClassifier(Model):
         loss = torch.nn.functional.cross_entropy(logits, label)
         return {'loss': loss, 'probs': probs}
 ```
-
-In `forward`, we use the parameters that we created in our constructor to predict the outputs from the inputs in our input/output spec. After we've predicted the outputs, we compute some loss function based on how close we got to the true outputs, and then return that loss (along with whatever else we want) so that we can use it to train the parameters.
 
 ## Inputs to forward()
 
@@ -371,7 +371,7 @@ The first actual modeling operation that we do is embed the text, getting a vect
         return {'loss': loss, 'probs': probs}
 </code></pre>
 
-After we have embedded our text, we next have to squash the sequence of vectors (one per token) into a single vector for the whole text. We do that using the `Seq2VecEncoder` that we got as a constructor argument. In order to behave properly when we're batching pieces of text together that could have different lengths, we need to _mask_ elements in the `embedded_text` tensor that are only there due to padding.  We use a utility function to get a mask from the `TextField` output, then pass that mask into the encoder. Our [chapter on building your model](/building-your-model) will give you more details on padding and masking.
+After we have embedded our text, we next have to squash the sequence of vectors (one per token) into a single vector for the whole text. We do that using the `Seq2VecEncoder` that we got as a constructor argument. In order to behave properly when we're batching pieces of text together that could have different lengths, we need to _mask_ elements in the `embedded_text` tensor that are only there due to padding.  We use a utility function to get a mask from the `TextField` output, then pass that mask into the encoder. Our [deep dive on building models](/building-your-model) will give you more details on padding and masking.
 
 At the end of these lines, we have a single vector for each instance in the batch.
 
@@ -404,7 +404,7 @@ And that's it! This is all you need for a simple classifier.
 
 <exercise id="6" title="Writing a config file">
 
-As mentioned previously, in AllenNLP you don't need to worry about connecting the input files to the dataset reader, batching, feeding the data to the model, or writing the training loop. You just need to specify how individual components (such as the dataset reader, the model, the optimizer etc.) get initialized along with their parameters by writing *a configuration file*.
+As mentioned previously, in AllenNLP you don't need to worry about connecting the input files to the dataset reader, batching, feeding the data to the model, or writing the training loop. You just need to specify how individual components (such as the dataset reader, the model, the optimizer etc.) get initialized along with their parameters by writing *a configuration file*. (Well, you can do these things if you want to, but we think it's easier to use the configuration files in most cases.)
 
 Config files in AllenNLP are formatted in JSON (or more specifically, a superset of JSON called [Jsonnet](https://jsonnet.org/), which supports fancier features like variables and imports). A config file is just a big JSON object with several keys (or *sections*) corresponding to individual components of your project:
 
@@ -436,19 +436,20 @@ Usually each JSON object in a config file corresponds to a Python object. For ex
 
 The first key, `type`, tells which subclass of `DatasetReader` to use. Most AllenNLP classes inherit from the `Registrable` class, which allows you to refer to a subclass by its registered name. Because earlier you did:
 
-```python
-@DatasetReader.register('classification-tsv')
+<pre data-line="2" class="language-python"><code class="language-python">@DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
                  tokenizer: Tokenizer = None,
                  token_indexers: Dict[str, TokenIndexer] = None):
     ...
-```
+</code></pre>
 
 when you defined your dataset reader, you can use its name `classification-tsv` in the config file. 
 
-Other keys in a config JSON object correspond to constructor parameters. Here we are telling the dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a `SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. In summary, the config section for the dataset reader above has the same effect as the following Python snippet:
+Other keys in a config JSON object correspond to constructor parameters. Here we are telling the dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a `SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. AllenNLP looks at the type annotation on each constructor parameter, and tries to build an object of that type from the corresponding parameters in the JSON file.
+
+In summary, the config section for the dataset reader above has the same effect as the following Python snippet:
 
 ```python
 reader = ClassificationTsvReader(
@@ -479,15 +480,14 @@ The section for the model works in a very similar way as the one for the dataset
 
 As with dataset readers, AllenNLP models inherit from `Registrable`, which allows you to refer to model subclasses by their registered names. Remember that earlier we did:
 
-```python
-@Model.register('simple_classifier')
+<pre data-line="2" class="language-python"><code class="language-python">@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  embedder: TextFieldEmbedder,
                  encoder: Seq2VecEncoder):
         ...
-```
+</code></pre>
 
 The model section instantiates a `simple_classifier` (which is the `SimpleClassifier` class you just defined) with the specified constructor parameters (`embedder` and `encoder`). We are not going into the details here, but the model section above has the same effect as:
 
