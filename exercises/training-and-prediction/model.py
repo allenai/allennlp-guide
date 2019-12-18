@@ -31,4 +31,4 @@ CONFIG = """
 }
 """
 
-run_config(CONFIG)
+_ = run_config(CONFIG)

@@ -1,7 +1,6 @@
 import json
 import tempfile
-from typing import Dict
-from typing import Iterable
+from typing import Dict, Iterable, List
 
 import torch
 from allennlp.common.params import Params
@@ -10,8 +9,8 @@ from allennlp.data import Vocabulary
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import Tokenizer
-from allennlp.data.tokenizers import WordTokenizer
+from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
+from allennlp.data.tokenizers import Token, Tokenizer, WordTokenizer
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
@@ -23,20 +22,28 @@ class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
                  tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None):
+                 token_indexers: Dict[str, TokenIndexer] = None,
+                 max_tokens: int = None):
         super().__init__(lazy)
-        self.tokenizer = tokenizer or WordTokenizer()
+        self.tokenizer = tokenizer or WordTokenizer(word_splitter=SimpleWordSplitter())
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
+        self.max_tokens = max_tokens
+
+    def text_to_instance(self, tokens: List[Token], label: str = None) -> Instance:
+        if self.max_tokens:
+            tokens = tokens[:self.max_tokens]
+        text_field = TextField(tokens, self.token_indexers)
+        fields = {'text': text_field}
+        if label:
+            fields['label'] = LabelField(label)
+        return Instance(fields)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
         with open(file_path, 'r') as lines:
             for line in lines:
                 text, sentiment = line.strip().split('\t')
-                text_field = TextField(self.tokenizer.tokenize(text),
-                                       self.token_indexers)
-                sentiment_field = LabelField(sentiment)
-                fields = {'text': text_field, 'label': sentiment_field}
-                yield Instance(fields)
+                tokens = self.tokenizer.tokenize(text)
+                yield self.text_to_instance(tokens, sentiment)
 
 
 @Model.register('simple_classifier')
@@ -53,7 +60,7 @@ class SimpleClassifier(Model):
 
     def forward(self,
                 text: Dict[str, torch.Tensor],
-                label: torch.Tensor) -> Dict[str, torch.Tensor]:
+                label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
         # Shape: (batch_size, num_tokens)
@@ -65,8 +72,10 @@ class SimpleClassifier(Model):
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
         # Shape: (1,)
-        loss = torch.nn.functional.cross_entropy(logits, label)
-        return {'loss': loss, 'probs': probs}
+        output = {'probs': probs}
+        if label is not None:
+            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
+        return output
 
 
 def run_config(config):
@@ -79,6 +88,7 @@ def run_config(config):
 
     all_instances = []
     if 'train_data_path' in params:
+        print('Reading the training data...')
         train_data = reader.read(params.pop('train_data_path'))
         all_instances.extend(train_data)
     else:
@@ -86,13 +96,17 @@ def run_config(config):
 
     validation_data = None
     if 'validation_data_path' in params:
+        print('Reading the validation data...')
         validation_data = reader.read(params.pop('validation_data_path'))
         all_instances.extend(validation_data)
 
+    print('Building the vocabulary...')
     vocab = Vocabulary.from_instances(all_instances)
 
+    model = None
     if 'model' not in params:
         # 'dataset' mode — just preview the (first 10) instances
+        print('Showing the first 10 instances:')
         for inst in all_instances[:10]:
             print(inst)
     else:
@@ -133,3 +147,9 @@ def run_config(config):
                     validation_data=validation_data,
                     params=params.pop('trainer'))
                 trainer.train()
+
+    return {
+        'dataset_reader': reader,
+        'vocab': vocab,
+        'model': model
+    }
