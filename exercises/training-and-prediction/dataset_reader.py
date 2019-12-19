@@ -6,10 +6,11 @@ CONFIG = """
             "tokens": {
                 "type": "single_id"
             }
-        }
+        },
+        "max_tokens": 64
     },
     "train_data_path": "exercises/your-first-model/train.tsv"
 }
 """
 
-run_config(CONFIG)
+_ = run_config(CONFIG)
