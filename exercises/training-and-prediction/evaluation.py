@@ -1,9 +1,9 @@
 from allennlp.common import JsonDict
 from allennlp.data import DatasetReader, Instance
 from allennlp.data.tokenizers import WordTokenizer
-from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
 from allennlp.models import Model
 from allennlp.predictors import Predictor
+from allennlp.training.util import evaluate
 from overrides import overrides
 
 
@@ -11,7 +11,7 @@ from overrides import overrides
 class SentenceClassifierPredictor(Predictor):
     def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
         super().__init__(model, dataset_reader)
-        self._tokenizer = WordTokenizer(word_splitter=SimpleWordSplitter())
+        self._tokenizer = WordTokenizer()
 
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
@@ -62,13 +62,12 @@ CONFIG = """
 """
 
 components = run_config(CONFIG)
-dataset_reader, vocab, model = components['dataset_reader'], components['vocab'], components['model']
+dataset_reader = components['dataset_reader']
+vocab = components['vocab']
+iterator = components['iterator']
+model = components['model']
 
-predictor = SentenceClassifierPredictor(model, dataset_reader)
+test_data = dataset_reader.read('exercises/your-first-model/test.tsv')
 
-output = predictor.predict('A good movie!')
-print([(vocab.get_token_from_index(label_id, 'labels'), prob)
-       for label_id, prob in enumerate(output['probs'])])
-output = predictor.predict('This was a monstrous waste of time.')
-print([(vocab.get_token_from_index(label_id, 'labels'), prob)
-       for label_id, prob in enumerate(output['probs'])])
+results = evaluate(model, test_data, iterator, cuda_device=-1, batch_weight_key=None)
+print(results)
