@@ -9,12 +9,13 @@ from allennlp.data import Vocabulary
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
 from allennlp.data.tokenizers import Token, Tokenizer, WordTokenizer
+from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
 from allennlp.training import Trainer
+from allennlp.training.metrics import CategoricalAccuracy
 
 
 @DatasetReader.register('classification-tsv')
@@ -57,6 +58,7 @@ class SimpleClassifier(Model):
         self.encoder = encoder
         num_labels = vocab.get_vocab_size("labels")
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
+        self.accuracy = CategoricalAccuracy()
 
     def forward(self,
                 text: Dict[str, torch.Tensor],
@@ -74,8 +76,12 @@ class SimpleClassifier(Model):
         # Shape: (1,)
         output = {'probs': probs}
         if label is not None:
+            self.accuracy(logits, label)
             output['loss'] = torch.nn.functional.cross_entropy(logits, label)
         return output
+
+    def get_metrics(self, reset: bool = False) -> Dict[str, float]:
+        return {"accuracy": self.accuracy.get_metric(reset)}
 
 
 def run_config(config):
@@ -104,6 +110,7 @@ def run_config(config):
     vocab = Vocabulary.from_instances(all_instances)
 
     model = None
+    iterator = None
     if 'model' not in params:
         # 'dataset' mode — just preview the (first 10) instances
         print('Showing the first 10 instances:')
@@ -151,5 +158,6 @@ def run_config(config):
     return {
         'dataset_reader': reader,
         'vocab': vocab,
+        'iterator': iterator,
         'model': model
     }
