@@ -112,21 +112,53 @@ You should see a validation accuracy ~ 0.565, which is not a huge improvement ov
 
 <exercise id="2" title="More AllenNLP commands">
 
-* allennlp configure (config wizard)
-* allennlp dry-run
+In the previous chapter, we introduced three AllenNLP commands—`train`, `evaluate`, and `predict`. These are the most commonly used ones, but there are some other commands and command-line tools that you may find useful.
+
+We briefly talked about the structure of AllenNLP config files, but do you find it confusing knowing what should go in them? Try out the configuration wizard, which allows you to choose components (dataset reader, model, iterator, etc.) and specify their arguments using a graphical interface, and it auto-generates the config file. 
+
+The config wizard is maintained in [a separate repo](https://github.com/allenai/allennlp-server), so you need to clone it and follow the instruction on README to install and run it. 
+
+<img src="/next-steps/config-wizard.png" alt="Config wizard" />
+
+For more details, read [the chapter](/using-config-files) on config files, registrable, and from_params.
+
+Also, we've been training and running the models using AllenNLP commands, but if you want to just write your own Python script instead of using commands and config files, that's fine too; there's [a chapter](/writing-python-script) on the best ways of doing this in part 3.
+
+There are also `allennlp dry-run`, which creates a vocabulary and shows statistics of the dataset etc. without actually training the model, and [`allentune`](https://github.com/allenai/allentune), a hyperparameter search tool for AllenNLP. 
 
 </exercise>
 
 <exercise id="3" title="Running a demo">
 
-* Running a simple server demo
-* Customizing the demo
+After training an NLP model, you may want to deploy it as a Web application or show a demo to your colleagues. AllenNLP comes with a  demo server that serves your model via a simple Web interface.
+
+The simple demo server is also in [a separate repo](https://github.com/allenai/allennlp-server), so you need to clone it and install its dependencies by running:
+
+```
+git clone https://github.com/allenai/allennlp-server.git
+pip install -r allennlp-server/requirements.txt
+```
+
+Then you can spin up the server by running:
+
+```
+python allennlp-server/server_simple.py \
+    --archive-path model/model.tar.gz \
+    --predictor sentence_classifier \
+    --field-name sentence
+    --include-package my_text_classifier
+```
+
+Note that you need to specify the name of the field(s) to accept input. You can access `localhost:8000` in your browser to see the simple demo:
+
+<img src="/next-steps/simple-demo.png" alt="Simple demo" />
+
+It is also relatively easy to customize this demo if you know basic HTML, CSS, and JavaScript. By default, all the assets (HTML, JavasScript code, and CSS) are hard-coded in `server_simple.py`, a Python script to launch the demo. You can change where these assets are served from by specifying the `--static-dir` option when running the script. See [this tutorial by AllenNLP](https://github.com/allenai/allennlp/blob/master/tutorials/getting_started/predicting_paper_venues/predicting_paper_venues_pt2.md) for more details on how to customize the demo.
 
 </exercise>
 
 <exercise id="4" title="Using GPUs and Docker">
 
 * Using GPUs
-* Using Docker
 
 </exercise>
