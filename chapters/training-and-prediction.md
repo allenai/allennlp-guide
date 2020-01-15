@@ -60,17 +60,95 @@ Congratulations, you just trained your first model using AllenNLP!
 
 </exercise>
 
-<exercise id="2" title="Making predictions for new inputs">
+<exercise id="2" title="Evaluating the model">
 
-In this section, we'll be making predictions for new inputs using the trained text classification model.
+In this section, we will be evaluating the text classification model we just trained above, by computing the evaluation metrics against the test set.
+
+## Defining the metrics
+
+In AllenNLP, you implement the logic to compute the metrics in your `Model` class. AllenNLP includes an abstraction called `Metric` that represents various metrics. Here, we'll be simply using accuracy (`CategoricalAccuracy`), the fraction of instances for which our model predicted the label correctly.
+
+First, you need to create an instance of `CategoricalAccuracy` in your model constructor:
+
+<pre data-line="12" class="language-python"><code class="language-python">class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        super().__init__(vocab)
+        self.embedder = embedder
+        self.encoder = encoder
+        num_labels = vocab.get_vocab_size("labels")
+        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
+        self.accuracy = CategoricalAccuracy()
+</code></pre>
+
+Then, for each forward pass, you need to update the metric by feeding the prediction and the gold labels:
+
+<pre data-line="18" class="language-python"><code class="language-python">class SimpleClassifier(Model):
+    def forward(self,
+                text: Dict[str, torch.Tensor],
+                label: torch.Tensor) -> Dict[str, torch.Tensor]:
+        # Shape: (batch_size, num_tokens, embedding_dim)
+        embedded_text = self.embedder(text)
+        # Shape: (batch_size, num_tokens)
+        mask = util.get_text_field_mask(text)
+        # Shape: (batch_size, encoding_dim)
+        encoded_text = self.encoder(embedded_text, mask)
+        # Shape: (batch_size, num_labels)
+        logits = self.classifier(encoded_text)
+        # Shape: (batch_size, num_labels)
+        probs = torch.nn.functional.softmax(logits)
+        # Shape: (1,)
+        loss = torch.nn.functional.cross_entropy(logits, label)
+        self.accuracy(logits, label)
+        return {'loss': loss, 'probs': probs}
+</code></pre>
+
+The way metrics work in AllenNLP is that, behind the scenes, each `Metric` instance holds "counts" that are necessary and sufficient to compute the metric. For accuracy, these counts are the number of total predictions as well as the number of correct predictions. These counts get updated after every call to the instance itself, i.e., `accuracy()`. You can pull out the computed metric by calling `get_metrics()` with a flag specifying whether to reset the counts. This allows you to compute the metric over the entire training or validation dataset.
+
+Finally, you need to implement the `get_metrics()` method in your model, which returns a dictionary from metric names to their values, as shown below:
+
+```python
+    def get_metrics(self, reset: bool = False) -> Dict[str, float]:
+        return {"accuracy": self.accuracy.get_metric(reset)}
+```
+
+AllenNLP's default training loop will call this method at the appropriate times and provide logging information with current metric values.
+
+## Evaluating the model
+
+Now that your model is ready to compute the metric, let's run the entire pipeline where we train the model, make the prediction and compute the metric against the test set.
+
+In the code snippet below, we are reading a test set using the dataset reader, and using AllenNLP's utility function `evaluate()` to run your model and get the metric on the test set. Notice that AllenNLP now shows values for the defined metric as well as the the loss after each batch during training and validation.
+
+<codeblock source="training-and-prediction/evaluation" setup="training-and-prediction/setup"></codeblock>
+
+When this code snippet finishes running, you should see the evaluation result:
+
+```
+{'accuracy': 0.855, 'loss': 0.3686505307257175}
+```
+
+As a simple bag-of-embeddings model, this is not a bad start!
+
+## From command line
+
+In order to evaluate your model from command line, you can use the `allennlp evaluate` command. This command takes the path to the model archive file created by the `allennlp train` command, along with the path to a file containing test instances, and returns the computed metrics.
+
+</exercise>
+
+<exercise id="3" title="Making predictions for unlabeled inputs">
+
+In this final exercise, we'll be making predictions for new, unlabeled inputs using the trained text classification model.
 
 ## Modifying the dataset reader
 
-Before we move on to making predictions for new inputs, we need to make one change to the dataset reader we wrote previously. Specifically, we refactor out the logic for creating an `Instance` from tokens and the label as the `text_to_instance()` method as shown below.
+Before we move on to making predictions for unlabeled inputs, we need to make one change to the dataset reader we wrote previously. Specifically, we refactor out the logic for creating an `Instance` from tokens and the label as the `text_to_instance()` method as shown below.
 
 We are making this piece of code sharable between `DatasetReader` and `Predictor` (which we'll discuss in detail below). Why is this a good idea? Here, we are practically building two pipelines, i.e., two different "flows" of data—one for training and another for prediction. By factoring out a common logic for creating instances and sharing it between two pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two, a problem known as [training-serving skew](https://developers.google.com/machine-learning/guides/rules-of-ml#training-serving_skew). This may not seem too big of a deal in this tiny example, but making the feature extraction code sharable between different pipelines is critical in real-world ML applications.
 
-Note that we are making the `label` parameter of `text_to_instance()` optional. During training, all the instances were labeled, i.e., they included the `LabelFields` that contain gold labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled* and do not contain the labels. By making the `label` parameter optional the dataset reader can support both cases. 
+Note that we are making the `label` parameter of `text_to_instance()` optional. During training and evaluation, all the instances were labeled, i.e., they included the `LabelFields` that contain gold labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled* and do not contain the labels. By making the `label` parameter optional the dataset reader can support both cases. 
 
 <pre data-line="12-17" class="language-python"><code class="language-python">@DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
@@ -103,7 +181,7 @@ We also need to make some changes to the `forward()` method of our model. When w
 
 In order to support prediction, first you need to make the `label` parameter optional by specifying its default value (`None`). This will let you feed unlabeled instances to the model. Second, you need to compute the loss only when the label is supplied. See the modified version of `forward()` below:
 
-<pre data-line="5,17-19" class="language-python"><code class="language-python">class SimpleClassifier(Model):
+<pre data-line="5,17-20" class="language-python"><code class="language-python">class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
@@ -120,6 +198,7 @@ In order to support prediction, first you need to make the `label` parameter opt
         # Shape: (1,)
         output = {'probs': probs}
         if label is not None:
+            self.accuracy(logits, label)
             output['loss'] = torch.nn.functional.cross_entropy(logits, label)
         return output
 </code></pre>
@@ -166,92 +245,19 @@ This means that at least for these instances your model is making correct predic
 
 ## From command line
 
-In practice, instead of writing code to feed data to a predictor, you'll be using the `allennlp predict` command to make predictions. This command takes the path to the model archive file created by the `allennlp train` command, along with the path to a JSON file containing serialized test instances, and runs the model against these instances.
+In practice, instead of writing code to feed data to a predictor, you'll be using the `allennlp predict` command to make predictions. This command is very similar to `allennlp evaluate` (see above)—it takes the path to the model archive file created by the `allennlp train` command, along with the path to a JSON file containing serialized test instances, and runs the model against these instances.
 
-</exercise>
-
-<exercise id="3" title="Evaluating the model">
-
-In this final exercise, we will be evaluating the text classification model we just trained above. We already fed new instances to the model in the previous exercise, but in this exercise we'll be computing the evaluation metrics against the test set.
-
-## Defining the metrics
-
-In AllenNLP, you implement the logic to compute the metrics in your model. AllenNLP includes an abstraction called `Metric` that represents various metrics. Here, we'll be simply using accuracy (`CategoricalAccuracy`), the fraction of instances for which our model predicted the label correctly.
-
-First, you need to create an instance of `CategoricalAccuracy` in your model constructor:
-
-<pre data-line="12" class="language-python"><code class="language-python">class SimpleClassifier(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 embedder: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder):
-        super().__init__(vocab)
-        self.embedder = embedder
-        self.encoder = encoder
-        num_labels = vocab.get_vocab_size("labels")
-        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
-        self.accuracy = CategoricalAccuracy()
-</code></pre>
-
-Then, for each forward pass, you need to update the metric by feeding the prediction and the gold labels:
-
-<pre data-line="19" class="language-python"><code class="language-python">class SimpleClassifier(Model):
-    def forward(self,
-                text: Dict[str, torch.Tensor],
-                label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
-        # Shape: (batch_size, num_tokens, embedding_dim)
-        embedded_text = self.embedder(text)
-        # Shape: (batch_size, num_tokens)
-        mask = util.get_text_field_mask(text)
-        # Shape: (batch_size, encoding_dim)
-        encoded_text = self.encoder(embedded_text, mask)
-        # Shape: (batch_size, num_labels)
-        logits = self.classifier(encoded_text)
-        # Shape: (batch_size, num_labels)
-        probs = torch.nn.functional.softmax(logits)
-        # Shape: (1,)
-        output = {'probs': probs}
-        if label is not None:
-            self.accuracy(logits, label)
-            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
-        return output
-</code></pre>
-
-The way metrics work in AllenNLP is that, behind the scenes, each `Metric` instance holds "counts" that are necessary and sufficient to compute the metric. For accuracy, these counts are the number of total predictions as well as the number of correct predictions. These counts get updated after every call to the instance itself, i.e., `accuracy()`. You can pull out the computed metric by calling `get_metrics()` with a flag specifying whether to reset the counts. This allows you to compute the metric over the entire training or validation dataset.
-
-Finally, you need to implement the `get_metrics()` method in your model, which returns a dictionary from metric names to their values, as shown below:
-
-```python
-    def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        return {"accuracy": self.accuracy.get_metric(reset)}
-```
-
-## Evaluating the model
-
-Now that your model is ready to compute the metric, let's run the entire pipeline where we train the model, make the prediction and compute the metric against the test set.
-
-In the code snippet below, we are reading a test set using the dataset reader, and using AllenNLP's utility function `evaluate()` to run your model and get the metric on the test set. Notice that AllenNLP now shows values for the defined metric as well as the the loss after each batch during training and validation.
-
-<codeblock source="training-and-prediction/evaluation" setup="training-and-prediction/setup"></codeblock>
-
-When this code snippet finishes running, you should see the evaluation result:
-
-```
-{'accuracy': 0.855, 'loss': 0.3686505307257175}
-```
-
-As a simple bag-of-embeddings model, this is not a bad start!
-
-## From command line
-
-In order to evaluate your model from command line, you can use `allennlp evaluate`, which is very similar to the `allennlp predict` command mentioned above, except 1) it returns the computed metrics instead of prediction results, and 2) it uses the dataset reader directly instead of a predictor.
-
-Assuming that the model, dataset reader, and predictor we built so far are defined in some module named `my_text_classifier`, you would use the following AllenNLP commands to first train the model,  make predictions using it, and evaluate it. Remember that you need to supply `--include-package` option so that AllenNLP can find your module. You can see an example code set up [here](https://github.com/allenai/allennlp-course-examples).
+Overall, assuming that the model, dataset reader, and predictor we built so far are defined in some module named `my_text_classifier`, you would use the following AllenNLP commands to first train the model, evaluate it, and make predictions for unseen data. Remember that you need to supply `--include-package` option so that AllenNLP can find your module. All the example code is set up [in this repo](https://github.com/allenai/allennlp-course-examples). You just need to clone it, cd to the `quick_start` directory, and run these commands just like this was your own project directory.
 
 ```
 $ allennlp train \
-    config_files/my_text_classifier.jsonnet \
+    my_text_classifier.jsonnet \
     --serialization-dir model \
+    --include-package my_text_classifier
+
+$ allennlp evaluate \
+    model/model.tar.gz \
+    data/movie_review/test.tsv \
     --include-package my_text_classifier
 
 $ allennlp predict \
@@ -259,13 +265,8 @@ $ allennlp predict \
     data/movie_review/test.jsonl \
     --include-package my_text_classifier \
     --predictor sentence_classifier
-
-$ allennlp evaluate \
-    model/model.tar.gz \
-    data/movie_review/test.tsv \
-    --include-package my_text_classifier
 ```
 
-And that's it! Though simple, we trained and ran a full-fledged NLP model using AllenNLP in this chapter. Starting from the next chapter, we'll be making modifications to our model, introducing more AllenNLP features along the way.
+And that's it! Though simple, we trained and ran a full-fledged NLP model using AllenNLP in this chapter. In the next chapter we'll touch upon some more AllenNLP features.
 
 </exercise>
