@@ -33,42 +33,38 @@ Now let's look at the definition of our text classifier model again. The followi
 
 <img src="/next-steps/pretrained-contextualizers.svg" alt="Using pre-trained contextualizers" />
 
-To recap, the model first uses `embedder` (of type `TextFiledEmbedder`) to convert the text into an embedding, then uses `encoder` (of type `Seq2VecEncoder`) to convert it to a vector (or a set of vectors when batched). The beauty of how models are designed in AllenNLP is that they mostly define "what" should be done in terms of abstractions and data types without being explicit about "how" it should be done. In fact, both `TextFiledEmbedder` and `TextFields`  are defined as abstract classes, meaning they only provide interfaces, not implementations.
+To recap, the model first uses `embedder` (of type `TextFieldEmbedder`) to convert the text into an embedding, then uses `encoder` (of type `Seq2VecEncoder`) to convert it to a vector (or a set of vectors when batched). The beauty of how models are designed in AllenNLP is that they mostly define "what" should be done in terms of abstractions and data types without being explicit about "how" it should be done. In fact, both `TextFieldEmbedder` and `Seq2VecEncoder` are defined as abstract classes, meaning they only provide interfaces, not implementations.
 
-This design allows you to be flexible and swap in any components as long as they confirm the same interface. For example, a `Seq2VecEncoder` can be any of: bag of embeddings (which we did in the last chapter), a CNN, an RNN, a Transformer encoder, etc, as long as the module takes a sequence of vectors and produces a single vector. You can even implement your own encoder.
+This design allows you to be flexible and swap in any components as long as they conform to the same interface. For example, a `Seq2VecEncoder` can be any of: bag of embeddings (which we did in the last chapter), a CNN, an RNN, a Transformer encoder, etc, as long as the module takes a sequence of vectors and produces a single vector. You can even implement your own encoder.
 
-As a quick example, let's see how we can use BERT as a pretrained contexturalizer for the text classification model. As shown below, you need to make four changes to the config file, while no change is needed for the model you wrote in Python.
+As a quick example, let's see how we can use BERT as a pretrained contextualizer for the text classification model. As shown below, you need to make four changes to the config file, while no change is needed for the model you wrote in Python.
 
-<pre data-line="7-9,11-14,27-32,36-38" class="language-js"><code class="language-js">local bert_model = "bert-base-uncased";
+<pre data-line="7-10,11-16,24-29,31-35" class="language-js"><code class="language-js">local bert_model = "bert-base-uncased";
 
 {
     "dataset_reader" : {
         "type": "classification-tsv",
         "tokenizer": {
-            "word_splitter": "bert-basic"
+            "type": "pretrained_transformer",
+            "model_name": bert_model,
         },
         "token_indexers": {
             "bert": {
-                "type": "bert-pretrained",
-                "pretrained_model": bert_model,
+                "type": "pretrained_transformer",
+                "model_name": bert_model,
             }
-        }
+        },
+        "max_tokens": 512
     },
     "train_data_path": "data/movie_review/train.tsv",
     "validation_data_path": "data/movie_review/dev.tsv",
     "model": {
         "type": "simple_classifier",
         "embedder": {
-            "allow_unmatched_keys": true,
-            "embedder_to_indexer_map": {
-                "bert": ["bert", "bert-offsets"]
-            },
             "token_embedders": {
                 "bert": {
-                    "type": "bert-pretrained",
-                    "pretrained_model": bert_model,
-                    "top_layer_only": true,
-                    "requires_grad": false
+                    "type": "pretrained_transformer",
+                    "model_name": bert_model
                 }
             }
         },
@@ -83,19 +79,24 @@ As a quick example, let's see how we can use BERT as a pretrained contexturalize
         "batch_size": 8
     },
     "trainer": {
-        "optimizer": "adam",
+        "optimizer": {
+            "type": "huggingface_adamw",
+            "lr": 1.0e-5
+        },
         "num_epochs": 5
     }
 }
 </code></pre>
 
 We won't go into the details of these changes here, but in a nutshell, you need to:
-1. Use a `BertBasicWordSplitter` (`"bert-basic"`) for splitting words
-2. Use a `PretrainedBertIndexer` (`"bert-pretrained"`) for indexing words (BERT uses word pieces internally)
-3. Replace the `TokenEmbedder` with a `PretrainedBertEmbedder` (`"bert-pretrained"`) for embedding tokens
-4. Replace the `Seq2VecEncoder` with a `BertPooler` (`"bert_pooler"`) for extracting the embedding for the `[CLS]` token
+1. Use a `PretrainedTransformerTokenizer` (`"pretrained_transformer"`), which tokenizes the string into wordpieces and adds special tokens like `[CLS]` and `[SEP]`
+2. Use a `PretrainedTransformerIndexer` (`"pretrained_transformer"`), which converts those wordpieces into ids using BERT's vocabulary
+3. Replace the embedder layer with a `PretrainedTransformerEmbedder` (`"pretrained_transformer"`), which uses a pretrained BERT model to embed the tokens, returning the top layer from BERT
+4. Replace the encoder with a `BertPooler` (`"bert_pooler"`), which adds another (pretrained) linear layer on top of the `[CLS]` token and returns the result
 
-Also note that you need to add two (somewhat cryptic) fields to your embedder: `allow_unmatched_keys` and `embedder_to_indexer_map`. We'll cover in detail how to represent text in AllenNLP (including how `TextFields`, `TokenIndexers`, and `TokenEmbedders` work) in [a chapter in Part 3](/representing-text-as-features).
+Also note that we switched the optimizer to use `AdamW` from HuggingFace's Transformers library.
+
+The tokenizer and the embedder are thin wrappers around [HuggingFace's Transformers library](https://github.com/huggingface/transformers), so switching between different transformer architectures (BERT, RoBERTa, XLNet, etc.) is as simple as changing the `model_name` parameters in the config file.
 
 You can find the full config file [in the example repo](https://github.com/allenai/allennlp-course-examples/tree/master/quick_start). To train the model, you can use the command:
 
@@ -106,7 +107,7 @@ $ allennlp train \
     --include-package my_text_classifier
 ```
 
-You should see a validation accuracy ~ 0.565, which is not a huge improvement over the bag-of-embeddings model we built in the previous chapter, but remember we haven't done any hyperparameter tuning whatsoever. The point of this exercise is to show you it is relatively straightforward to swap in and out components of your NLP model without changing a single line of Python code.
+You should see a validation accuracy ~ 0.900, which is a huge improvement over the bag-of-embeddings model we built in the previous chapter. We achieved all this without changing a single line of Python code. Using AllenNLP, it is straightforward to swap in and out components of your NLP model without modifying Python code.
 
 </exercise>
 
@@ -116,7 +117,12 @@ In the previous chapter, we introduced three AllenNLP commands—`train`, `evalu
 
 We briefly talked about the structure of AllenNLP config files, but do you find it confusing knowing what should go in them? Try out the configuration wizard, which allows you to choose components (dataset reader, model, iterator, etc.) and specify their arguments using a graphical interface, and it auto-generates the config file. 
 
-The config wizard is maintained in [a separate repo](https://github.com/allenai/allennlp-server), so you need to clone it and follow the instruction on README to install and run it. 
+You can install and run the config wizard using the following commands:
+
+```
+pip install allennlp-server
+allennlp-configure --include-package my_text_classifier
+```
 
 <img src="/next-steps/config-wizard.png" alt="Config wizard" />
 
@@ -132,11 +138,10 @@ There are also `allennlp dry-run`, which creates a vocabulary and shows statisti
 
 After training an NLP model, you may want to deploy it as a Web application or show a demo to your colleagues. AllenNLP comes with a  demo server that serves your model via a simple Web interface.
 
-The simple demo server is also in [a separate repo](https://github.com/allenai/allennlp-server), so you need to clone it and install its dependencies by running:
+The simple demo server is also in a separate package, which you can install by:
 
 ```
-git clone https://github.com/allenai/allennlp-server.git
-pip install -r allennlp-server/requirements.txt
+pip install allennlp-server
 ```
 
 Then you can spin up the server by running:
@@ -157,8 +162,31 @@ It is also relatively easy to customize this demo if you know basic HTML, CSS, a
 
 </exercise>
 
-<exercise id="4" title="Using GPUs and Docker">
+<exercise id="4" title="Using GPUs">
 
-* Using GPUs
+Finally, as long as you are using standard AllenNLP components (models, modules, etc.), you rarely need to worry about making your model compatible with GPUs by manually moving model parameters and tensors between devices. In most cases, all you need to do is add the `cuda_device` option to your trainer specifying the ID of the GPU you want to use:
+
+```
+    "trainer": {
+        ...
+        "cuda_device": 0
+        ...
+    }
+```
+
+If you have multiple GPUs, you can do distributed training by specify a list of GPU IDs in a `"distributed"` section:
+
+```
+    "trainer": {
+        ...
+    },
+    "distributed": {
+        "cuda_devices": [0, 1, 2, 3]
+    }
+```
+
+This will use PyTorch's DistributedDataParallel to aggregate losses and synchronize parameter updates across multiple GPUs. The speedup you get, however, might not be exactly proportional to the number of GPUs due to due to synchronization and overhead.
+
+When you are evaluating and making predictions with your model, you can specify the `--cuda-device` option from the command line to make your model run on GPUs.
 
 </exercise>
