@@ -9,8 +9,7 @@ from allennlp.data import Vocabulary
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token, Tokenizer, WordTokenizer
-from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
+from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
@@ -26,7 +25,7 @@ class ClassificationTsvReader(DatasetReader):
                  token_indexers: Dict[str, TokenIndexer] = None,
                  max_tokens: int = None):
         super().__init__(lazy)
-        self.tokenizer = tokenizer or WordTokenizer(word_splitter=SimpleWordSplitter())
+        self.tokenizer = tokenizer or SpacyTokenizer()
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 

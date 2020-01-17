@@ -53,7 +53,7 @@ You can implement your own `DatasetReader` by inheriting from the `DatasetReader
 @DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
     def __init__(self):
-        self.tokenizer = WordTokenizer()
+        self.tokenizer = SpacyTokenizer()
         self.token_indexers = {'tokens': SingleIdTokenIndexer()}
 
     def _read(self, file_path: str) -> Iterable[Instance]:
