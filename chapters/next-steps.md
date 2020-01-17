@@ -54,8 +54,8 @@ As a quick example, let's see how we can use BERT as a pretrained contexturalize
             }
         }
     },
-    "train_data_path": "data/movie_review/train.tsv",
-    "validation_data_path": "data/movie_review/dev.tsv",
+    "train_data_path": "quick_start/data/movie_review/train.tsv",
+    "validation_data_path": "quick_start/data/movie_review/dev.tsv",
     "model": {
         "type": "simple_classifier",
         "embedder": {

@@ -1,7 +1,6 @@
 from allennlp.common import JsonDict
 from allennlp.data import DatasetReader, Instance
-from allennlp.data.tokenizers import WordTokenizer
-from allennlp.data.tokenizers.word_splitter import SimpleWordSplitter
+from allennlp.data.tokenizers import SpacyTokenizer
 from allennlp.models import Model
 from allennlp.predictors import Predictor
 from overrides import overrides
@@ -11,7 +10,7 @@ from overrides import overrides
 class SentenceClassifierPredictor(Predictor):
     def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
         super().__init__(model, dataset_reader)
-        self._tokenizer = WordTokenizer(word_splitter=SimpleWordSplitter())
+        self._tokenizer = SpacyTokenizer()
 
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
@@ -33,8 +32,8 @@ CONFIG = """
             }
         }
     },
-    "train_data_path": "exercises/your-first-model/train.tsv",
-    "validation_data_path": "exercises/your-first-model/dev.tsv",
+    "train_data_path": "quick_start/data/movie_review/train.tsv",
+    "validation_data_path": "quick_start/data/movie_review/dev.tsv",
     "model": {
         "type": "simple_classifier",
         "embedder": {

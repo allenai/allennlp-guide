@@ -8,7 +8,7 @@ CONFIG = """
             }
         }
     },
-    "train_data_path": "exercises/your-first-model/train.tsv",
+    "train_data_path": "quick_start/data/movie_review/train.tsv",
     "model": {
         "type": "simple_classifier",
         "embedder": {

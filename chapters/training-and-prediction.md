@@ -157,7 +157,7 @@ class ClassificationTsvReader(DatasetReader):
                  tokenizer: Tokenizer = None,
                  token_indexers: Dict[str, TokenIndexer] = None):
         super().__init__(lazy)
-        self.tokenizer = tokenizer or WordTokenizer()
+        self.tokenizer = tokenizer or SpacyTokenizer()
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
 
     def text_to_instance(self, tokens: List[Token], label: str = None) -> Instance:
@@ -214,7 +214,7 @@ In order to build a `Predictor` for your task, you only need to inherit from `Pr
 class SentenceClassifierPredictor(Predictor):
     def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
         super().__init__(model, dataset_reader)
-        self._tokenizer = WordTokenizer()
+        self._tokenizer = SpacyTokenizer()
 
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})

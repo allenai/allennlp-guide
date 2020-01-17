@@ -8,8 +8,8 @@ CONFIG = """
             }
         }
     },
-    "train_data_path": "exercises/your-first-model/train.tsv",
-    "validation_data_path": "exercises/your-first-model/dev.tsv",
+    "train_data_path": "quick_start/data/movie_review/train.tsv",
+    "validation_data_path": "quick_start/data/movie_review/dev.tsv",
     "model": {
         "type": "simple_classifier",
         "embedder": {
@@ -36,4 +36,4 @@ CONFIG = """
 }
 """
 
-run_config(CONFIG)
+_ = run_config(CONFIG)
