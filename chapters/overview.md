@@ -18,11 +18,11 @@ As of this writing, AllenNLP is used by a number of organizations and research p
 
 <exercise id="2" title="About this course">
 
-This course provides onbording of AllenNLP and in-depth tutorials on how to use the framework as well as its components for building NLP models and systems. This course consists of three main parts:
+This course provides onboarding of AllenNLP and in-depth tutorials on how to use the framework as well as its components for building NLP models and systems. This course consists of three main parts:
 
 * Part 1 gives you a quick walk-through of main AllenNLP concepts and features. We'll build a complete, working NLP model (text classifier) along the way.
 * Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.
-* Part 3 introduces common NLP tasks and how to build models for specific tasks using AllenNLP.
+* Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.
 
 This course contains plenty of code snippets and "hands-on" exercises that you can modify and run (powered by [Binder](https://mybinder.org/)). There is also [a companion repo](https://github.com/allenai/allennlp-course-examples) that contains full code needed to train and run the models in your environment. 
 
@@ -32,43 +32,24 @@ The entire course is written for AllenNLP version 1.0. AllenNLP 1.0+ is required
 
 <exercise id="3" title="Target audience">
 
-As a reader of this course, you need to be familiar with the Python programming language and PyTorch, the deep learning framework which AllenNLP is based on. You may also want to have a good understanding of modern deep NLP models and techniques and machine learning topics. However, you don't need any prior knowledge of AllenNLP—the whole point of this course is to provide onboarding of AllenNLP!
+As a reader of this course, you need to be familiar with the Python programming language. Some familiarity with PyTorch is helpful too—AllenNLP is based on PyTorch and we don't typically explain PyTorch concepts and APIs in detail, so you should be at least willing to look them up when necessary.
+
+You may also want to have a good understanding of modern deep NLP models and techniques and machine learning topics—we might have a little bit of description of the NLP concepts as we go, but our goal is not to teach you NLP, but to teach you how to do NLP using AllenNLP. However, you don't need any prior knowledge of AllenNLP—the whole point of this course is to provide onboarding of AllenNLP!
 
 </exercise>
 
 <exercise id="4" title="Table of contents">
 
-- [Course overview](/overview)
-  - What is AllenNLP
-  - About this course
-  - Target audience
-  - Table of contents
-
 ## Part 1
 
-- [Introduction](/introduction)
-  - What is text classification
-  - Defining input and output
-* [Your first model](/your-first-model)
-  - Reading data
-  - Making a DatasetReader
-  - Building your model
-  - Implementing the model — the constructor
-  - Implementing the model — the forward method
-  - Writing a config file
-* [Training and prediction](/training-and-prediction)
-  - Training the model
-  - Evaluating the model
-  - Making predictions for unlabeled inputs
-* [Next steps](/next-steps)
-  - Switching to pre-trained contextualizers
-  - More AllenNLP commands
-  - Running a demo
-  - Using GPUs
+* [Introduction](/introduction): what is text classification
+* [Your first model](/your-first-model): implementing a text classification model
+* [Training and prediction](/training-and-prediction): training and evaluating the model
+* [Next steps](/next-steps): introducing pre-trained contextualizers and more AllenNLP features
 
 ## Part 2
 
-* Reading textual data
+* [Reading textual data](/reading-textual-data): DatasetReaders, Fields, and Instances
 * Building your model
 * Common architectures
 * Representing text as features
