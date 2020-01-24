@@ -45,7 +45,7 @@ This sentence expresses no sentiment [TAB] neutral
 
 </exercise>
 
-<exercise id="2" title="Make a DatasetReader">
+<exercise id="2" title="Making a DatasetReader">
 
 You can implement your own `DatasetReader` by inheriting from the `DatasetReader` class. At minimum, you need to override the `_read()` method, which reads the input dataset and yields `Instances`.
 
