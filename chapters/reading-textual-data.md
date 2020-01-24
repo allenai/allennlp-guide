@@ -7,10 +7,8 @@ type: chapter
 id: 301
 ---
 
-<exercise id="1" title="Tokenizers, fields, and instances">
+<exercise id="1" title="Fields and instances">
 
-* Tokenizers
-    * what they are, their input and output, their interface, commonly used tokenizers and how to use them
 * Fields
     * what they are (= things that get converted to tensors), commonly used fields and how to use them
     * we have a separate chapter that gives a deep dive into TextFields and TextEmbedders
@@ -25,6 +23,7 @@ id: 301
 * What are dataset readers (recap of Part 1)
 * Common dataset readers (mainly pointers to Part 3)
 * Lazy mode
+* A word on instance/dataset caching
 * A word on common.file_utils.cached_path
 
 </exercise>
@@ -45,7 +44,6 @@ id: 301
 * How iterating and batching works in AllenNLP
 * How padding works in AllenNLP
 * (A diagram showing how batching works)
-* Common iterators (basic and bucket iterators)
-* Some details of iterators (sorting_keys, maximum_samples_per_batch, etc.)
+* Some details of bucket iterator (sorting_keys, maximum_samples_per_batch, etc.)
 
 </exercise>
