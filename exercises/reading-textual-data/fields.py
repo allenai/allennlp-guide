@@ -6,7 +6,8 @@ from allennlp.data.tokenizers import Token
 from allennlp.data.vocabulary import Vocabulary
 
 
-# To create fields, simply pass the data to constructor
+# To create fields, simply pass the data to constructor.
+# NOTE: we have a whole chapter on why TextFields are set up this way, and how they work.
 tokens = [Token('The'), Token('best'), Token('movie'), Token('ever'), Token('!')]
 token_indexers = {'tokens': SingleIdTokenIndexer()}
 text_field = TextField(tokens, token_indexers=token_indexers)
@@ -45,13 +46,17 @@ vocab = Vocabulary(counter)
 
 # Fields know how to turn themselves into tensors
 text_field.index(vocab)
-print(text_field.as_tensor({'tokens_length': 10}))
+# NOTE: in practice, we will batch together instances and use the maximum padding lengths,
+# instead of getting them from a single instance
+padding_lengths = text_field.get_padding_lengths()
+print(text_field.as_tensor(padding_lengths))
 
 label_field.index(vocab)
 print(label_field.as_tensor({}))
 
 sequence_label_field.index(vocab)
-print(sequence_label_field.as_tensor({'num_tokens': 10}))
+padding_lengths = sequence_label_field.get_padding_lengths()
+print(sequence_label_field.as_tensor(padding_lengths))
 
 # Fields know how to batch tensors
 tensor1 = label_field.as_tensor({})

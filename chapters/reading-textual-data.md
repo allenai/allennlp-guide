@@ -13,6 +13,8 @@ id: 301
 
 A `Field` contains a piece of data of particular type. `Fields` get converted to a tensor in a model, either as an input or an output, after being converted to IDs and batched & padded. 
 
+Note that an AllenNLP `Field` represents a piece of data for one `Instance` (see below for more about `Instances`). This is different from e.g., [torchtext](https://torchtext.readthedocs.io/), where a `Field` represents all pieces of data of a particular type for a dataset.
+
 There are many types of fields in AllenNLP depending on the type of data they represent. Among them, the most important is `TextFields`, which represents a piece of tokenized text. [A chapter on representing text as features](/representing-text-as-features) will give you a deep dive into `TextFields` and related concepts.
 
 Other commonly used fields include:
@@ -20,7 +22,8 @@ Other commonly used fields include:
 * `LabelField` is a categorical label. We used this for representing text labels in [Part 1 — quick start](/your-first-model).
 * `MultiLabelField` is an extension of `LabelField` that allows for multiple labels. This can be used for, e.g., multilabel text classification.
 * `SequenceLabelField` is a sequence of categorical labels. This can be used for, e.g., representing gold labels in sequential labeling tasks.
-* `SpanField` is a pair of indices that represent a span of text. This can be used for, e.g., representing spans for reading comprehension.
+* `SpanField` is a pair of indices that represent a span of text. This can be used for, e.g., representing spans for reading comprehension, semantic role labeling, or coreference resolution.
+* `ArrayField` is an array representing some data that you have already converted into a matrix, e.g., images and hand-crafted feature vectors
 
 `Fields` can be created simply by supplying the data. `Field` objects provide APIs for creating empty fields, counting vocabulary items, creating tensors, and batching tensors, among others. See the following code snippet for more detail.
 
@@ -30,11 +33,13 @@ Other commonly used fields include:
 
 An instance is the atomic unit of prediction in machine learning. In AllenNLP, `Instances` are collections of `Fields`, and datasets are collections of `Instances`.
 
-* Instances
-    * what they are, how to create them, how they fit with the rest of the AllenNLP pipeline
-    * (a diagram showing how fields and instances are related, with the rest of the pipeline)
+`Instances` are created by dataset readers and used to create a `Vocabulary`. Later in the training pipeline, `Instances` are batched together, turned into tensors, and fed to the model. The following diagram shows how `Fields` and `Instances` are created from a dataset.
 
-Exercise
+<img src="/reading-textual-data/fields-and-instances.svg" alt="Fields and Instances" />
+
+`Instances` can be created by passing a dictionary of field names and corresponding fields to the constructor. `Instances` know how to turn themselves into a dictionary of field names and corresponding tensors, which is then used by `Batches` to batch together tensors of the same type. See the following code snippet for how to create instances and use their APIs.
+
+<codeblock source="reading-textual-data/instances"></codeblock>
 
 </exercise>
 
