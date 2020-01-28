@@ -15,14 +15,6 @@ label_field = LabelField('pos')
 
 sequence_label_field = SequenceLabelField(['DET', 'ADJ', 'NOUN', 'ADV', 'PUNKT'], text_field)
 
-# Create a Vocabulary
-counter = defaultdict(Counter)
-text_field.count_vocab_items(counter)
-label_field.count_vocab_items(counter)
-sequence_label_field.count_vocab_items(counter)
-
-vocab = Vocabulary(counter)
-
 # Create an Instance
 fields = {
     'tokens': text_field,
@@ -36,8 +28,15 @@ instance.add_field('label_seq', sequence_label_field)
 # You can simply use print() to see the instance's content
 print(instance)
 
-# Index all fields in the instance by calling index_fields()
+# Create a Vocabulary
+counter = defaultdict(Counter)
+instance.count_vocab_items(counter)
+vocab = Vocabulary(counter)
+
+# Convert all strings in all of the fields into integer IDs by calling index_fields()
 instance.index_fields(vocab)
 
-# Instances know how to turn themselves into a dict of tensors
-print(instance.as_tensor_dict())
+# Instances know how to turn themselves into a dict of tensors.
+# We will pass this to the model as **tensors, so be sure the keys match what the model expects.
+tensors = instance.as_tensor_dict()
+print(tensors)

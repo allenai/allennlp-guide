@@ -47,12 +47,14 @@ vocab = Vocabulary(counter)
 # Fields know how to turn themselves into tensors
 text_field.index(vocab)
 # NOTE: in practice, we will batch together instances and use the maximum padding lengths,
-# instead of getting them from a single instance
+# instead of getting them from a single instance.
+# You can print this if you want and see what the padding_lengths dictionary looks like,
+# but it can sometimes be a bit cryptic.
 padding_lengths = text_field.get_padding_lengths()
 print(text_field.as_tensor(padding_lengths))
 
 label_field.index(vocab)
-print(label_field.as_tensor({}))
+print(label_field.as_tensor(label_field.get_padding_lengths()))
 
 sequence_label_field.index(vocab)
 padding_lengths = sequence_label_field.get_padding_lengths()
