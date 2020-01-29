@@ -36,7 +36,7 @@ When you run the code snippet above, you should see the dumps of the first ten i
 
 In the next example, we are going to instantiate the model and feed batches of instances to it. Note that the config file now has the `model` section, which contains the full specification for how to instantiate your model along with its sub-components. Also notice the `iterator` section in your config, which specifies how to batch instances together before passing them to your model. We go into more detail on how this works in [a chapter on reading textual data](/reading-textual-data).
 
-When you run this, you should see the outputs returned from the model. Each returned dict includes the `loss` key as well as the `probs` key, which contains probabilities for each label.
+When you run this, you should see the outputs returned from the model. Each returned dict includes the `loss` key as well as the `probs` key, which contains probabilities for each label. 
 
 <codeblock source="training-and-prediction/model" setup="training-and-prediction/setup"></codeblock>
 
@@ -148,7 +148,7 @@ Before we move on to making predictions for unlabeled inputs, we need to make on
 
 We are making this piece of code sharable between `DatasetReader` and `Predictor` (which we'll discuss in detail below). Why is this a good idea? Here, we are practically building two pipelines, i.e., two different "flows" of data—one for training and another for prediction. By factoring out a common logic for creating instances and sharing it between two pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two, a problem known as [training-serving skew](https://developers.google.com/machine-learning/guides/rules-of-ml#training-serving_skew). This may not seem too big of a deal in this tiny example, but making the feature extraction code sharable between different pipelines is critical in real-world ML applications.
 
-Note that we are making the `label` parameter of `text_to_instance()` optional. During training and evaluation, all the instances were labeled, i.e., they included the `LabelFields` that contain gold labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled* and do not contain the labels. By making the `label` parameter optional the dataset reader can support both cases.
+Note that we are making the `label` parameter of `text_to_instance()` optional. During training and evaluation, all the instances were labeled, i.e., they included the `LabelFields` that contain gold labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled* and do not contain the labels. By making the `label` parameter optional the dataset reader can support both cases. 
 
 <pre data-line="12-17" class="language-python"><code class="language-python">@DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
@@ -207,7 +207,7 @@ In order to support prediction, first you need to make the `label` parameter opt
 
 For making predictions, AllenNLP uses `Predictors`, which are a thin wrapper around your trained model. A `Predictor`'s main job is to take a JSON representation of an instance, convert it to an `Instance` using the dataset reader (the `text_to_instance` mentioned above), pass it through the model, and return the prediction in a JSON serializable format.
 
-In order to build a `Predictor` for your task, you only need to inherit from `Predictor` and implement a few methods (see `predict()` and `_json_to_instances()` below)—the rest will be taken care of by the base class.
+In order to build a `Predictor` for your task, you only need to inherit from `Predictor` and implement a few methods (see `predict()` and `_json_to_instances()` below)—the rest will be taken care of by the base class. 
 
 ```python
 @Predictor.register("sentence_classifier")
