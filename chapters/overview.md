@@ -5,7 +5,6 @@ description:
 prev: null
 next: /introduction
 type: chapter
-id: 101
 ---
 
 <exercise id="1" title="What is AllenNLP">

@@ -15,10 +15,11 @@ import classes from '../styles/chapter.module.sass'
 const Template = ({ data, location }) => {
     const { markdownRemark, site } = data
     const { courseId } = site.siteMetadata
-    const { frontmatter, htmlAst } = markdownRemark
-    const { title, description, prev, next, id } = frontmatter
+    const { frontmatter, fields, htmlAst } = markdownRemark
+    const { title, description, prev, next } = frontmatter
+    const { slug } = fields
     const [activeExc, setActiveExc] = useState(null)
-    const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${id}`, [])
+    const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, [])
     const html = renderAst(htmlAst)
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll())
     const buttons = [
@@ -69,8 +70,10 @@ export const pageQuery = graphql`
         }
         markdownRemark(fields: { slug: { eq: $slug } }) {
             htmlAst
+            fields {
+                slug
+            }
             frontmatter {
-                id
                 title
                 description
                 next

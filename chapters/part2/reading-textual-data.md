@@ -4,7 +4,6 @@ description: This chapter provides a deep dive into AllenNLP abstractions that a
 prev: /next-steps
 next: /building-your-model
 type: chapter
-id: 301
 ---
 
 <exercise id="1" title="Fields and instances">
