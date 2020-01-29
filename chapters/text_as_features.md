@@ -6,10 +6,12 @@ the data side and the model side."
 prev: /chapter02
 next: /chapter04
 type: chapter
-id: 503
+id: 203
 ---
 
 <textblock>
+
+TO BE RE-WRITTEN
 
 This chapter assumes you have a basic familiarity with what a `Field` is in AllenNLP, which you can
 get near the beginning of [chapter 2 of this course](/chapter02).
@@ -19,15 +21,158 @@ get near the beginning of [chapter 2 of this course](/chapter02).
 
 <exercise id="1" title="The basic problem: text to features" type="slides">
 
-<slides source="chapter03/01_the_basic_problem">
-</slides>
+# How do you go from language to features?
+
+
+# Language → Features
+
+IMAGE of some text getting converted to numbers somehow
+
+Notes: The basic problem in using machine learning on language data is converting symbolic text
+into numerical features that can be used by machine learning algorithms.  In this chapter we will
+focus on the predominant modern approach to solving this problem, using (perhaps contextualized)
+word vectors; for a more in-depth discussion of and motivation for this approach, see [this
+overview paper](https://arxiv.org/abs/1902.06006).
+
+
+# Text → Tokens
+
+IMAGE of text being broken up into tokens
+
+Notes: The first part of representing a string of text as numerical features is splitting the text
+up into individual `Tokens` that will each get their own representation.
+
+
+# Tokens → Ids
+
+IMAGE of tokens getting replaced by single ids
+
+Notes: `Tokens` are then converted into numerical values using some pre-defined `Vocabulary`.
+
+
+# Ids → Vectors
+
+IMAGE of single ids getting replaced by word vectors
+
+Notes: Finally, each individual id gets replaced by a vector representing that word in some
+abstract space.  The idea here is that words that are "similar" to each other in some sense will be
+close in the vector space, and so will be treated similarly by the model.
+
+
+# Lots of options for these
+
+IMAGE of using a char CNN
+
+
+# Lots of options for these
+
+IMAGE of using POS tag embeddings
+
+
+# Lots of options for these
+
+IMAGE of using both glove and char cnns
+
+
+# Lots of options for these
+
+IMAGE of using wordpieces and BERT
+
+
+# Where do the pieces go?
+
+There were three steps:
+
+1. Text → Tokens
+2. Tokens → Ids
+3. Ids → Vectors
+
+First two are data processing, last step is in the *model*
+
+Notes: Of these three steps, only the last step has learnable paramaters.  There are certainly
+decisions to be made in the first two steps that affect model performance, but they do not
+typically have learnable parameters that you want to train with backprop on your final task.
+
+This separation means that what originally looked like a simple problem (representing text as
+features) actually needs coordination between two very different pieces of code: a `DatasetReader`,
+that performs the first two steps, and a `Model`, that performs the last step.
+
+
+# Core abstractions
+
+1. Tokenizer (Text → Tokens)
+2. TextField (Tokens → Ids)
+3. TextFieldEmbedder (Ids → Vectors)
+
+Notes: We want our code to not have to specify which of all of the many possible options we're
+using to represent text as features; if we did that we would need to change our code to run simple
+experiments.  Instead, we introduce high-level abstractions that encapsulate these operations and
+write our code using the abstractions.  Then, when we run our code, we can construct the objects
+with the particular versions of these abstractions that we want (in software engineering, this is
+called _dependency injection_).
+
+In the next set of slides and the following examples, we will examine the first two abstractions in
+detail, showing how we go from text to something that can be input to a pytorch `Model`.
 
 </exercise>
 
 <exercise id="2" title="The data side: TextFields" type="slides">
 
-<slides source="chapter03/02_data_side">
-</slides>
+# Language → Features: the data processing side
+
+
+# Core abstractions
+
+1. Tokenizer (Text → Tokens)
+2. TextField (Tokens → Ids)
+3. TextFieldEmbedder (Ids → Vectors)
+
+Notes: As a reminder, the three main steps that get us from text to features are tokenization,
+representing each token as some kind of id, then embedding those ids into a vector space.  In
+AllenNLP, the first two steps happen on the data processing side inside a `DatasetReader`, and
+we'll examine them more closely here.
+
+
+# Core abstractions: Tokenizer
+
+Options:
+
+- Characters ("AllenNLP is great" → ["A", "l", "l", "e", "n", "N", "L", "P", " ", "i", "s", " ",
+  "g", "r", "e", "a", "t"])
+- Wordpieces ("AllenNLP is great" → ["Allen", "#NLP", "is", "great"])
+- Words ("AllenNLP is great" → ["AllenNLP", "is", "great"])
+
+Notes: There are three primary ways that NLP models today split strings up into individual tokens:
+into characters (which includes spaces!), wordpieces (which split apart some words), or words.  In
+AllenNLP, the tokenization that you choose determines what objects will get assigned single vectors
+in your model - if you want a single vector per word, you need to start with a word-level
+tokenization, even if you want that vector to depend on character-level representations.  How we
+construct the vector happens later.
+
+
+# Core abstractions: TextField
+
+```python
+TextField(tokens: List[Token], token_indexers: Dict[str, TokenIndexer])
+
+# This is quite simplified, but shows the main points.
+class TokenIndexer:
+    def count_vocab_items(token: Token)
+    def tokens_to_indices(tokens: List[Token], vocab: Vocabulary) -> Array
+```
+
+Notes: A `TextField` takes a list of `Tokens` from a `Tokenizer` and represents each of them as an
+array that can be converted into a vector by the model.  It does this by means of a collection of
+`TokenIndexers`.
+
+Each `TokenIndexer` knows how to convert a `Token` into a representation that can be encoded by a
+corresponding piece of the model.  This could be just mapping the token to an index in some
+vocabulary, or it could be breaking up the token into characters or wordpieces and representing the
+token by a sequence of indexed characters.  You can specify any combination of `TokenIndexers` in a
+`TextField`, so you can, e.g., combine GloVe vectors with character CNNs in your model.
+
+This abstraction is best understood by going through some examples; keep going to get some hands on
+experience with how this works.
 
 </exercise>
 
@@ -122,8 +267,55 @@ of your text, so you don't have to do that manually.  This is why `bert_tokens-o
 
 <exercise id="6" title="The model side: TextFieldEmbedders" type="slides">
 
-<slides source="chapter03/06_model_side">
-</slides>
+# Language → Features: the model side
+
+
+# Core abstractions
+
+1. Tokenizer (Text → Tokens)
+2. TextField (Tokens → Ids)
+3. TextFieldEmbedder (Ids → Vectors)
+
+Notes: As a reminder, the three main steps that get us from text to features are tokenization,
+representing each token as some kind of id, then embedding those ids into a vector space.  In
+AllenNLP, the last step happens inside a `Model`, and we'll examine it more closely here.
+
+
+# Core abstractions: TextFieldEmbedder
+
+```python
+class TextFieldEmbedder:
+    def forward(text_field_input: Dict[str, torch.Tensor])
+
+class TokenEmbedder:
+    def forward(inputs: torch.Tensor)
+```
+
+Notes: AllenNLP's data processing code converts each `TextField` in an `Instance` into a `Dict[str,
+torch.Tensor]`, where each entry in that dictionary corresponds to one of the `TokenIndexers` that
+we talked about in the last slide.
+
+A `TextFieldEmbedder` takes that output, embeds or encodes each of the tensors individually using a
+`TokenEmbedder`, then combines them in some way (typically by concatenating them), ending up with a
+single vector per `Token` that was originally passed to the `TextField`.  You can then take those
+vectors and do whatever modeling with them afterward that you want - the input text has been fully
+converted into features that can be used in any machine learning algorithm.
+
+
+# TokenIndexer → TokenEmbedders
+
+- SingleIdTokenIndexer → Embedding
+- TokenCharactersIndexer → TokenCharactersEncoder
+- ElmoTokenIndexer → ElmoTokenEmbedder
+- PretrainedBertIndexer → BertTokenEmbedder
+
+Notes: Each `TokenIndexer` that you can use when constructing a `TextField` in your `DatasetReader`
+has a corresponding `TokenEmbedder` that you use in your `Model` to encode the tensors created by
+the `TokenIndexer`.  There are sometimes a few options for mixing and matching `Indexers` with
+`Embedders`, but generally there is a one-to-one correspondence between these.  You have to make
+sure that the collection of `TokenEmbedders` that you give to a `TextFieldEmbedder` in your model
+matches the collection of `TokenIndexers` that you passed to the `TextField`.  This is typically
+done in a [configuration file](/chapter14).
 
 </exercise>
 
