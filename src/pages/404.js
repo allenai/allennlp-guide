@@ -1,25 +1,13 @@
 import React from 'react';
 import Layout from '../components/layout';
-import Logo from '../../static/logo.svg';
-import classes from '../styles/index.module.sass';
 
-export default ({ data }) => {
-    const siteMetadata = data.site.siteMetadata;
+export default () => {
     return (
         <Layout>
-            <Logo className={classes.logo} aria-label={siteMetadata.title} />
-            <h1>Error 404</h1>
-            <p>Page not found.</p>
+            <div style={{textAlign: 'center'}}>
+              <h1>Error 404</h1>
+              <p>Page not found.</p>
+            </div>
         </Layout>
     );
 };
-
-export const pageQuery = graphql`
-    {
-        site {
-            siteMetadata {
-                title
-            }
-        }
-    }
-`;
