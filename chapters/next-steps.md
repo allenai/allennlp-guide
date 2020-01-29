@@ -5,7 +5,6 @@ description:
 prev: /training-and-prediction
 next: /reading-textual-data
 type: chapter
-part: 1
 id: 204
 ---
 

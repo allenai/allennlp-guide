@@ -5,7 +5,6 @@ description:
 prev: /your-first-model
 next: /next-steps
 type: chapter
-part: 1
 id: 203
 ---
 

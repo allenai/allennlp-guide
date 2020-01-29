@@ -4,7 +4,6 @@ description: This chapter provides a deep dive into AllenNLP abstractions that a
 prev: /next-steps
 next: /building-your-model
 type: chapter
-part: 2
 id: 301
 ---
 

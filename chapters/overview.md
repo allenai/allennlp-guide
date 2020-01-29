@@ -5,7 +5,6 @@ description:
 prev: null
 next: /introduction
 type: chapter
-part: 0
 id: 101
 ---
 

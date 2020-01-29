@@ -6,7 +6,7 @@ description:
   into more detail about some of the basic components in AllenNLP, and how NLP works in general."
 prev: /chapter04
 next: /chapter06
-type: chapter
+type: hidden
 id: 505
 ---
 

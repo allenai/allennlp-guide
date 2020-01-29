@@ -5,7 +5,7 @@ description:
 the data side and the model side."
 prev: /chapter02
 next: /chapter04
-type: chapter
+type: hidden
 id: 503
 ---
 

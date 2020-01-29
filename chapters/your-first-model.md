@@ -5,7 +5,6 @@ description:
 prev: /introduction
 next: /training-and-prediction
 type: chapter
-part: 1
 id: 202
 ---
 
