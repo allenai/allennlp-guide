@@ -4,6 +4,7 @@ description: This chapter provides a deep dive into AllenNLP abstractions that a
 prev: /next-steps
 next: /building-your-model
 type: chapter
+part: 2
 id: 301
 ---
 
@@ -11,7 +12,7 @@ id: 301
 
 ## Fields
 
-A `Field` contains one piece of data for one example that is passed through your model. `Fields` get converted to tensors in a model, either as an input or an output, after being converted to IDs and batched & padded. 
+A `Field` contains one piece of data for one example that is passed through your model. `Fields` get converted to tensors in a model, either as an input or an output, after being converted to IDs and batched & padded.
 
 There are many types of fields in AllenNLP depending on the type of data they represent. Among them, the most important is `TextFields`, which represents a piece of tokenized text. [A chapter on representing text as features](/representing-text-as-features) will give you a deep dive into `TextFields` and related concepts.
 

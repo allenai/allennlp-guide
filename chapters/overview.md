@@ -5,6 +5,7 @@ description:
 prev: null
 next: /introduction
 type: chapter
+part: 0
 id: 101
 ---
 
@@ -24,7 +25,7 @@ This course provides onboarding of AllenNLP and in-depth tutorials on how to use
 * Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.
 * Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.
 
-This course contains plenty of code snippets and "hands-on" exercises that you can modify and run (powered by [Binder](https://mybinder.org/)). There is also [a companion repo](https://github.com/allenai/allennlp-course-examples) that contains full code needed to train and run the models in your environment. 
+This course contains plenty of code snippets and "hands-on" exercises that you can modify and run (powered by [Binder](https://mybinder.org/)). There is also [a companion repo](https://github.com/allenai/allennlp-course-examples) that contains full code needed to train and run the models in your environment.
 
 The entire course is written for AllenNLP version 1.0. AllenNLP 1.0+ is required to run the code snippets and exercises.
 

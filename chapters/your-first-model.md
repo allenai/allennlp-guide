@@ -5,12 +5,13 @@ description:
 prev: /introduction
 next: /training-and-prediction
 type: chapter
+part: 1
 id: 202
 ---
 
 <textblock>
 
-In the previous chapter, we learned what text classification is. In this part of the course, we are going to build a simple text classification model using AllenNLP which classifies movie reviews based on their polarity (that is, positive or negative). 
+In the previous chapter, we learned what text classification is. In this part of the course, we are going to build a simple text classification model using AllenNLP which classifies movie reviews based on their polarity (that is, positive or negative).
 
 </textblock>
 
@@ -18,7 +19,7 @@ In the previous chapter, we learned what text classification is. In this part of
 
 <img src="/your-first-model/dataset-reader.svg" alt="How dataset reader works" />
 
-The first step for building an NLP application is to read the dataset and represent it with some internal data structure. 
+The first step for building an NLP application is to read the dataset and represent it with some internal data structure.
 
 AllenNLP uses `DatasetReaders` to read the data, whose job it is to transform raw data files into [`Instances`](/reading-textual-data) that match the input / output spec. Our spec for text classification is:
 
@@ -445,7 +446,7 @@ class ClassificationTsvReader(DatasetReader):
     ...
 </code></pre>
 
-when you defined your dataset reader, you can use its name `classification-tsv` in the config file. 
+when you defined your dataset reader, you can use its name `classification-tsv` in the config file.
 
 Other keys in a config JSON object correspond to constructor parameters. Here we are telling the dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a `SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. AllenNLP looks at the type annotation on each constructor parameter, and tries to build an object of that type from the corresponding parameters in the JSON file.
 
