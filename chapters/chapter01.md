@@ -5,7 +5,7 @@ description:
   sections of this course."
 prev: null
 next: /chapter02
-type: hidden
+type: chapter
 id: 501
 ---
 

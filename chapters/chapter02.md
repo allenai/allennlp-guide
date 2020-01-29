@@ -5,7 +5,7 @@ description:
   concepts.'
 prev: /chapter01
 next: null
-type: hidden
+type: chapter
 id: 502
 ---
 

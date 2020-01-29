@@ -4,7 +4,7 @@ description:
   "We will look at how you can implement executable semantic parsers in AllenNLP."
 prev: null
 next: null
-type: hidden
+type: chapter
 id: 513
 ---
 
