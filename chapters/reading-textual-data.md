@@ -45,11 +45,50 @@ The fields names are important—because the resulting dictionary of tensors is 
 
 <exercise id="2" title="Dataset readers">
 
-* What are dataset readers (recap of Part 1)
-* Common dataset readers (mainly pointers to Part 3)
-* Lazy mode
-* A word on instance/dataset caching
-* A word on common.file_utils.cached_path
+## Basics of dataset readers
+
+We already touched upon `DatasetReaders` and wrote our own in [Your first model](/your-first-model). `DatasetReaders` read datasets and convert them to collections of `Instances`. The `DatasetReader` class provides common interfaces to make it easier to write your own dataset reader, as well as extra features such as caching and lazy loading.
+
+AllenNLP is shipped with a number of dataset reader implementations for common NLP datasets and tasks, including:
+
+* `TextClassificationJsonReader` (text classification)
+* `SequenceTaggingDatasetReader` (sequence labeling)
+* `SimpleLanguageModelingDatasetReader` (language modeling)
+* `SnliReader` (NLI)
+* `SrlReader` (span detection)
+* `Seq2SeqDatasetReader` (seq2seq)
+* `PennTreeBankConstituencySpanDatasetReader` `UniversalDependenciesDatasetReader` (parsing)
+
+You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet below is the dataset reader we implemented in [Your first model](/your-first-model). The returned dataset is a list of `Instances` by default.
+
+<codeblock source="reading-textual-data/dataset_reader_basic"></codeblock>
+
+Dataset readers are designed to read data from a local file, although in some cases you may want to read data from an URL. AllenNLP provides an utility method `cached_path` to support this. If an URL is passed to the method it will download the resource to a local file and return its path. If you want your dataset reader to support both local paths and URLs, you can wrap `file_path` using `cached_path` in your `_read()` method as follows:
+
+```python
+from allennlp.common.file_utils import cached_path
+
+...
+
+    def _read(self, file_path: str) -> Iterable[Instance]:
+        file_path = cached_path(file_path)
+        with open(file_path, 'r') as lines:
+            for line in lines:
+```
+
+## Lazy mode
+
+Dataset readers also support reading data in a lazy manner, where a  `DatasetReader` yields instances as needed rather than returning a list of all instances at once. This comes in handy when your dataset is too big to fit into memory or you want to start training your model immediately.
+
+When `lazy=True` is passed to a dataset reader's constructor, its `read()` method returns a `LazyInstances` object (instead of a list of `Instances`), which is a wrapper and an iterator that calls `_read()` and produces instances when called.
+
+<codeblock source="reading-textual-data/dataset_reader_lazy"></codeblock>
+
+# Caching dataset
+
+<codeblock source="reading-textual-data/dataset_reader_cache"></codeblock>
+
+Instances are serialized by `jsonpickle` by default, although you can override this behavior if you want.
 
 </exercise>
 
