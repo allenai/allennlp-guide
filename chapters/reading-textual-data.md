@@ -37,7 +37,7 @@ An instance is the atomic unit of prediction in machine learning. In AllenNLP, `
 
 `Instances` can be created by passing a dictionary of field names and corresponding fields to the constructor. `Instances` know how to turn themselves into a dictionary of field names and corresponding tensors, which is then used by `Batches` to batch together tensors of the same type. See the following code snippet for how to create instances and use their APIs.
 
-The fields names are important—because the resulting dictionary of tensors by name is passed to the model after being destructured, they have to match the model's `forward()` arguments exactly.
+The fields names are important—because the resulting dictionary of tensors is passed by name to the model after being destructured, they have to match the model's `forward()` arguments exactly.
 
 <codeblock source="reading-textual-data/instances"></codeblock>
 

@@ -61,11 +61,11 @@ padding_lengths = sequence_label_field.get_padding_lengths()
 print(sequence_label_field.as_tensor(padding_lengths))
 
 # Fields know how to batch tensors
-tensor1 = label_field.as_tensor({})
+tensor1 = label_field.as_tensor(label_field.get_padding_lengths())
 
 label_field2 = LabelField('pos')
 label_field2.index(vocab)
-tensor2 = label_field2.as_tensor({})
+tensor2 = label_field2.as_tensor(label_field2.get_padding_lengths())
 
 batched_tensors = label_field.batch_tensors([tensor1, tensor2])
 print(batched_tensors)
