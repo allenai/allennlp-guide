@@ -12,6 +12,16 @@ id: 101
 
 AllenNLP is an open source framework for research on deep learning methods in natural language processing, developed by [the Allen Institute for Artificial Intelligence](https://allenai.org/). It is built on top of PyTorch and is designed to support researchers, engineers, students etc. who wish to build high quality deep NLP models with ease. It provides high-level abstractions and APIs for common components and models in modern NLP. It also provides an extensible framework that makes it easy to run and manage NLP experiments.
 
+In a nutshell, AllenNLP is
+- a library with well-thought-out abstractions encapsulating the common data and model operations
+  that are done in NLP research
+- a commandline tool for training PyTorch models
+- a collection of pre-trained models that you can use to make predictions
+- a collection of readable reference implementations of common / recent NLP models
+- an experiment framework for doing replicable science
+- a way to demo your research
+- open source and community driven
+
 As of this writing, AllenNLP is used by a number of organizations and research projects.
 
 </exercise>
