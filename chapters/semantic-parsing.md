@@ -10,32 +10,32 @@ id: 413
 
 TO BE WRITTEN
 
-<exercise id="1" title="Semantic Parsing" type="slides">
+<exercise id="1" title="Semantic Parsing">
 
 
 </exercise>
 
-<exercise id="2" title="Defining a domain-specific (target) language" type="slides">
+<exercise id="2" title="Defining a domain-specific (target) language">
 
 
 </exercise>
 
-<exercise id="3" title="Transition functions" type="slides">
+<exercise id="3" title="Transition functions">
 
 
 </exercise>
 
-<exercise id="4" title="State tracking" type="slides">
+<exercise id="4" title="State tracking">
 
 
 </exercise>
 
-<exercise id="5" title="Training" type="slides">
+<exercise id="5" title="Training">
 
 
 </exercise>
 
-<exercise id="6" title="Putting it together" type="slides">
+<exercise id="6" title="Putting it together">
 
 
 </exercise>

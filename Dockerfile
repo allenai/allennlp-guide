@@ -17,7 +17,6 @@ COPY theme.sass .
 COPY static/ static/
 COPY chapters/ chapters/
 COPY exercises/ exercises/
-COPY slides/ slides/
 
 RUN npm run build
 
