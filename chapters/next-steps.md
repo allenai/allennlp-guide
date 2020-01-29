@@ -115,7 +115,7 @@ You should see a validation accuracy ~ 0.900, which is a huge improvement over t
 
 In the previous chapter, we introduced three AllenNLP commands—`train`, `evaluate`, and `predict`. These are the most commonly used ones, but there are some other commands and command-line tools that you may find useful.
 
-We briefly talked about the structure of AllenNLP config files, but do you find it confusing knowing what should go in them? Try out the configuration wizard, which allows you to choose components (dataset reader, model, iterator, etc.) and specify their arguments using a graphical interface, and it auto-generates the config file.
+We briefly talked about the structure of AllenNLP config files, but do you find it confusing knowing what should go in them? Try out the configuration wizard, which allows you to choose components (dataset reader, model, iterator, etc.) and specify their arguments using a graphical interface, and it auto-generates the config file. 
 
 You can install and run the config wizard using the following commands:
 
@@ -130,7 +130,7 @@ For more details, read [the chapter](/using-config-files) on config files, regis
 
 Also, we've been training and running the models using AllenNLP commands, but if you want to just write your own Python script instead of using commands and config files, that's fine too; there's [a chapter](/writing-python-script) on the best ways of doing this in part 3.
 
-There are also `allennlp dry-run`, which creates a vocabulary and shows statistics of the dataset etc. without actually training the model, and [`allentune`](https://github.com/allenai/allentune), a hyperparameter search tool for AllenNLP.
+There are also `allennlp dry-run`, which creates a vocabulary and shows statistics of the dataset etc. without actually training the model, and [`allentune`](https://github.com/allenai/allentune), a hyperparameter search tool for AllenNLP. 
 
 </exercise>
 
