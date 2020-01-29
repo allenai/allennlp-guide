@@ -19,7 +19,7 @@ get near the beginning of [chapter 2 of this course](/chapter02).
 </textblock>
 
 
-<exercise id="1" title="The basic problem: text to features" type="slides">
+<exercise id="1" title="The basic problem: text to features">
 
 # How do you go from language to features?
 
@@ -116,7 +116,7 @@ detail, showing how we go from text to something that can be input to a pytorch 
 
 </exercise>
 
-<exercise id="2" title="The data side: TextFields" type="slides">
+<exercise id="2" title="The data side: TextFields">
 
 # Language → Features: the data processing side
 
@@ -265,7 +265,7 @@ of your text, so you don't have to do that manually.  This is why `bert_tokens-o
 
 </exercise>
 
-<exercise id="6" title="The model side: TextFieldEmbedders" type="slides">
+<exercise id="6" title="The model side: TextFieldEmbedders">
 
 # Language → Features: the model side
 
