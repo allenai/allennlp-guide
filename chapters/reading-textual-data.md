@@ -47,23 +47,36 @@ The fields names are important—because the resulting dictionary of tensors is 
 
 ## Basics of dataset readers
 
-We already touched upon `DatasetReaders` and wrote our own in [Your first model](/your-first-model). `DatasetReaders` read datasets and convert them to collections of `Instances`. The `DatasetReader` class provides common interfaces to make it easier to write your own dataset reader, as well as extra features such as caching and lazy loading.
+We already gave a quick intro to `DatasetReaders` and wrote our own in [Your first model](/your-first-model). `DatasetReaders` read datasets and convert them to collections of `Instances`. Here, we'll give a more in-depth look into what's going on inside a `DatasetReader`, what extra functionality it has, and why it works the way it does.
 
-AllenNLP is shipped with a number of dataset reader implementations for common NLP datasets and tasks, including:
+There are dataset readers available for a wide range of NLP tasks, including:
 
-* `TextClassificationJsonReader` (text classification)
-* `SequenceTaggingDatasetReader` (sequence labeling)
-* `SimpleLanguageModelingDatasetReader` (language modeling)
-* `SnliReader` (NLI)
-* `SrlReader` (span detection)
-* `Seq2SeqDatasetReader` (seq2seq)
-* `PennTreeBankConstituencySpanDatasetReader` `UniversalDependenciesDatasetReader` (parsing)
+* `TextClassificationJsonReader` (for text classification)
+* `SequenceTaggingDatasetReader` (for sequence labeling)
+* `SimpleLanguageModelingDatasetReader` (for language modeling)
+* `SnliReader` (for NLI)
+* `SrlReader` (for span detection)
+* `Seq2SeqDatasetReader` (for seq2seq models)
+* `PennTreeBankConstituencySpanDatasetReader` `UniversalDependenciesDatasetReader` (for constituency and dependency parsing)
+* `SquadReader` (for [reading comprehension](https://github.com/allenai/allennlp-reading-comprehension))
+* [semantic parsing](https://github.com/allenai/allennlp-semparse)
 
 You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet below is the dataset reader we implemented in [Your first model](/your-first-model). The returned dataset is a list of `Instances` by default.
 
 <codeblock source="reading-textual-data/dataset_reader_basic"></codeblock>
 
-Dataset readers are designed to read data from a local file, although in some cases you may want to read data from an URL. AllenNLP provides an utility method `cached_path` to support this. If an URL is passed to the method it will download the resource to a local file and return its path. If you want your dataset reader to support both local paths and URLs, you can wrap `file_path` using `cached_path` in your `_read()` method as follows:
+It is recommended that you separate out the logic for creating instances as the `text_to_instances()` method. As we mentioned in [Training and prediction](/training-and-prediction), by sharing a common logic between the training and the prediction pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two. You can use the method as follows in, for example, your `Predictor`:
+
+```python
+reader = ClassificationTsvReader()
+tokens = [Token('The'), Token('best'), Token('movie'), Token('ever'), Token('!')]
+label = 'pos'
+instance = reader.text_to_instance(tokens, label)
+```
+
+The main method, `read()`, takes a filename as its parameter. The reason why dataset readers are designed this way is that if you specify dataset-specific parameters when constructing a `DatasetReader`, then you can apply them to any files. You can also design a dataset reader that handles more complex data setups. For example, you can design one that takes a directory as its constructor parameter and takes a simple key such as `train` and `dev` as a parameter to `read()`.
+
+Dataset readers are designed to read data from a local file, although in some cases you may want to read data from a URL. AllenNLP provides a utility method `cached_path` to support this. If a URL is passed to the method it will download the resource to a local file and return its path. If you want your dataset reader to support both local paths and URLs, you can wrap `file_path` using `cached_path` in your `_read()` method as follows:
 
 ```python
 from allennlp.common.file_utils import cached_path
@@ -71,20 +84,21 @@ from allennlp.common.file_utils import cached_path
 ...
 
     def _read(self, file_path: str) -> Iterable[Instance]:
-        file_path = cached_path(file_path)
-        with open(file_path, 'r') as lines:
+        with open(cached_path(file_path), 'r') as lines:
             for line in lines:
 ```
 
 ## Lazy mode
 
-Dataset readers also support reading data in a lazy manner, where a  `DatasetReader` yields instances as needed rather than returning a list of all instances at once. This comes in handy when your dataset is too big to fit into memory or you want to start training your model immediately.
+Dataset readers also support reading data in a lazy manner, where a  `DatasetReader` yields instances as needed rather than returning a list of all instances at once. This comes in handy when your dataset is too big to fit into memory or you want to start training your model immediately. The lazy mode can also be used if you want different behavior at each epoch, for example, in order to do some sort of sampling.
 
 When `lazy=True` is passed to a dataset reader's constructor, its `read()` method returns a `LazyInstances` object (instead of a list of `Instances`), which is a wrapper and an iterator that calls `_read()` and produces instances when called.
 
 <codeblock source="reading-textual-data/dataset_reader_lazy"></codeblock>
 
 # Caching dataset
+
+Reading and preprocessing large datasets can take a very long time. `DatasetReaders` can cache datasets by serializing created instances and writing them to disk. The next time the same file is requested the instances are deseriarized from the disk instead of being created from the file.
 
 <codeblock source="reading-textual-data/dataset_reader_cache"></codeblock>
 

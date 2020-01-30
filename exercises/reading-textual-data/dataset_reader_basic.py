@@ -11,11 +11,11 @@ from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 @DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
-                 lazy: bool = False,
                  tokenizer: Tokenizer = None,
                  token_indexers: Dict[str, TokenIndexer] = None,
-                 max_tokens: int = None):
-        super().__init__(lazy)
+                 max_tokens: int = None,
+                 **kwargs):
+        super().__init__(**kwargs)
         self.tokenizer = tokenizer or SpacyTokenizer()
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
