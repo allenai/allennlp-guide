@@ -30,15 +30,17 @@ steps:
     'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA',
   ]
 # Generate our Kubernetes configuration
-- id: 'config'
+- id: 'config-webapp'
   name: 'gcr.io/ai2-reviz/jsonnet'
   args: [
     'eval',
     '-y',
     '--output-file', './webapp.json',
     '--ext-str', 'env=$_ENV',
-    '--ext-str', 'image=gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA',
     '--ext-str', 'sha=$COMMIT_SHA',
+    '--ext-str', 'image=gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA',
+    '--ext-str', 'buildId=$BUILD_ID',
+    '--ext-str', 'repo=$REPO_NAME',
     './webapp.jsonnet'
   ]
   dir: '.skiff'
