@@ -18,7 +18,9 @@ async function onCreateNode({
     const { createNodeField, createNode, createParentChildLink } = actions
     if (node.internal.type === 'MarkdownRemark') {
         const slug = createFilePath({ node, getNode, basePath: 'chapters', trailingSlash: false })
-        createNodeField({ name: 'slug', node, value: slug })
+        // Use regex to remove any subdirectory strings preceeding the target md file in the path
+        const formattedSlug = `/${slug.match(/([^\/]+$)/gm)}`;
+        createNodeField({ name: 'slug', node, value: formattedSlug })
     } else if (node.extension === 'py') {
         // Load the contents of the Python file and make it available via GraphQL
         // https://www.gatsbyjs.org/docs/creating-a-transformer-plugin/
