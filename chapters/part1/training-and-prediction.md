@@ -5,7 +5,6 @@ description:
 prev: /your-first-model
 next: /next-steps
 type: chapter
-id: 203
 ---
 
 <textblock>

@@ -5,7 +5,6 @@ description:
 prev: /overview
 next: /your-first-model
 type: chapter
-id: 201
 ---
 
 <textblock>
