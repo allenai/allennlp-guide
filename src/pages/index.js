@@ -1,39 +1,63 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
+import styled from 'styled-components';
 
-import Layout from '../components/layout'
-import { Link } from '../components/link'
-import Logo from '../../static/logo.svg'
+import { outline } from '../outline';
+import Layout from '../components/layout';
+import { Link } from '../components/link';
+import Logo from '../../static/logo.svg';
 
-import classes from '../styles/index.module.sass'
+import classes from '../styles/index.module.sass';
 
 export default ({ data }) => {
-    const siteMetadata = data.site.siteMetadata
-    const chapters = data.allMarkdownRemark.edges.map(({ node }) => ({
-        slug: node.fields.slug,
-        title: node.frontmatter.title,
-        description: node.frontmatter.description,
-    }))
+    const siteMetadata = data.site.siteMetadata;
+    // Create a lookup table of chapters by slug value
+    const chapters = data.allMarkdownRemark.edges.reduce((acc, obj) => {
+      const key = obj.node.fields.slug;
+      if (!acc[key]) {
+        acc[key] = {};
+      }
+      acc[key] = obj;
+      return acc;
+    }, {});
+
     return (
         <Layout isHome>
             <Logo className={classes.logo} aria-label={siteMetadata.title} />
-            {chapters.map(({ slug, title, description }) => (
-                <section key={slug} className={classes.chapter}>
-                    <h2 className={classes.chapterTitle}>
-                        <Link hidden to={slug}>
-                            {title}
-                        </Link>
-                    </h2>
-                    <p className={classes.chapterDesc}>
-                        <Link hidden to={slug}>
-                            {description}
-                        </Link>
-                    </p>
-                </section>
-            ))}
+            {outline.map((node) => !node.chapterSlugs ? (
+                <StandaloneChapter key={node.slug}>
+                  <InteractiveLink hidden to={node.slug}>
+                      <section className={classes.chapter}>
+                          <h2 className={classes.chapterTitle}>
+                              {chapters[node.slug].node.frontmatter.title}
+                          </h2>
+                          <p className={classes.chapterDesc}>
+                              {chapters[node.slug].node.frontmatter.description}
+                          </p>
+                      </section>
+                  </InteractiveLink>
+                </StandaloneChapter>
+              ) : (
+                <PartContainer key={node.title}>
+                  <PartHeading>{node.title}</PartHeading>
+                  {node.chapterSlugs.map((chapterSlug) => (
+                      <InteractiveLink key={chapterSlug} hidden to={chapterSlug}>
+                          <section className={classes.chapter}>
+                            <h2 className={classes.chapterTitle}>
+                                {chapters[chapterSlug].node.frontmatter.title}
+                            </h2>
+                            <p className={classes.chapterDesc}>
+                                {chapters[chapterSlug].node.frontmatter.description}
+                            </p>
+                          </section>
+                      </InteractiveLink>
+                  ))}
+                </PartContainer>
+              )
+            )}
         </Layout>
-    )
-}
+    );
+};
 
 export const pageQuery = graphql`
     {
@@ -42,10 +66,7 @@ export const pageQuery = graphql`
                 title
             }
         }
-        allMarkdownRemark(
-            sort: { fields: [frontmatter___id], order: ASC }
-            filter: { frontmatter: { type: { eq: "chapter" } } }
-        ) {
+        allMarkdownRemark {
             edges {
                 node {
                     fields {
@@ -54,10 +75,45 @@ export const pageQuery = graphql`
                     frontmatter {
                         title
                         description
-                        id
                     }
                 }
             }
         }
     }
-`
+`;
+
+// The following is placeholder style
+// TODO(aarons): Rework these styles when there is an approved design
+// and Varnish is integrated.
+
+const StandaloneChapter = styled.div`
+    max-width: 800px;
+    margin: auto;
+`;
+
+const PartContainer = styled.div`
+    // outline: 1px solid black;
+    box-shadow: 0 5px 30px rgba(10,20,30,0.125);
+    max-width: 800px;
+    padding: 15px 30px 10px 30px;
+    margin: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.05);
+
+    & + & {
+        margin-top: 30px;
+    }
+`;
+
+const PartHeading = styled.h2`
+    padding-bottom: 15px;
+    color: #2a79e2;
+`;
+
+const InteractiveLink = styled(Link)`
+    &:hover {
+        section {
+          border-color: #2a79e2;
+        }
+    }
+`;
