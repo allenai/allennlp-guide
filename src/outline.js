@@ -1,11 +1,9 @@
 // This outline builds our chapter navigation structure, grouped by Part.
 
 export const outline = [
-  // Standalone Chapter
   {
     slug: '/overview'
   },
-  // Group containing chapters
   {
     title: 'Part I: Quick Start',
     chapterSlugs: [
