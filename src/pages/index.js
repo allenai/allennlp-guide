@@ -24,33 +24,33 @@ export default ({ data }) => {
     return (
         <Layout isHome>
             <Logo className={classes.logo} aria-label={siteMetadata.title} />
-            {outline.map((node) => node.type === 'chapter' ? (
+            {outline.map((node) => !node.chapterSlugs ? (
                 <StandaloneChapter key={node.slug}>
-                  <section className={classes.chapter}>
-                      <Link hidden to={node.slug}>
+                  <InteractiveLink hidden to={node.slug}>
+                      <section className={classes.chapter}>
                           <h2 className={classes.chapterTitle}>
                               {chapters[node.slug].node.frontmatter.title}
                           </h2>
                           <p className={classes.chapterDesc}>
                               {chapters[node.slug].node.frontmatter.description}
                           </p>
-                      </Link>
-                  </section>
+                      </section>
+                  </InteractiveLink>
                 </StandaloneChapter>
               ) : (
                 <PartContainer key={node.title}>
                   <PartHeading>{node.title}</PartHeading>
                   {node.chapterSlugs.map((chapterSlug) => (
-                    <section key={chapterSlug} className={classes.chapter}>
-                        <Link hidden to={chapterSlug}>
+                      <InteractiveLink key={chapterSlug} hidden to={chapterSlug}>
+                          <section className={classes.chapter}>
                             <h2 className={classes.chapterTitle}>
                                 {chapters[chapterSlug].node.frontmatter.title}
                             </h2>
                             <p className={classes.chapterDesc}>
                                 {chapters[chapterSlug].node.frontmatter.description}
                             </p>
-                        </Link>
-                    </section>
+                          </section>
+                      </InteractiveLink>
                   ))}
                 </PartContainer>
               )
@@ -86,7 +86,10 @@ export const pageQuery = graphql`
 // TODO(aarons): Rework these styles when there is an approved design
 // and Varnish is integrated.
 
-const StandaloneChapter = styled.div``;
+const StandaloneChapter = styled.div`
+    max-width: 800px;
+    margin: auto;
+`;
 
 const PartContainer = styled.div`
     // outline: 1px solid black;
@@ -105,4 +108,12 @@ const PartContainer = styled.div`
 const PartHeading = styled.h2`
     padding-bottom: 15px;
     color: #2a79e2;
+`;
+
+const InteractiveLink = styled(Link)`
+    &:hover {
+        section {
+          border-color: #2a79e2;
+        }
+    }
 `;

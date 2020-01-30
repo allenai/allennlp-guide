@@ -1,10 +1,12 @@
+// This outline builds our chapter navigation structure, grouped by Part.
+
 export const outline = [
+  // Standalone Chapter
   {
-    type: 'chapter',
     slug: '/overview'
   },
+  // Group containing chapters
   {
-    type: 'part',
     title: 'Part I: Quick Start',
     chapterSlugs: [
       '/introduction',
@@ -14,7 +16,6 @@ export const outline = [
     ]
   },
   {
-    type: 'part',
     title: 'Part II: Abstractions, Design, and Testing',
     chapterSlugs: [
       '/reading-textual-data',
@@ -22,7 +23,6 @@ export const outline = [
     ]
   },
   {
-    type: 'part',
     title: 'Part III: Practical Tasks With AllenNLP',
     chapterSlugs: [
       '/semantic-parsing'
