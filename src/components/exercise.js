@@ -3,7 +3,6 @@ import classNames from 'classnames'
 
 import { Button, CompleteButton } from './button'
 import { ChapterContext } from '../context'
-import IconSlides from '../../static/icon_slides.svg'
 import classes from '../styles/exercise.module.sass'
 
 const Exercise = ({ id, title, type, children }) => {
@@ -40,7 +39,6 @@ const Exercise = ({ id, title, type, children }) => {
     }, [isCompleted, completed, excId])
     const rootClassNames = classNames(classes.root, {
         [classes.expanded]: isExpanded,
-        [classes.wide]: isExpanded && type === 'slides',
         [classes.completed]: !isExpanded && isCompleted,
     })
     const titleClassNames = classNames(classes.title, {
@@ -57,7 +55,6 @@ const Exercise = ({ id, title, type, children }) => {
                     </span>
                     {title}
                 </span>
-                {type === 'slides' && <IconSlides className={classes.icon} />}
             </h2>
             {isExpanded && (
                 <div>
