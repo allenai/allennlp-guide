@@ -147,12 +147,14 @@ export const pageQuery = graphql`
     }
 `
 
+// The following is placeholder style
+// TODO(aarons): Rework these styles when there is an approved design
+// and Varnish is integrated.
+
 const ContentContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-
 
 const NavItem = styled(({ isActive, ...props }) =>
     <li {...props} />
