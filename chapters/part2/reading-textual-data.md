@@ -1,8 +1,6 @@
 ---
 title: 'Reading textual data'
 description: This chapter provides a deep dive into AllenNLP abstractions that are essential for reading textual data, including fields and instances, dataset readers, vocabulary, and how batching is handled in AllenNLP
-prev: /next-steps
-next: /building-your-model
 type: chapter
 ---
 

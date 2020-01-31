@@ -22,17 +22,13 @@ const Template = ({ data, location }) => {
     const { courseId } = site.siteMetadata
     const siteTitle = site.siteMetadata.title;
     const { frontmatter, fields, htmlAst } = markdownRemark
-    const { title, description, prev, next } = frontmatter
+    const { title, description } = frontmatter
     const { slug } = fields
     const groupedChapters = getGroupedChapters(allMarkdownRemark);
     const [activeExc, setActiveExc] = useState(null)
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, [])
     const html = renderAst(htmlAst)
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll())
-    const buttons = [
-        { slug: prev, text: '« Previous Chapter' },
-        { slug: next, text: 'Next Chapter »' },
-    ]
     const handleSetActiveExc = id => {
         window.location.hash = `${id}`
         setActiveExc(id)
@@ -42,6 +38,16 @@ const Template = ({ data, location }) => {
             setActiveExc(parseInt(location.hash.split('#')[1]))
         }
     }, [location.hash])
+
+    let linkList = [];
+    outline.forEach((node) => {
+      if (node.slug) {
+        linkList.push(node.slug);
+      }
+      if (node.chapterSlugs) {
+        linkList = linkList.concat(node.chapterSlugs);
+      }
+    });
 
     return (
         <ChapterContext.Provider
@@ -86,15 +92,16 @@ const Template = ({ data, location }) => {
                         </header>
                         {html}
                         <section className={classes.pagination}>
-                            {buttons.map(({ slug, text }) => (
-                                <div key={slug}>
-                                    {slug && (
-                                        <Button variant="secondary" small onClick={() => navigate(slug)}>
-                                            {text}
-                                        </Button>
-                                    )}
-                                </div>
-                            ))}
+                            {linkList.indexOf(slug) !== 0 && (
+                              <div>
+                                  <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
+                              </div>
+                            )}
+                            {linkList.indexOf(slug) !== linkList.length - 1 && (
+                              <div>
+                                  <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
+                              </div>
+                            )}
                         </section>
                     </BodyContent>
                 </ContentContainer>
@@ -134,8 +141,6 @@ export const pageQuery = graphql`
             frontmatter {
                 title
                 description
-                next
-                prev
             }
         }
     }
