@@ -1,5 +1,6 @@
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
+import styled, { createGlobalStyle } from 'styled-components';
 
 import SEO from './seo'
 import { Link } from './link'
@@ -32,6 +33,7 @@ const Layout = ({ isHome, title, description, children }) => {
                 return (
                     <>
                         <SEO title={title} description={description} />
+                        <GlobalStyle />
                         <main className={classes.root}>
                             <div className={classes.content}>
                                 {children}
@@ -78,3 +80,27 @@ const Layout = ({ isHome, title, description, children }) => {
 }
 
 export default Layout
+
+// Resetting root layout
+const GlobalStyle = createGlobalStyle`
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  #___gatsby,
+  #___gatsby > div,
+  main {
+    height: 100%;
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  footer {
+    margin-top: auto !important;
+  }
+`;
