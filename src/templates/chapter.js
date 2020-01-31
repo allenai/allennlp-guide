@@ -39,6 +39,7 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash])
 
+    // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
     let linkList = [];
     outline.forEach((node) => {
       if (node.slug) {
