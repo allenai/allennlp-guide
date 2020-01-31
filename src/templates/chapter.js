@@ -91,18 +91,18 @@ const Template = ({ data, location }) => {
                             )}
                         </header>
                         {html}
-                        <section className={classes.pagination}>
+                        <Pagination>
+                          <div>
                             {linkList.indexOf(slug) !== 0 && (
-                              <div>
-                                  <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
-                              </div>
+                                <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
                             )}
+                          </div>
+                          <div>
                             {linkList.indexOf(slug) !== linkList.length - 1 && (
-                              <div>
-                                  <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
-                              </div>
+                                <Button variant="secondary" small onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
                             )}
-                        </section>
+                          </div>
+                        </Pagination>
                     </BodyContent>
                 </ContentContainer>
             </Layout>
@@ -214,4 +214,14 @@ const BodyContent = styled.div`
   border-left: 1px solid #ddd;
   max-width: 800px;
   padding-left: 40px;
+`;
+
+const Pagination = styled.div`
+  padding-top: 20px;
+  width: 100%;
+  display: flex;
+  
+  div:last-child {
+    margin-left: auto;
+  }
 `;
