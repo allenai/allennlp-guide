@@ -41,6 +41,12 @@ module.exports = {
             },
         },
         {
+          resolve: `gatsby-plugin-styled-components`,
+        },
+        {
+          resolve: 'gatsby-plugin-antd',
+        },
+        {
             resolve: `gatsby-transformer-remark`,
             options: {
                 plugins: [
@@ -75,7 +81,6 @@ module.exports = {
         `gatsby-transformer-sharp`,
         `gatsby-plugin-sharp`,
         `gatsby-plugin-sitemap`,
-        `gatsby-plugin-styled-components`,
         {
             resolve: `gatsby-plugin-manifest`,
             options: {

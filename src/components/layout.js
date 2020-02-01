@@ -1,13 +1,13 @@
-import React from 'react'
-import { StaticQuery, graphql } from 'gatsby'
+import React from 'react';
+import { StaticQuery, graphql } from 'gatsby';
 
-import Head from './Head'
-import { Link } from './link'
-import { H3 } from './typography'
-import Logo from '../../static/logo.svg'
+import Head from './Head';
+import { Link } from './link';
+import { H3 } from './typography';
+import Logo from '../../static/logo.svg';
 
-import '../styles/index.sass'
-import classes from '../styles/layout.module.sass'
+import '../styles/index.sass';
+import classes from '../styles/layout.module.sass';
 
 const Layout = ({ isHome, title, description, children }) => {
     return (
@@ -29,9 +29,9 @@ const Layout = ({ isHome, title, description, children }) => {
                 }
             `}
             render={data => {
-                const meta = data.site.siteMetadata
+                const meta = data.site.siteMetadata;
                 return (
-                    <>
+                    <React.Fragment>
                         <Head title={title} description={description} />
                         <main className={classes.root}>
                             {!isHome && (
@@ -86,11 +86,11 @@ const Layout = ({ isHome, title, description, children }) => {
                                 </div>
                             </footer>
                         </main>
-                    </>
+                    </React.Fragment>
                 )
             }}
         />
-    )
-}
+    );
+};
 
-export default Layout
+export default Layout;
