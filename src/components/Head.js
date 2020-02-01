@@ -2,7 +2,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 
-const SEO = ({ title, description }) => (
+const Head = ({ title, description }) => (
     <StaticQuery
         query={query}
         render={data => {
@@ -66,6 +66,7 @@ const SEO = ({ title, description }) => (
 
             return (
                 <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta}>
+                    <link rel={'stylesheet'} href={'https://cdn.jsdelivr.net/npm/@allenai/varnish@0.8.11/dist/theme.min.css'} />
                     {siteMetadata.fonts && (
                         <link
                             href={`https://fonts.googleapis.com/css?family=${siteMetadata.fonts}`}
@@ -78,7 +79,7 @@ const SEO = ({ title, description }) => (
     />
 )
 
-export default SEO
+export default Head
 
 const query = graphql`
     query DefaultSEOQuery {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
 
-import SEO from './seo'
+import Head from './Head'
 import { Link } from './link'
 import { H3 } from './typography'
 import Logo from '../../static/logo.svg'
@@ -32,7 +32,7 @@ const Layout = ({ isHome, title, description, children }) => {
                 const meta = data.site.siteMetadata
                 return (
                     <>
-                        <SEO title={title} description={description} />
+                        <Head title={title} description={description} />
                         <main className={classes.root}>
                             {!isHome && (
                                 <h1 className={classes.logo}>
