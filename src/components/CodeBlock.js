@@ -8,18 +8,18 @@ import classes from '../styles/code.module.sass';
 function getFiles({ allCode }, sourceId, solutionId, testId, setupId) {
     var files = {};
     allCode.edges.forEach(({ node }) => {
-        const filename = node.dir + '/' + node.name
+        const filename = node.dir + '/' + node.name;
         if (filename.includes(sourceId)) {
-            files['sourceFile'] = node.code
+            files['sourceFile'] = node.code;
         }
         if (filename.includes(solutionId)) {
-            files['solutionFile'] = node.code
+            files['solutionFile'] = node.code;
         }
         if (filename.includes(testId)) {
-            files['testFile'] = node.code
+            files['testFile'] = node.code;
         }
         if (filename.includes(setupId)) {
-            files['setupFile'] = node.code
+            files['setupFile'] = node.code;
         }
     });
     return files;
@@ -133,7 +133,7 @@ class CodeBlock extends React.Component {
                                     kernelType={kernelType}
                                     debug={debug}
                                     actions={({ runCode }) => (
-                                        <>
+                                        <React.Fragment>
                                             {execute && (
                                             <Button onClick={() =>
                                                 runCode(code =>
@@ -151,7 +151,7 @@ class CodeBlock extends React.Component {
                                                     Submit
                                                 </Button>
                                             )}
-                                        </>
+                                        </React.Fragment>
                                     )}
                                 >
                                     {showSolution ? solutionFile : sourceFile}
