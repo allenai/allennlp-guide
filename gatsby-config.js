@@ -90,7 +90,7 @@ module.exports = {
                 background_color: meta.theme,
                 theme_color: meta.theme,
                 display: `minimal-ui`,
-                icon: `static/icon.png`,
+                legacy: false,
             },
         },
         `gatsby-plugin-offline`,
