@@ -1,10 +1,10 @@
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
+import { createGlobalStyle } from 'styled-components';
 
 import SEO from './seo'
 import { Link } from './link'
 import { H3 } from './typography'
-import Logo from '../../static/logo.svg'
 
 import '../styles/index.sass'
 import classes from '../styles/layout.module.sass'
@@ -33,23 +33,9 @@ const Layout = ({ isHome, title, description, children }) => {
                 return (
                     <>
                         <SEO title={title} description={description} />
+                        <GlobalStyle />
                         <main className={classes.root}>
-                            {!isHome && (
-                                <h1 className={classes.logo}>
-                                    <Link hidden to="/">
-                                        <Logo width={150} height={54} aria-label={meta.title} />
-                                    </Link>
-                                </h1>
-                            )}
                             <div className={classes.content}>
-                                {(title || description) && (
-                                    <header className={classes.header}>
-                                        {title && <h1 className={classes.title}>{title}</h1>}
-                                        {description && (
-                                            <p className={classes.description}>{description}</p>
-                                        )}
-                                    </header>
-                                )}
                                 {children}
                             </div>
 
@@ -94,3 +80,27 @@ const Layout = ({ isHome, title, description, children }) => {
 }
 
 export default Layout
+
+// Resetting root layout
+const GlobalStyle = createGlobalStyle`
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  #___gatsby,
+  #___gatsby > div,
+  main {
+    height: 100%;
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  footer {
+    margin-top: auto !important;
+  }
+`;
