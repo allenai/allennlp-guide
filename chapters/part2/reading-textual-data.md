@@ -50,21 +50,21 @@ We already gave a quick intro to `DatasetReaders` and wrote our own in [Your fir
 
 There are dataset readers available for a wide range of NLP tasks, including:
 
-* `TextClassificationJsonReader` (for text classification)
-* `SequenceTaggingDatasetReader` (for sequence labeling)
-* `SimpleLanguageModelingDatasetReader` (for language modeling)
-* `SnliReader` (for NLI)
-* `SrlReader` (for span detection)
-* `Seq2SeqDatasetReader` (for seq2seq models)
-* `PennTreeBankConstituencySpanDatasetReader` `UniversalDependenciesDatasetReader` (for constituency and dependency parsing)
-* `SquadReader` (for [reading comprehension](https://github.com/allenai/allennlp-reading-comprehension))
-* [semantic parsing](https://github.com/allenai/allennlp-semparse)
+* [`TextClassificationJsonReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/text_classification_json.py) (for text classification)
+* [`SequenceTaggingDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/sequence_tagging.py) (for sequence labeling)
+* [`SimpleLanguageModelingDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/simple_language_modeling.py) (for language modeling)
+* [`SnliReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/snli.py) (for NLI)
+* [`SrlReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/semantic_role_labeling.py) (for span detection)
+* [`Seq2SeqDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/seq2seq.py) (for seq2seq models)
+* [`PennTreeBankConstituencySpanDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/penn_tree_bank.py) and  [`UniversalDependenciesDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/universal_dependencies.py) (for constituency and dependency parsing)
+* Many [reading comprehension](https://github.com/allenai/allennlp-reading-comprehension) dataset readers such as [`SquadReader`](https://github.com/allenai/allennlp-reading-comprehension/blob/master/allennlp_rc/dataset_readers/squad.py) and [`DropReader`](https://github.com/allenai/allennlp-reading-comprehension/blob/master/allennlp_rc/dataset_readers/drop.py)
+* Many [semantic parsing](https://github.com/allenai/allennlp-semparse) dataset readers such as [`AtisDatasetReader`](https://github.com/allenai/allennlp-semparse/blob/master/allennlp_semparse/dataset_readers/atis.py) and [`WikiTablesDatasetReader`](https://github.com/allenai/allennlp-semparse/blob/master/allennlp_semparse/dataset_readers/wikitables.py)
 
 You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet below is the dataset reader we implemented in [Your first model](/your-first-model). The returned dataset is a list of `Instances` by default.
 
 <codeblock source="reading-textual-data/dataset_reader_basic"></codeblock>
 
-It is recommended that you separate out the logic for creating instances as the `text_to_instances()` method. As we mentioned in [Training and prediction](/training-and-prediction), by sharing a common logic between the training and the prediction pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two. You can use the method as follows in, for example, your `Predictor`:
+It is recommended that you separate out the logic for creating instances as the `text_to_instances()` method. As we mentioned in [Training and prediction](/training-and-prediction), by sharing a common logic between the training and the prediction pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two, and making it very easy to put up a demo of your model. You can use the method as follows in, for example, your `Predictor`:
 
 ```python
 reader = ClassificationTsvReader()
@@ -73,7 +73,9 @@ label = 'pos'
 instance = reader.text_to_instance(tokens, label)
 ```
 
-The main method, `read()`, takes a filename as its parameter. The reason why dataset readers are designed this way is that if you specify dataset-specific parameters when constructing a `DatasetReader`, then you can apply them to any files. You can also design a dataset reader that handles more complex data setups. For example, you can design one that takes a directory as its constructor parameter and takes a simple key such as `train` and `dev` as a parameter to `read()`.
+`DatasetReaders` have two methods—`_read()` and `read()`. `_read()` is defined as an abstract method, and you must override and implement your own when building a `DatasetReader` subclass for your dataset. `read()` is the main method called from clients of the dataset reader. It implements extra functionalities such as cashing and lazy loading, and calls `_read()` internally. Both methods return an iterable of `Instances`.
+
+The main method, `read()`, takes a filename as its parameter. The reason why dataset readers are designed this way is that if you specify dataset-specific parameters when constructing a `DatasetReader`, then you can apply them to any files. You can also design a dataset reader that handles more complex data setups. For example, you can write one that takes a directory as its constructor parameter and takes a simple key such as `train` and `dev` as a parameter to `read()`. [`TriviaQaReader`](https://github.com/allenai/allennlp-reading-comprehension/blob/fa60af5736a22455d275e663d3dd1ecc838e400c/allennlp_rc/dataset_readers/triviaqa.py#L31-L35), for example, is designed to work this way.
 
 Dataset readers are designed to read data from a local file, although in some cases you may want to read data from a URL. AllenNLP provides a utility method `cached_path` to support this. If a URL is passed to the method it will download the resource to a local file and return its path. If you want your dataset reader to support both local paths and URLs, you can wrap `file_path` using `cached_path` in your `_read()` method as follows:
 
