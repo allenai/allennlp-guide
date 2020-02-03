@@ -95,7 +95,7 @@ const PartContainer = styled.div`
     // outline: 1px solid black;
     box-shadow: 0 5px 30px rgba(10,20,30,0.125);
     max-width: 800px;
-    padding: 15px 30px 10px 30px;
+    padding: 15px 30px 0 30px;
     margin: auto;
     border-radius: 8px;
     border: 1px solid rgba(0,0,0,0.05);
@@ -106,12 +106,15 @@ const PartContainer = styled.div`
 `;
 
 const PartHeading = styled.h2`
-    padding-bottom: 15px;
-    color: #2a79e2;
+    ${({ theme }) => theme.typography.h4};
+    padding: 10px 0;
+    color: ${({ theme }) => theme.color.B6};
 `;
 
 const InteractiveLink = styled(Link)`
-    &:hover {
+    &&:hover {
+        text-decoration: none;
+
         section {
           border-color: #2a79e2;
         }

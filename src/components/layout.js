@@ -1,5 +1,6 @@
 import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
+import { ThemeProvider } from '@allenai/varnish/theme';
 
 import Head from './Head';
 import { Link } from './link';
@@ -31,7 +32,7 @@ const Layout = ({ isHome, title, description, children }) => {
             render={data => {
                 const meta = data.site.siteMetadata;
                 return (
-                    <React.Fragment>
+                    <ThemeProvider>
                         <Head title={title} description={description} />
                         <main className={classes.root}>
                             {!isHome && (
@@ -43,12 +44,12 @@ const Layout = ({ isHome, title, description, children }) => {
                             )}
                             <div className={classes.content}>
                                 {(title || description) && (
-                                    <header className={classes.header}>
-                                        {title && <h1 className={classes.title}>{title}</h1>}
+                                    <div className={classes.header}>
+                                        {title && <h2>{title}</h2>}
                                         {description && (
                                             <p className={classes.description}>{description}</p>
                                         )}
-                                    </header>
+                                    </div>
                                 )}
                                 {children}
                             </div>
@@ -86,7 +87,7 @@ const Layout = ({ isHome, title, description, children }) => {
                                 </div>
                             </footer>
                         </main>
-                    </React.Fragment>
+                    </ThemeProvider>
                 )
             }}
         />
