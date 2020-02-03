@@ -3,8 +3,6 @@ title: 'Chapter 3: Representing text as features: Tokenizers, TextFields, and Te
 description:
   "A deep dive into AllenNLP's core abstraction: how exactly we represent textual inputs, both on
 the data side and the model side."
-prev: /chapter02
-next: /chapter04
 type: chapter
 ---
 

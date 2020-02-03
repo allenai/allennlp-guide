@@ -3,6 +3,7 @@ import { graphql } from 'gatsby';
 import styled from 'styled-components';
 
 import { outline } from '../outline';
+import { getGroupedChapters } from '../utils';
 import Layout from '../components/layout';
 import { Link } from '../components/link';
 import Logo from '../../static/logo.svg';
@@ -11,43 +12,35 @@ import classes from '../styles/index.module.sass';
 
 export default ({ data }) => {
     const siteMetadata = data.site.siteMetadata;
-    // Create a lookup table of chapters by slug value
-    const chapters = data.allMarkdownRemark.edges.reduce((acc, obj) => {
-      const key = obj.node.fields.slug;
-      if (!acc[key]) {
-        acc[key] = {};
-      }
-      acc[key] = obj;
-      return acc;
-    }, {});
+    const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
     return (
         <Layout isHome>
             <Logo className={classes.logo} aria-label={siteMetadata.title} />
-            {outline.map((node) => !node.chapterSlugs ? (
-                <StandaloneChapter key={node.slug}>
-                  <InteractiveLink hidden to={node.slug}>
+            {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
+                <StandaloneChapter key={outlineNode.slug}>
+                  <InteractiveLink hidden to={outlineNode.slug}>
                       <section className={classes.chapter}>
                           <h2 className={classes.chapterTitle}>
-                              {chapters[node.slug].node.frontmatter.title}
+                              {groupedChapters[outlineNode.slug].node.frontmatter.title}
                           </h2>
                           <p className={classes.chapterDesc}>
-                              {chapters[node.slug].node.frontmatter.description}
+                              {groupedChapters[outlineNode.slug].node.frontmatter.description}
                           </p>
                       </section>
                   </InteractiveLink>
                 </StandaloneChapter>
               ) : (
-                <PartContainer key={node.title}>
-                  <PartHeading>{node.title}</PartHeading>
-                  {node.chapterSlugs.map((chapterSlug) => (
+                <PartContainer key={outlineNode.title}>
+                  <PartHeading>{outlineNode.title}</PartHeading>
+                  {outlineNode.chapterSlugs.map((chapterSlug) => (
                       <InteractiveLink key={chapterSlug} hidden to={chapterSlug}>
                           <section className={classes.chapter}>
                             <h2 className={classes.chapterTitle}>
-                                {chapters[chapterSlug].node.frontmatter.title}
+                                {groupedChapters[chapterSlug].node.frontmatter.title}
                             </h2>
                             <p className={classes.chapterDesc}>
-                                {chapters[chapterSlug].node.frontmatter.description}
+                                {groupedChapters[chapterSlug].node.frontmatter.description}
                             </p>
                           </section>
                       </InteractiveLink>

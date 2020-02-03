@@ -2,8 +2,6 @@
 title: 'Introduction'
 description:
   "This chapter will give an introduction to the task we'll be using throughout Part 2 (text classification) and how to use AllenNLP to solve it"
-prev: /overview
-next: /your-first-model
 type: chapter
 ---
 
