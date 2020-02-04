@@ -23,6 +23,13 @@
     user-select: none
     font-size: var(--font-size-lg)
     font-family: var(--font-display)
+    border: 1px solid transparent
+    padding: 16px 32px
+    margin: -17px -33px
+    
+    &:hover
+        border-radius: 8px
+        border: 1px solid #2a79e2
 
 .id
     background: var(--color-theme)
@@ -41,7 +48,11 @@
     color: var(--color-button-primary-contrast)
 
 .title-expanded
-    margin-bottom: 3rem
+    margin: 0 0 1rem 0
+    padding: 0
+
+    &, &:hover
+        border: none
 
 .icon
     float: right

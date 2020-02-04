@@ -2,7 +2,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 
-const SEO = ({ title, description }) => (
+const Head = ({ title, description }) => (
     <StaticQuery
         query={query}
         render={data => {
@@ -10,9 +10,9 @@ const SEO = ({ title, description }) => (
             const siteMetadata = data.site.siteMetadata
             const pageTitle = title
                 ? `${title} · ${siteMetadata.title}`
-                : `${siteMetadata.title} · ${siteMetadata.slogan}`
+                : `${siteMetadata.title}`
             const pageDesc = description || siteMetadata.description
-            const image = `${siteMetadata.siteUrl}/social.jpg`
+            const image = '/social.jpg'
             const meta = [
                 {
                     name: 'description',
@@ -66,19 +66,16 @@ const SEO = ({ title, description }) => (
 
             return (
                 <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta}>
-                    {siteMetadata.fonts && (
-                        <link
-                            href={`https://fonts.googleapis.com/css?family=${siteMetadata.fonts}`}
-                            rel="stylesheet"
-                        />
-                    )}
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@allenai/varnish@0.8.11/dist/theme.min.css" />
+                    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+                    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
                 </Helmet>
             )
         }}
     />
 )
 
-export default SEO
+export default Head
 
 const query = graphql`
     query DefaultSEOQuery {
@@ -86,10 +83,7 @@ const query = graphql`
             siteMetadata {
                 title
                 description
-                slogan
-                siteUrl
                 twitter
-                fonts
             }
         }
     }

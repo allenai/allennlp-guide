@@ -1,56 +1,55 @@
-import React from 'react'
-import { StaticQuery, graphql } from 'gatsby'
+import React from 'react';
+import { StaticQuery, graphql } from 'gatsby';
 
-import { Hint } from './hint'
-import { Button } from './button'
+import { Button } from './button';
 
-import classes from '../styles/code.module.sass'
+import classes from '../styles/code.module.sass';
 
 function getFiles({ allCode }, sourceId, solutionId, testId, setupId) {
-    var files = {}
+    var files = {};
     allCode.edges.forEach(({ node }) => {
-        const filename = node.dir + '/' + node.name
+        const filename = node.dir + '/' + node.name;
         if (filename.includes(sourceId)) {
-            files['sourceFile'] = node.code
+            files['sourceFile'] = node.code;
         }
         if (filename.includes(solutionId)) {
-            files['solutionFile'] = node.code
+            files['solutionFile'] = node.code;
         }
         if (filename.includes(testId)) {
-            files['testFile'] = node.code
+            files['testFile'] = node.code;
         }
         if (filename.includes(setupId)) {
-            files['setupFile'] = node.code
+            files['setupFile'] = node.code;
         }
-    })
-    return files
+    });
+    return files;
 }
 
 function makeTest(template, testFile, solution) {
     // Escape quotation marks in the solution code, for cases where we
     // can only place the solution in regular quotes.
-    const solutionEscaped = solution.replace(/"/g, '\\"')
+    const solutionEscaped = solution.replace(/"/g, '\\"');
     return template
         .replace(/\${solutionEscaped}/g, solutionEscaped)
         .replace(/\${solution}/g, solution)
-        .replace(/\${test}/g, testFile)
+        .replace(/\${test}/g, testFile);
 }
 
 function addSetupCode(code, setup) {
     // Prepend setup code if specified.
-    return setup ? setup + code : code
+    return setup ? setup + code : code;
 }
 
 class CodeBlock extends React.Component {
-    state = { Juniper: null, showSolution: false, key: 0 }
+    state = { Juniper: null, showSolution: false, key: 0 };
 
     handleShowSolution() {
-        this.setState({ showSolution: true })
+        this.setState({ showSolution: true });
     }
 
     handleReset() {
         // Using the key as a hack to force component to rerender
-        this.setState({ showSolution: false, key: this.state.key + 1 })
+        this.setState({ showSolution: false, key: this.state.key + 1 });
     }
 
     updateJuniper() {
@@ -63,37 +62,33 @@ class CodeBlock extends React.Component {
             // managed to fix this using webpack yet. If we imported Juniper
             // at the top level, Gatsby won't build.
             import('./juniper').then(Juniper => {
-                this.setState({ Juniper: Juniper.default })
-            })
+                this.setState({ Juniper: Juniper.default });
+            });
         }
     }
 
     componentDidMount() {
-        this.updateJuniper()
+        this.updateJuniper();
     }
 
     componentDidUpdate() {
-        this.updateJuniper()
+        this.updateJuniper();
     }
 
     render() {
-        const { Juniper, showSolution } = this.state
-        const { id, source, solution, test, setup, executable, children } = this.props
-        const sourceId = source || `${id}_source`
-        const solutionId = solution || `${id}_solution`
-        const testId = test || `${id}_test`
-        const setupId = setup || `${id}_setup`
-        const execute = executable !== "false"
+        const { Juniper, showSolution } = this.state;
+        const { id, source, solution, test, setup, executable } = this.props;
+        const sourceId = source || `${id}_source`;
+        const solutionId = solution || `${id}_solution`;
+        const testId = test || `${id}_test`;
+        const setupId = setup || `${id}_setup`;
+        const execute = executable !== "false";
         const juniperClassNames = {
             cell: classes.cell,
             input: classes.input,
             button: classes.button,
             output: classes.output,
-        }
-        const hintActions = [
-            { text: 'Show solution', onClick: () => this.handleShowSolution() },
-            { text: 'Reset', onClick: () => this.handleReset() },
-        ]
+        };
 
         return (
             <StaticQuery
@@ -138,7 +133,7 @@ class CodeBlock extends React.Component {
                                     kernelType={kernelType}
                                     debug={debug}
                                     actions={({ runCode }) => (
-                                        <>
+                                        <React.Fragment>
                                             {execute && (
                                             <Button onClick={() =>
                                                 runCode(code =>
@@ -156,19 +151,18 @@ class CodeBlock extends React.Component {
                                                     Submit
                                                 </Button>
                                             )}
-                                        </>
+                                        </React.Fragment>
                                     )}
                                 >
                                     {showSolution ? solutionFile : sourceFile}
                                 </Juniper>
                             )}
-                            <Hint actions={hintActions}>{children}</Hint>
                         </div>
                     )
                 }}
             />
-        )
+        );
     }
 }
 
-export default CodeBlock
+export default CodeBlock;

@@ -1,13 +1,14 @@
-import React from 'react'
-import { StaticQuery, graphql } from 'gatsby'
+import React from 'react';
+import { StaticQuery, graphql } from 'gatsby';
 import { createGlobalStyle } from 'styled-components';
+import { ThemeProvider } from '@allenai/varnish/theme';
 
-import SEO from './seo'
-import { Link } from './link'
-import { H3 } from './typography'
+import Head from './Head';
+import { Link } from './link';
+import { H3 } from './typography';
 
-import '../styles/index.sass'
-import classes from '../styles/layout.module.sass'
+import '../styles/index.sass';
+import classes from '../styles/layout.module.sass';
 
 const Layout = ({ isHome, title, description, children }) => {
     return (
@@ -29,10 +30,10 @@ const Layout = ({ isHome, title, description, children }) => {
                 }
             `}
             render={data => {
-                const meta = data.site.siteMetadata
+                const meta = data.site.siteMetadata;
                 return (
-                    <>
-                        <SEO title={title} description={description} />
+                    <ThemeProvider>
+                        <Head title={title} description={description} />
                         <GlobalStyle />
                         <main className={classes.root}>
                             <div className={classes.content}>
@@ -72,14 +73,14 @@ const Layout = ({ isHome, title, description, children }) => {
                                 </div>
                             </footer>
                         </main>
-                    </>
-                )
+                    </ThemeProvider>
+                );
             }}
         />
-    )
-}
+    );
+};
 
-export default Layout
+export default Layout;
 
 // Resetting root layout
 const GlobalStyle = createGlobalStyle`

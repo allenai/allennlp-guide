@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import IconCheck from '../../static/icon_check.svg'
+import IconCheck from '../../static/icons/icon_check.svg'
 import classes from '../styles/button.module.sass'
 
 export const Button = ({ Component = 'button', children, onClick, variant, small, className }) => {

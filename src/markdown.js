@@ -1,12 +1,11 @@
-import React from 'react'
-import rehypeReact from 'rehype-react'
+import React from 'react';
+import rehypeReact from 'rehype-react';
 
-import Exercise from './components/exercise'
-import TextBlock from './components/textblock'
-import CodeBlock from './components/code'
-import { Link } from './components/link'
-import Choice, { Option } from './components/choice'
-import { H3, Hr, Ol, Ul, Li, InlineCode } from './components/typography'
+import Exercise from './components/exercise';
+import TextBlock from './components/textblock';
+import CodeBlock from './components/CodeBlock';
+import { Link } from './components/link';
+import { H3, Hr, Ol, Ul, Li, InlineCode } from './components/typography';
 
 export const renderAst = new rehypeReact({
     createElement: React.createElement,
@@ -14,8 +13,6 @@ export const renderAst = new rehypeReact({
         exercise: Exercise,
         textblock: TextBlock,
         codeblock: CodeBlock,
-        choice: Choice,
-        opt: Option,
         a: Link,
         hr: Hr,
         h3: H3,
@@ -24,4 +21,4 @@ export const renderAst = new rehypeReact({
         li: Li,
         code: InlineCode,
     },
-}).Compiler
+}).Compiler;

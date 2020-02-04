@@ -41,6 +41,12 @@ module.exports = {
             },
         },
         {
+          resolve: `gatsby-plugin-styled-components`,
+        },
+        {
+          resolve: 'gatsby-plugin-antd',
+        },
+        {
             resolve: `gatsby-transformer-remark`,
             options: {
                 plugins: [
@@ -84,7 +90,7 @@ module.exports = {
                 background_color: meta.theme,
                 theme_color: meta.theme,
                 display: `minimal-ui`,
-                icon: `static/icon.png`,
+                legacy: false,
             },
         },
         `gatsby-plugin-offline`,

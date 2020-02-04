@@ -1,49 +1,50 @@
-import React, { useRef, useCallback, useContext, useEffect } from 'react'
-import classNames from 'classnames'
+import React, { useRef, useCallback, useContext, useEffect } from 'react';
+import classNames from 'classnames';
+import styled from 'styled-components';
 
-import { Button, CompleteButton } from './button'
-import { ChapterContext } from '../context'
-import classes from '../styles/exercise.module.sass'
+import { Button, CompleteButton } from './button';
+import { ChapterContext } from '../context';
+import classes from '../styles/exercise.module.sass';
 
 const Exercise = ({ id, title, type, children }) => {
-    const excRef = useRef()
-    const excId = parseInt(id)
-    const { activeExc, setActiveExc, completed, setCompleted } = useContext(ChapterContext)
-    const isExpanded = activeExc === excId
-    const isCompleted = completed.includes(excId)
+    const excRef = useRef();
+    const excId = parseInt(id);
+    const { activeExc, setActiveExc, completed, setCompleted } = useContext(ChapterContext);
+    const isExpanded = activeExc === excId;
+    const isCompleted = completed.includes(excId);
     useEffect(() => {
         if (isExpanded && excRef.current) {
-            excRef.current.scrollIntoView()
+            excRef.current.scrollIntoView();
         }
-        document.addEventListener('keyup', handleEscape, false)
+        document.addEventListener('keyup', handleEscape, false);
         return () => {
-          document.removeEventListener('keyup', handleEscape, false)
+          document.removeEventListener('keyup', handleEscape, false);
         }
-    }, [isExpanded])
+    }, [isExpanded]);
     const handleEscape = (e) => {
         if (e.keyCode === 27) {  // 27 is ESC
-            setActiveExc(null)
+            setActiveExc(null);
         }
-    }
+    };
     const handleExpand = useCallback(() => setActiveExc(isExpanded ? null : excId), [
         isExpanded,
         excId,
-    ])
+    ]);
 
-    const handleNext = useCallback(() => setActiveExc(excId + 1))
+    const handleNext = useCallback(() => setActiveExc(excId + 1));
     const handleSetCompleted = useCallback(() => {
         const newCompleted = isCompleted
             ? completed.filter(v => v !== excId)
-            : [...completed, excId]
-        setCompleted(newCompleted)
-    }, [isCompleted, completed, excId])
+            : [...completed, excId];
+        setCompleted(newCompleted);
+    }, [isCompleted, completed, excId]);
     const rootClassNames = classNames(classes.root, {
         [classes.expanded]: isExpanded,
         [classes.completed]: !isExpanded && isCompleted,
-    })
+    });
     const titleClassNames = classNames(classes.title, {
         [classes.titleExpanded]: isExpanded,
-    })
+    });
     return (
         <section ref={excRef} id={id} className={rootClassNames}>
             <h2 className={titleClassNames} onClick={handleExpand}>
@@ -57,7 +58,7 @@ const Exercise = ({ id, title, type, children }) => {
                 </span>
             </h2>
             {isExpanded && (
-                <div>
+                <MarkdownContainer>
                     {children}
                     <footer className={classes.footer}>
                         <CompleteButton
@@ -68,10 +69,40 @@ const Exercise = ({ id, title, type, children }) => {
                             Next
                         </Button>
                     </footer>
-                </div>
+                </MarkdownContainer>
             )}
         </section>
-    )
-}
+    );
+};
 
-export default Exercise
+export default Exercise;
+
+const MarkdownContainer = styled.div`
+    h1,
+    h2,
+    h3,
+    h4 {
+      ${({ theme }) => theme.typography.h4}
+    }
+    
+    ul {
+      list-style: disc;
+      
+      ul {
+        list-style: circle;
+      }
+    }
+    
+    code {
+      font-size: 14px;
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+    
+    a {
+      text-decoration: none;
+      
+      &&:hover {
+        text-decoration: underline;
+      }
+    }
+`;
