@@ -107,12 +107,23 @@ Instances are serialized by `jsonpickle` by default, although you can override t
 
 <exercise id="3" title="Vocabulary">
 
-* What is Vocabulary, how it fits with the rest of the pipeline
-* (A diagram showing how Vocabulary works)
-* What are Namespaces
-* Getting indices from tokens (and vice versa)
-* A word on min_count
-* A word on non_padded_namespaces (the next exercise gives more details on padding)
+`Vocabulary` is an important component in the AllenNLP, touching on and used by many other abstractions and components. Simply put, `Vocabulary` manages mappings from strings to integer IDs. It is created from instances and used for converting textual data (such as tokens and labels) to integer IDs (and eventually to tensors).
+
+`Vocabulary` manages different mappings using a concept called *namespaces*. Each namespace is a distinct mapping from strings to integers, so strings in different namespaces are treated separately. This allows you to have separate indices for, e.g., 'a' as a word and 'a' as a character, or 'chat' in English and 'chat' in French (which means 'cat' in English). See the diagram below for an illustration:
+
+<img src="/reading-textual-data/vocabulary.svg" alt="Vocabulary" />
+
+There's an important distinction between namespaces: padded and non-padded namespaces. By default, namespaces are padded, meaning the mapping reserves indices for padding and out-of-vocabulary (OOV) tokens. This is useful for indexing tokens, where OOV tokens are common and padding is needed (the next section gives more details on how padding works in AllenNLP).
+
+Non-padded namespaces, on the other hand, do not reserve indices for special tokens. This is more suitable for, e.g., class labels, where you don't need to worry about these. By default, namespaces ending in `"tags"` or `"labels"` are treated as non-padded, but you can modify this behavior by supplying a `non_padded_namespaces` parameter when creating a `Vocabulary`.
+
+A common way to create a `Vocabulary` object is to pass a collection of `Instances` to the `from_instances`. You can look up indices by tokens using the `get_token_index()` method. You can also do the inverse (looking up tokens by indices) using `get_token_from_index()`. 
+
+<codeblock source="reading-textual-data/vocabulary_creation"></codeblock>
+
+When your dataset is too large, you may want to "prune" your vocabulary by setting a threshold and only retaining words that appear more than that threshold. You can achieve this by passing a `min_count` parameter, which specifies the minimum count tokens need to meet to be included per namespace.
+
+<codeblock source="reading-textual-data/vocabulary_count"></codeblock>
 
 </exercise>
 
