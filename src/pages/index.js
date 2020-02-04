@@ -21,14 +21,12 @@ export default ({ data }) => {
                 {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
                     <StandaloneChapter key={outlineNode.slug}>
                       <ChapterLink to={outlineNode.slug}>
-                          <Chapter>
-                              <h4>
-                                  {groupedChapters[outlineNode.slug].node.frontmatter.title}
-                              </h4>
-                              <p>
-                                  {groupedChapters[outlineNode.slug].node.frontmatter.description}
-                              </p>
-                          </Chapter>
+                          <h4>
+                              {groupedChapters[outlineNode.slug].node.frontmatter.title}
+                          </h4>
+                          <p>
+                              {groupedChapters[outlineNode.slug].node.frontmatter.description}
+                          </p>
                       </ChapterLink>
                     </StandaloneChapter>
                   ) : (
@@ -36,14 +34,12 @@ export default ({ data }) => {
                       <PartHeading>{outlineNode.title}</PartHeading>
                       {outlineNode.chapterSlugs.map((chapterSlug) => (
                           <ChapterLink key={chapterSlug} to={chapterSlug}>
-                              <Chapter>
-                                <h4>
-                                    {groupedChapters[chapterSlug].node.frontmatter.title}
-                                </h4>
-                                <p>
-                                    {groupedChapters[chapterSlug].node.frontmatter.description}
-                                </p>
-                              </Chapter>
+                              <h4>
+                                  {groupedChapters[chapterSlug].node.frontmatter.title}
+                              </h4>
+                              <p>
+                                  {groupedChapters[chapterSlug].node.frontmatter.description}
+                              </p>
                           </ChapterLink>
                       ))}
                     </PartContainer>
@@ -100,6 +96,41 @@ const Parts = styled(Container)`
     background: ${({ theme }) => theme.color.N4};
 `;
 
+const PartHeading = styled.h3`
+    ${({ theme }) => theme.typography.h4};
+    padding-bottom: ${({ theme }) => theme.spacing.md};
+    color: ${({ theme }) => theme.color.B6};
+`;
+
+const ChapterLink = styled(LinkComponent)`
+    && {
+        display: block;
+        background: ${({ theme }) => theme.color.N1};
+        border: 1px solid ${({ theme }) => theme.color.N6};
+        border-radius: ${({ theme }) => theme.spacing.xxs};
+        padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
+
+        h4 {
+          ${({ theme }) => theme.typography.bodyBig}
+          margin: 0;
+        }
+
+        p {
+          margin: 0;
+          color: ${({ theme }) => theme.color.N10};
+        }
+
+        :hover {
+            text-decoration: none;
+            border-color: ${({ theme }) => theme.color.B6};
+        }
+    }
+
+    && + && {
+        margin-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    }
+`;
+
 const Credits = styled(Container)`
     background: ${({ theme }) => theme.color.N2};
     border-bottom: 1px solid ${({ theme }) => theme.color.N4};
@@ -111,47 +142,15 @@ const Credits = styled(Container)`
 // TODO(aarons): Rework these styles when there is an approved design
 // and Varnish is integrated.
 
+const PartContainer = styled(Card)`
+    padding: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+`;
+
 const StandaloneChapter = styled.div`
     max-width: 800px;
     margin: auto;
-`;
-
-const PartContainer = styled(Card)`
-    padding: 15px 32px 32px 32px;
-`;
-
-const PartHeading = styled.h3`
-    ${({ theme }) => theme.typography.h4};
-    padding: 10px 0;
-    color: ${({ theme }) => theme.color.B6};
-`;
-
-const Chapter = styled.div`
-    padding: 32px;
-    border: 1px solid ${({ theme }) => theme.color.N4};
-    border-radius: ${({ theme }) => theme.spacing.xxs};
-
-    h4 {
-      ${({ theme }) => theme.typography.bodyBig}
-      margin: 0;
-    }
-
-    p {
-      margin: 0;
-      color: ${({ theme }) => theme.color.N10};
-    }
-`;
-
-const ChapterLink = styled(LinkComponent)`
-    && {
-        display: block;
-
-        :hover {
-            text-decoration: none;
-        }
-    }
-
-    && + && {
-        margin-top: 32px;
+    
+    & + ${PartContainer} {
+      margin-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
     }
 `;

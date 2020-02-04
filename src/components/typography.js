@@ -1,4 +1,5 @@
 import React from 'react'
+// TODO(aarons): replace these sass styles with styled components
 
 import classes from '../styles/typography.module.sass'
 

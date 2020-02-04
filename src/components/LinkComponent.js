@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link as GatsbyLink } from 'gatsby';
 
 export const LinkComponent = ({ children, to, href, onClick, className, ...other }) => {
@@ -12,14 +11,16 @@ export const LinkComponent = ({ children, to, href, onClick, className, ...other
                 <a href={dest} onClick={onClick} className={className}>
                     {children}
                 </a>
-            )
+            );
         }
+
         return (
             <GatsbyLink to={dest} className={className} {...other}>
                 {children}
             </GatsbyLink>
-        )
+        );
     }
+
     return (
         <a
             href={dest}
@@ -31,12 +32,4 @@ export const LinkComponent = ({ children, to, href, onClick, className, ...other
             {children}
         </a>
     );
-};
-
-LinkComponent.propTypes = {
-    children: PropTypes.node.isRequired,
-    to: PropTypes.string,
-    href: PropTypes.string,
-    onClick: PropTypes.func,
-    className: PropTypes.string,
 };
