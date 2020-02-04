@@ -161,15 +161,17 @@ const NavItem = styled(({ isActive, ...props }) =>
 )`
   position: relative;
 
-  a {
-    display: block;
-    line-height: 16px;
-    padding: 5px 0;
-    color: #${({ isActive }) => isActive ? '2a79e2' : '777'};
+  && {
+    a {
+      display: block;
+      line-height: 16px;
+      padding: 5px 0;
+      color: ${({ isActive, theme }) => isActive ? theme.color.B6 : theme.color.N10};
 
-    &:hover {
-      color: #2a79e2;
-      text-decoration: underline;
+      &:hover {
+        color: #2a79e2;
+        text-decoration: underline;
+      }
     }
   }
 
@@ -180,8 +182,8 @@ const NavItem = styled(({ isActive, ...props }) =>
       color: #2a79e2;
       font-size: 24px;
       position: absolute;
-      left: -25px;
-      top: -5px;
+      left: -20px;
+      top: 0;
     }
   ` : null}
 `;
@@ -197,9 +199,11 @@ const SideNav = styled.nav`
 
   ol {
     list-style: none;
+    padding-left: 0;
     
     strong {
       display: block;
+      color: ${({ theme }) => theme.color.N10};
       padding-top: 15px;
       border-top: 1px solid #ddd;
       margin-top: 15px;
