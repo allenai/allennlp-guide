@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
 import Layout from '../templates/Layout';
-import { Link } from '../components/link';
-import { Container, Content } from '../components/Container';
-
-import classes from '../styles/index.module.sass';
+import { LinkComponent } from '../components/LinkComponent';
+import { Container } from '../components/Container';
+import { Card } from '../components/Card';
 
 export default ({ data }) => {
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
@@ -16,47 +15,56 @@ export default ({ data }) => {
     return (
         <Layout isHome>
             <Banner>
-                <BannerContent>
-                    <h1>Diving Into Natural Language Processing With AllenNLP</h1>
-                </BannerContent>
+                <h1>Diving Into Natural Language Processing With AllenNLP</h1>
             </Banner>
-            {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
-                <StandaloneChapter key={outlineNode.slug}>
-                  <InteractiveLink hidden to={outlineNode.slug}>
-                      <section className={classes.chapter}>
-                          <h2 className={classes.chapterTitle}>
-                              {groupedChapters[outlineNode.slug].node.frontmatter.title}
-                          </h2>
-                          <p className={classes.chapterDesc}>
-                              {groupedChapters[outlineNode.slug].node.frontmatter.description}
-                          </p>
-                      </section>
-                  </InteractiveLink>
-                </StandaloneChapter>
-              ) : (
-                <PartContainer key={outlineNode.title}>
-                  <PartHeading>{outlineNode.title}</PartHeading>
-                  {outlineNode.chapterSlugs.map((chapterSlug) => (
-                      <InteractiveLink key={chapterSlug} hidden to={chapterSlug}>
-                          <section className={classes.chapter}>
-                            <h2 className={classes.chapterTitle}>
-                                {groupedChapters[chapterSlug].node.frontmatter.title}
-                            </h2>
-                            <p className={classes.chapterDesc}>
-                                {groupedChapters[chapterSlug].node.frontmatter.description}
-                            </p>
-                          </section>
-                      </InteractiveLink>
-                  ))}
-                </PartContainer>
-              )
-            )}
+            <Parts>
+                {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
+                    <StandaloneChapter key={outlineNode.slug}>
+                      <ChapterLink to={outlineNode.slug}>
+                          <Chapter>
+                              <h4>
+                                  {groupedChapters[outlineNode.slug].node.frontmatter.title}
+                              </h4>
+                              <p>
+                                  {groupedChapters[outlineNode.slug].node.frontmatter.description}
+                              </p>
+                          </Chapter>
+                      </ChapterLink>
+                    </StandaloneChapter>
+                  ) : (
+                    <PartContainer key={outlineNode.title}>
+                      <PartHeading>{outlineNode.title}</PartHeading>
+                      {outlineNode.chapterSlugs.map((chapterSlug) => (
+                          <ChapterLink key={chapterSlug} to={chapterSlug}>
+                              <Chapter>
+                                <h4>
+                                    {groupedChapters[chapterSlug].node.frontmatter.title}
+                                </h4>
+                                <p>
+                                    {groupedChapters[chapterSlug].node.frontmatter.description}
+                                </p>
+                              </Chapter>
+                          </ChapterLink>
+                      ))}
+                    </PartContainer>
+                  )
+                )}
+            </Parts>
+            <Credits>
+                Written by the <LinkComponent to={data.site.siteMetadata.siteUrl}>AllenNLP</LinkComponent> team at the <LinkComponent to="https://allenai.org/">Allen Institute for AI</LinkComponent>.<br />
+                This course was built with <LinkComponent to="https://github.com/ines/course-starter-python">Online Course Starter</LinkComponent>.
+            </Credits>
         </Layout>
     );
 };
 
 export const pageQuery = graphql`
     {
+        site {
+            siteMetadata {
+                siteUrl
+            }
+        }
         allMarkdownRemark {
             edges {
                 node {
@@ -77,17 +85,26 @@ const Banner = styled(Container)`
     background: url('/ui/bannerDotsLeft.svg') left center / auto 100% no-repeat,
                 url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
                 linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
-`;
 
-const BannerContent = styled(Content)`
     h1 {
         font-size: ${({ theme }) => theme.spacing.xl};
-        line-height: ${({ theme }) => theme.spacing.xl2};
+        line-height: ${({ theme }) => theme.spacing.xxl};
         font-weight: ${({ theme }) => theme.typography.fontWeightBold};
         color: ${({ theme }) => theme.color.N1};
         text-align: center;
         margin: 0;
     }
+`;
+
+const Parts = styled(Container)`
+    background: ${({ theme }) => theme.color.N4};
+`;
+
+const Credits = styled(Container)`
+    background: ${({ theme }) => theme.color.N2};
+    border-bottom: 1px solid ${({ theme }) => theme.color.N4};
+    padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxl}`};
+    text-align: center;
 `;
 
 // The following is placeholder style
@@ -99,32 +116,42 @@ const StandaloneChapter = styled.div`
     margin: auto;
 `;
 
-const PartContainer = styled.div`
-    // outline: 1px solid black;
-    box-shadow: 0 5px 30px rgba(10,20,30,0.125);
-    max-width: 800px;
-    padding: 15px 30px 0 30px;
-    margin: auto;
-    border-radius: 8px;
-    border: 1px solid rgba(0,0,0,0.05);
-
-    & + & {
-        margin-top: 30px;
-    }
+const PartContainer = styled(Card)`
+    padding: 15px 32px 32px 32px;
 `;
 
-const PartHeading = styled.h2`
+const PartHeading = styled.h3`
     ${({ theme }) => theme.typography.h4};
     padding: 10px 0;
     color: ${({ theme }) => theme.color.B6};
 `;
 
-const InteractiveLink = styled(Link)`
-    &&:hover {
-        text-decoration: none;
+const Chapter = styled.div`
+    padding: 32px;
+    border: 1px solid ${({ theme }) => theme.color.N4};
+    border-radius: ${({ theme }) => theme.spacing.xxs};
 
-        section {
-          border-color: #2a79e2;
+    h4 {
+      ${({ theme }) => theme.typography.bodyBig}
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+      color: ${({ theme }) => theme.color.N10};
+    }
+`;
+
+const ChapterLink = styled(LinkComponent)`
+    && {
+        display: block;
+
+        :hover {
+            text-decoration: none;
         }
+    }
+
+    && + && {
+        margin-top: 32px;
     }
 `;

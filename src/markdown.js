@@ -4,7 +4,7 @@ import rehypeReact from 'rehype-react';
 import Exercise from './components/exercise';
 import TextBlock from './components/textblock';
 import CodeBlock from './components/CodeBlock';
-import { Link } from './components/link';
+import { LinkComponent } from './components/LinkComponent';
 import { H3, Hr, Ol, Ul, Li, InlineCode } from './components/typography';
 
 export const renderAst = new rehypeReact({
@@ -13,7 +13,7 @@ export const renderAst = new rehypeReact({
         exercise: Exercise,
         textblock: TextBlock,
         codeblock: CodeBlock,
-        a: Link,
+        a: LinkComponent,
         hr: Hr,
         h3: H3,
         ol: Ol,

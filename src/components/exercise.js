@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button, CompleteButton } from './button';
 import { ChapterContext } from '../context';
+import { Card } from '../components/Card';
 import classes from '../styles/exercise.module.sass';
 
 const Exercise = ({ id, title, type, children }) => {
@@ -46,7 +47,7 @@ const Exercise = ({ id, title, type, children }) => {
         [classes.titleExpanded]: isExpanded,
     });
     return (
-        <section ref={excRef} id={id} className={rootClassNames}>
+        <Card ref={excRef} id={id} className={rootClassNames}>
             <h2 className={titleClassNames} onClick={handleExpand}>
                 <span>
                     <span
@@ -71,7 +72,7 @@ const Exercise = ({ id, title, type, children }) => {
                     </footer>
                 </MarkdownContainer>
             )}
-        </section>
+        </Card>
     );
 };
 

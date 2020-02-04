@@ -7,7 +7,7 @@ import { HeaderColumns } from '@allenai/varnish/components/Header';
 import { Footer } from '@allenai/varnish/components/Footer';
 
 import Head from '../components/Head';
-import { Link } from '../components/link';
+import { LinkComponent } from '../components/LinkComponent';
 import { AllenNLPLogo } from '../components/inlineSVG/AllenNLPLogo';
 
 const Layout = ({ isHome, title, description, children }) => {
@@ -36,18 +36,18 @@ const Layout = ({ isHome, title, description, children }) => {
                         <Header alwaysVisible={true}>
                             <HeaderColumnsWithSpace gridTemplateColumns="auto auto">
                                 <LogoContainer>
-                                    <Link hidden to="/">    
+                                    <LinkComponent to="/">
                                         <AllenNLPLogo />
                                         <span>Course</span>
-                                    </Link>
+                                    </LinkComponent>
                                 </LogoContainer>
                                 <nav>
                                     <ul>
                                         {headerLinks.map((headerLink) => (
                                             <li key={headerLink.url}>
-                                                <Link hidden to={headerLink.url}>
+                                                <LinkComponent to={headerLink.url}>
                                                     {headerLink.text}
-                                                </Link>
+                                                </LinkComponent>
                                             </li>
                                         ))}
                                     </ul>
@@ -57,7 +57,7 @@ const Layout = ({ isHome, title, description, children }) => {
                         <Main>
                             {children}
                         </Main>
-                        <Footer />
+                        <StyledFooter />
                     </ThemeProvider>
                 );
             }}
@@ -110,6 +110,11 @@ const LogoContainer = styled.div`
     }
 `;
 
+const StyledFooter = styled(Footer)`
+    &&& {
+      padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxl}`};
+    }
+`;
 
 // Resetting root layout
 const GlobalStyle = createGlobalStyle`
@@ -120,108 +125,89 @@ const GlobalStyle = createGlobalStyle`
         background: #fff;
     }
 
-    #___gatsby,
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #___gatsby {
+        flex: 1;
+    }
+
     #___gatsby > div[role="group"] {
+        display: flex;
+        flex-direction: column;
         height: 100%;
     }
     
-    // main {
-    //     display: flex;
-    //     flex-direction: column;
-    // }
+    main {
+        flex: 1;
+    }
     
-    // footer {
-    //     margin-top: auto !important;
-    // }
-    // 
-    // 
-    // 
-    // *, *:before, *:after {
-    //     box-sizing: border-box;
-    //     padding: 0;
-    //     margin: 0;
-    //     border: 0;
-    //     outline: 0;
-    // }
-    // 
-    // .textblock {
-    //     width: 800px;
-    //     max-width: 100%;
-    //     margin: auto;
-    // }
-    // 
-    // html {
-    //     font-family: sans-serif;
-    //     -ms-text-size-adjust: 100%;
-    //     -webkit-text-size-adjust: 100%;
-    // }
-    // 
-    // body {
-    //     margin: 0;
-    // }
-    // 
-    // article, aside, details, figcaption, figure, footer, header, main, menu, nav,
-    // section, summary, progress {
-    //     display: block;
-    // }
-    // 
-    // a {
-    //     background-color: transparent;
-    //     color: inherit;
-    //     text-decoration: none;
-    // 
-    //     &:active,
-    //     &:hover {
-    //         outline: 0;
-    //     }
-    // }
-    // 
-    // abbr[title] {
-    //     border-bottom: none;
-    //     text-decoration: underline;
-    //     text-decoration: underline dotted;
-    // }
-    // 
-    // b, strong {
-    //     font-weight: inherit;
-    //     font-weight: bolder;
-    // }
-    // 
-    // small {
-    //     font-size: 80%;
-    // }
-    // 
-    // sub, sup {
-    //     position: relative;
-    //     font-size: 65%;
-    //     line-height: 0;
-    //     vertical-align: baseline;
-    // }
-    // 
-    // sup {
-    //     top: -0.5em;
-    // }
-    // 
-    // sub {
-    //     bottom: -0.15em;
-    // }
-    // 
-    // img {
-    //     border: 0;
-    //     height: auto;
-    //     max-width: 100%;
-    // }
-    // 
-    // svg {
-    //     max-width: 100%;
-    //     color-interpolation-filters: sRGB;
-    //     fill: currentColor;
-    // 
-    //     &:not(:root) {
-    //         overflow: hidden;
-    //     }
-    // }
-    // 
+    footer {
+        margin-top: auto !important;
+    }
+
+    *, *:before, *:after {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        outline: 0;
+    }
+    
+    .textblock {
+        width: 800px;
+        max-width: 100%;
+        margin: auto;
+    }
+
+    article, aside, details, figcaption, figure, footer, header, main, menu, nav,
+    section, summary, progress {
+        display: block;
+    }
+
+    abbr[title] {
+        border-bottom: none;
+        text-decoration: underline;
+        text-decoration: underline dotted;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    sub, sup {
+        position: relative;
+        font-size: 65%;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+    
+    sup {
+        top: -0.5em;
+    }
+    
+    sub {
+        bottom: -0.15em;
+    }
+
+    img {
+        border: 0;
+        height: auto;
+        max-width: 100%;
+    }
+    
+    svg {
+        max-width: 100%;
+        color-interpolation-filters: sRGB;
+        fill: currentColor;
+    
+        &:not(:root) {
+            overflow: hidden;
+        }
+    }
+
     // hr {
     //     box-sizing: content-box;
     //     overflow: visible;

@@ -10,8 +10,7 @@ import { renderAst } from '../markdown'
 import { ChapterContext } from '../context'
 import Layout from './Layout'
 import { Button } from '../components/button'
-import { Link } from '../components/link';
-import Logo from '../../static/logo.svg';
+import { LinkComponent } from '../components/LinkComponent';
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
 
@@ -20,7 +19,6 @@ import classes from '../styles/chapter.module.sass'
 const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data
     const { courseId } = site.siteMetadata
-    const siteTitle = site.siteMetadata.title;
     const { frontmatter, fields, htmlAst } = markdownRemark
     const { title, description } = frontmatter
     const { slug } = fields
@@ -58,15 +56,10 @@ const Template = ({ data, location }) => {
                 <ContentContainer>
                     <SideNav>
                       <NavContent>
-                        <h1 className={classes.logo}>
-                            <Link hidden to="/">
-                                <Logo width={150} height={54} aria-label={siteTitle} />
-                            </Link>
-                        </h1>
                         <ol>
                           {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
                               <NavItem key={outlineNode.slug} isActive={outlineNode.slug === slug}>
-                                <Link hidden to={outlineNode.slug}>{groupedChapters[outlineNode.slug].node.frontmatter.title}</Link>
+                                <LinkComponent to={outlineNode.slug}>{groupedChapters[outlineNode.slug].node.frontmatter.title}</LinkComponent>
                               </NavItem>
                             ) : (
                               <li key={outlineNode.title}>
@@ -74,7 +67,7 @@ const Template = ({ data, location }) => {
                                 <ol>
                                   {outlineNode.chapterSlugs.map((chapterSlug) => (
                                       <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                        <Link hidden to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
+                                        <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
                                       </NavItem>
                                   ))}
                                 </ol>
@@ -214,7 +207,8 @@ const SideNav = styled.nav`
 
 const NavContent = styled.div`
   position: sticky;
-  top: 66px;
+  top: 115px;
+  padding-top: 30px;
 `;
 
 const BodyContent = styled.div`
