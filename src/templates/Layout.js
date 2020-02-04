@@ -2,10 +2,13 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
+import { Header } from '@allenai/varnish/components/Header';
+import { HeaderColumns } from '@allenai/varnish/components/Header';
+import { Footer } from '@allenai/varnish/components/Footer';
 
-import Head from './Head';
-import { Link } from './link';
-import { Container, Content } from './Container';
+import Head from '../components/Head';
+import { Link } from '../components/link';
+import { AllenNLPLogo } from '../components/inlineSVG/AllenNLPLogo';
 
 const Layout = ({ isHome, title, description, children }) => {
     return (
@@ -30,7 +33,27 @@ const Layout = ({ isHome, title, description, children }) => {
                     <ThemeProvider>
                         <Head title={title} description={description} />
                         <GlobalStyle />
-                        <Header />
+                        <Header alwaysVisible={true}>
+                            <HeaderColumnsWithSpace gridTemplateColumns="auto auto">
+                                <LogoContainer>
+                                    <Link hidden to="/">    
+                                        <AllenNLPLogo />
+                                        <span>Course</span>
+                                    </Link>
+                                </LogoContainer>
+                                <nav>
+                                    <ul>
+                                        {headerLinks.map((headerLink) => (
+                                            <li key={headerLink.url}>
+                                                <Link hidden to={headerLink.url}>
+                                                    {headerLink.text}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </nav>
+                            </HeaderColumnsWithSpace>
+                        </Header>
                         <Main>
                             {children}
                         </Main>
@@ -47,24 +70,65 @@ export default Layout;
 const Main = styled.main`
 `;
 
+const HeaderColumnsWithSpace = styled(HeaderColumns)`
+    padding: 9px 0;
+    align-items: center;
+    
+    nav ul {
+      display: flex;
+      justify-content: flex-end;
+      
+      li + li {
+        margin-left: 40px;
+      }
+    }
+`;
+
+const LogoContainer = styled.div`
+    a {
+      display: flex;
+      align-items: center;
+
+      &,
+      &:hover {
+        &,
+        span {
+          color: ${({ theme }) => theme.color.N10};
+        }
+        text-decoration: none !important;
+      }
+    }
+
+    svg {
+      display: block;
+    }
+
+    span {
+      display: block;
+      font-size: 34px;
+      padding-left: 14px;
+    }
+`;
+
+
 // Resetting root layout
 const GlobalStyle = createGlobalStyle`
     html,
     body {
         width: 100%;
         height: 100%;
+        background: #fff;
     }
 
     #___gatsby,
-    #___gatsby > div,
-    main {
+    #___gatsby > div[role="group"] {
         height: 100%;
     }
     
-    main {
-        display: flex;
-        flex-direction: column;
-    }
+    // main {
+    //     display: flex;
+    //     flex-direction: column;
+    // }
     
     // footer {
     //     margin-top: auto !important;

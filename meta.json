@@ -2,7 +2,6 @@
     "courseId": "allennlp-intro-course",
     "title": "Diving Into Natural Language Processing With AllenNLP",
     "description": "We walk through the basics of using AllenNLP, describing all of the main abstractions used and why we chose them, how to use specific functionality like configuration files or pre-trained representations, and how to build various kinds of models, from simple to complex.",
-    "bio": "Written by the AllenNLP team at the Allen Institute for AI",
     "siteUrl": "https://allennlp.org",
     "twitter": "ai2_allennlp",
     "testTemplate": "from wasabi import Printer\n__msg__ = Printer()\n__solution__ = \"\"\"${solution}\"\"\"\n\n${solution}\n\n${test}\n\ntry:\n    test()\nexcept AssertionError as e:\n    __msg__.fail(e)",

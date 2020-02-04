@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 import { renderAst } from '../markdown'
 import { ChapterContext } from '../context'
-import Layout from '../components/layout'
+import Layout from './Layout'
 import { Button } from '../components/button'
 import { Link } from '../components/link';
 import Logo from '../../static/logo.svg';

@@ -4,19 +4,22 @@ import styled from 'styled-components';
 
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
-import Layout from '../components/layout';
+import Layout from '../templates/Layout';
 import { Link } from '../components/link';
-import Logo from '../../static/logo.svg';
+import { Container, Content } from '../components/Container';
 
 import classes from '../styles/index.module.sass';
 
 export default ({ data }) => {
-    const siteMetadata = data.site.siteMetadata;
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
     return (
         <Layout isHome>
-            <Logo className={classes.logo} aria-label={siteMetadata.title} />
+            <Banner>
+                <BannerContent>
+                    <h1>Diving Into Natural Language Processing With AllenNLP</h1>
+                </BannerContent>
+            </Banner>
             {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
                 <StandaloneChapter key={outlineNode.slug}>
                   <InteractiveLink hidden to={outlineNode.slug}>
@@ -54,11 +57,6 @@ export default ({ data }) => {
 
 export const pageQuery = graphql`
     {
-        site {
-            siteMetadata {
-                title
-            }
-        }
         allMarkdownRemark {
             edges {
                 node {
@@ -72,6 +70,23 @@ export const pageQuery = graphql`
                 }
             }
         }
+    }
+`;
+
+const Banner = styled(Container)`
+    background: url('/ui/bannerDotsLeft.svg') left center / auto 100% no-repeat,
+                url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
+                linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
+`;
+
+const BannerContent = styled(Content)`
+    h1 {
+        font-size: ${({ theme }) => theme.spacing.xl};
+        line-height: ${({ theme }) => theme.spacing.xl2};
+        font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+        color: ${({ theme }) => theme.color.N1};
+        text-align: center;
+        margin: 0;
     }
 `;
 
