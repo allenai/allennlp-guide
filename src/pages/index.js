@@ -51,7 +51,7 @@ export default ({ data }) => {
             </Parts>
             <Credits>
                 Written by the <LinkComponent to={data.site.siteMetadata.siteUrl}>AllenNLP</LinkComponent> team at the <LinkComponent to="https://allenai.org/">Allen Institute for AI</LinkComponent>.<br />
-                This course was built with <LinkComponent to="https://github.com/ines/course-starter-python">Online Course Starter</LinkComponent>.
+              This course was inspired by <LinkComponent to="https://github.com/ines/course-starter-python">Online Course Starter</LinkComponent>.
             </Credits>
             <Footer />
         </Layout>
@@ -142,10 +142,6 @@ const Credits = styled(Container)`
     padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxl}`};
     text-align: center;
 `;
-
-// The following is placeholder style
-// TODO(aarons): Rework these styles when there is an approved design
-// and Varnish is integrated.
 
 const PartContainer = styled(Card)``;
 
