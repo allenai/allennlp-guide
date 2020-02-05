@@ -8,13 +8,12 @@ import styled from 'styled-components';
 
 import { renderAst } from '../markdown'
 import { ChapterContext } from '../context'
-import Layout from './Layout'
+import Layout from './Layout';
+import { Footer } from '../components/Footer';
 import { Button } from '../components/button'
 import { LinkComponent } from '../components/LinkComponent';
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
-
-import classes from '../styles/chapter.module.sass'
 
 const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data
@@ -78,12 +77,12 @@ const Template = ({ data, location }) => {
                       </NavContent>
                     </SideNav>
                     <BodyContent>
-                        <header className={classes.header}>
-                            {title && <h1 className={classes.title}>{title}</h1>}
+                        <div>
+                            {title && <h1>{title}</h1>}
                             {description && (
-                                <p className={classes.description}>{description}</p>
+                                <p>{description}</p>
                             )}
-                        </header>
+                        </div>
                         {html}
                         <Pagination>
                           <div>
@@ -97,6 +96,7 @@ const Template = ({ data, location }) => {
                             )}
                           </div>
                         </Pagination>
+                        <ChapterFooter />
                     </BodyContent>
                 </ContentContainer>
             </Layout>
@@ -140,13 +140,53 @@ export const pageQuery = graphql`
     }
 `
 
+const ChapterFooter = styled(Footer)`
+    &&& {
+        padding: ${({ theme }) => theme.spacing.xl} 0;
+        background: transparent;
+        text-align: left;
+    }
+`;
+
 // The following is placeholder style
 // TODO(aarons): Rework these styles when there is an approved design
 // and Varnish is integrated.
 
 const ContentContainer = styled.div`
+  flex: 1;
   display: flex;
   justify-content: center;
+  background: #fff;
+`;
+
+const SideNav = styled.nav`
+  max-width: 300px;
+  padding-right: 40px;
+  font-size: 14px;
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  ol {
+    list-style: none;
+    padding-left: 0;
+    
+    strong {
+      display: block;
+      color: ${({ theme }) => theme.color.N10};
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      margin-top: 15px;
+      padding-bottom: 5px;
+    }
+  }
+`;
+
+const NavContent = styled.div`
+  position: sticky;
+  top: 115px;
+  padding-top: 30px;
 `;
 
 const NavItem = styled(({ isActive, ...props }) =>
@@ -181,40 +221,14 @@ const NavItem = styled(({ isActive, ...props }) =>
   ` : null}
 `;
 
-const SideNav = styled.nav`
-  max-width: 300px;
-  padding-right: 40px;
-  font-size: 14px;
-
-  h1 {
-    margin-bottom: 20px;
-  }
-
-  ol {
-    list-style: none;
-    padding-left: 0;
-    
-    strong {
-      display: block;
-      color: ${({ theme }) => theme.color.N10};
-      padding-top: 15px;
-      border-top: 1px solid #ddd;
-      margin-top: 15px;
-      padding-bottom: 5px;
-    }
-  }
-`;
-
-const NavContent = styled.div`
-  position: sticky;
-  top: 115px;
-  padding-top: 30px;
-`;
-
 const BodyContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   border-left: 1px solid #ddd;
   max-width: 800px;
-  padding-left: 40px;
+  padding: ${({ theme }) => `${theme.spacing.xl} 0 0 ${theme.spacing.xl}`};
+  padding-right: 0;
 `;
 
 const Pagination = styled.div`

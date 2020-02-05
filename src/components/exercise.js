@@ -1,11 +1,9 @@
 import React, { useRef, useCallback, useContext, useEffect } from 'react';
-import classNames from 'classnames';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Button, CompleteButton } from './button';
 import { ChapterContext } from '../context';
-import { Card } from '../components/Card';
-import classes from '../styles/exercise.module.sass';
+import { Card, CardContent } from '../components/Card';
 
 const Exercise = ({ id, title, type, children }) => {
     const excRef = useRef();
@@ -39,44 +37,55 @@ const Exercise = ({ id, title, type, children }) => {
             : [...completed, excId];
         setCompleted(newCompleted);
     }, [isCompleted, completed, excId]);
-    const rootClassNames = classNames(classes.root, {
-        [classes.expanded]: isExpanded,
-        [classes.completed]: !isExpanded && isCompleted,
-    });
-    const titleClassNames = classNames(classes.title, {
-        [classes.titleExpanded]: isExpanded,
-    });
+
+    const Title = isCompleted ? CompletedSectionTitle : SectionTitle;
+
     return (
-        <Card ref={excRef} id={id} className={rootClassNames}>
-            <h2 className={titleClassNames} onClick={handleExpand}>
-                <span>
-                    <span
-                        className={classNames(classes.id, { [classes.idCompleted]: isCompleted })}
-                    >
-                        {excId}
-                    </span>
-                    {title}
-                </span>
-            </h2>
+        <Card ref={excRef} id={id}>
+            <Title onClick={handleExpand}>
+                <SectionId>
+                    {excId}
+                </SectionId>
+                {title}
+            </Title>
             {isExpanded && (
-                <MarkdownContainer>
-                    {children}
-                    <footer className={classes.footer}>
-                        <CompleteButton
-                            completed={isCompleted}
-                            toggleComplete={handleSetCompleted}
-                        />
-                        <Button onClick={handleNext} variant="secondary" small>
-                            Next
-                        </Button>
-                    </footer>
-                </MarkdownContainer>
+                <CardContent>
+                    <MarkdownContainer>
+                        {children}
+                        <footer>
+                            <CompleteButton
+                                completed={isCompleted}
+                                toggleComplete={handleSetCompleted}
+                            />
+                            <Button onClick={handleNext} variant="secondary" small>
+                                Next
+                            </Button>
+                        </footer>
+                    </MarkdownContainer>
+                </CardContent>
             )}
         </Card>
     );
 };
 
 export default Exercise;
+
+const titleStyles = css`
+    ${({ theme }) => theme.typography.bodyBig}
+    margin: 0;
+    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
+`;
+
+const SectionTitle = styled.h2`
+    ${titleStyles}
+`;
+
+const SectionId = styled.span`
+   font-weight: normal;
+   color: ${({ theme }) => theme.color.B6};
+   font-size: 19px;
+   padding-right: 20px;
+`;
 
 const MarkdownContainer = styled.div`
     h1,
@@ -106,4 +115,10 @@ const MarkdownContainer = styled.div`
         text-decoration: underline;
       }
     }
+`;
+
+// TODO(aarons): Placeholder style
+const CompletedSectionTitle = styled.h2`
+    ${titleStyles}
+    outline: 1px solid green;
 `;

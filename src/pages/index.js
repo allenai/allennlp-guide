@@ -7,13 +7,14 @@ import { getGroupedChapters } from '../utils';
 import Layout from '../templates/Layout';
 import { LinkComponent } from '../components/LinkComponent';
 import { Container } from '../components/Container';
-import { Card } from '../components/Card';
+import { Card, CardContent } from '../components/Card';
+import { Footer } from '../components/Footer';
 
 export default ({ data }) => {
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
     return (
-        <Layout isHome>
+        <Layout>
             <Banner>
                 <h1>Diving Into Natural Language Processing With AllenNLP</h1>
             </Banner>
@@ -31,17 +32,19 @@ export default ({ data }) => {
                     </StandaloneChapter>
                   ) : (
                     <PartContainer key={outlineNode.title}>
-                      <PartHeading>{outlineNode.title}</PartHeading>
-                      {outlineNode.chapterSlugs.map((chapterSlug) => (
-                          <ChapterLink key={chapterSlug} to={chapterSlug}>
-                              <h4>
-                                  {groupedChapters[chapterSlug].node.frontmatter.title}
-                              </h4>
-                              <p>
-                                  {groupedChapters[chapterSlug].node.frontmatter.description}
-                              </p>
-                          </ChapterLink>
-                      ))}
+                        <PartContent>
+                            <PartHeading>{outlineNode.title}</PartHeading>
+                            {outlineNode.chapterSlugs.map((chapterSlug) => (
+                                <ChapterLink key={chapterSlug} to={chapterSlug}>
+                                    <h4>
+                                        {groupedChapters[chapterSlug].node.frontmatter.title}
+                                    </h4>
+                                    <p>
+                                        {groupedChapters[chapterSlug].node.frontmatter.description}
+                                    </p>
+                                </ChapterLink>
+                            ))}
+                        </PartContent>
                     </PartContainer>
                   )
                 )}
@@ -50,6 +53,7 @@ export default ({ data }) => {
                 Written by the <LinkComponent to={data.site.siteMetadata.siteUrl}>AllenNLP</LinkComponent> team at the <LinkComponent to="https://allenai.org/">Allen Institute for AI</LinkComponent>.<br />
                 This course was built with <LinkComponent to="https://github.com/ines/course-starter-python">Online Course Starter</LinkComponent>.
             </Credits>
+            <Footer />
         </Layout>
     );
 };
@@ -88,7 +92,8 @@ const Banner = styled(Container)`
         font-weight: ${({ theme }) => theme.typography.fontWeightBold};
         color: ${({ theme }) => theme.color.N1};
         text-align: center;
-        margin: 0;
+        margin: 0 auto;
+        max-width: 720px;
     }
 `;
 
@@ -142,8 +147,10 @@ const Credits = styled(Container)`
 // TODO(aarons): Rework these styles when there is an approved design
 // and Varnish is integrated.
 
-const PartContainer = styled(Card)`
-    padding: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+const PartContainer = styled(Card)``;
+
+const PartContent = styled(CardContent)`
+    padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
 `;
 
 const StandaloneChapter = styled.div`

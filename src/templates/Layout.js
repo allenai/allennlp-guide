@@ -4,13 +4,12 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
 import { Header } from '@allenai/varnish/components/Header';
 import { HeaderColumns } from '@allenai/varnish/components/Header';
-import { Footer } from '@allenai/varnish/components/Footer';
 
 import Head from '../components/Head';
 import { LinkComponent } from '../components/LinkComponent';
 import { AllenNLPLogo } from '../components/inlineSVG/AllenNLPLogo';
 
-const Layout = ({ isHome, title, description, children }) => {
+const Layout = ({ title, description, children }) => {
     return (
         <StaticQuery
             query={graphql`
@@ -34,7 +33,7 @@ const Layout = ({ isHome, title, description, children }) => {
                         <Head title={title} description={description} />
                         <GlobalStyle />
                         <Header alwaysVisible={true}>
-                            <HeaderColumnsWithSpace gridTemplateColumns="auto auto">
+                            <HeaderColumnsWithSpace gridTemplateColumns="18rem auto">
                                 <LogoContainer>
                                     <LinkComponent to="/">
                                         <AllenNLPLogo />
@@ -57,7 +56,6 @@ const Layout = ({ isHome, title, description, children }) => {
                         <Main>
                             {children}
                         </Main>
-                        <StyledFooter />
                     </ThemeProvider>
                 );
             }}
@@ -66,9 +64,6 @@ const Layout = ({ isHome, title, description, children }) => {
 };
 
 export default Layout;
-
-const Main = styled.main`
-`;
 
 const HeaderColumnsWithSpace = styled(HeaderColumns)`
     padding: 9px 0;
@@ -89,31 +84,37 @@ const LogoContainer = styled.div`
       display: flex;
       align-items: center;
 
-      &,
-      &:hover {
-        &,
-        span {
-          color: ${({ theme }) => theme.color.N10};
-        }
-        text-decoration: none !important;
+      svg {
+        display: block;
+        transition: fill 0.2s ease;
       }
-    }
 
-    svg {
-      display: block;
-    }
+      span {
+        display: block;
+        font-size: 34px;
+        padding-left: 14px;
+        transition: color 0.2s ease;
+        color: ${({ theme }) => theme.color.N10};
+      }
 
-    span {
-      display: block;
-      font-size: 34px;
-      padding-left: 14px;
+      &:hover {
+        text-decoration: none !important;
+
+        svg {
+          fill: ${({ theme }) => theme.color.B6};
+        }
+
+        span {
+          color: ${({ theme }) => theme.color.B6};
+        }
+      }
     }
 `;
 
-const StyledFooter = styled(Footer)`
-    &&& {
-      padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxl}`};
-    }
+const Main = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 `;
 
 // Resetting root layout
@@ -122,7 +123,7 @@ const GlobalStyle = createGlobalStyle`
     body {
         width: 100%;
         height: 100%;
-        background: #fff;
+        background: ${({ theme }) => theme.color.N1};
     }
 
     body {
@@ -139,14 +140,10 @@ const GlobalStyle = createGlobalStyle`
         flex-direction: column;
         height: 100%;
     }
-    
-    main {
-        flex: 1;
-    }
-    
-    footer {
-        margin-top: auto !important;
-    }
+
+    // Reset styles ported from SASS
+    // TODO(aarons): Whittle these styles down to essential. There is likely
+    // stuff in here that we don't want to keep.
 
     *, *:before, *:after {
         box-sizing: border-box;
@@ -208,161 +205,131 @@ const GlobalStyle = createGlobalStyle`
         }
     }
 
-    // hr {
-    //     box-sizing: content-box;
-    //     overflow: visible;
-    //     height: 0;
-    // }
-    // 
-    // pre {
-    //     overflow: auto;
-    // }
-    // 
-    // code, pre {
-    //     font-family: monospace, monospace;
-    //     font-size: 1em;
-    // }
-    // 
-    // table {
-    //     text-align: left;
-    //     width: 100%;
-    //     max-width: 100%;
-    //     border-collapse: collapse;
-    //     margin-bottom: 2rem;
-    // 
-    //     td, th {
-    //         vertical-align: top;
-    //         padding: 0.5rem;
-    //         border-bottom: 1px solid #eee;
-    //     }
-    // 
-    //     code {
-    //         white-space: nowrap;
-    //     }
-    // }
-    // 
-    // button {
-    //     appearance: none;
-    //     background: transparent;
-    //     cursor: pointer;
-    // }
-    // 
-    // progress {
-    //     appearance: none;
-    // }
-    // 
-    // /* Layout */
-    // 
-    // html {
-    //     font-size: 11px;
-    // }
-    // 
-    // @media(max-width: 767px) {
-    //     html {
-    //         font-size: 10px;
-    //     }
-    // }
-    // 
-    // p {
-    //     margin-bottom: 3rem;
-    // }
-    // 
-    // /* Code */
-    // 
-    // pre, code {
-    //     font-family: 'Roboto Mono', monospace;
-    // }
-    // 
-    // pre {
-    //     margin-bottom: 3rem;
-    // }
-    // 
-    // pre code {
-    //     display: block;
-    //     padding: 2rem !important;
-    // }
-    // 
-    // /* Syntax highlighting */
-    // 
-    // .CodeMirror.cm-s-default {
-    //     font-family: 'Roboto Mono', monospace;
-    //     background: #f7f7f7;
-    //     color: #403f53;
-    //     word-wrap: break-word;
-    // 
-    //     .CodeMirror-line {
-    //         padding: 0;
-    //     }
-    // 
-    //     .CodeMirror-selected {
-    //         background: #7a81812b;
-    //     }
-    // 
-    //     .CodeMirror-cursor {
-    //         border-left-color: currentColor;
-    //     }
-    // 
-    //     .cm-variable-2 {
-    //         color: inherit;
-    //         font-style: italic;
-    //     }
-    // 
-    //     .cm-comment {
-    //         color: #989fb1;
-    //     }
-    // 
-    //     .cm-keyword, .cm-builtin {
-    //         color: #994cc3;
-    //     }
-    // 
-    //     .cm-operator {
-    //         color: #994cc3;
-    //     }
-    // 
-    //     .cm-string {
-    //         color: #994cc3;
-    //     }
-    // 
-    //     .cm-number {
-    //         color: #aa0982;
-    //     }
-    // 
-    //     .cm-def {
-    //         color: #4876d6;
-    //     }
-    // }
-    // 
-    // .jp-RenderedText pre {
-    //     .ansi-cyan-fg.ansi-cyan-fg {
-    //         color: #00d8ff;
-    //     }
-    // 
-    //     .ansi-green-fg.ansi-green-fg {
-    //         color: #12dc55;
-    //     }
-    // 
-    //     .ansi-red-fg.ansi-red-fg {
-    //         color: #f76464;
-    //     }
-    // }
-    // 
-    // /* Gatsby Images */
-    // 
-    // .gatsby-resp-image-link {
-    //     border: 0;
-    // }
-    // 
-    // .gatsby-resp-image-figure {
-    //     margin-bottom: 4rem;
-    // }
-    // 
-    // .gatsby-resp-image-figcaption {
-    //     padding-top: 1rem;
-    //     text-align: center;
-    // 
-    //     code {
-    //         color: inherit;
-    //     }
-    // }
+    hr {
+        box-sizing: content-box;
+        overflow: visible;
+        height: 0;
+    }
+    
+    table {
+        text-align: left;
+        width: 100%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+    
+        td, th {
+            vertical-align: top;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+    
+        code {
+            white-space: nowrap;
+        }
+    }
 
+    progress {
+        appearance: none;
+    }
+
+
+    // Code styles
+
+    pre, code {
+        font-family: 'Roboto Mono', monospace;
+    }
+    
+    pre {
+        margin-bottom: 3rem;
+        overflow: auto;
+    }
+    
+    pre code {
+        display: block;
+        padding: 2rem !important;
+    }
+    
+    // Syntax highlighting styles
+    
+    .CodeMirror.cm-s-default {
+        font-family: 'Roboto Mono', monospace;
+        background: #f7f7f7;
+        color: #403f53;
+        word-wrap: break-word;
+    
+        .CodeMirror-line {
+            padding: 0;
+        }
+    
+        .CodeMirror-selected {
+            background: #7a81812b;
+        }
+    
+        .CodeMirror-cursor {
+            border-left-color: currentColor;
+        }
+    
+        .cm-variable-2 {
+            color: inherit;
+            font-style: italic;
+        }
+    
+        .cm-comment {
+            color: #989fb1;
+        }
+    
+        .cm-keyword, .cm-builtin {
+            color: #994cc3;
+        }
+    
+        .cm-operator {
+            color: #994cc3;
+        }
+    
+        .cm-string {
+            color: #994cc3;
+        }
+    
+        .cm-number {
+            color: #aa0982;
+        }
+    
+        .cm-def {
+            color: #4876d6;
+        }
+    }
+    
+    .jp-RenderedText pre {
+        .ansi-cyan-fg.ansi-cyan-fg {
+            color: #00d8ff;
+        }
+    
+        .ansi-green-fg.ansi-green-fg {
+            color: #12dc55;
+        }
+    
+        .ansi-red-fg.ansi-red-fg {
+            color: #f76464;
+        }
+    }
+    
+    // Gatsby image styles
+    
+    .gatsby-resp-image-link {
+        border: 0;
+    }
+    
+    .gatsby-resp-image-figure {
+        margin-bottom: 4rem;
+    }
+    
+    .gatsby-resp-image-figcaption {
+        padding-top: 1rem;
+        text-align: center;
+    
+        code {
+            color: inherit;
+        }
+    }
 `;
