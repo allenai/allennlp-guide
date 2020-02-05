@@ -230,8 +230,11 @@ const GlobalStyle = createGlobalStyle`
 
     // Code styles
 
-    pre, code {
-        font-family: 'Roboto Mono', monospace;
+    &&& {
+        pre, code {
+            font-family: 'Roboto Mono', monospace;
+            background: #f7f7f7 !important;
+        }
     }
     
     pre {

@@ -257,7 +257,6 @@ const BodyContent = styled.div`
         content: "";
         width: 100%;
         height: 50px;
-        background: green;
         z-index: 2;
         margin-left: -30px;
         box-shadow: 0 -15px 30px 30px #fff;

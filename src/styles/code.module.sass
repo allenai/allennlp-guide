@@ -1,8 +1,9 @@
 .root
     margin-left: -2rem
     width: calc(100% + 4rem)
-    margin-bottom: 5rem
+    margin-bottom: 2rem
     font-size: 14px
+    background: #f7f7f7
 
 .cell
     background: var(--syntax-background)
@@ -11,38 +12,24 @@
     & > div:first-child
         padding: 1.5rem 2rem 1rem
         position: relative
-
-        &:before
-            content: "Input"
-            display: inline-block
-            border-radius: var(--border-radius)
-            color: var(--syntax-background)
-            background: var(--syntax-text)
-            padding: 0 0.5rem
-            position: absolute
-            top: 1rem
-            right: 1.5rem
-            font-size: var(--font-size-xs)
-            font-weight: bold
-            text-transform: uppercase
-            z-index: 5
+    
+    button
+        margin: 15px 32px 32px
 
 .output
     padding: 2rem 9rem 2rem 3rem
-    background: var(--syntax-text)
-    color: var(--syntax-background)
+    background: #47515C
+    color: #f7f7f7
     position: relative
 
     &:before
         content: "Output"
-        display: inline-block
-        border-radius: var(--border-radius)
-        background: var(--syntax-background)
-        color: var(--syntax-text)
+        display: block
+        background: #616C7A
+        color: #E8ECF2
         padding: 0 0.5rem
         position: absolute
         top: 1rem
         right: 1.5rem
-        font-size: var(--font-size-xs)
-        font-weight: bold
+        font-size: 13px
         text-transform: uppercase

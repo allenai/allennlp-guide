@@ -173,7 +173,8 @@ const MarkdownContainer = styled.div`
     
     table + ${Toolbar},
     hr + ${Toolbar},
-    pre + ${Toolbar} {
+    pre + ${Toolbar},
+    div[class^="code-module-root"] + ${Toolbar} {
         border: none;
         padding-top: 0;
     }
