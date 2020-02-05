@@ -145,14 +145,6 @@ const GlobalStyle = createGlobalStyle`
     // TODO(aarons): Whittle these styles down to essential. There is likely
     // stuff in here that we don't want to keep.
 
-    // *, *:before, *:after {
-    //     box-sizing: border-box;
-    //     padding: 0;
-    //     margin: 0;
-    //     border: 0;
-    //     outline: 0;
-    // }
-
     article, aside, details, figcaption, figure, footer, header, main, menu, nav,
     section, summary, progress {
         display: block;
