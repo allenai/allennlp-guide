@@ -1,3 +1,5 @@
+// This SVG asset is displayed in the global header.
+
 import React from 'react';
 import styled from 'styled-components';
 

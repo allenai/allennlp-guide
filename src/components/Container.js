@@ -1,3 +1,8 @@
+// This component offers a common layout structure utilizing a
+// constrained-width content container nested inside of a full-width
+// parent container that can be given a custom background color
+// via Styled when it's instanced.
+
 import React from 'react';
 import styled from 'styled-components';
 

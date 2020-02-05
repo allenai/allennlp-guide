@@ -1,3 +1,5 @@
+// This component is a custom wrapper for the Varnish Footer component.
+
 import styled from 'styled-components';
 import { Footer as VarnishFooter } from '@allenai/varnish/components/Footer';
 

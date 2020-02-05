@@ -1,3 +1,5 @@
+// This SVG asset is used to denote "completed" chapter section
+
 import React from 'react';
 
 export const CheckMark = ({ className }) => (

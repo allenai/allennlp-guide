@@ -1,3 +1,7 @@
+// This component offers a common stylistic element of a medium-sized
+// content container with rounded corners and a drop-shadow that is
+// reminiscent of a playing card look and feel.
+
 import styled from 'styled-components';
 
 export const Card = styled.div`
