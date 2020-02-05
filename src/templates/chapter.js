@@ -1,6 +1,12 @@
+// Prism Code formatting modules
 import Prism from 'prismjs';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
+// Prism CSS
+import '../styles/prism.css';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
 import useLocalStorage from '@illinois/react-use-local-storage';

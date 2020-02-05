@@ -223,21 +223,35 @@ const GlobalStyle = createGlobalStyle`
     // Code styles
 
     &&& {
-        pre, code {
-            font-family: 'Roboto Mono', monospace;
-            background: #f7f7f7 !important;
+        code, kbd, pre, samp {
+            margin: inherit;
+            overflow: inherit;
+            box-sizing: inherit;
+            line-height: inherit;
+            font-family: inherit;
+            font-size: inherit;
+            box-sizing: inherit;
+            font-variant: inherit;
+            font-feature-settings: inherit;
         }
     }
-    
-    pre {
-        margin-bottom: 3rem;
-        overflow: auto;
-    }
-    
-    pre code {
-        display: block;
-        padding: 2rem !important;
-    }
+
+    // &&& {
+    //     pre, code {
+    //         font-family: 'Roboto Mono', monospace;
+    //         background: #f7f7f7 !important;
+    //     }
+    // }
+    // 
+    // pre {
+    //     margin-bottom: 3rem;
+    //     overflow: auto;
+    // }
+    // 
+    // pre code {
+    //     display: block;
+    //     padding: 2rem !important;
+    // }
     
     // Syntax highlighting styles
     

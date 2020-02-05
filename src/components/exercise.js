@@ -158,7 +158,8 @@ const MarkdownContainer = styled.div`
       }
     }
     
-    code {
+    p > code,
+    li > code {
       font-size: 14px;
       -webkit-font-smoothing: subpixel-antialiased;
     }
