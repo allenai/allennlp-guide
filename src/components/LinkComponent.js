@@ -1,3 +1,6 @@
+// This component is used for all internal and external anchor links.
+// External links are determined by the existence of `http` in the URL.
+
 import React from 'react';
 import { Link as GatsbyLink } from 'gatsby';
 
