@@ -1,9 +1,10 @@
 import React, { useRef, useCallback, useContext, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import { Button } from '@allenai/varnish/components/button';
 
-import { Button, CompleteButton } from './button';
 import { ChapterContext } from '../context';
 import { Card, CardContent } from '../components/Card';
+import { CheckMark } from '../components/inlineSVG/CheckMark';
 
 const Exercise = ({ id, title, type, children }) => {
     const excRef = useRef();
@@ -36,48 +37,87 @@ const Exercise = ({ id, title, type, children }) => {
             ? completed.filter(v => v !== excId)
             : [...completed, excId];
         setCompleted(newCompleted);
+        if (!isCompleted) {
+            setActiveExc(null);
+        }
     }, [isCompleted, completed, excId]);
 
     const Title = isCompleted ? CompletedSectionTitle : SectionTitle;
 
     return (
-        <Card ref={excRef} id={id}>
+        <StyledCard isExpanded={isExpanded}>
+            <Anchor id={id}><div ref={excRef} /></Anchor>
             <Title onClick={handleExpand}>
                 <SectionId>
                     {excId}
                 </SectionId>
                 {title}
+                <CheckMark />
             </Title>
             {isExpanded && (
-                <CardContent>
+                <StyledCardContent>
                     <MarkdownContainer>
                         {children}
-                        <footer>
-                            <CompleteButton
-                                completed={isCompleted}
-                                toggleComplete={handleSetCompleted}
-                            />
-                            <Button onClick={handleNext} variant="secondary" small>
+                        <Toolbar>
+                            <Button onClick={handleSetCompleted}>
+                                {isCompleted ? 'Unm' : 'M'}ark as Completed
+                            </Button>
+                            <Button onClick={handleNext}>
                                 Next
                             </Button>
-                        </footer>
+                        </Toolbar>
                     </MarkdownContainer>
-                </CardContent>
+                </StyledCardContent>
             )}
-        </Card>
+        </StyledCard>
     );
 };
 
 export default Exercise;
 
+const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
+    border: 1px solid transparent;
+
+    ${({ isExpanded, theme }) => !isExpanded ? `
+        &:hover {
+            border-color: ${theme.color.B6};
+        }
+    ` : null}
+`;
+
+// Workaround to position anchored content below sticky header
+const Anchor = styled.div`
+    width: 1px;
+    height: 164px;
+    margin-top: -164px;
+    transform: translateX(-10px);
+`;
+
 const titleStyles = css`
     ${({ theme }) => theme.typography.bodyBig}
+    display: flex;
     margin: 0;
     padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
+    cursor: pointer;
+
+    svg {
+        margin-left: auto;
+        margin-right: -6px;
+        opacity: 0;
+    }
 `;
 
 const SectionTitle = styled.h2`
     ${titleStyles}
+`;
+
+const CompletedSectionTitle = styled.h2`
+    ${titleStyles}
+    
+    svg {
+        opacity: 1;
+        fill: ${({ theme }) => theme.color.G6};
+    }
 `;
 
 const SectionId = styled.span`
@@ -85,6 +125,21 @@ const SectionId = styled.span`
    color: ${({ theme }) => theme.color.B6};
    font-size: 19px;
    padding-right: 20px;
+`;
+
+const StyledCardContent = styled(CardContent)`
+    border-top: 1px solid ${({ theme }) => theme.color.N4};
+`;
+
+const Toolbar = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.color.N4};
+    padding-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    margin-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    display: flex;
+    
+    button:last-child {
+      margin-left: auto;
+    }
 `;
 
 const MarkdownContainer = styled.div`
@@ -115,10 +170,11 @@ const MarkdownContainer = styled.div`
         text-decoration: underline;
       }
     }
-`;
-
-// TODO(aarons): Placeholder style
-const CompletedSectionTitle = styled.h2`
-    ${titleStyles}
-    outline: 1px solid green;
+    
+    table + ${Toolbar},
+    hr + ${Toolbar},
+    pre + ${Toolbar} {
+        border: none;
+        padding-top: 0;
+    }
 `;

@@ -123,7 +123,7 @@ const GlobalStyle = createGlobalStyle`
     body {
         width: 100%;
         height: 100%;
-        background: ${({ theme }) => theme.color.N1};
+        background: ${({ theme }) => theme.color.N1} !important;
     }
 
     body {
@@ -145,19 +145,13 @@ const GlobalStyle = createGlobalStyle`
     // TODO(aarons): Whittle these styles down to essential. There is likely
     // stuff in here that we don't want to keep.
 
-    *, *:before, *:after {
-        box-sizing: border-box;
-        padding: 0;
-        margin: 0;
-        border: 0;
-        outline: 0;
-    }
-    
-    .textblock {
-        width: 800px;
-        max-width: 100%;
-        margin: auto;
-    }
+    // *, *:before, *:after {
+    //     box-sizing: border-box;
+    //     padding: 0;
+    //     margin: 0;
+    //     border: 0;
+    //     outline: 0;
+    // }
 
     article, aside, details, figcaption, figure, footer, header, main, menu, nav,
     section, summary, progress {
