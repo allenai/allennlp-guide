@@ -1,10 +1,10 @@
 import React, { useRef, useCallback, useContext, useEffect } from 'react';
-import classNames from 'classnames';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { Button } from '@allenai/varnish/components/button';
 
-import { Button, CompleteButton } from './button';
 import { ChapterContext } from '../context';
-import classes from '../styles/exercise.module.sass';
+import { Card, CardContent } from '../components/Card';
+import { CheckMark } from '../components/inlineSVG/CheckMark';
 
 const Exercise = ({ id, title, type, children }) => {
     const excRef = useRef();
@@ -37,45 +37,110 @@ const Exercise = ({ id, title, type, children }) => {
             ? completed.filter(v => v !== excId)
             : [...completed, excId];
         setCompleted(newCompleted);
+        if (!isCompleted) {
+            setActiveExc(null);
+        }
     }, [isCompleted, completed, excId]);
-    const rootClassNames = classNames(classes.root, {
-        [classes.expanded]: isExpanded,
-        [classes.completed]: !isExpanded && isCompleted,
-    });
-    const titleClassNames = classNames(classes.title, {
-        [classes.titleExpanded]: isExpanded,
-    });
+
+    const Title = isCompleted ? CompletedSectionTitle : SectionTitle;
+
     return (
-        <section ref={excRef} id={id} className={rootClassNames}>
-            <h2 className={titleClassNames} onClick={handleExpand}>
-                <span>
-                    <span
-                        className={classNames(classes.id, { [classes.idCompleted]: isCompleted })}
-                    >
-                        {excId}
-                    </span>
-                    {title}
-                </span>
-            </h2>
+        <StyledCard isExpanded={isExpanded}>
+            <Anchor id={id}><div ref={excRef} /></Anchor>
+            <Title onClick={handleExpand}>
+                <SectionId>
+                    {excId}
+                </SectionId>
+                {title}
+                <CheckMark />
+            </Title>
             {isExpanded && (
-                <MarkdownContainer>
-                    {children}
-                    <footer className={classes.footer}>
-                        <CompleteButton
-                            completed={isCompleted}
-                            toggleComplete={handleSetCompleted}
-                        />
-                        <Button onClick={handleNext} variant="secondary" small>
-                            Next
-                        </Button>
-                    </footer>
-                </MarkdownContainer>
+                <StyledCardContent>
+                    <MarkdownContainer>
+                        {children}
+                        <Toolbar>
+                            <Button onClick={handleSetCompleted}>
+                                {isCompleted ? 'Unm' : 'M'}ark as Completed
+                            </Button>
+                            <Button onClick={handleNext}>
+                                Next
+                            </Button>
+                        </Toolbar>
+                    </MarkdownContainer>
+                </StyledCardContent>
             )}
-        </section>
+        </StyledCard>
     );
 };
 
 export default Exercise;
+
+const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
+    border: 1px solid transparent;
+
+    ${({ isExpanded, theme }) => !isExpanded ? `
+        &:hover {
+            border-color: ${theme.color.B6};
+        }
+    ` : null}
+`;
+
+// Workaround to position anchored content below sticky header
+const Anchor = styled.div`
+    width: 1px;
+    height: 164px;
+    margin-top: -164px;
+    transform: translateX(-10px);
+`;
+
+const titleStyles = css`
+    ${({ theme }) => theme.typography.bodyBig}
+    display: flex;
+    margin: 0;
+    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
+    cursor: pointer;
+
+    svg {
+        margin-left: auto;
+        margin-right: -6px;
+        opacity: 0;
+    }
+`;
+
+const SectionTitle = styled.h2`
+    ${titleStyles}
+`;
+
+const CompletedSectionTitle = styled.h2`
+    ${titleStyles}
+    
+    svg {
+        opacity: 1;
+        fill: ${({ theme }) => theme.color.G6};
+    }
+`;
+
+const SectionId = styled.span`
+   font-weight: normal;
+   color: ${({ theme }) => theme.color.B6};
+   font-size: 19px;
+   padding-right: 20px;
+`;
+
+const StyledCardContent = styled(CardContent)`
+    border-top: 1px solid ${({ theme }) => theme.color.N4};
+`;
+
+const Toolbar = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.color.N4};
+    padding-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    margin-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    display: flex;
+    
+    button:last-child {
+      margin-left: auto;
+    }
+`;
 
 const MarkdownContainer = styled.div`
     h1,
@@ -104,5 +169,16 @@ const MarkdownContainer = styled.div`
       &&:hover {
         text-decoration: underline;
       }
+    }
+    
+    table,
+    hr,
+    pre,
+    div[class^="code-module-root"],
+    .gatsby-highlight {
+        & + ${Toolbar}{
+            border: none;
+            padding-top: 0;
+        }
     }
 `;

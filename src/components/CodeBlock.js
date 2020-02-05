@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 
-import { Button } from './button';
+import { Button } from '@allenai/varnish/components/button';
 
 import classes from '../styles/code.module.sass';
 
