@@ -171,11 +171,14 @@ const MarkdownContainer = styled.div`
       }
     }
     
-    table + ${Toolbar},
-    hr + ${Toolbar},
-    pre + ${Toolbar},
-    div[class^="code-module-root"] + ${Toolbar} {
-        border: none;
-        padding-top: 0;
+    table,
+    hr,
+    pre,
+    div[class^="code-module-root"],
+    .gatsby-highlight {
+        & + ${Toolbar}{
+            border: none;
+            padding-top: 0;
+        }
     }
 `;
