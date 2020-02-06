@@ -21,5 +21,5 @@ const StyledContainer = styled.div`
 
 const Content = styled.div`
     margin: auto;
-    max-width: 800px;
+    max-width: 804px;
 `;
