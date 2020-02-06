@@ -1,6 +1,11 @@
+// Prism Code formatting modules
 import Prism from 'prismjs';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
+// Prism CSS
 import 'prismjs/plugins/line-highlight/prism-line-highlight.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
 import useLocalStorage from '@illinois/react-use-local-storage';
@@ -175,8 +180,7 @@ const ContentContainer = styled.div`
 const SideNav = styled.nav`
     position: relative;
     z-index: 3;
-    width: 100%;
-    max-width: 300px;
+    width: 272px;
     padding-right: 40px;
     font-size: 14px;
     box-sizing: content-box;
@@ -245,7 +249,7 @@ const BodyContent = styled.div`
     flex-direction: column;
     flex: 1;
     border-left: 1px solid #ddd;
-    max-width: 800px;
+    max-width: 840px;
     padding: ${({ theme }) => `${theme.spacing.xl} 0 0 ${theme.spacing.xl}`};
     padding-right: 0;
     position: relative;

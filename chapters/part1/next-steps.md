@@ -15,7 +15,7 @@ In the previous two chapters, we were able to quickly build a working NLP model 
 
 Now let's look at the definition of our text classifier model again. The following figure illustrates how the model (its forward method) processes the input and comes up with the label.
 
-<pre class="language-python"><code class="language-python">class SimpleClassifier(Model):
+<pre class="language-python line-numbers"><code>class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  embedder: TextFieldEmbedder,
@@ -36,7 +36,7 @@ This design allows you to be flexible and swap in any components as long as they
 
 As a quick example, let's see how we can use BERT as a pretrained contextualizer for the text classification model. As shown below, you need to make four changes to the config file, while no change is needed for the model you wrote in Python.
 
-<pre data-line="7-10,11-16,24-29,31-35" class="language-js"><code class="language-js">local bert_model = "bert-base-uncased";
+<pre data-line="6-9,10-15,23-28,30-34" class="language-js line-numbers"><code>local bert_model = "bert-base-uncased";
 
 {
     "dataset_reader" : {

@@ -166,11 +166,6 @@ const MarkdownContainer = styled.div`
       }
     }
     
-    code {
-      font-size: 14px;
-      -webkit-font-smoothing: subpixel-antialiased;
-    }
-    
     a {
       text-decoration: none;
       
