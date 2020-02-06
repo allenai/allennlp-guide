@@ -223,38 +223,182 @@ const GlobalStyle = createGlobalStyle`
     // Code styles
 
     &&& {
-        code, kbd, pre, samp {
-            margin: inherit;
-            overflow: inherit;
-            box-sizing: inherit;
-            line-height: inherit;
-            font-family: inherit;
-            font-size: inherit;
-            box-sizing: inherit;
-            font-variant: inherit;
-            font-feature-settings: inherit;
+        pre,
+        code,
+        code[class*="language-"],
+        pre[class*="language-"] {
+            font-family: 'Roboto Mono', Courier, monospace;
+            font-size: 0.87rem;
+            -webkit-font-smoothing: subpixel-antialiased;
+        }
+
+        pre > code {
+            background: transparent;
+        }
+
+        pre,
+        p > code,
+        li > code,
+        [class^="code-module-root"] {
+            background: #f4f6f8 !important;
+        }
+
+        pre {
+            overflow: auto;
+        }
+    }
+    
+    // Prism highlighting styles
+
+    /* PrismJS 1.16.0
+    https://prismjs.com/download.html#themes=prism&languages=python */
+    /**
+     * prism.js default theme for JavaScript, CSS and HTML
+     * Based on dabblet (http://dabblet.com)
+     * @author Lea Verou
+     */
+
+    code[class*="language-"],
+    pre[class*="language-"] {
+        color: black;
+        background: none;
+        text-align: left;
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        word-wrap: normal;
+        line-height: 1.5;
+
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+        tab-size: 4;
+
+        -webkit-hyphens: none;
+        -moz-hyphens: none;
+        -ms-hyphens: none;
+        hyphens: none;
+    }
+
+    @media print {
+      code[class*="language-"],
+      pre[class*="language-"] {
+          text-shadow: none;
+      }
+    }
+
+    /* Code blocks */
+    [class*="MarkdownContainer"] > pre,
+    .gatsby-highlight > pre {
+        padding: 1rem 1.25rem;
+        margin: 1.75rem 0;
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+
+    /* Inline code */
+    :not(pre) > code[class*="language-"] {
+        padding: .1em;
+        border-radius: .3em;
+        white-space: normal;
+    }
+
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: slategray;
+    }
+
+    .token.punctuation {
+        color: #999;
+    }
+
+    .namespace {
+        opacity: .7;
+    }
+
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+        color: #905;
+    }
+
+    .token.selector,
+    .token.attr-name,
+    .token.string,
+    .token.char,
+    .token.builtin,
+    .token.inserted {
+        color: #690;
+    }
+
+    .token.operator,
+    .token.entity,
+    .token.url,
+    .language-css .token.string,
+    .style .token.string {
+        color: #9a6e3a;
+        // background: hsla(0, 0%, 100%, .5);
+    }
+
+    .token.atrule,
+    .token.attr-value,
+    .token.keyword {
+        color: #07a;
+    }
+
+    .token.function,
+    .token.class-name {
+        color: #DD4A68;
+    }
+
+    .token.regex,
+    .token.important,
+    .token.variable {
+        color: #e90;
+    }
+
+    .token.important,
+    .token.bold {
+        font-weight: bold;
+    }
+    .token.italic {
+        font-style: italic;
+    }
+
+    .token.entity {
+        cursor: help;
+    }
+
+    .line-highlight {
+        background: ${({ theme }) => theme.color.N4} !important;
+        outline: 1px solid ${({ theme }) => theme.color.N5};
+        margin-top: 17px;
+    }
+
+    .line-numbers-rows {
+        z-index: 1;
+        border-right-color: ${({ theme }) => theme.color.N5} !important;
+
+        & > span:before {
+            color: ${({ theme }) => theme.color.N6};
         }
     }
 
-    // &&& {
-    //     pre, code {
-    //         font-family: 'Roboto Mono', monospace;
-    //         background: #f7f7f7 !important;
-    //     }
-    // }
-    // 
-    // pre {
-    //     margin-bottom: 3rem;
-    //     overflow: auto;
-    // }
-    // 
-    // pre code {
-    //     display: block;
-    //     padding: 2rem !important;
-    // }
-    
-    // Syntax highlighting styles
-    
+    pre[class*="language-"].line-numbers > code {
+        z-index: 2;
+    }
+
+    .line-numbers .line-numbers-rows {
+        top: -1px;
+    }
+
+    // CodeMirror Styles
+
     .CodeMirror.cm-s-default {
         font-family: 'Roboto Mono', monospace;
         background: #f7f7f7;

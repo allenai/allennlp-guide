@@ -158,12 +158,6 @@ const MarkdownContainer = styled.div`
       }
     }
     
-    p > code,
-    li > code {
-      font-size: 14px;
-      -webkit-font-smoothing: subpixel-antialiased;
-    }
-    
     a {
       text-decoration: none;
       
