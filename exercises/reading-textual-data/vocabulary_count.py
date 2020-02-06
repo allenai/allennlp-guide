@@ -5,7 +5,7 @@ from allennlp.data.tokenizers import Token
 from allennlp.data.vocabulary import Vocabulary
 
 # Create fields and instances
-token_indexers = {'tokens': SingleIdTokenIndexer()}
+token_indexers = {'tokens': SingleIdTokenIndexer(namespace='tokens')}
 text_field_pos = TextField(
     [Token('The'), Token('best'), Token('movie'), Token('ever'), Token('!')],
     token_indexers=token_indexers)
@@ -13,8 +13,8 @@ text_field_neg = TextField(
     [Token('Such'), Token('an'), Token('awful'), Token('movie'), Token('.')],
     token_indexers=token_indexers)
 
-label_field_pos = LabelField('pos')
-label_field_neg = LabelField('neg')
+label_field_pos = LabelField('pos', label_namespace='labels')
+label_field_neg = LabelField('neg', label_namespace='labels')
 
 instance_pos = Instance({'tokens': text_field_pos, 'label': label_field_pos})
 instance_neg = Instance({'tokens': text_field_neg, 'label': label_field_neg})
