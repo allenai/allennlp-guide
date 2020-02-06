@@ -6,7 +6,7 @@ import { ChapterContext } from '../context';
 import { Card, CardContent } from '../components/Card';
 import { CheckMark } from '../components/inlineSVG/CheckMark';
 
-const Exercise = ({ id, title, type, children }) => {
+const ExerciseComponent = ({ id, title, type, children }) => {
     const excRef = useRef();
     const excId = parseInt(id);
     const { activeExc, setActiveExc, completed, setCompleted } = useContext(ChapterContext);
@@ -73,7 +73,7 @@ const Exercise = ({ id, title, type, children }) => {
     );
 };
 
-export default Exercise;
+export default ExerciseComponent;
 
 const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     border: 1px solid transparent;
@@ -149,18 +149,21 @@ const MarkdownContainer = styled.div`
     h4 {
       ${({ theme }) => theme.typography.h4}
     }
-    
+
+    &&& {
+        ol,
+        ul {
+            padding-left: 20px;
+            margin: 1.5rem 0;
+        }
+    }
+
     ul {
       list-style: disc;
       
       ul {
         list-style: circle;
       }
-    }
-    
-    code {
-      font-size: 14px;
-      -webkit-font-smoothing: subpixel-antialiased;
     }
     
     a {
