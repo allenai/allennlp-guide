@@ -1,16 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import CodeMirror from 'codemirror'
-import { Widget } from '@phosphor/widgets'
-import { Kernel, ServerConnection } from '@jupyterlab/services'
-import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea'
-import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime'
-import { window } from 'browser-monads'
+import React from 'react';
+import PropTypes from 'prop-types';
+import CodeMirror from 'codemirror';
+import { Widget } from '@phosphor/widgets';
+import { Kernel, ServerConnection } from '@jupyterlab/services';
+import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
+import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
+import { window } from 'browser-monads';
+import styled from 'styled-components';
 
 class Juniper extends React.Component {
-    outputRef = null
-    inputRef = null
-    state = { content: null, cm: null, kernel: null, renderers: null, fromStorage: null }
+    outputRef = null;
+    inputRef = null;
+    state = { content: null, cm: null, kernel: null, renderers: null, fromStorage: null };
 
     static defaultProps = {
         children: '',
@@ -29,13 +30,7 @@ class Juniper extends React.Component {
         msgButton: 'run',
         msgLoading: 'Loading...',
         msgError: 'Connecting failed. Please reload and try again.',
-        classNames: {
-            cell: 'juniper-cell',
-            input: 'juniper-input',
-            button: 'juniper-button',
-            output: 'juniper-output',
-        },
-    }
+    };
 
     static propTypes = {
         children: PropTypes.string,
@@ -53,52 +48,46 @@ class Juniper extends React.Component {
         msgButton: PropTypes.string,
         msgLoading: PropTypes.string,
         msgError: PropTypes.string,
-        classNames: PropTypes.shape({
-            cell: PropTypes.string,
-            input: PropTypes.string,
-            button: PropTypes.string,
-            output: PropTypes.string,
-        }),
         actions: PropTypes.func,
-    }
+    };
 
     componentDidMount() {
-        this.setState({ content: this.props.children })
+        this.setState({ content: this.props.children });
         const renderers = standardRendererFactories.filter(factory =>
             factory.mimeTypes.includes('text/latex') ? window.MathJax : true
-        )
+        );
 
         const outputArea = new OutputArea({
             model: new OutputAreaModel({ trusted: true }),
             rendermime: new RenderMimeRegistry({ initialFactories: renderers }),
-        })
+        });
 
         const cm = new CodeMirror(this.inputRef, {
             value: this.props.children.trim(),
             mode: this.props.lang,
             theme: this.props.theme,
-        })
-        this.setState({ cm })
+        });
+        this.setState({ cm });
 
         const runCode = wrapper => {
-            const value = cm.getValue()
-            this.execute(outputArea, wrapper ? wrapper(value) : value)
-        }
-        const setValue = value => cm.setValue(value)
-        cm.setOption('extraKeys', { 'Shift-Enter': runCode })
-        Widget.attach(outputArea, this.outputRef)
-        this.setState({ runCode, setValue })
+            const value = cm.getValue();
+            this.execute(outputArea, wrapper ? wrapper(value) : value);
+        };
+        const setValue = value => cm.setValue(value);
+        cm.setOption('extraKeys', { 'Shift-Enter': runCode });
+        Widget.attach(outputArea, this.outputRef);
+        this.setState({ runCode, setValue });
     }
 
     log(logFunction) {
         if (this.props.debug) {
-            logFunction()
+            logFunction();
         }
     }
 
     componentWillReceiveProps({ children }) {
         if (children !== this.state.content && this.state.cm) {
-            this.state.cm.setValue(children.trim())
+            this.state.cm.setValue(children.trim());
         }
     }
 
@@ -266,28 +255,54 @@ class Juniper extends React.Component {
 
     render() {
         return (
-            <div className={this.props.classNames.cell}>
-                <div
-                    className={this.props.classNames.input}
-                    ref={x => {
-                        this.inputRef = x
-                    }}
-                />
+            <JuniperCell>
+                <JuniperInput ref={x => {this.inputRef = x}} />
                 {this.props.msgButton && (
-                    <button className={this.props.classNames.button} onClick={this.state.runCode}>
+                    <button onClick={this.state.runCode}>
                         {this.props.msgButton}
                     </button>
                 )}
                 {this.props.actions && this.props.actions(this.state)}
-                <div
-                    ref={x => {
-                        this.outputRef = x
-                    }}
-                    className={this.props.classNames.output}
-                />
-            </div>
-        )
+                <JuniperOutput ref={x => {this.outputRef = x}} />
+            </JuniperCell>
+        );
     }
 }
 
-export default Juniper
+export default Juniper;
+
+// CSS ported from SASS
+// TODO(aarons): Revisit these styles
+
+const JuniperCell = styled.div`
+    & > div:first-child {
+        padding: 1.5rem 2rem 1rem;
+        position: relative;
+    }
+    
+    button {
+        margin: 15px 32px 32px;
+    }
+`;
+
+const JuniperInput = styled.div = ``;
+
+const JuniperOutput = styled.div`
+    padding: 2rem 9rem 2rem 3rem;
+    background: #47515C;
+    color: #f7f7f7;
+    position: relative;
+
+    &:before {
+        content: "Output";
+        display: block;
+        background: #616C7A;
+        color: #E8ECF2;
+        padding: 0 0.5rem;
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+`;

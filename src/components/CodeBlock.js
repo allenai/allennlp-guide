@@ -1,9 +1,8 @@
 import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
+import styled from 'styled-components';
 
 import { Button } from '@allenai/varnish/components/button';
-
-import classes from '../styles/code.module.sass';
 
 function getFiles({ allCode }, sourceId, solutionId, testId, setupId) {
     var files = {};
@@ -122,11 +121,10 @@ class CodeBlock extends React.Component {
                     const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper
                     const {sourceFile, solutionFile, testFile, setupFile} = getFiles(data, sourceId, solutionId, testId, setupId)
                     return (
-                        <div className={classes.root} key={this.state.key}>
+                        <StyledCodeBlock key={this.state.key}>
                             {Juniper && (
                                 <Juniper
                                     msgButton={null}
-                                    classNames={juniperClassNames}
                                     repo={repo}
                                     branch={branch}
                                     lang={lang}
@@ -157,7 +155,7 @@ class CodeBlock extends React.Component {
                                     {showSolution ? solutionFile : sourceFile}
                                 </Juniper>
                             )}
-                        </div>
+                        </StyledCodeBlock>
                     )
                 }}
             />
@@ -166,3 +164,12 @@ class CodeBlock extends React.Component {
 }
 
 export default CodeBlock;
+
+// CSS ported from SASS
+// TODO(aarons): Revisit these styles
+const StyledCodeBlock = styled.div`
+    margin-left: -2rem;
+    width: calc(100% + 4rem);
+    margin-bottom: 2rem;
+    font-size: 0.87rem;
+`;
