@@ -60,7 +60,7 @@ class CodeBlock extends React.Component {
             // include references to the global window object and I haven't
             // managed to fix this using webpack yet. If we imported Juniper
             // at the top level, Gatsby won't build.
-            import('./JuniperComponent').then(Juniper => {
+            import('./Juniper').then(Juniper => {
                 this.setState({ Juniper: Juniper.default });
             });
         }
@@ -165,5 +165,6 @@ const StyledCodeBlock = styled.div`
     margin-left: -2rem;
     width: calc(100% + 4rem);
     margin-bottom: 2rem;
+    margin-top: 2rem;
     font-size: 0.87rem;
 `;

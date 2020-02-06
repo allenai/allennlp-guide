@@ -279,13 +279,13 @@ const JuniperCell = styled.div`
         padding: 1.5rem 2rem 1rem;
         position: relative;
     }
-    
+
     button {
         margin: 15px 32px 32px;
     }
 `;
 
-const JuniperInput = styled.div = ``;
+const JuniperInput = styled.div``;
 
 const JuniperOutput = styled.div`
     padding: 2rem 9rem 2rem 3rem;
