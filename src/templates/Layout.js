@@ -226,7 +226,9 @@ const GlobalStyle = createGlobalStyle`
         pre,
         code,
         code[class*="language-"],
-        pre[class*="language-"] {
+        pre[class*="language-"],
+        p > code,
+        li > code {
             font-family: 'Roboto Mono', Courier, monospace;
             font-size: 0.87rem;
             -webkit-font-smoothing: subpixel-antialiased;
@@ -242,6 +244,12 @@ const GlobalStyle = createGlobalStyle`
         [class^="code-module-root"] {
             // Halfway between Varnish N2 and N3
             background: #f4f6f8 !important;
+        }
+
+        p > code,
+        li > code {
+           padding-left: 0.3rem;
+           padding-right: 0.3rem;
         }
 
         pre {
@@ -281,10 +289,9 @@ const GlobalStyle = createGlobalStyle`
     /* Code blocks */
     [class*="MarkdownContainer"] > pre,
     .gatsby-highlight > pre {
-        padding: 1rem 1.25rem;
+        padding: 1rem 1.25rem 1rem;
         margin: 1.75rem 0;
         overflow: auto;
-        white-space: pre-wrap;
     }
 
     // TODO(aarons): try to merge prism and CodeMirror syntax highlighting styles
