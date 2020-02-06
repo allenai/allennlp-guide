@@ -62,14 +62,25 @@ const Head = ({ title, description }) => (
                     name: 'twitter:description',
                     content: pageDesc,
                 },
-            ]
+            ];
+            const link = [
+                {
+                    rel: 'stylesheet',
+                    href: 'https://cdn.jsdelivr.net/npm/@allenai/varnish@0.8.11/dist/theme.min.css',
+                },
+                {
+                    rel: 'icon',
+                    href: '/favicon.ico',
+                    type: 'image/x-icon',
+                },
+                {
+                    rel: 'apple-touch-icon',
+                    href: '/icons/apple-touch-icon.png',
+                },
+            ];
 
             return (
-                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta}>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@allenai/varnish@0.8.11/dist/theme.min.css" />
-                    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-                    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-                </Helmet>
+                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link} />
             )
         }}
     />

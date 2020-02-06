@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 
-import { Button } from './button';
+import { Button } from '@allenai/varnish/components/button';
 
 import classes from '../styles/code.module.sass';
 
@@ -61,7 +61,7 @@ class CodeBlock extends React.Component {
             // include references to the global window object and I haven't
             // managed to fix this using webpack yet. If we imported Juniper
             // at the top level, Gatsby won't build.
-            import('./juniper').then(Juniper => {
+            import('./JuniperComponent').then(Juniper => {
                 this.setState({ Juniper: Juniper.default });
             });
         }
