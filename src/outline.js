@@ -17,6 +17,7 @@ export const outline = [
     title: 'Part II: Abstractions, Design, and Testing',
     chapterSlugs: [
       '/reading-textual-data',
+      '/building-your-model',
       '/representing-text-as-features'
     ]
   },
