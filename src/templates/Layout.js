@@ -240,6 +240,7 @@ const GlobalStyle = createGlobalStyle`
         p > code,
         li > code,
         [class^="code-module-root"] {
+            // Halfway between Varnish N2 and N3
             background: #f4f6f8 !important;
         }
 
@@ -268,22 +269,13 @@ const GlobalStyle = createGlobalStyle`
         word-break: normal;
         word-wrap: normal;
         line-height: 1.5;
-
         -moz-tab-size: 4;
         -o-tab-size: 4;
         tab-size: 4;
-
         -webkit-hyphens: none;
         -moz-hyphens: none;
         -ms-hyphens: none;
         hyphens: none;
-    }
-
-    @media print {
-      code[class*="language-"],
-      pre[class*="language-"] {
-          text-shadow: none;
-      }
     }
 
     /* Code blocks */
@@ -294,6 +286,8 @@ const GlobalStyle = createGlobalStyle`
         overflow: auto;
         white-space: pre-wrap;
     }
+
+    // TODO(aarons): try to merge prism and CodeMirror syntax highlighting styles
 
     /* Inline code */
     :not(pre) > code[class*="language-"] {
