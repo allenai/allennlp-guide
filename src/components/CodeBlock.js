@@ -82,12 +82,6 @@ class CodeBlock extends React.Component {
         const testId = test || `${id}_test`;
         const setupId = setup || `${id}_setup`;
         const execute = executable !== "false";
-        const juniperClassNames = {
-            cell: classes.cell,
-            input: classes.input,
-            button: classes.button,
-            output: classes.output,
-        };
 
         return (
             <StaticQuery
