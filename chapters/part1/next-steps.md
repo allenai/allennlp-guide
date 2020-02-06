@@ -15,7 +15,7 @@ In the previous two chapters, we were able to quickly build a working NLP model 
 
 Now let's look at the definition of our text classifier model again. The following figure illustrates how the model (its forward method) processes the input and comes up with the label.
 
-<pre class="language-python"><code>class SimpleClassifier(Model):
+<pre class="language-python line-numbers"><code>class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  embedder: TextFieldEmbedder,
