@@ -11,6 +11,7 @@ import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { ArrowRightIcon, CubeIcon, RocketIcon, StackIcon, ToolsIcon, TextIcon } from '../components/inlineSVG';
 
+// Home Page Export
 export default ({ data }) => {
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
@@ -53,6 +54,7 @@ export default ({ data }) => {
     );
 };
 
+// GraphQL Query
 export const pageQuery = graphql`
     {
         site {
@@ -79,7 +81,6 @@ export const pageQuery = graphql`
 `;
 
 // Hero Banner
-
 const Banner = styled(Container)`
     background: url('/ui/bannerDotsLeft.svg') left center / auto 100% no-repeat,
                 url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
@@ -96,7 +97,7 @@ const Banner = styled(Container)`
     }
 `;
 
-// Parts & Chapters
+// Intro Content
 
 const About = styled(Container)`
     background: ${({ theme }) => theme.color.N1};
@@ -120,6 +121,9 @@ const SectionIntro = styled.div`
     }
 `;
 
+// Part UI
+
+// Container for colored icon, title and description
 const PartHeader = ({ color, icon, title, description, slug }) => {
     const getIcon = (icon) => {
         if (icon === 'stack') {
@@ -142,7 +146,7 @@ const PartHeader = ({ color, icon, title, description, slug }) => {
             </IconBox>
             <PartHeaderText>
                 {title && (
-                    <PartHeading>{title}</PartHeading>
+                    <PartTitle>{title}</PartTitle>
                 )}
                 {description && (
                     <p>{description}</p>
@@ -155,51 +159,12 @@ const PartHeader = ({ color, icon, title, description, slug }) => {
     );
 };
 
-const Part = ({ data, groupedChapters }) => {
-    const { color, icon, title, description, chapterSlugs } = data;
-
-    return (
-        <PartContainer>
-            <PartHeader color={color} icon={icon} title={title} description={description} />
-            <PartChapters>
-                <ChapterTrigger />
-                <PartContent>
-                    {chapterSlugs.map((chapterSlug) => (
-                        <ChapterLink key={chapterSlug} to={chapterSlug}>
-                            <h4>
-                                {groupedChapters[chapterSlug].node.frontmatter.title}
-                            </h4>
-                            <p>
-                                {groupedChapters[chapterSlug].node.frontmatter.description}
-                            </p>
-                        </ChapterLink>
-                    ))}
-                </PartContent>
-            </PartChapters>
-        </PartContainer>
-    );
-};
-
-const PartContainer = styled(Card)`
-    overflow: hidden;
-`;
-
+// Styled wrapper for `PartHeader` component
 const PartHeaderContainer = styled.div`
     display: flex;
 `;
 
-const PartHeaderText = styled.div`
-    padding: ${({ theme }) => `${(theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem ${(theme.spacing.md.getRemValue() * 2)}rem`};
-    padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) + theme.spacing.xxl.getRemValue() - theme.spacing.xxs.getRemValue()}rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    
-    & > :last-child {
-        margin-bottom: 0;
-    }
-`;
-
+// Colored square that contains part icon
 const IconBox = styled(({ background, ...props }) => <div {...props} />)`
     width: 193px;
     height: 193px;
@@ -225,25 +190,26 @@ const IconBox = styled(({ background, ...props }) => <div {...props} />)`
     }
 `;
 
-const PartContent = styled(CardContent)`
-    background: ${({ theme }) => theme.color.N2};
-    padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+// Container for part title and description
+const PartHeaderText = styled.div`
+    padding: ${({ theme }) => `${(theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem ${(theme.spacing.md.getRemValue() * 2)}rem`};
+    padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) + theme.spacing.xxl.getRemValue() - theme.spacing.xxs.getRemValue()}rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    & > :last-child {
+        margin-bottom: 0;
+    }
 `;
 
-const ChapterTrigger = styled.div`
-    background: ${({ theme }) => theme.color.N2};
-    height: ${({ theme }) => theme.spacing.xxl};
-    margin-top: -${({ theme }) => theme.spacing.xxl};
-`;
-
-const PartChapters = styled.div``;
-
-const PartHeading = styled.h3`
+const PartTitle = styled.h3`
     ${({ theme }) => theme.typography.h4};
     padding-bottom: 0;
     color: ${({ theme }) => theme.color.B6};
 `;
 
+// Begin Chapter link for Overview
 const BeginLink = styled.div`
     ${({ theme }) => theme.typography.bodySmall};
     display: flex;
@@ -255,13 +221,14 @@ const BeginLink = styled.div`
     }
 `;
 
+// Clickable wrapper for standalone chapter
 const StandaloneChapterLink = styled(LinkComponent)`
     && {
         &,
         &:hover {
             text-decoration: none;
 
-            ${PartHeading} {
+            ${PartTitle} {
                 color: ${({ theme }) => theme.color.B6};
             }
             
@@ -282,6 +249,52 @@ const StandaloneChapterLink = styled(LinkComponent)`
     }
 `;
 
+// Container for PartHeader and chapter list
+const Part = ({ data, groupedChapters }) => {
+    const { color, icon, title, description, chapterSlugs } = data;
+
+    return (
+        <PartContainer>
+            <PartHeader color={color} icon={icon} title={title} description={description} />
+            <div>
+                <ChapterListTrigger />
+                <ChapterList>
+                    {chapterSlugs.map((chapterSlug) => (
+                        <ChapterLink key={chapterSlug} to={chapterSlug}>
+                            <h4>
+                                {groupedChapters[chapterSlug].node.frontmatter.title}
+                            </h4>
+                            <p>
+                                {groupedChapters[chapterSlug].node.frontmatter.description}
+                            </p>
+                        </ChapterLink>
+                    ))}
+                </ChapterList>
+            </div>
+        </PartContainer>
+    );
+};
+
+// Styled wrapper for `Part` component
+const PartContainer = styled(Card)`
+    overflow: hidden;
+`;
+
+// Clickable bar that triggers expand/collapse of chapter list
+// TODO(aarons): implement expand/collapse functionality
+const ChapterListTrigger = styled.div`
+    background: ${({ theme }) => theme.color.N2};
+    height: ${({ theme }) => theme.spacing.xxl};
+    margin-top: -${({ theme }) => theme.spacing.xxl};
+`;
+
+// Container for list of chapters for a given part
+const ChapterList = styled(CardContent)`
+    background: ${({ theme }) => theme.color.N2};
+    padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+`;
+
+// Clickable item in a chapter list
 const ChapterLink = styled(LinkComponent)`
     && {
         display: block;
@@ -311,6 +324,7 @@ const ChapterLink = styled(LinkComponent)`
     }
 `;
 
+// Footer Site Credits
 const Credits = styled(Container)`
     background: ${({ theme }) => theme.color.N2};
     border-bottom: 1px solid ${({ theme }) => theme.color.N4};
