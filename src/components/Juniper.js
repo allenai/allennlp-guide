@@ -305,4 +305,9 @@ const JuniperOutput = styled.div`
         font-size: 13px;
         text-transform: uppercase;
     }
+
+    pre,
+    code {
+        background: transparent !important;
+    }
 `;
