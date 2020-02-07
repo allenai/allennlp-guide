@@ -53,7 +53,7 @@ const Template = ({ data, location }) => {
     }, [location.hash]);
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let linkList = [];
+    let linkList = [outline.overview.slug];
     outline.parts.forEach((part) => {
       if (part.slug) {
         linkList.push(part.slug);
@@ -68,6 +68,34 @@ const Template = ({ data, location }) => {
             value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted }}
         >
             <Layout title={title} description={description}>
+                <Wrapper>
+                    <Left>
+                        <LeftContent />
+                    </Left>
+                    <Right>
+                        <RightContent>
+                            <ChapterIntro>
+                                {title && <h1>{title}</h1>}
+                                {description && (
+                                    <p>{description}</p>
+                                )}
+                            </ChapterIntro>
+                            <Pagination>
+                              <div>
+                                {linkList.indexOf(slug) !== 0 && (
+                                    <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
+                                )}
+                              </div>
+                              <div>
+                                {linkList.indexOf(slug) !== linkList.length - 1 && (
+                                    <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
+                                )}
+                              </div>
+                            </Pagination>
+                            <ChapterFooter />
+                        </RightContent>
+                    </Right>
+                </Wrapper>
                 <ContentContainer>
                     <SideNav>
                       <NavContent>
@@ -154,26 +182,100 @@ export const pageQuery = graphql`
     }
 `;
 
-const ChapterFooter = styled(Footer)`
-    &&& {
-        padding: ${({ theme }) => theme.spacing.xl} 0;
-        background: transparent;
-        text-align: left;
+// ${({ theme }) => theme.breakpoints.xl.getRemValue() - (theme.spacing.lg.getRemValue() * 2)}rem;
+
+
+
+    // // Calculate width of colored box based on screen width and content max-width
+    // width: calc(
+    //     ${({ theme }) =>
+    //         `(${theme.breakpoints.xl} - ${theme.spacing.xl}) + ((100vw - ${theme.breakpoints.xl}) / 2)`}
+    // );
+    // 
+    // @media (max-width: ${({ theme }) =>
+    //         theme.breakpoints.xl.getPxValue() - theme.spacing.xxxl.getPxValue()}px) {
+    //     display: block;
+    //     width: 100%;
+    // }
+
+
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: ${({ theme }) => theme.color.N3};
+`;
+
+const Left = styled.div`
+    background: ${({ theme }) => theme.color.N1};
+    width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    height: 100%;
+    display: flex;
+`;
+
+const LeftContent = styled.div`
+    outline: 1px solid black;
+    width: 300px;
+    height: 100%;
+    margin-left: auto;
+`;
+
+const Right = styled.div`
+    flex: 1;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
+    height: 100%;
+`;
+
+const RightContent = styled.div`
+    width: 100%;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
+    height: 100%;
+    outline: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
+    box-sizing: border-box;
+`;
+
+const ChapterIntro = styled.div`
+    h1 {
+        ${({ theme }) => theme.typography.h2}
+        color: ${({ theme }) => theme.color.B6};
+    }
+    
+    p {
+        ${({ theme }) => theme.typography.bodyBig}
     }
 `;
 
-// The following is placeholder style
-// TODO(aarons): Rework these styles when there is an approved design
-// and Varnish is integrated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const ContentContainer = styled.div`
+    background: ${({ theme }) => theme.color.N3};
     width: 100%;
     max-width: 1150px;
     margin: auto;
     flex: 1;
     display: flex;
     justify-content: center;
+    
+    display: none;
 `;
+
+// Nav
 
 const SideNav = styled.nav`
     position: relative;
@@ -182,7 +284,7 @@ const SideNav = styled.nav`
     padding-right: 40px;
     font-size: 14px;
     box-sizing: content-box;
-    background: #fff;
+    background: red;
 
     h1 {
         margin-bottom: 20px;
@@ -272,5 +374,13 @@ const Pagination = styled.div`
     
     div:last-child {
         margin-left: auto;
+    }
+`;
+
+const ChapterFooter = styled(Footer)`
+    &&& {
+        padding: ${({ theme }) => theme.spacing.xl} 0;
+        background: transparent;
+        text-align: left;
     }
 `;
