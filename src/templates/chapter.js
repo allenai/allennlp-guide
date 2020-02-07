@@ -8,8 +8,9 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
+import { Menu, Icon } from 'antd';
 import useLocalStorage from '@illinois/react-use-local-storage';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import { Button } from '@allenai/varnish/components/button';
 
 import { renderAst } from '../markdown';
@@ -67,35 +68,47 @@ const Template = ({ data, location }) => {
 //slugList[slug]
     const links = Object.keys(slugList);
     const thisPart = outline.parts.find(part => part.title === slugList[slug]);
-    const getProp = (prop) => slug === outline.overview.slug ? outline.overview[prop] : thisPart[prop];
+    const isOverview = slug === outline.overview.slug;
+    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
 
     return (
         <ChapterContext.Provider
             value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted }}
         >
             <Layout title={title} description={description}>
+                <GlobalStyle />
                 <Wrapper>
                     <Left>
                         <LeftContent>
                             <SideNav>
                               <NavContent>
-                                <ol>
-                                    <NavItem isActive={outline.overview.slug === slug}>
-                                        <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
-                                    </NavItem>
-                                    {outline.parts.map((part) => part.chapterSlugs && (
-                                        <li key={part.title}>
-                                          <strong>{part.title}</strong>
-                                          <ol>
-                                            {part.chapterSlugs.map((chapterSlug) => (
-                                                <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                                  <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
-                                                </NavItem>
-                                            ))}
-                                          </ol>
-                                        </li>
-                                    ))}
-                                </ol>
+                                  <Menu
+                                      defaultSelectedKeys={[slug]}
+                                      defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
+                                      mode="inline"
+                                  >
+                                      <Menu.Item key={outline.overview.slug}>
+                                          <LinkComponent to={outline.overview.slug}>
+                                              <Icon type="setting" />
+                                              <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
+                                          </LinkComponent>
+                                      </Menu.Item>
+                                      {outline.parts.map((part) => part.chapterSlugs && (
+                                          <Menu.SubMenu
+                                              key={part.title}
+                                              title={
+                                                  <span>
+                                                      <Icon type="setting" />
+                                                      <span>{part.title}</span>
+                                                  </span>
+                                              }
+                                          >
+                                              {part.chapterSlugs.map((chapterSlug) => (
+                                                  <Menu.Item key={chapterSlug}><LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent></Menu.Item>
+                                              ))}
+                                          </Menu.SubMenu>
+                                      ))}
+                                  </Menu>
                               </NavContent>
                             </SideNav>
                         </LeftContent>
@@ -174,6 +187,65 @@ export const pageQuery = graphql`
     }
 `;
 
+// Resetting root layout
+const GlobalStyle = createGlobalStyle`
+    &&& {
+        .ant-menu {
+            border: none !important;
+            
+            .ant-menu-submenu {
+                border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
+                
+                &.ant-menu-submenu-selected {
+                    span,
+                    i {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                }
+
+                .ant-menu-submenu-title:hover {
+                    span,
+                    i,
+                    i:before,
+                    i:after {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                }
+            }
+
+            .ant-menu-item {
+                overflow: visible !important;
+                white-space: normal !important;
+                height: auto !important;
+                line-height: 1.5 !important;
+                padding-top: 9px !important;
+                padding-bottom 10px !important;
+                
+                a {
+                    color: ${({ theme }) => theme.color.N10};
+                    
+                    &:hover {
+                        color: ${({ theme }) => theme.color.B5};
+                        text-decoration: none;
+                    }
+                }
+                
+                &.ant-menu-item-selected {
+                    background: ${({ theme }) => theme.color.B1} !important;
+                    
+                    &:after {
+                        border-color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                    
+                    a {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
@@ -191,7 +263,7 @@ const Left = styled.div`
 `;
 
 const LeftContent = styled.div`
-    width: 300px;
+    width: 326px;
     height: 100%;
     margin-left: auto;
 `;
@@ -210,6 +282,7 @@ const SideNav = styled.nav`
     }
 
     ol {
+        display: none;
         list-style: none;
         padding-left: 0;
         
@@ -228,38 +301,6 @@ const NavContent = styled.div`
     padding-top: 30px;
     position: sticky;
     top: 115px;
-`;
-
-const NavItem = styled(({ isActive, ...props }) =>
-    <li {...props} />
-)`
-    position: relative;
-
-    && {
-        a {
-            display: block;
-            line-height: 16px;
-            padding: 5px 0;
-            color: ${({ isActive, theme }) => isActive ? theme.color.B6 : theme.color.N10};
-
-            &:hover {
-              color: #2a79e2;
-              text-decoration: underline;
-            }
-        }
-    }
-
-    ${({ isActive }) => isActive ? `
-        &:before {
-            display: block;
-            content: "▸";
-            color: #2a79e2;
-            font-size: 24px;
-            position: absolute;
-            left: -20px;
-            top: 0;
-        }
-    ` : null}
 `;
 
 const Right = styled.div`
