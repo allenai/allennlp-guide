@@ -10,7 +10,7 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon, CubeIcon, RocketIcon, StackIcon, ToolsIcon, TextIcon } from '../components/inlineSVG';
+import { ArrowRightIcon } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {

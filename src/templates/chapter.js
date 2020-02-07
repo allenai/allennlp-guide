@@ -76,7 +76,29 @@ const Template = ({ data, location }) => {
             <Layout title={title} description={description}>
                 <Wrapper>
                     <Left>
-                        <LeftContent />
+                        <LeftContent>
+                            <SideNav>
+                              <NavContent>
+                                <ol>
+                                    <NavItem isActive={outline.overview.slug === slug}>
+                                        <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
+                                    </NavItem>
+                                    {outline.parts.map((part) => part.chapterSlugs && (
+                                        <li key={part.title}>
+                                          <strong>{part.title}</strong>
+                                          <ol>
+                                            {part.chapterSlugs.map((chapterSlug) => (
+                                                <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
+                                                  <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
+                                                </NavItem>
+                                            ))}
+                                          </ol>
+                                        </li>
+                                    ))}
+                                </ol>
+                              </NavContent>
+                            </SideNav>
+                        </LeftContent>
                     </Left>
                     <Right>
                         <RightContent>
@@ -111,51 +133,6 @@ const Template = ({ data, location }) => {
                         </RightContent>
                     </Right>
                 </Wrapper>
-                <ContentContainer>
-                    <SideNav>
-                      {/*<NavContent>
-                        <ol>
-                            <NavItem isActive={outline.overview.slug === slug}>
-                                <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
-                            </NavItem>
-                            {outline.parts.map((part) => part.chapterSlugs && (
-                                <li key={part.title}>
-                                  <strong>{part.title}</strong>
-                                  <ol>
-                                    {part.chapterSlugs.map((chapterSlug) => (
-                                        <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                          <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
-                                        </NavItem>
-                                    ))}
-                                  </ol>
-                                </li>
-                            ))}
-                        </ol>
-                      </NavContent>*/}
-                    </SideNav>
-                    <BodyContent>
-                        <div>
-                            {title && <h1>{title}</h1>}
-                            {description && (
-                                <p>{description}</p>
-                            )}
-                        </div>
-                        {html}
-                        {/*<Pagination>
-                          <div>
-                            {linkList.indexOf(slug) !== 0 && (
-                                <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
-                            )}
-                          </div>
-                          <div>
-                            {linkList.indexOf(slug) !== linkList.length - 1 && (
-                                <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
-                            )}
-                          </div>
-                        </Pagination>*/}
-                        <ChapterFooter />
-                    </BodyContent>
-                </ContentContainer>
             </Layout>
         </ChapterContext.Provider>
     );
@@ -197,23 +174,6 @@ export const pageQuery = graphql`
     }
 `;
 
-// ${({ theme }) => theme.breakpoints.xl.getRemValue() - (theme.spacing.lg.getRemValue() * 2)}rem;
-
-
-
-    // // Calculate width of colored box based on screen width and content max-width
-    // width: calc(
-    //     ${({ theme }) =>
-    //         `(${theme.breakpoints.xl} - ${theme.spacing.xl}) + ((100vw - ${theme.breakpoints.xl}) / 2)`}
-    // );
-    // 
-    // @media (max-width: ${({ theme }) =>
-    //         theme.breakpoints.xl.getPxValue() - theme.spacing.xxxl.getPxValue()}px) {
-    //     display: block;
-    //     width: 100%;
-    // }
-
-
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
@@ -226,74 +186,14 @@ const Left = styled.div`
     width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
     height: 100%;
     display: flex;
+    position: relative;
+    z-index: 3;
 `;
 
 const LeftContent = styled.div`
-    outline: 1px solid black;
     width: 300px;
     height: 100%;
     margin-left: auto;
-`;
-
-const Right = styled.div`
-    flex: 1;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
-    height: 100%;
-`;
-
-const RightContent = styled.div`
-    width: 100%;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
-    box-sizing: border-box;
-`;
-
-const ChapterIntro = styled.div`
-    display: grid;
-    grid-template-columns: 75px auto;
-    grid-gap: ${({ theme }) => theme.spacing.xl};
-`;
-
-const StyledIconBox = styled(IconBox)`
-    width: 75px;
-`;
-
-const ChapterIntroText = styled.div`
-    h1 {
-        ${({ theme }) => theme.typography.h2}
-        margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
-        color: ${({ theme }) => theme.color.B6};
-    }
-    
-    p {
-        ${({ theme }) => theme.typography.bodyBig}
-    }
-`;
-
-
-
-
-
-
-
-
-
-
-
-
-const ContentContainer = styled.div`
-    background: ${({ theme }) => theme.color.N3};
-    width: 100%;
-    max-width: 1150px;
-    margin: auto;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    
-    display: none;
 `;
 
 // Nav
@@ -301,11 +201,8 @@ const ContentContainer = styled.div`
 const SideNav = styled.nav`
     position: relative;
     z-index: 3;
-    width: 272px;
-    padding-right: 40px;
     font-size: 14px;
-    box-sizing: content-box;
-    background: red;
+    box-sizing: content-box;;
 
     h1 {
         margin-bottom: 20px;
@@ -327,9 +224,9 @@ const SideNav = styled.nav`
 `;
 
 const NavContent = styled.div`
+    padding-top: 30px;
     position: sticky;
     top: 115px;
-    padding-top: 30px;
 `;
 
 const NavItem = styled(({ isActive, ...props }) =>
@@ -364,17 +261,12 @@ const NavItem = styled(({ isActive, ...props }) =>
     ` : null}
 `;
 
-const BodyContent = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    border-left: 1px solid #ddd;
-    max-width: 840px;
-    padding: ${({ theme }) => `${theme.spacing.xl} 0 0 ${theme.spacing.xl}`};
-    padding-right: 0;
+const Right = styled.div`
     position: relative;
-    
+    flex: 1;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
+    height: 100%;
+
     &:before {
         position: fixed;
         top: 65px;
@@ -384,7 +276,39 @@ const BodyContent = styled.div`
         height: 50px;
         z-index: 2;
         margin-left: -30px;
-        box-shadow: 0 -15px 30px 30px #fff;
+        box-shadow: 0 -15px 30px 30px ${({ theme }) => theme.color.N3};
+    }
+`;
+
+const RightContent = styled.div`
+    width: 100%;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
+    box-sizing: border-box;
+`;
+
+const ChapterIntro = styled.div`
+    display: grid;
+    grid-template-columns: 75px auto;
+    grid-gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+const StyledIconBox = styled(IconBox)`
+    width: 75px;
+`;
+
+const ChapterIntroText = styled.div`
+    h1 {
+        ${({ theme }) => theme.typography.h2}
+        margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
+        color: ${({ theme }) => theme.color.B6};
+    }
+    
+    p {
+        ${({ theme }) => theme.typography.bodyBig}
     }
 `;
 
