@@ -81,15 +81,20 @@ const Template = ({ data, location }) => {
                     <Right>
                         <RightContent>
                             <ChapterIntro>
-                                <IconBox
-                                    color={getProp('color')}
-                                    icon={getProp('icon')}
-                                />
-                                {title && <h1>{title}</h1>}
-                                {description && (
-                                    <p>{description}</p>
-                                )}
+                                <div>
+                                    <StyledIconBox
+                                        color={getProp('color')}
+                                        icon={getProp('icon')}
+                                    />
+                                </div>
+                                <ChapterIntroText>
+                                    {title && <h1>{title}</h1>}
+                                    {description && (
+                                        <p>{description}</p>
+                                    )}
+                                </ChapterIntroText>
                             </ChapterIntro>
+                            {html}
                             <Pagination>
                               <div>
                                 {links.indexOf(slug) !== 0 && (
@@ -240,7 +245,6 @@ const RightContent = styled.div`
     width: 100%;
     max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
     height: 100%;
-    outline: 1px solid red;
     display: flex;
     flex-direction: column;
     padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
@@ -248,8 +252,19 @@ const RightContent = styled.div`
 `;
 
 const ChapterIntro = styled.div`
+    display: grid;
+    grid-template-columns: 75px auto;
+    grid-gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+const StyledIconBox = styled(IconBox)`
+    width: 75px;
+`;
+
+const ChapterIntroText = styled.div`
     h1 {
         ${({ theme }) => theme.typography.h2}
+        margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
         color: ${({ theme }) => theme.color.B6};
     }
     
@@ -257,10 +272,6 @@ const ChapterIntro = styled.div`
         ${({ theme }) => theme.typography.bodyBig}
     }
 `;
-
-
-
-
 
 
 
