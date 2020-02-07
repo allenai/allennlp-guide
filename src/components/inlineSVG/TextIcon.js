@@ -4,18 +4,16 @@ import React from 'react';
 
 export const TextIcon = ({ className }) => (
     <svg
-      width={72}
-      height={56}
-      viewBox="0 0 72 56"
+      width={108}
+      height={108}
+      viewBox="0 0 108 108"
       className={className}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g>
-        <rect y="38.5" width="71.6" height="4.7" />
-        <rect y="51.3" width="36.7" height="4.7" />
-        <rect y="25.7" width="71.6" height="4.7" />
-        <rect y="12.8" width="71.6" height="4.7" />
-        <rect width="71.6" height="4.7" />
-      </g>
+      <path d="M89.6 64.5H18V69.2H89.6V64.5Z" />
+      <path d="M54.7 77.3H18V82H54.7V77.3Z" />
+      <path d="M89.6 51.7H18V56.4H89.6V51.7Z" />
+      <path d="M89.6 38.8H18V43.5H89.6V38.8Z" />
+      <path d="M89.6 26H18V30.7H89.6V26Z" />
     </svg>
 );

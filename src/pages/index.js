@@ -9,7 +9,8 @@ import { Link } from '../components/Link';
 import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
-import { ArrowRightIcon, CubeIcon, RocketIcon, StackIcon, ToolsIcon, TextIcon } from '../components/inlineSVG';
+import { IconBox } from '../components/IconBox';
+import { ArrowRightIcon } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
@@ -124,70 +125,26 @@ const SectionIntro = styled.div`
 // Part UI
 
 // Container for colored icon, title and description
-const PartHeader = ({ color, icon, title, description, slug }) => {
-    const getIcon = (icon) => {
-        if (icon === 'stack') {
-            return <StackIcon />;
-        } else if (icon === 'rocket') {
-            return <RocketIcon />;
-        } else if (icon === 'cube') {
-            return <CubeIcon />;
-        } else if (icon === 'tools') {
-            return <ToolsIcon />;
-        } else { // 'default'
-            return <TextIcon />;
-        }
-    }
-
-    return (
-        <PartHeaderContainer>
-            <IconBox background={color}>
-                {getIcon(icon)}
-            </IconBox>
-            <PartHeaderText>
-                {title && (
-                    <PartTitle>{title}</PartTitle>
-                )}
-                {description && (
-                    <p>{description}</p>
-                )}
-                {slug && (
-                    <BeginLink>Begin Chapter <ArrowRightIcon /></BeginLink>
-                )}
-            </PartHeaderText>
-        </PartHeaderContainer>
-    );
-};
+const PartHeader = ({ color, icon, title, description, slug }) => (
+    <PartHeaderContainer>
+        <IconBox color={color} icon={icon} />
+        <PartHeaderText>
+            {title && (
+                <PartTitle>{title}</PartTitle>
+            )}
+            {description && (
+                <p>{description}</p>
+            )}
+            {slug && (
+                <BeginLink>Begin Chapter <ArrowRightIcon /></BeginLink>
+            )}
+        </PartHeaderText>
+    </PartHeaderContainer>
+);
 
 // Styled wrapper for `PartHeader` component
 const PartHeaderContainer = styled.div`
     display: flex;
-`;
-
-// Colored square that contains part icon
-const IconBox = styled(({ background, ...props }) => <div {...props} />)`
-    width: 193px;
-    height: 193px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(151.76deg, ${({ background }) => {
-        if (background === 'aqua') {
-            return '#1EC2CC 17.77%, #0191A7';
-        } else if (background === 'orange') {
-            return '#FFC72E 17.77%, #FF9100';
-        } else if (background === 'purple') {
-            return '#D864C8 17.77%, #A44397';
-        } else if (background === 'blue') {
-            return '#00C1E8 17.77%, #0278A7';
-        } else { // 'default'
-            return '#a3b0be 17.77%, #79899c';
-        }
-    }} 95.72%);
-    
-    svg {
-      fill: #fff;
-    }
 `;
 
 // Container for part title and description

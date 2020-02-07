@@ -8,17 +8,19 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
+import { Menu, Icon } from 'antd';
 import useLocalStorage from '@illinois/react-use-local-storage';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import { Button } from '@allenai/varnish/components/button';
 
 import { renderAst } from '../markdown';
 import { ChapterContext } from '../context';
 import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
+import { IconBox } from '../components/IconBox';
 import { Link } from '../components/Link';
 import { outline } from '../outline';
-import { getGroupedChapters } from '../utils';
+import { getGroupedChapters, getIcon } from '../utils';
 
 const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data;
@@ -26,7 +28,6 @@ const Template = ({ data, location }) => {
     const { frontmatter, fields, htmlAst } = markdownRemark;
     const { title, description } = frontmatter;
     const { slug } = fields;
-    const groupedChapters = getGroupedChapters(allMarkdownRemark);
     const [activeExc, setActiveExc] = useState(null);
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
     const html = renderAst(htmlAst);
@@ -53,66 +54,102 @@ const Template = ({ data, location }) => {
     }, [location.hash]);
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let linkList = [];
+    let slugList = {}
+    slugList[`${outline.overview.slug}`] = "";
     outline.parts.forEach((part) => {
-      if (part.slug) {
-        linkList.push(part.slug);
-      }
       if (part.chapterSlugs) {
-        linkList = linkList.concat(part.chapterSlugs);
+        part.chapterSlugs.forEach((slug) => {
+          slugList[`${slug}`] = part.title;
+        });
       }
     });
+
+    // Util consts for slugs and outline data
+    const groupedChapters = getGroupedChapters(allMarkdownRemark);
+    const links = Object.keys(slugList);
+    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
+    const isOverview = slug === outline.overview.slug;
+    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
+
+    const getMenuIcon = (icon) => icon === 'tools' ? (
+        <Icon type="setting" />
+    ) : (
+        <CustomIcon component={() => getIcon(icon)} />
+    );
 
     return (
         <ChapterContext.Provider
             value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted }}
         >
             <Layout title={title} description={description}>
-                <ContentContainer>
-                    <SideNav>
-                      <NavContent>
-                        <ol>
-                            <NavItem isActive={outline.overview.slug === slug}>
-                                <Link to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</Link>
-                            </NavItem>
-                            {outline.parts.map((part) => part.chapterSlugs && (
-                                <li key={part.title}>
-                                  <strong>{part.title}</strong>
-                                  <ol>
-                                    {part.chapterSlugs.map((chapterSlug) => (
-                                        <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                          <Link to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
-                                        </NavItem>
+                <GlobalStyle />
+                <Wrapper>
+                    <LeftContainer>
+                        <LeftContent>
+                            <SideNav>
+                                <Menu
+                                    defaultSelectedKeys={[slug]}
+                                    defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
+                                    mode="inline">
+                                    <Menu.Item key={outline.overview.slug}>
+                                        <Link to={outline.overview.slug}>
+                                            {getMenuIcon(outline.overview.icon)}
+                                            <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
+                                        </Link>
+                                    </Menu.Item>
+                                    {outline.parts.map((part) => part.chapterSlugs && (
+                                        <Menu.SubMenu
+                                            key={part.title}
+                                            title={
+                                                <span>
+                                                    {getMenuIcon(part.icon)}
+                                                    <span>{part.title}</span>
+                                                </span>
+                                            }>
+                                            {part.chapterSlugs.map((chapterSlug) => (
+                                                <Menu.Item key={chapterSlug}>
+                                                    <Link to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
+                                                </Menu.Item>
+                                            ))}
+                                        </Menu.SubMenu>
                                     ))}
-                                  </ol>
-                                </li>
-                            ))}
-                        </ol>
-                      </NavContent>
-                    </SideNav>
-                    <BodyContent>
-                        <div>
-                            {title && <h1>{title}</h1>}
-                            {description && (
-                                <p>{description}</p>
-                            )}
-                        </div>
-                        {html}
-                        <Pagination>
-                          <div>
-                            {linkList.indexOf(slug) !== 0 && (
-                                <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
-                            )}
-                          </div>
-                          <div>
-                            {linkList.indexOf(slug) !== linkList.length - 1 && (
-                                <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
-                            )}
-                          </div>
-                        </Pagination>
-                        <ChapterFooter />
-                    </BodyContent>
-                </ContentContainer>
+                                </Menu>
+                            </SideNav>
+                        </LeftContent>
+                    </LeftContainer>
+                    <RightContainer>
+                        <RightContent>
+                            <ChapterIntro>
+                                <div>
+                                    <StyledIconBox
+                                        color={getProp('color')}
+                                        icon={getProp('icon')}
+                                    />
+                                </div>
+                                <ChapterIntroText>
+                                    {title && <h1>{title}</h1>}
+                                    {description && (
+                                        <p>{description}</p>
+                                    )}
+                                </ChapterIntroText>
+                            </ChapterIntro>
+                            {html}
+                            <Pagination>
+                              <div>
+                                {links.indexOf(slug) !== 0 && (
+                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) - 1])}>« Previous Chapter</Button>
+                                )}
+                              </div>
+                              <div>
+                                {links.indexOf(slug) !== links.length - 1 && (
+                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) + 1])}>Next Chapter »</Button>
+                                )}
+                              </div>
+                            </Pagination>
+                            <ChapterFooter />
+                        </RightContent>
+                    </RightContainer>
+                </Wrapper>
             </Layout>
         </ChapterContext.Provider>
     );
@@ -120,6 +157,7 @@ const Template = ({ data, location }) => {
 
 export default Template;
 
+// GraphQL Query
 export const pageQuery = graphql`
     query($slug: String!) {
         site {
@@ -154,104 +192,130 @@ export const pageQuery = graphql`
     }
 `;
 
-const ChapterFooter = styled(Footer)`
+const CustomIcon = styled(Icon)``;
+
+// Resetting Ant Menu Styles
+const GlobalStyle = createGlobalStyle`
     &&& {
-        padding: ${({ theme }) => theme.spacing.xl} 0;
-        background: transparent;
-        text-align: left;
-    }
-`;
+        .ant-menu {
+            border: none !important;
 
-// The following is placeholder style
-// TODO(aarons): Rework these styles when there is an approved design
-// and Varnish is integrated.
+            svg {
+                color: ${({ theme }) => theme.color.N8};
+            }
+            
+            ${CustomIcon} {
+                svg {
+                    width: 17px;
+                    height: 17px;
+                    margin-right: -4px;
+                    transform: translate(-2px, 1.5px);
+                    stroke: ${({ theme }) => theme.color.N8};
+                }
+            }
+            
+            .ant-menu-submenu {
+                border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
+                
+                &.ant-menu-submenu-selected {
+                    span,
+                    i,
+                    svg {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                        stroke: ${({ theme }) => theme.color.B5};
+                    }
+                }
 
-const ContentContainer = styled.div`
-    width: 100%;
-    max-width: 1150px;
-    margin: auto;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-`;
+                .ant-menu-submenu-title:hover {
+                    span,
+                    i,
+                    svg,
+                    i:before,
+                    i:after {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                        stroke: ${({ theme }) => theme.color.B5};
+                    }
+                }
+            }
 
-const SideNav = styled.nav`
-    position: relative;
-    z-index: 3;
-    width: 272px;
-    padding-right: 40px;
-    font-size: 14px;
-    box-sizing: content-box;
-    background: #fff;
-
-    h1 {
-        margin-bottom: 20px;
-    }
-
-    ol {
-        list-style: none;
-        padding-left: 0;
-        
-        strong {
-          display: block;
-          color: ${({ theme }) => theme.color.N10};
-          padding-top: 15px;
-          border-top: 1px solid #ddd;
-          margin-top: 15px;
-          padding-bottom: 5px;
-        }
-    }
-`;
-
-const NavContent = styled.div`
-    position: sticky;
-    top: 115px;
-    padding-top: 30px;
-`;
-
-const NavItem = styled(({ isActive, ...props }) =>
-    <li {...props} />
-)`
-    position: relative;
-
-    && {
-        a {
-            display: block;
-            line-height: 16px;
-            padding: 5px 0;
-            color: ${({ isActive, theme }) => isActive ? theme.color.B6 : theme.color.N10};
-
-            &:hover {
-              color: #2a79e2;
-              text-decoration: underline;
+            .ant-menu-item {
+                overflow: visible !important;
+                white-space: normal !important;
+                height: auto !important;
+                line-height: 1.5 !important;
+                padding-top: 9px !important;
+                padding-bottom 10px !important;
+                
+                a {
+                    color: ${({ theme }) => theme.color.N10};
+                    
+                    &:hover {
+                        &,
+                        svg {
+                            color: ${({ theme }) => theme.color.B5};
+                            stroke: ${({ theme }) => theme.color.B5};
+                        }
+                        text-decoration: none;
+                    }
+                }
+                
+                &.ant-menu-item-selected {
+                    background: ${({ theme }) => theme.color.B1} !important;
+                    
+                    &:after {
+                        border-color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                    
+                    a {
+                        color: ${({ theme }) => theme.color.B5} !important;
+                    }
+                }
             }
         }
     }
-
-    ${({ isActive }) => isActive ? `
-        &:before {
-            display: block;
-            content: "▸";
-            color: #2a79e2;
-            font-size: 24px;
-            position: absolute;
-            left: -20px;
-            top: 0;
-        }
-    ` : null}
 `;
 
-const BodyContent = styled.div`
-    width: 100%;
+// Everything below the header, container for left and right containers with distinct backgrounds
+const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    border-left: 1px solid #ddd;
-    max-width: 840px;
-    padding: ${({ theme }) => `${theme.spacing.xl} 0 0 ${theme.spacing.xl}`};
-    padding-right: 0;
+    width: 100%;
+    height: 100%;
+    background: ${({ theme }) => theme.color.N3};
+`;
+
+// Left-aligned container with white background
+const LeftContainer = styled.div`
+    background: ${({ theme }) => theme.color.N1};
+    width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    height: 100%;
+    display: flex;
     position: relative;
-    
+    z-index: 3;
+`;
+
+// Constrained content descendent of LeftContainer (holds sidenav)
+const LeftContent = styled.div`
+    width: 326px;
+    height: 100%;
+    margin-left: auto;
+`;
+
+// Sticky Outline navigation
+const SideNav = styled.nav`
+    position: relative;
+    z-index: 3;
+    box-sizing: content-box;
+    padding-top: 30px;
+    position: sticky;
+    top: 115px;
+`;
+
+const RightContainer = styled.div`
+    position: relative;
+    flex: 1;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
+    height: 100%;
+
     &:before {
         position: fixed;
         top: 65px;
@@ -261,10 +325,46 @@ const BodyContent = styled.div`
         height: 50px;
         z-index: 2;
         margin-left: -30px;
-        box-shadow: 0 -15px 30px 30px #fff;
+        box-shadow: 0 -${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl} ${theme.spacing.lg} ${theme.color.N3}`};
     }
 `;
 
+const RightContent = styled.div`
+    width: 100%;
+    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
+    box-sizing: border-box;
+`;
+
+// Intro content rendered from markdown frontmatter and outline data
+const ChapterIntro = styled.div`
+    display: grid;
+    grid-template-columns: 75px auto;
+    grid-gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+// Colored box with icon that denotes Part
+const StyledIconBox = styled(IconBox)`
+    width: 75px;
+`;
+
+// Text displayed in chapter intro next to icon
+const ChapterIntroText = styled.div`
+    h1 {
+        ${({ theme }) => theme.typography.h2}
+        margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
+        color: ${({ theme }) => theme.color.B6};
+    }
+    
+    p {
+        ${({ theme }) => theme.typography.bodyBig}
+    }
+`;
+
+// Previous / Next chapter buttons
 const Pagination = styled.div`
     padding: 54px 0;
     width: 100%;
@@ -272,5 +372,14 @@ const Pagination = styled.div`
     
     div:last-child {
         margin-left: auto;
+    }
+`;
+
+// Special chapter template instance of global footer
+const ChapterFooter = styled(Footer)`
+    &&& {
+        padding: ${({ theme }) => theme.spacing.xl} 0;
+        background: transparent;
+        text-align: left;
     }
 `;
