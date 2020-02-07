@@ -200,6 +200,7 @@ const LeftContent = styled.div`
 
 const SideNav = styled.nav`
     position: relative;
+    height: 100%;
     z-index: 3;
     font-size: 14px;
     box-sizing: content-box;;
