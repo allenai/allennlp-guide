@@ -3,6 +3,6 @@
 
 import styled from 'styled-components';
 
-export const TextBlockComponent = styled.div`
+export const TextBlock = styled.div`
     padding-bottom: ${({ theme }) => theme.spacing.lg};
 `;

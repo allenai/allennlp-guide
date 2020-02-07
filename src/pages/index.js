@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
-import Layout from '../templates/Layout';
-import { LinkComponent } from '../components/LinkComponent';
+import Layout from '../components/Layout';
+import { Link } from '../components/Link';
 import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
@@ -47,8 +47,8 @@ export default ({ data }) => {
                 ))}
             </Parts>
             <Credits>
-                Written by the <LinkComponent to={data.site.siteMetadata.siteUrl}>AllenNLP</LinkComponent> team at the <LinkComponent to="https://allenai.org/">Allen Institute for AI</LinkComponent>.<br />
-              This course was inspired by <LinkComponent to="https://github.com/ines/course-starter-python">Online Course Starter</LinkComponent>.
+                Written by the <Link to={data.site.siteMetadata.siteUrl}>AllenNLP</Link> team at the <Link to="https://allenai.org/">Allen Institute for AI</Link>.<br />
+              This course was inspired by <Link to="https://github.com/ines/course-starter-python">Online Course Starter</Link>.
             </Credits>
             <Footer />
         </Layout>
@@ -179,7 +179,7 @@ const BeginLink = styled.div`
 `;
 
 // Clickable wrapper for standalone chapter
-const StandaloneChapterLink = styled(LinkComponent)`
+const StandaloneChapterLink = styled(Link)`
     && {
         &,
         &:hover {
@@ -252,7 +252,7 @@ const ChapterList = styled(CardContent)`
 `;
 
 // Clickable item in a chapter list
-const ChapterLink = styled(LinkComponent)`
+const ChapterLink = styled(Link)`
     && {
         display: block;
         background: ${({ theme }) => theme.color.N1};

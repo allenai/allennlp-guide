@@ -12,7 +12,6 @@ COPY gatsby-browser.js .
 COPY gatsby-config.js .
 COPY gatsby-node.js .
 COPY meta.json .
-COPY theme.sass .
 
 COPY static/ static/
 COPY chapters/ chapters/

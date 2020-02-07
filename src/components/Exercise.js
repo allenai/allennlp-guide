@@ -6,7 +6,7 @@ import { ChapterContext } from '../context';
 import { Card, CardContent } from '../components/Card';
 import { CheckMark } from '../components/inlineSVG/CheckMark';
 
-const ExerciseComponent = ({ id, title, type, children }) => {
+const Exercise = ({ id, title, type, children }) => {
     const excRef = useRef();
     const excId = parseInt(id);
     const { activeExc, setActiveExc, completed, setCompleted } = useContext(ChapterContext);
@@ -73,7 +73,7 @@ const ExerciseComponent = ({ id, title, type, children }) => {
     );
 };
 
-export default ExerciseComponent;
+export default Exercise;
 
 const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     border: 1px solid transparent;

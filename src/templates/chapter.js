@@ -15,10 +15,10 @@ import { Button } from '@allenai/varnish/components/button';
 
 import { renderAst } from '../markdown';
 import { ChapterContext } from '../context';
-import Layout from './Layout';
+import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { LinkComponent } from '../components/LinkComponent';
+import { Link } from '../components/Link';
 import { outline } from '../outline';
 import { getGroupedChapters, getIcon } from '../utils';
 
@@ -92,10 +92,10 @@ const Template = ({ data, location }) => {
                                     defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
                                     mode="inline">
                                     <Menu.Item key={outline.overview.slug}>
-                                        <LinkComponent to={outline.overview.slug}>
+                                        <Link to={outline.overview.slug}>
                                             {getMenuIcon(outline.overview.icon)}
                                             <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
-                                        </LinkComponent>
+                                        </Link>
                                     </Menu.Item>
                                     {outline.parts.map((part) => part.chapterSlugs && (
                                         <Menu.SubMenu
@@ -108,7 +108,7 @@ const Template = ({ data, location }) => {
                                             }>
                                             {part.chapterSlugs.map((chapterSlug) => (
                                                 <Menu.Item key={chapterSlug}>
-                                                    <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
+                                                    <Link to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
                                                 </Menu.Item>
                                             ))}
                                         </Menu.SubMenu>

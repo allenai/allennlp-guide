@@ -6,12 +6,6 @@
     "printWidth": 100,
     "overrides": [
         {
-            "files": "*.sass",
-            "options": {
-                "printWidth": 999
-            }
-        },
-        {
           "files": "*.md",
           "options": {
               "tabWidth": 2,
