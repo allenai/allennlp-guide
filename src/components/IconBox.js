@@ -3,33 +3,17 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { CubeIcon, RocketIcon, StackIcon, ToolsIcon, TextIcon } from './inlineSVG';
+import { getIcon } from '../utils';
 
-export const IconBox = ({ className, icon, color }) => {
-    const getIcon = (icon) => {
-        if (icon === 'stack') {
-            return <StackIcon />;
-        } else if (icon === 'rocket') {
-            return <RocketIcon />;
-        } else if (icon === 'cube') {
-            return <CubeIcon />;
-        } else if (icon === 'tools') {
-            return <ToolsIcon />;
-        } else { // 'default'
-            return <TextIcon />;
-        }
-    }
-
-    return (
-        <StyledIconBox className={className} color={color}>
-            <OuterWrapper>
-                <InnerWrapper>
-                    {getIcon(icon)}
-                </InnerWrapper>
-            </OuterWrapper>
-        </StyledIconBox>
-    );
-};
+export const IconBox = ({ className, icon, color }) => (
+    <StyledIconBox className={className} color={color}>
+        <OuterWrapper>
+            <InnerWrapper>
+                {getIcon(icon)}
+            </InnerWrapper>
+        </OuterWrapper>
+    </StyledIconBox>
+);
 
 // Colored square that contains part icon
 const StyledIconBox = styled(({ color, ...props }) => <div {...props} />)`

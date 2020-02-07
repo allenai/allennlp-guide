@@ -20,7 +20,7 @@ import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
 import { LinkComponent } from '../components/LinkComponent';
 import { outline } from '../outline';
-import { getGroupedChapters } from '../utils';
+import { getGroupedChapters, getIcon } from '../utils';
 
 const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data;
@@ -28,7 +28,6 @@ const Template = ({ data, location }) => {
     const { frontmatter, fields, htmlAst } = markdownRemark;
     const { title, description } = frontmatter;
     const { slug } = fields;
-    const groupedChapters = getGroupedChapters(allMarkdownRemark);
     const [activeExc, setActiveExc] = useState(null);
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
     const html = renderAst(htmlAst);
@@ -64,12 +63,19 @@ const Template = ({ data, location }) => {
         });
       }
     });
-//outline.parts slugList[slug]
-//slugList[slug]
+
+    // Util consts for slugs and outline data
+    const groupedChapters = getGroupedChapters(allMarkdownRemark);
     const links = Object.keys(slugList);
     const thisPart = outline.parts.find(part => part.title === slugList[slug]);
     const isOverview = slug === outline.overview.slug;
     const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
+
+    const getMenuIcon = (icon) => icon === 'tools' ? (
+        <Icon type="setting" />
+    ) : (
+        <CustomIcon component={() => getIcon(icon)} />
+    );
 
     return (
         <ChapterContext.Provider
@@ -78,42 +84,40 @@ const Template = ({ data, location }) => {
             <Layout title={title} description={description}>
                 <GlobalStyle />
                 <Wrapper>
-                    <Left>
+                    <LeftContainer>
                         <LeftContent>
                             <SideNav>
-                              <NavContent>
-                                  <Menu
-                                      defaultSelectedKeys={[slug]}
-                                      defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
-                                      mode="inline"
-                                  >
-                                      <Menu.Item key={outline.overview.slug}>
-                                          <LinkComponent to={outline.overview.slug}>
-                                              <Icon type="setting" />
-                                              <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
-                                          </LinkComponent>
-                                      </Menu.Item>
-                                      {outline.parts.map((part) => part.chapterSlugs && (
-                                          <Menu.SubMenu
-                                              key={part.title}
-                                              title={
-                                                  <span>
-                                                      <Icon type="setting" />
-                                                      <span>{part.title}</span>
-                                                  </span>
-                                              }
-                                          >
-                                              {part.chapterSlugs.map((chapterSlug) => (
-                                                  <Menu.Item key={chapterSlug}><LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent></Menu.Item>
-                                              ))}
-                                          </Menu.SubMenu>
-                                      ))}
-                                  </Menu>
-                              </NavContent>
+                                <Menu
+                                    defaultSelectedKeys={[slug]}
+                                    defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
+                                    mode="inline">
+                                    <Menu.Item key={outline.overview.slug}>
+                                        <LinkComponent to={outline.overview.slug}>
+                                            {getMenuIcon(outline.overview.icon)}
+                                            <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
+                                        </LinkComponent>
+                                    </Menu.Item>
+                                    {outline.parts.map((part) => part.chapterSlugs && (
+                                        <Menu.SubMenu
+                                            key={part.title}
+                                            title={
+                                                <span>
+                                                    {getMenuIcon(part.icon)}
+                                                    <span>{part.title}</span>
+                                                </span>
+                                            }>
+                                            {part.chapterSlugs.map((chapterSlug) => (
+                                                <Menu.Item key={chapterSlug}>
+                                                    <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
+                                                </Menu.Item>
+                                            ))}
+                                        </Menu.SubMenu>
+                                    ))}
+                                </Menu>
                             </SideNav>
                         </LeftContent>
-                    </Left>
-                    <Right>
+                    </LeftContainer>
+                    <RightContainer>
                         <RightContent>
                             <ChapterIntro>
                                 <div>
@@ -144,7 +148,7 @@ const Template = ({ data, location }) => {
                             </Pagination>
                             <ChapterFooter />
                         </RightContent>
-                    </Right>
+                    </RightContainer>
                 </Wrapper>
             </Layout>
         </ChapterContext.Provider>
@@ -153,6 +157,7 @@ const Template = ({ data, location }) => {
 
 export default Template;
 
+// GraphQL Query
 export const pageQuery = graphql`
     query($slug: String!) {
         site {
@@ -187,28 +192,47 @@ export const pageQuery = graphql`
     }
 `;
 
-// Resetting root layout
+const CustomIcon = styled(Icon)``;
+
+// Resetting Ant Menu Styles
 const GlobalStyle = createGlobalStyle`
     &&& {
         .ant-menu {
             border: none !important;
+
+            svg {
+                color: ${({ theme }) => theme.color.N8};
+            }
+            
+            ${CustomIcon} {
+                svg {
+                    width: 17px;
+                    height: 17px;
+                    transform: translate(-2px, 1.5px);
+                    stroke: ${({ theme }) => theme.color.N8};
+                }
+            }
             
             .ant-menu-submenu {
                 border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
                 
                 &.ant-menu-submenu-selected {
                     span,
-                    i {
+                    i,
+                    svg {
                         color: ${({ theme }) => theme.color.B5} !important;
+                        stroke: ${({ theme }) => theme.color.B5};
                     }
                 }
 
                 .ant-menu-submenu-title:hover {
                     span,
                     i,
+                    svg,
                     i:before,
                     i:after {
                         color: ${({ theme }) => theme.color.B5} !important;
+                        stroke: ${({ theme }) => theme.color.B5};
                     }
                 }
             }
@@ -225,7 +249,11 @@ const GlobalStyle = createGlobalStyle`
                     color: ${({ theme }) => theme.color.N10};
                     
                     &:hover {
-                        color: ${({ theme }) => theme.color.B5};
+                        &,
+                        svg {
+                            color: ${({ theme }) => theme.color.B5};
+                            stroke: ${({ theme }) => theme.color.B5};
+                        }
                         text-decoration: none;
                     }
                 }
@@ -246,6 +274,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+// Everything below the header, container for left and right containers with distinct backgrounds
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
@@ -253,7 +282,8 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.color.N3};
 `;
 
-const Left = styled.div`
+// Left-aligned container with white background
+const LeftContainer = styled.div`
     background: ${({ theme }) => theme.color.N1};
     width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
     height: 100%;
@@ -262,48 +292,24 @@ const Left = styled.div`
     z-index: 3;
 `;
 
+// Constrained content descendent of LeftContainer (holds sidenav)
 const LeftContent = styled.div`
     width: 326px;
     height: 100%;
     margin-left: auto;
 `;
 
-// Nav
-
+// Sticky Outline navigation
 const SideNav = styled.nav`
     position: relative;
-    height: 100%;
     z-index: 3;
-    font-size: 14px;
-    box-sizing: content-box;;
-
-    h1 {
-        margin-bottom: 20px;
-    }
-
-    ol {
-        display: none;
-        list-style: none;
-        padding-left: 0;
-        
-        strong {
-          display: block;
-          color: ${({ theme }) => theme.color.N10};
-          padding-top: 15px;
-          border-top: 1px solid #ddd;
-          margin-top: 15px;
-          padding-bottom: 5px;
-        }
-    }
-`;
-
-const NavContent = styled.div`
+    box-sizing: content-box;
     padding-top: 30px;
     position: sticky;
     top: 115px;
 `;
 
-const Right = styled.div`
+const RightContainer = styled.div`
     position: relative;
     flex: 1;
     max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
@@ -318,7 +324,7 @@ const Right = styled.div`
         height: 50px;
         z-index: 2;
         margin-left: -30px;
-        box-shadow: 0 -15px 30px 30px ${({ theme }) => theme.color.N3};
+        box-shadow: 0 -${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl} ${theme.spacing.lg} ${theme.color.N3}`};
     }
 `;
 
@@ -332,16 +338,19 @@ const RightContent = styled.div`
     box-sizing: border-box;
 `;
 
+// Intro content rendered from markdown frontmatter and outline data
 const ChapterIntro = styled.div`
     display: grid;
     grid-template-columns: 75px auto;
     grid-gap: ${({ theme }) => theme.spacing.xl};
 `;
 
+// Colored box with icon that denotes Part
 const StyledIconBox = styled(IconBox)`
     width: 75px;
 `;
 
+// Text displayed in chapter intro next to icon
 const ChapterIntroText = styled.div`
     h1 {
         ${({ theme }) => theme.typography.h2}
@@ -354,6 +363,7 @@ const ChapterIntroText = styled.div`
     }
 `;
 
+// Previous / Next chapter buttons
 const Pagination = styled.div`
     padding: 54px 0;
     width: 100%;
@@ -364,6 +374,7 @@ const Pagination = styled.div`
     }
 `;
 
+// Special chapter template instance of global footer
 const ChapterFooter = styled(Footer)`
     &&& {
         padding: ${({ theme }) => theme.spacing.xl} 0;
