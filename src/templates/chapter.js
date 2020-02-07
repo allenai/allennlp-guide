@@ -14,9 +14,9 @@ import { Button } from '@allenai/varnish/components/button';
 
 import { renderAst } from '../markdown';
 import { ChapterContext } from '../context';
-import Layout from './Layout';
+import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
-import { LinkComponent } from '../components/LinkComponent';
+import { Link } from '../components/Link';
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
 
@@ -73,7 +73,7 @@ const Template = ({ data, location }) => {
                       <NavContent>
                         <ol>
                             <NavItem isActive={outline.overview.slug === slug}>
-                                <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
+                                <Link to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</Link>
                             </NavItem>
                             {outline.parts.map((part) => part.chapterSlugs && (
                                 <li key={part.title}>
@@ -81,7 +81,7 @@ const Template = ({ data, location }) => {
                                   <ol>
                                     {part.chapterSlugs.map((chapterSlug) => (
                                         <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                          <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
+                                          <Link to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
                                         </NavItem>
                                     ))}
                                   </ol>

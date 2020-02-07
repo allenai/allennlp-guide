@@ -4,7 +4,7 @@
 import React from 'react';
 import { Link as GatsbyLink } from 'gatsby';
 
-export const LinkComponent = ({ children, to, href, onClick, className, ...other }) => {
+export const Link = ({ children, to, href, onClick, className, ...other }) => {
     const dest = to || href;
     const external = /(http(s?)):\/\//gi.test(dest);
 

@@ -5,9 +5,9 @@ import { ThemeProvider } from '@allenai/varnish/theme';
 import { Header } from '@allenai/varnish/components/Header';
 import { HeaderColumns } from '@allenai/varnish/components/Header';
 
-import Head from '../components/Head';
-import { LinkComponent } from '../components/LinkComponent';
-import { AllenNLPLogo } from '../components/inlineSVG/AllenNLPLogo';
+import Head from './Head';
+import { Link } from './Link';
+import { AllenNLPLogo } from './inlineSVG/AllenNLPLogo';
 
 const Layout = ({ title, description, children }) => {
     return (
@@ -35,18 +35,18 @@ const Layout = ({ title, description, children }) => {
                         <Header alwaysVisible={true}>
                             <HeaderColumnsWithSpace gridTemplateColumns="18rem auto">
                                 <LogoContainer>
-                                    <LinkComponent to="/">
+                                    <Link to="/">
                                         <AllenNLPLogo />
                                         <span>Course</span>
-                                    </LinkComponent>
+                                    </Link>
                                 </LogoContainer>
                                 <nav>
                                     <ul>
                                         {headerLinks.map((headerLink) => (
                                             <li key={headerLink.url}>
-                                                <LinkComponent to={headerLink.url}>
+                                                <Link to={headerLink.url}>
                                                     {headerLink.text}
-                                                </LinkComponent>
+                                                </Link>
                                             </li>
                                         ))}
                                     </ul>
@@ -241,7 +241,7 @@ const GlobalStyle = createGlobalStyle`
         pre,
         p > code,
         li > code,
-        [class^="code-module-root"] {
+        [class^="CodeBlock__StyledCodeBlock"] {
             // Halfway between Varnish N2 and N3
             background: #f4f6f8 !important;
         }

@@ -4,19 +4,6 @@ const autoprefixer = require('autoprefixer')
 module.exports = {
     siteMetadata: meta,
     plugins: [
-        {
-            resolve: `gatsby-plugin-sass`,
-            options: {
-                indentedSyntax: true,
-                postCssPlugins: [autoprefixer()],
-                cssLoaderOptions: {
-                    localIdentName:
-                        process.env.NODE_ENV == 'development'
-                            ? '[name]-[local]-[hash:8]'
-                            : '[hash:8]',
-                },
-            },
-        },
         `gatsby-plugin-react-helmet`,
         {
             resolve: `gatsby-source-filesystem`,
