@@ -16,6 +16,7 @@ import { renderAst } from '../markdown';
 import { ChapterContext } from '../context';
 import Layout from './Layout';
 import { Footer } from '../components/Footer';
+import { IconBox } from '../components/IconBox';
 import { LinkComponent } from '../components/LinkComponent';
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
@@ -53,15 +54,20 @@ const Template = ({ data, location }) => {
     }, [location.hash]);
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let linkList = [outline.overview.slug];
+    let slugList = {}
+    slugList[`${outline.overview.slug}`] = "";
     outline.parts.forEach((part) => {
-      if (part.slug) {
-        linkList.push(part.slug);
-      }
       if (part.chapterSlugs) {
-        linkList = linkList.concat(part.chapterSlugs);
+        part.chapterSlugs.forEach((slug) => {
+          slugList[`${slug}`] = part.title;
+        });
       }
     });
+//outline.parts slugList[slug]
+//slugList[slug]
+    const links = Object.keys(slugList);
+    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
+    const getProp = (prop) => slug === outline.overview.slug ? outline.overview[prop] : thisPart[prop];
 
     return (
         <ChapterContext.Provider
@@ -75,6 +81,10 @@ const Template = ({ data, location }) => {
                     <Right>
                         <RightContent>
                             <ChapterIntro>
+                                <IconBox
+                                    color={getProp('color')}
+                                    icon={getProp('icon')}
+                                />
                                 {title && <h1>{title}</h1>}
                                 {description && (
                                     <p>{description}</p>
@@ -82,13 +92,13 @@ const Template = ({ data, location }) => {
                             </ChapterIntro>
                             <Pagination>
                               <div>
-                                {linkList.indexOf(slug) !== 0 && (
-                                    <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
+                                {links.indexOf(slug) !== 0 && (
+                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) - 1])}>« Previous Chapter</Button>
                                 )}
                               </div>
                               <div>
-                                {linkList.indexOf(slug) !== linkList.length - 1 && (
-                                    <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
+                                {links.indexOf(slug) !== links.length - 1 && (
+                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) + 1])}>Next Chapter »</Button>
                                 )}
                               </div>
                             </Pagination>
@@ -98,7 +108,7 @@ const Template = ({ data, location }) => {
                 </Wrapper>
                 <ContentContainer>
                     <SideNav>
-                      <NavContent>
+                      {/*<NavContent>
                         <ol>
                             <NavItem isActive={outline.overview.slug === slug}>
                                 <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
@@ -116,7 +126,7 @@ const Template = ({ data, location }) => {
                                 </li>
                             ))}
                         </ol>
-                      </NavContent>
+                      </NavContent>*/}
                     </SideNav>
                     <BodyContent>
                         <div>
@@ -126,7 +136,7 @@ const Template = ({ data, location }) => {
                             )}
                         </div>
                         {html}
-                        <Pagination>
+                        {/*<Pagination>
                           <div>
                             {linkList.indexOf(slug) !== 0 && (
                                 <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) - 1])}>« Previous Chapter</Button>
@@ -137,7 +147,7 @@ const Template = ({ data, location }) => {
                                 <Button variant="primary" onClick={() => navigate(linkList[linkList.indexOf(slug) + 1])}>Next Chapter »</Button>
                             )}
                           </div>
-                        </Pagination>
+                        </Pagination>*/}
                         <ChapterFooter />
                     </BodyContent>
                 </ContentContainer>
