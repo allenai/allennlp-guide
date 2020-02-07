@@ -208,6 +208,7 @@ const GlobalStyle = createGlobalStyle`
                 svg {
                     width: 17px;
                     height: 17px;
+                    margin-right: -4px;
                     transform: translate(-2px, 1.5px);
                     stroke: ${({ theme }) => theme.color.N8};
                 }
