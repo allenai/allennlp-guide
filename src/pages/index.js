@@ -241,6 +241,7 @@ const PartContainer = styled(Card)`
 // TODO(aarons): implement expand/collapse functionality
 const ChapterListTrigger = styled.div`
     background: ${({ theme }) => theme.color.N2};
+    outline: 1px solid black;
     height: ${({ theme }) => theme.spacing.xxl};
     margin-top: -${({ theme }) => theme.spacing.xxl};
 `;
