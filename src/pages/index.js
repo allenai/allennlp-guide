@@ -10,7 +10,7 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon } from '../components/inlineSVG';
+import { ArrowRightIcon, ExpandCollapseIcon } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
@@ -127,7 +127,7 @@ const SectionIntro = styled.div`
 // Container for colored icon, title and description
 const PartHeader = ({ color, icon, title, description, slug }) => (
     <PartHeaderContainer>
-        <IconBox color={color} icon={icon} />
+        <StyledIconBox color={color} icon={icon} />
         <PartHeaderText>
             {title && (
                 <PartTitle>{title}</PartTitle>
@@ -145,6 +145,10 @@ const PartHeader = ({ color, icon, title, description, slug }) => (
 // Styled wrapper for `PartHeader` component
 const PartHeaderContainer = styled.div`
     display: flex;
+`;
+
+const StyledIconBox = styled(IconBox)`
+    width: ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem;
 `;
 
 // Container for part title and description
@@ -214,7 +218,12 @@ const Part = ({ data, groupedChapters }) => {
         <PartContainer>
             <PartHeader color={color} icon={icon} title={title} description={description} />
             <div>
-                <ChapterListTrigger />
+                <ChapterListTrigger>
+                    <TriggerClickArea>
+                        <TriggerTooltip>Explore {title.substr(0, title.indexOf(':'))}</TriggerTooltip>
+                        <TriggerIcon />
+                    </TriggerClickArea>
+                </ChapterListTrigger>
                 <ChapterList>
                     {chapterSlugs.map((chapterSlug) => (
                         <ChapterLink key={chapterSlug} to={chapterSlug}>
@@ -241,15 +250,48 @@ const PartContainer = styled(Card)`
 // TODO(aarons): implement expand/collapse functionality
 const ChapterListTrigger = styled.div`
     background: ${({ theme }) => theme.color.N2};
-    outline: 1px solid black;
-    height: ${({ theme }) => theme.spacing.xxl};
+    min-height: ${({ theme }) => theme.spacing.xxl};
     margin-top: -${({ theme }) => theme.spacing.xxl};
+    display: flex;
+`;
+
+const TriggerTooltip = styled.span`
+    ${({ theme }) => theme.typography.bodySmall}
+    color: ${({ theme }) => theme.color.B6};
+    cursor: pointer;
+`;
+
+const TriggerIcon = styled(ExpandCollapseIcon)`
+    margin-left: auto;
+    margin-right: -${({ theme }) => theme.spacing.sm};
+`;
+
+const TriggerClickArea = styled.div`
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    width: calc(100% - ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem);
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+
+    &:hover {
+        ${TriggerTooltip} {
+            text-decoration: underline;
+        }
+
+        ${TriggerIcon} rect {
+            fill: ${({ theme }) => theme.color.B6};
+        }
+    }
 `;
 
 // Container for list of chapters for a given part
 const ChapterList = styled(CardContent)`
     background: ${({ theme }) => theme.color.N2};
     padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    display: none;
 `;
 
 // Clickable item in a chapter list

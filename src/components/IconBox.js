@@ -17,7 +17,6 @@ export const IconBox = ({ className, icon, color }) => (
 
 // Colored square that contains part icon
 const StyledIconBox = styled(({ color, ...props }) => <div {...props} />)`
-    width: ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem;
     background: linear-gradient(151.76deg, ${({ color }) => {
         if (color === 'aqua') {
             return '#1EC2CC 17.77%, #0191A7';
