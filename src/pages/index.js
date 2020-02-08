@@ -26,7 +26,7 @@ export default ({ data }) => {
                     <h2>About this course</h2>
                     <p>{data.site.siteMetadata.description}</p>
                 </SectionIntro>
-                <PartContainer>
+                <OverviewContainer>
                     <StandaloneChapterLink to={outline.overview.slug}>
                         <PartHeader
                             color={outline.overview.color}
@@ -36,7 +36,7 @@ export default ({ data }) => {
                             slug={outline.overview.slug}
                         />
                     </StandaloneChapterLink>
-                </PartContainer>
+                </OverviewContainer>
             </About>
             <Parts>
                 <SectionIntro>
@@ -136,7 +136,7 @@ const PartHeader = ({ color, icon, title, description, slug }) => (
                 <p>{description}</p>
             )}
             {slug && (
-                <BeginLink>Begin Chapter <ArrowRightIcon /></BeginLink>
+                <BeginLink><div>Begin Chapter <ArrowRightIcon /></div></BeginLink>
             )}
         </PartHeaderText>
     </PartHeaderContainer>
@@ -173,9 +173,18 @@ const PartTitle = styled.h3`
 // Begin Chapter link for Overview
 const BeginLink = styled.div`
     ${({ theme }) => theme.typography.bodySmall};
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: max-content;
     margin-top: auto;
+    
+    div {
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 
     svg {
         margin-left: ${({ theme }) => theme.spacing.xs};
@@ -195,12 +204,6 @@ const StandaloneChapterLink = styled(Link)`
             
             p {
                 color: ${({ theme }) => theme.palette.text.primary};
-            }
-        }
-
-        &:hover {
-            ${BeginLink} {
-                text-decoration: underline;
             }
         }
 
@@ -244,6 +247,12 @@ const Part = ({ data, groupedChapters }) => {
 // Styled wrapper for `Part` component
 const PartContainer = styled(Card)`
     overflow: hidden;
+`;
+
+const OverviewContainer = styled(PartContainer)`
+    &:hover {
+        box-shadow: 0 ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`} rgba(10, 41, 57, 0.25);
+    }
 `;
 
 // Clickable bar that triggers expand/collapse of chapter list
