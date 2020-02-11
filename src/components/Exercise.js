@@ -62,9 +62,9 @@ const Exercise = ({ id, title, type, children }) => {
                             <Button onClick={handleSetCompleted}>
                                 {isCompleted ? 'Unm' : 'M'}ark as Completed
                             </Button>
-                            <Button onClick={handleNext}>
+                            <NextButton onClick={handleNext}>
                                 Next
-                            </Button>
+                            </NextButton>
                         </Toolbar>
                     </MarkdownContainer>
                 </StyledCardContent>
@@ -75,6 +75,8 @@ const Exercise = ({ id, title, type, children }) => {
 
 export default Exercise;
 
+const NextButton = styled(Button)``;
+
 const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     border: 1px solid transparent;
 
@@ -83,6 +85,23 @@ const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
             border-color: ${theme.color.B6};
         }
     ` : null}
+
+    // This is a hack to hide the last section "next" button.
+    // I couldn't figure out how to get an array of Excercise components from
+    // markdown. Excercise is not a child of chapter template, but part of
+    // the markdown data that gets injected. I don't know of a way for an Excercise
+    // component to self-identify as "last" without explicitly setting a "last" flag
+    // in the markdown data itself. This solution hides the button from the user but does
+    // not actually prevent the button from being rendered to the DOM which
+    // would be prefarable. This is addressing an issue that was inherited from
+    // https://github.com/ines/course-starter-python.
+    // TODO: investigate possible ways of hiding this programmatically.
+
+    &:last-child {
+        ${NextButton} {
+            display: none;
+        }
+    }
 `;
 
 // Workaround to position anchored content below sticky header
