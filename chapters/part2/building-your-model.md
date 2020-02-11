@@ -50,11 +50,17 @@ You also need to include in this dictionary any information necessary for subseq
 
 <exercise id="2" title="Looking at model outputs">
 
-* Other Model methods
-    * forward_on_instance(s)
-    * decode (here's another place vocab is used)
-    * exercise
-    * get_metrics
+Although the `forward()` method is the most important (and often the only) method you need to implement for your model, AllenNLP `Models` also implement other methods that make it easier to interact with them.
+
+The `decode()` method is one of them. It takes the dictionary returned by the `forward()` method and runs whatever post-processing you need for your model. This is often some sort of decoding or inference, but not necessarily. In a common scenario, `forward()` returns logits or probabilities, then `decode()` takes its result and runs some sort of beam search or constrained inference. The method can also reference `Vocabulary` in order to convert indices back to string representations (as we'll see shortly).
+
+There are two model methods—`forward_on_instance()` and `forward_on_instances()`—that come in handy when you run inference using your model. Both take instance(s) instead of batched tensors, convert them to indices and batch them on the fly, and run the forward pass (including the `decode()` method). Before returning the results, these methods also convert any `torch.Tensors` in the result dictionary to numpy arrays and separate the batched tensors into a list of individual dictionaries per instance. As you might have guessed, `forward_on_instance()` runs inference on a single instance, while `forward_on_instances()` do it with multiple instances by batching them. These methods are used by `Predictors`.
+
+<codeblock source="building-your-model/model_predict"></codeblock>
+
+[As you learned before](/training-and-prediction#2), `Models` hold `Metrics` objects that keep track of related statistics which get updated by every call to the forward method. AllenNLP's `Trainer` calls your model's `get_metrics()` method to retrieve the computed metrics for, e.g., monitoring and early stopping. The method returns a dictionary of metric values associated with their names. These values are usually returned by the `get_metric()` method of your `Metric` objects.
+
+The method receives a boolean flag `reset`, which indicates whether to reset the internal accumulator of `Metric` objects. This flag is usually set at the end of each epoch, allowing metrics to be computed over the entire epoch by accumulating statistics.
 
 </exercise>
 
