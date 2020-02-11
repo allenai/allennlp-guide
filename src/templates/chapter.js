@@ -33,15 +33,17 @@ const Template = ({ data, location }) => {
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
+    console.log(html.props.children);
+
     const handleSetActiveExc = (id) => {
         const loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
         } else {
             // Prevent #null from showing up in the URL
-            loc.hash = '';
+            loc.replace('#');
             if (typeof window.history.replaceState === 'function') {
-                window.history.replaceState({}, '', window.location.href.slice(0, -1));
+                window.history.replaceState({}, '', loc.href.slice(0, -1));
             }
         }
         setActiveExc(id);
