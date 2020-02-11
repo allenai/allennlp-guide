@@ -93,8 +93,9 @@ const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     // component to self-identify as "last" without explicitly setting a "last" flag
     // in the markdown data itself. This solution hides the button from the user but does
     // not actually prevent the button from being rendered to the DOM which
-    // would be prefarable. This was an issue that was inherited from
-    // https://github.com/ines/course-starter-python
+    // would be prefarable. This is addressing an issue that was inherited from
+    // https://github.com/ines/course-starter-python.
+    // TODO: investigate possible ways of hiding this programmatically.
 
     &:last-child {
         ${NextButton} {
