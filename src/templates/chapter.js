@@ -33,8 +33,6 @@ const Template = ({ data, location }) => {
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
-    console.log(html.props.children);
-
     const handleSetActiveExc = (id) => {
         const loc = window.location;
         if (id !== null) {
