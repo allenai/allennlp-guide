@@ -1,46 +1,92 @@
-// This SVG asset displays a dual-purpose expand/collapse icon that can transition between the two
+// This asset displays a dual-purpose expand/collapse icon that can transition between the two
 // Meant for expandable part containers on home page and expandable chapter cards on chapter pages
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const ExpandCollapseIcon = ({ className }) => (
-    <SVGContainer className={className}>
-        <svg
-            width={18}
-            height={11}
-            viewBox="0 0 18 11"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-              width="1.5"
-              height={12}
-              transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 17.4854 2)"
-          />
-          <rect
-              width="1.5"
-              height={12}
-              transform="matrix(-0.707107 0.707107 0.707107 0.707107 1.57544 0.939209)"
-          />
-        </svg>
-    </SVGContainer>
+export const ExpandCollapseIcon = ({ className, isExpanded = false }) => (
+    <PaddedContainer className={className} isExpanded={isExpanded} title={`${isExpanded ? 'Collapse' : 'Expand'} panel`}>
+        <IconContainer>
+            <LeftOuter>
+                <LeftInner />
+            </LeftOuter>
+            <RightOuter>
+                <RightInner />
+            </RightOuter>
+        </IconContainer>
+    </PaddedContainer>
 );
 
-const SVGContainer = styled.div`
+const IconContainer = styled.div`
+    width: 18px;
+    height: 11px;
+    position: relative;
+`;
+
+const outerStyles = css`
+    transition: transform 0.2s ease;
+    transform-origin: 50% 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+`;
+
+const LeftOuter = styled.div`
+    ${outerStyles}
+    left: -0.1rem;
+`;
+
+const RightOuter = styled.div`
+    ${outerStyles}
+    right: 0;
+`;
+
+const innerStyles = css`
+    display: block;
+    transform-origin: 50% 50%;
+    width: 0.75rem;
+    height: 0.09375rem;
+    transition: background-color 0.2s ease;
+`;
+
+const LeftInner = styled.span`
+    ${innerStyles}
+    transform: rotate(45deg);
+`;
+
+const RightInner = styled.span`
+    ${innerStyles}
+    transform: rotate(-45deg);
+`;
+
+const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)`
     width: ${({ theme }) => theme.spacing.lg};
     height: ${({ theme }) => theme.spacing.lg};
     display: flex;
     align-items: center;
     justify-content: center;
 
-    rect {
-        fill: ${({ theme }) => theme.color.N8};
-        transition: transform 0.2s ease, fill 0.2s ease;
+    ${LeftInner},
+    ${RightInner} {
+        background: ${({ theme, isExpanded }) => isExpanded ? theme.color.B6 : theme.color.N6};
     }
 
+    ${({ isExpanded, theme }) => isExpanded ? `
+        ${LeftOuter} {
+            transform: rotate(-90deg);
+        }
+
+        ${RightOuter} {
+            transform: rotate(90deg);
+        }
+    ` : null}
+
     &:hover {
-        rect {
-            fill: ${({ theme }) => theme.color.B6};
+        ${LeftInner},
+        ${RightInner} {
+            background: ${({ theme }) => theme.color.B6};
         }
     }
 `;

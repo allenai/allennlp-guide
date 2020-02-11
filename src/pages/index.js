@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { graphql } from 'gatsby';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import AnimateHeight from 'react-animate-height';
 
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
@@ -26,7 +27,7 @@ export default ({ data }) => {
                     <h2>About this course</h2>
                     <p>{data.site.siteMetadata.description}</p>
                 </SectionIntro>
-                <OverviewContainer>
+                <PartContainer>
                     <StandaloneChapterLink to={outline.overview.slug}>
                         <PartHeader
                             color={outline.overview.color}
@@ -36,7 +37,7 @@ export default ({ data }) => {
                             slug={outline.overview.slug}
                         />
                     </StandaloneChapterLink>
-                </OverviewContainer>
+                </PartContainer>
             </About>
             <Parts>
                 <SectionIntro>
@@ -125,8 +126,8 @@ const SectionIntro = styled.div`
 // Part UI
 
 // Container for colored icon, title and description
-const PartHeader = ({ color, icon, title, description, slug }) => (
-    <PartHeaderContainer>
+const PartHeader = ({ className, color, icon, title, description, slug, onClick = () => {} }) => (
+    <PartHeaderContainer className={className} onClick={onClick}>
         <StyledIconBox color={color} icon={icon} />
         <PartHeaderText>
             {title && (
@@ -136,15 +137,26 @@ const PartHeader = ({ color, icon, title, description, slug }) => (
                 <p>{description}</p>
             )}
             {slug && (
-                <BeginLink><div>Begin Chapter <ArrowRightIcon /></div></BeginLink>
+                <BeginLink><div>Begin Chapter <StyledArrowRightIcon /></div></BeginLink>
             )}
         </PartHeaderText>
     </PartHeaderContainer>
 );
 
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+    transition: transform 0.2s ease;
+`;
+
 // Styled wrapper for `PartHeader` component
 const PartHeaderContainer = styled.div`
     display: flex;
+    cursor: pointer;
+
+    &:hover {
+        ${StyledArrowRightIcon} {
+            transform: translateX(2px);
+        }
+    }
 `;
 
 const StyledIconBox = styled(IconBox)`
@@ -216,42 +228,92 @@ const StandaloneChapterLink = styled(Link)`
 // Container for PartHeader and chapter list
 const Part = ({ data, groupedChapters }) => {
     const { color, icon, title, description, chapterSlugs } = data;
+    const [chapterListIsVisible, setChaperListVisibility] = useState(false);
 
     return (
-        <PartContainer>
-            <PartHeader color={color} icon={icon} title={title} description={description} />
+        <PartContainer chapterListIsVisible={chapterListIsVisible}>
+            <PartHeader
+                color={color}
+                icon={icon}
+                title={title}
+                description={description}
+                onClick={() => setChaperListVisibility(!chapterListIsVisible)}
+                chapterListIsVisible={chapterListIsVisible}
+            />
             <div>
                 <ChapterListTrigger>
-                    <TriggerClickArea>
+                    <TriggerClickArea onClick={() => setChaperListVisibility(!chapterListIsVisible)}>
                         <TriggerTooltip>Explore {title.substr(0, title.indexOf(':'))}</TriggerTooltip>
-                        <TriggerIcon />
+                        <TriggerIcon isExpanded={chapterListIsVisible} />
                     </TriggerClickArea>
                 </ChapterListTrigger>
-                <ChapterList>
-                    {chapterSlugs.map((chapterSlug) => (
-                        <ChapterLink key={chapterSlug} to={chapterSlug}>
-                            <h4>
-                                {groupedChapters[chapterSlug].node.frontmatter.title}
-                            </h4>
-                            <p>
-                                {groupedChapters[chapterSlug].node.frontmatter.description}
-                            </p>
-                        </ChapterLink>
-                    ))}
-                </ChapterList>
+                <AnimateHeight animateOpacity={true} height={chapterListIsVisible ? 'auto' : 0}>
+                    <ChapterList>
+                        {chapterSlugs.map((chapterSlug) => (
+                            <ChapterLink key={chapterSlug} to={chapterSlug}>
+                                <h4>
+                                    {groupedChapters[chapterSlug].node.frontmatter.title}
+                                </h4>
+                                <p>
+                                    {groupedChapters[chapterSlug].node.frontmatter.description}
+                                    <StyledArrowRightIcon />
+                                </p>
+                            </ChapterLink>
+                        ))}
+                    </ChapterList>
+                </AnimateHeight>
             </div>
         </PartContainer>
     );
 };
 
-// Styled wrapper for `Part` component
-const PartContainer = styled(Card)`
-    overflow: hidden;
+const activeShadow = css`
+    box-shadow: 0 ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`} rgba(10, 41, 57, 0.25);
+    transform: translateY(-1px);
 `;
 
-const OverviewContainer = styled(PartContainer)`
+const TriggerIcon = styled(ExpandCollapseIcon)`
+    margin-left: auto;
+    margin-right: -${({ theme }) => theme.spacing.sm};
+    transition: transform 0.3s ease;
+`;
+
+const TriggerClickArea = styled.div`
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    width: calc(100% - ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem);
+    position: relative;
+    cursor: pointer;
+`;
+
+// Styled wrapper for `Part` component
+const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...props} />)`
+    overflow: hidden;
+    ${({ chapterListIsVisible }) => chapterListIsVisible ? activeShadow : null}
+
     &:hover {
-        box-shadow: 0 ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`} rgba(10, 41, 57, 0.25);
+        ${activeShadow}
+    }
+
+    [class*="PartHeader"]:hover + div,
+    ${TriggerClickArea}:hover {
+        ${TriggerIcon} {
+            transform: translateY(2px);
+            span {
+                background: ${({ theme }) => theme.color.B6};
+            }
+        }
+
+        ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
+            ${TriggerIcon} {
+                transform: translateY(-2px);
+                span {
+                    background: ${theme.color.N6};
+                }
+            }
+        ` : null}
     }
 `;
 
@@ -267,40 +329,17 @@ const ChapterListTrigger = styled.div`
 const TriggerTooltip = styled.span`
     ${({ theme }) => theme.typography.bodySmall}
     color: ${({ theme }) => theme.color.B6};
-    cursor: pointer;
-`;
-
-const TriggerIcon = styled(ExpandCollapseIcon)`
-    margin-left: auto;
-    margin-right: -${({ theme }) => theme.spacing.sm};
-`;
-
-const TriggerClickArea = styled.div`
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    padding: 0 ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
-    width: calc(100% - ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem);
-    position: relative;
-    z-index: 2;
-    cursor: pointer;
-
+    
     &:hover {
-        ${TriggerTooltip} {
-            text-decoration: underline;
-        }
-
-        ${TriggerIcon} rect {
-            fill: ${({ theme }) => theme.color.B6};
-        }
+        text-decoration: underline;
     }
 `;
 
 // Container for list of chapters for a given part
+
 const ChapterList = styled(CardContent)`
     background: ${({ theme }) => theme.color.N2};
     padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
-    display: none;
 `;
 
 // Clickable item in a chapter list
@@ -310,10 +349,12 @@ const ChapterLink = styled(Link)`
         background: ${({ theme }) => theme.color.N1};
         border: 1px solid ${({ theme }) => theme.color.N6};
         border-radius: ${({ theme }) => theme.spacing.xxs};
+        transition: border-color 0.1s ease, box-shadow 0.1s ease;
         padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
 
         h4 {
           ${({ theme }) => theme.typography.bodyBig}
+          transition: color 0.1s ease;
           margin: 0;
         }
 
@@ -322,9 +363,26 @@ const ChapterLink = styled(Link)`
           color: ${({ theme }) => theme.color.N10};
         }
 
-        :hover {
+        ${StyledArrowRightIcon} {
+            opacity: 0;
+            margin-left: 8px;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            fill: ${({ theme }) => theme.color.B6};
+        }
+
+        &:hover {
             text-decoration: none;
             border-color: ${({ theme }) => theme.color.B6};
+            box-shadow: 0 ${({ theme }) => `${theme.spacing.xxs} ${theme.spacing.sm}`} rgba(10, 41, 57, 0.1);
+
+            h4 {
+                color: ${({ theme }) => theme.color.B6};
+            }
+
+            ${StyledArrowRightIcon} {
+                opacity: 1;
+                transform: translateX(2px);
+            }
         }
     }
 
