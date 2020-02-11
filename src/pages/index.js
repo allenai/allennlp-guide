@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { graphql } from 'gatsby';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import AnimateHeight from 'react-animate-height';
 
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
@@ -10,7 +11,7 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon } from '../components/inlineSVG';
+import { ArrowRightIcon, ExpandCollapseIcon } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
@@ -125,9 +126,9 @@ const SectionIntro = styled.div`
 // Part UI
 
 // Container for colored icon, title and description
-const PartHeader = ({ color, icon, title, description, slug }) => (
-    <PartHeaderContainer>
-        <IconBox color={color} icon={icon} />
+const PartHeader = ({ className, color, icon, title, description, slug, onClick = () => {} }) => (
+    <PartHeaderContainer className={className} onClick={onClick}>
+        <StyledIconBox color={color} icon={icon} />
         <PartHeaderText>
             {title && (
                 <PartTitle>{title}</PartTitle>
@@ -136,15 +137,32 @@ const PartHeader = ({ color, icon, title, description, slug }) => (
                 <p>{description}</p>
             )}
             {slug && (
-                <BeginLink>Begin Chapter <ArrowRightIcon /></BeginLink>
+                <BeginLink><div>Begin Chapter <StyledArrowRightIcon /></div></BeginLink>
             )}
         </PartHeaderText>
     </PartHeaderContainer>
 );
 
+// Right arrow icon for chapter links
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+    transition: transform 0.2s ease;
+`;
+
 // Styled wrapper for `PartHeader` component
 const PartHeaderContainer = styled.div`
     display: flex;
+    cursor: pointer;
+
+    &:hover {
+        ${StyledArrowRightIcon} {
+            transform: translateX(2px);
+        }
+    }
+`;
+
+// Colored box with icon
+const StyledIconBox = styled(IconBox)`
+    width: ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem;
 `;
 
 // Container for part title and description
@@ -169,9 +187,18 @@ const PartTitle = styled.h3`
 // Begin Chapter link for Overview
 const BeginLink = styled.div`
     ${({ theme }) => theme.typography.bodySmall};
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: max-content;
     margin-top: auto;
+    
+    div {
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 
     svg {
         margin-left: ${({ theme }) => theme.spacing.xs};
@@ -194,12 +221,6 @@ const StandaloneChapterLink = styled(Link)`
             }
         }
 
-        &:hover {
-            ${BeginLink} {
-                text-decoration: underline;
-            }
-        }
-
         ${PartHeaderText} {
             padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem;
         }
@@ -209,40 +230,113 @@ const StandaloneChapterLink = styled(Link)`
 // Container for PartHeader and chapter list
 const Part = ({ data, groupedChapters }) => {
     const { color, icon, title, description, chapterSlugs } = data;
+    const [chapterListIsVisible, setChaperListVisibility] = useState(false);
 
     return (
-        <PartContainer>
-            <PartHeader color={color} icon={icon} title={title} description={description} />
+        <PartContainer chapterListIsVisible={chapterListIsVisible}>
+            <PartHeader
+                color={color}
+                icon={icon}
+                title={title}
+                description={description}
+                onClick={() => setChaperListVisibility(!chapterListIsVisible)}
+                chapterListIsVisible={chapterListIsVisible}
+            />
             <div>
-                <ChapterListTrigger />
-                <ChapterList>
-                    {chapterSlugs.map((chapterSlug) => (
-                        <ChapterLink key={chapterSlug} to={chapterSlug}>
-                            <h4>
-                                {groupedChapters[chapterSlug].node.frontmatter.title}
-                            </h4>
-                            <p>
-                                {groupedChapters[chapterSlug].node.frontmatter.description}
-                            </p>
-                        </ChapterLink>
-                    ))}
-                </ChapterList>
+                <ChapterListTrigger>
+                    <TriggerClickArea onClick={() => setChaperListVisibility(!chapterListIsVisible)}>
+                        <TriggerTooltip>Explore {title.substr(0, title.indexOf(':'))}</TriggerTooltip>
+                        <TriggerIcon isExpanded={chapterListIsVisible} />
+                    </TriggerClickArea>
+                </ChapterListTrigger>
+                <AnimateHeight animateOpacity={true} height={chapterListIsVisible ? 'auto' : 0}>
+                    <ChapterList>
+                        {chapterSlugs.map((chapterSlug) => (
+                            <ChapterLink key={chapterSlug} to={chapterSlug}>
+                                <h4>
+                                    {groupedChapters[chapterSlug].node.frontmatter.title}
+                                </h4>
+                                <p>
+                                    {groupedChapters[chapterSlug].node.frontmatter.description}
+                                    <StyledArrowRightIcon />
+                                </p>
+                            </ChapterLink>
+                        ))}
+                    </ChapterList>
+                </AnimateHeight>
             </div>
         </PartContainer>
     );
 };
 
+// Visual treatment that makes card look like it's popping out of the screen
+const activeCardStyles = css`
+    box-shadow: 0 ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`} rgba(10, 41, 57, 0.25);
+    transform: translateY(-1px);
+`;
+
+// Morphing expand/collapse caret
+const TriggerIcon = styled(ExpandCollapseIcon)`
+    margin-left: auto;
+    margin-right: -${({ theme }) => theme.spacing.sm};
+    transition: transform 0.3s ease;
+`;
+
+const TriggerClickArea = styled.div`
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+    width: calc(100% - ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem);
+    position: relative;
+    cursor: pointer;
+`;
+
 // Styled wrapper for `Part` component
-const PartContainer = styled(Card)`
+const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...props} />)`
     overflow: hidden;
+    ${({ chapterListIsVisible }) => chapterListIsVisible ? activeCardStyles : null}
+
+    &:hover {
+        ${activeCardStyles}
+    }
+
+    [class*="PartHeader"]:hover + div,
+    ${TriggerClickArea}:hover {
+        ${TriggerIcon} {
+            transform: translateY(2px);
+            span {
+                background: ${({ theme }) => theme.color.B6};
+            }
+        }
+
+        ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
+            ${TriggerIcon} {
+                transform: translateY(-2px);
+                span {
+                    background: ${theme.color.N6};
+                }
+            }
+        ` : null}
+    }
 `;
 
 // Clickable bar that triggers expand/collapse of chapter list
-// TODO(aarons): implement expand/collapse functionality
 const ChapterListTrigger = styled.div`
     background: ${({ theme }) => theme.color.N2};
-    height: ${({ theme }) => theme.spacing.xxl};
+    min-height: ${({ theme }) => theme.spacing.xxl};
     margin-top: -${({ theme }) => theme.spacing.xxl};
+    display: flex;
+`;
+
+// E.g. "Explore Part 1"
+const TriggerTooltip = styled.span`
+    ${({ theme }) => theme.typography.bodySmall}
+    color: ${({ theme }) => theme.color.B6};
+    
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 // Container for list of chapters for a given part
@@ -258,10 +352,12 @@ const ChapterLink = styled(Link)`
         background: ${({ theme }) => theme.color.N1};
         border: 1px solid ${({ theme }) => theme.color.N6};
         border-radius: ${({ theme }) => theme.spacing.xxs};
+        transition: border-color 0.1s ease, box-shadow 0.1s ease;
         padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
 
         h4 {
           ${({ theme }) => theme.typography.bodyBig}
+          transition: color 0.1s ease;
           margin: 0;
         }
 
@@ -270,9 +366,26 @@ const ChapterLink = styled(Link)`
           color: ${({ theme }) => theme.color.N10};
         }
 
-        :hover {
+        ${StyledArrowRightIcon} {
+            opacity: 0;
+            margin-left: 8px;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            fill: ${({ theme }) => theme.color.B6};
+        }
+
+        &:hover {
             text-decoration: none;
             border-color: ${({ theme }) => theme.color.B6};
+            box-shadow: 0 ${({ theme }) => `${theme.spacing.xxs} ${theme.spacing.sm}`} rgba(10, 41, 57, 0.1);
+
+            h4 {
+                color: ${({ theme }) => theme.color.B6};
+            }
+
+            ${StyledArrowRightIcon} {
+                opacity: 1;
+                transform: translateX(2px);
+            }
         }
     }
 

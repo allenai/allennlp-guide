@@ -35,6 +35,7 @@
         "juniper-js": "^0.1.0",
         "prismjs": "^1.15.0",
         "react": "^16.8.2",
+        "react-animate-height": "^2.0.20",
         "react-dom": "^16.8.2",
         "react-helmet": "^5.2.0",
         "react-router": "^5.0.1",
