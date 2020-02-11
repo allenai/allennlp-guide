@@ -143,6 +143,7 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
     </PartHeaderContainer>
 );
 
+// Right arrow icon for chapter links
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
     transition: transform 0.2s ease;
 `;
@@ -159,6 +160,7 @@ const PartHeaderContainer = styled.div`
     }
 `;
 
+// Colored box with icon
 const StyledIconBox = styled(IconBox)`
     width: ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem;
 `;
@@ -267,11 +269,13 @@ const Part = ({ data, groupedChapters }) => {
     );
 };
 
-const activeShadow = css`
+// Visual treatment that makes card look like it's popping out of the screen
+const activeCardStyles = css`
     box-shadow: 0 ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`} rgba(10, 41, 57, 0.25);
     transform: translateY(-1px);
 `;
 
+// Morphing expand/collapse caret
 const TriggerIcon = styled(ExpandCollapseIcon)`
     margin-left: auto;
     margin-right: -${({ theme }) => theme.spacing.sm};
@@ -291,10 +295,10 @@ const TriggerClickArea = styled.div`
 // Styled wrapper for `Part` component
 const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...props} />)`
     overflow: hidden;
-    ${({ chapterListIsVisible }) => chapterListIsVisible ? activeShadow : null}
+    ${({ chapterListIsVisible }) => chapterListIsVisible ? activeCardStyles : null}
 
     &:hover {
-        ${activeShadow}
+        ${activeCardStyles}
     }
 
     [class*="PartHeader"]:hover + div,
@@ -318,7 +322,6 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
 `;
 
 // Clickable bar that triggers expand/collapse of chapter list
-// TODO(aarons): implement expand/collapse functionality
 const ChapterListTrigger = styled.div`
     background: ${({ theme }) => theme.color.N2};
     min-height: ${({ theme }) => theme.spacing.xxl};
@@ -326,6 +329,7 @@ const ChapterListTrigger = styled.div`
     display: flex;
 `;
 
+// E.g. "Explore Part 1"
 const TriggerTooltip = styled.span`
     ${({ theme }) => theme.typography.bodySmall}
     color: ${({ theme }) => theme.color.B6};
@@ -336,7 +340,6 @@ const TriggerTooltip = styled.span`
 `;
 
 // Container for list of chapters for a given part
-
 const ChapterList = styled(CardContent)`
     background: ${({ theme }) => theme.color.N2};
     padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
