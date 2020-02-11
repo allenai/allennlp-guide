@@ -107,12 +107,43 @@ Instances are serialized by `jsonpickle` by default, although you can override t
 
 <exercise id="3" title="Vocabulary">
 
-* What is Vocabulary, how it fits with the rest of the pipeline
-* (A diagram showing how Vocabulary works)
-* What are Namespaces
-* Getting indices from tokens (and vice versa)
-* A word on min_count
-* A word on non_padded_namespaces (the next exercise gives more details on padding)
+`Vocabulary` is an important component in the AllenNLP, touching on and used by many other abstractions and components. Simply put, `Vocabulary` manages mappings from strings to integer IDs. It is created from instances and used for converting textual data (such as tokens and labels) to integer IDs (and eventually to tensors).
+
+`Vocabulary` manages different mappings using a concept called *namespaces*. Each namespace is a distinct mapping from strings to integers, so strings in different namespaces are treated separately. This allows you to have separate indices for, e.g., 'a' as a word and 'a' as a character, or 'chat' in English and 'chat' in French (which means 'cat' in English). See the diagram below for an illustration:
+
+<img src="/reading-textual-data/vocabulary.svg" alt="Vocabulary" />
+
+There's an important distinction between namespaces: padded and non-padded namespaces. By default, namespaces are padded, meaning the mapping reserves indices for padding and out-of-vocabulary (OOV) tokens. This is useful for indexing tokens, where OOV tokens are common and padding is needed (the next section gives more details on how padding works in AllenNLP).
+
+Non-padded namespaces, on the other hand, do not reserve indices for special tokens. This is more suitable for, e.g., class labels, where you don't need to worry about these. By default, namespaces ending in `"tags"` or `"labels"` are treated as non-padded, but you can modify this behavior by supplying a `non_padded_namespaces` parameter when creating a `Vocabulary`.
+
+A common way to create a `Vocabulary` object is to pass a collection of `Instances` to the `from_instances` method. You can look up indices by tokens using the `get_token_index()` method. You can also do the inverse (looking up tokens by indices) using `get_token_from_index()`. 
+
+<codeblock source="reading-textual-data/vocabulary_creation"></codeblock>
+
+When your dataset is too large, you may want to "prune" your vocabulary by setting a threshold and only retaining words that appear more than that threshold. You can achieve this by passing a `min_count` parameter, which specifies the minimum count tokens need to meet to be included per namespace.
+
+<codeblock source="reading-textual-data/vocabulary_count"></codeblock>
+
+You can instantiate `Vocabulary` not just from a collection of instances but by other means. The class method `from_files` allows you to load a serialized `Vocabulary` from a directory. This is often the one created by the `dry-run` command [mentioned previously](/next-steps#2). You can also use `from_files_and_instances` to expand a pre-built vocabulary with new data. In practice, however, you rarely need to call these class methods yourself. Specify `"type": "from_files"` in the `vocabulary` section of your config file if you want to load from a directory, and specify `"type": "extend"` if you want to extend a pre-built vocabulary (which uses the `from_files_and_instances` class method). If the `"type"` key is not specified, `Vocabulary` is created from instances by default.
+
+When you are just writing your dataset reader and the model, you rarely need to worry about how `Vocabulary` is built and managed. You never "see" the vocabulary in your dataset reader—it will be constructed behind the scenes by AllenNLP and used by the iterator to index the instances. If you're using a pretrained contextualizer, its pre-built vocabulary is typically added automatically for you. 
+
+The final constructed vocab gets passed to the model automatically. In the model constructor, you can use the information from `Vocabulary` to initialize model parameters. For example, in the `SimpleClassifier` model we built in Part 1, the size of the `"labels"` namespace is used to initialize the final linear layer of the classifier:
+
+<pre data-line="4,10" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        super().__init__(vocab)
+        self.embedder = embedder
+        self.encoder = encoder
+        num_labels = vocab.get_vocab_size("labels")
+        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
+        self.accuracy = CategoricalAccuracy()
+</code></pre>
 
 </exercise>
 

@@ -1,6 +1,11 @@
+// Prism Code formatting modules
 import Prism from 'prismjs';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.js';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
+// Prism CSS
 import 'prismjs/plugins/line-highlight/prism-line-highlight.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
 import useLocalStorage from '@illinois/react-use-local-storage';
@@ -49,12 +54,12 @@ const Template = ({ data, location }) => {
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
     let linkList = [];
-    outline.forEach((node) => {
-      if (node.slug) {
-        linkList.push(node.slug);
+    outline.parts.forEach((part) => {
+      if (part.slug) {
+        linkList.push(part.slug);
       }
-      if (node.chapterSlugs) {
-        linkList = linkList.concat(node.chapterSlugs);
+      if (part.chapterSlugs) {
+        linkList = linkList.concat(part.chapterSlugs);
       }
     });
 
@@ -67,23 +72,21 @@ const Template = ({ data, location }) => {
                     <SideNav>
                       <NavContent>
                         <ol>
-                          {outline.map((outlineNode) => !outlineNode.chapterSlugs ? (
-                              <NavItem key={outlineNode.slug} isActive={outlineNode.slug === slug}>
-                                <LinkComponent to={outlineNode.slug}>{groupedChapters[outlineNode.slug].node.frontmatter.title}</LinkComponent>
-                              </NavItem>
-                            ) : (
-                              <li key={outlineNode.title}>
-                                <strong>{outlineNode.title}</strong>
-                                <ol>
-                                  {outlineNode.chapterSlugs.map((chapterSlug) => (
-                                      <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
-                                        <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
-                                      </NavItem>
-                                  ))}
-                                </ol>
-                              </li>
-                            )
-                          )}
+                            <NavItem isActive={outline.overview.slug === slug}>
+                                <LinkComponent to={outline.overview.slug}>{groupedChapters[outline.overview.slug].node.frontmatter.title}</LinkComponent>
+                            </NavItem>
+                            {outline.parts.map((part) => part.chapterSlugs && (
+                                <li key={part.title}>
+                                  <strong>{part.title}</strong>
+                                  <ol>
+                                    {part.chapterSlugs.map((chapterSlug) => (
+                                        <NavItem key={chapterSlug} isActive={chapterSlug === slug}>
+                                          <LinkComponent to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</LinkComponent>
+                                        </NavItem>
+                                    ))}
+                                  </ol>
+                                </li>
+                            ))}
                         </ol>
                       </NavContent>
                     </SideNav>
@@ -175,8 +178,7 @@ const ContentContainer = styled.div`
 const SideNav = styled.nav`
     position: relative;
     z-index: 3;
-    width: 100%;
-    max-width: 300px;
+    width: 272px;
     padding-right: 40px;
     font-size: 14px;
     box-sizing: content-box;
@@ -245,7 +247,7 @@ const BodyContent = styled.div`
     flex-direction: column;
     flex: 1;
     border-left: 1px solid #ddd;
-    max-width: 800px;
+    max-width: 840px;
     padding: ${({ theme }) => `${theme.spacing.xl} 0 0 ${theme.spacing.xl}`};
     padding-right: 0;
     position: relative;

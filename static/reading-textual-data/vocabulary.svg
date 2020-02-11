@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="468px" height="417px" viewBox="0 0 468 417" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Slice</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="49" y="44" width="369" height="332" rx="8"></rect>
+        <filter x="-3.3%" y="-3.6%" width="107.6%" height="108.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Part-2,-reading-textual-data,-vocabulary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Rectangle">
+            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+            <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+        </g>
+        <text id="Vocabulary" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="56.4707031" y="39">Vocabulary</tspan>
+        </text>
+        <ellipse id="Oval" fill-opacity="0.5" fill="#2376E5" cx="235.5" cy="149.5" rx="70.5" ry="71.5"></ellipse>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="225" y="157">…</tspan>
+        </text>
+        <text id="2:-the" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="209.5" y="133">2: the</tspan>
+        </text>
+        <ellipse id="Oval" fill-opacity="0.5" fill="#E39A4C" cx="146.5" cy="268.5" rx="70.5" ry="71.5"></ellipse>
+        <ellipse id="Oval" fill-opacity="0.3" fill="#009688" cx="322.5" cy="268.5" rx="70.5" ry="71.5"></ellipse>
+        <text id="Namespace-1" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="173.300781" y="70">Namespace 1</tspan>
+        </text>
+        <text id="Namespace-2" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="84.3007812" y="358">Namespace 2</tspan>
+        </text>
+        <text id="Namespace-3" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="260.300781" y="358">Namespace 3</tspan>
+        </text>
+        <text id="1:-a" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="209" y="109">1: a</tspan>
+        </text>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="225" y="205">…</tspan>
+        </text>
+        <text id="27:-cat" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="209" y="181">27: cat</tspan>
+        </text>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="136" y="276">…</tspan>
+        </text>
+        <text id="2:-b" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="120.5" y="252">2: b</tspan>
+        </text>
+        <text id="1:-a" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="120" y="228">1: a</tspan>
+        </text>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="136" y="324">…</tspan>
+        </text>
+        <text id="23:-w" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="120" y="300">23: w</tspan>
+        </text>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="313" y="276">…</tspan>
+        </text>
+        <text id="2:-VERB" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="282.5" y="252">2: VERB</tspan>
+        </text>
+        <text id="1:-NOUN" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="282" y="228">1: NOUN</tspan>
+        </text>
+        <text id="…" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="313" y="324">…</tspan>
+        </text>
+        <text id="8:-DET" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
+            <tspan x="282" y="300">8: DET</tspan>
+        </text>
+    </g>
+</svg>
