@@ -30,6 +30,7 @@ export const outline = {
             description: 'Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.',
             chapterSlugs: [
                 '/reading-textual-data',
+                '/building-your-model',
                 '/representing-text-as-features'
             ],
             icon: 'cube',
