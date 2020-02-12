@@ -31,7 +31,7 @@ class SimpleClassifier(Model):
 
 In the exercise below, we create a toy model and observe how instances get batched and passed to the `forward()` method.
 
-<codeblock source="building-your-model/model_forward"></codeblock>
+<codeblock source="building-your-model/model_forward" setup="building-your-model/setup"></codeblock>
 
 As mentioned above, `Model.forward()` returns a dictionary, instead of a tensor. Although technically you can put anything you want in this dictionary, if you want to train your model through backpropagation using our `Trainer`, the return value must contain a `"loss"` key pointing to a scalar `Tensor` that represents the loss, which then gets minimized by the optimizer. For example, here's the snippet from the forward method of `SimpleClassifier`, where a dictionary consisting of `"probs"` and an optional `"loss"` is returned:
 
@@ -52,11 +52,17 @@ You also need to include in this dictionary any information necessary for subseq
 
 Although the `forward()` method is the most important (and often the only) method you need to implement for your model, AllenNLP `Models` also implement other methods that make it easier to interact with them.
 
+## Post-processing with decode()
+
 The `decode()` method is one of them. It takes the dictionary returned by the `forward()` method and runs whatever post-processing you need for your model. This is often some sort of decoding or inference, but not necessarily. In a common scenario, `forward()` returns logits or probabilities, then `decode()` takes its result and runs some sort of beam search or constrained inference. The method can also reference `Vocabulary` in order to convert indices back to string representations (as we'll see shortly).
 
-There are two model methods—`forward_on_instance()` and `forward_on_instances()`—that come in handy when you run inference using your model. Both take instance(s) instead of batched tensors, convert them to indices and batch them on the fly, and run the forward pass (including the `decode()` method). Before returning the results, these methods also convert any `torch.Tensors` in the result dictionary to numpy arrays and separate the batched tensors into a list of individual dictionaries per instance. As you might have guessed, `forward_on_instance()` runs inference on a single instance, while `forward_on_instances()` do it with multiple instances by batching them. These methods are used by `Predictors`.
+## Making predictions with forward\_on\_instance(s)
 
-<codeblock source="building-your-model/model_predict"></codeblock>
+There are two model methods—`forward_on_instance()` and `forward_on_instances()`—that come in handy when you run inference using your model. Both take instance(s) instead of batched tensors, convert them to indices and batch them on the fly, and run the forward pass (including the `decode()` method). Before returning the results, these methods also convert any `torch.Tensors` in the result dictionary to numpy arrays and separate the batched tensors into a list of individual dictionaries per instance. As you might have guessed, `forward_on_instance()` runs inference on a single instance, while `forward_on_instances()` does it with multiple instances by batching them. These methods are used by `Predictors`.
+
+<codeblock source="building-your-model/model_predict" setup="building-your-model/setup"></codeblock>
+
+## Getting metrics with get_metrics()
 
 [As you learned before](/training-and-prediction#2), `Models` hold `Metrics` objects that keep track of related statistics which get updated by every call to the forward method. AllenNLP's `Trainer` calls your model's `get_metrics()` method to retrieve the computed metrics for, e.g., monitoring and early stopping. The method returns a dictionary of metric values associated with their names. These values are usually returned by the `get_metric()` method of your `Metric` objects.
 

@@ -1,16 +1,3 @@
-from typing import Dict
-
-import torch
-from allennlp.data.fields import TextField, LabelField
-from allennlp.data.fields.text_field import TextFieldTensors
-from allennlp.data.instance import Instance
-from allennlp.data.iterators import BasicIterator
-from allennlp.data.token_indexers import SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token
-from allennlp.data.vocabulary import Vocabulary
-from allennlp.models.model import Model
-
-
 # Create a toy model that just prints tensors passed to forward
 class ToyModel(Model):
     def __init__(self, vocab: Vocabulary):

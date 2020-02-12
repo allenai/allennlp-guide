@@ -1,17 +1,3 @@
-from typing import Dict
-
-import torch
-import numpy
-from allennlp.data.fields import TextField, LabelField
-from allennlp.data.fields.text_field import TextFieldTensors
-from allennlp.data.instance import Instance
-from allennlp.data.iterators import BasicIterator
-from allennlp.data.token_indexers import SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token
-from allennlp.data.vocabulary import Vocabulary
-from allennlp.models.model import Model
-
-
 # Create a toy model that just returns a random distribution over labels
 class ToyModel(Model):
     def __init__(self, vocab: Vocabulary):
@@ -20,7 +6,8 @@ class ToyModel(Model):
     def forward(self, tokens: TextFieldTensors,
                 label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
         # Simply generate random logits and compute a probability distribution from them
-        logits = torch.normal(mean=0., std=1., size=(label.size(0), 2))
+        batch_size = label.size(0)
+        logits = torch.normal(mean=0., std=1., size=(batch_size, 2))
         probs = torch.softmax(logits, dim=1)
 
         return {'logits': logits, 'probs': probs}
