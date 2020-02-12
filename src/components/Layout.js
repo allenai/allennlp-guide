@@ -135,7 +135,8 @@ const GlobalStyle = createGlobalStyle`
         flex: 1;
     }
 
-    #___gatsby > div[role="group"] {
+    #___gatsby > div[role="group"],
+    #gatsby-focus-wrapper {
         display: flex;
         flex-direction: column;
         height: 100%;
