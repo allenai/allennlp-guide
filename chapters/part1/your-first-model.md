@@ -173,7 +173,8 @@ The upshot is that if you're using the `allennlp train` command with a configura
 
 ## Passing the vocabulary
 
-<pre data-line="4,10" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="4,10" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -192,7 +193,8 @@ What we did in the `DatasetReader` will put the labels in the default "labels" n
 
 ## Embedding words
 
-<pre data-line="5,8" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="5,8" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -210,7 +212,8 @@ abstraction takes the tensors created by a `TextField` and embeds each one. This
 
 ## Applying a Seq2VecEncoder
 
-<pre data-line="6,9" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="6,9" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -228,7 +231,8 @@ To squash our sequence of token vectors into a single vector, we use AllenNLP's
 
 ## Applying a classification layer
 
-<pre data-line="11" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="11" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -301,7 +305,8 @@ class SimpleClassifier(Model):
 
 ## Inputs to forward()
 
-<pre data-line="3-4" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="3-4" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
@@ -326,7 +331,8 @@ Second, notice the types of these arguments. Each type of `Field` knows how to c
 
 ## Embedding the text
 
-<pre data-line="5-6" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="5-6" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
@@ -349,7 +355,8 @@ The first actual modeling operation that we do is embed the text, getting a vect
 
 ## Applying a Seq2VecEncoder
 
-<pre data-line="7-10" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="7-10" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
@@ -374,7 +381,8 @@ At the end of these lines, we have a single vector for each instance in the batc
 
 ## Making predictions
 
-<pre data-line="11-16" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="11-16" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
@@ -433,7 +441,8 @@ Usually each JSON object in a config file corresponds to a Python object. For ex
 
 The first key, `type`, tells which subclass of `DatasetReader` to use. Most AllenNLP classes inherit from the `Registrable` class, which allows you to refer to a subclass by its registered name. Because earlier you did:
 
-<pre data-line="1" class="language-python line-numbers"><code>@DatasetReader.register('classification-tsv')
+<pre data-line="1" class="language-python line-numbers"><code>
+@DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
@@ -477,7 +486,8 @@ The section for the model works in a very similar way as the one for the dataset
 
 As with dataset readers, AllenNLP models inherit from `Registrable`, which allows you to refer to model subclasses by their registered names. Remember that earlier we did:
 
-<pre data-line="1" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="1" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,

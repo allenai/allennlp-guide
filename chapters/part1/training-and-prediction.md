@@ -67,7 +67,8 @@ In AllenNLP, you implement the logic to compute the metrics in your `Model` clas
 
 First, you need to create an instance of `CategoricalAccuracy` in your model constructor:
 
-<pre data-line="11" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="11" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  embedder: TextFieldEmbedder,
@@ -82,7 +83,8 @@ First, you need to create an instance of `CategoricalAccuracy` in your model con
 
 Then, for each forward pass, you need to update the metric by feeding the prediction and the gold labels:
 
-<pre data-line="17" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="17" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
@@ -147,7 +149,8 @@ We are making this piece of code sharable between `DatasetReader` and `Predictor
 
 Note that we are making the `label` parameter of `text_to_instance()` optional. During training and evaluation, all the instances were labeled, i.e., they included the `LabelFields` that contain gold labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled* and do not contain the labels. By making the `label` parameter optional the dataset reader can support both cases. 
 
-<pre data-line="11-16" class="language-python line-numbers"><code>@DatasetReader.register('classification-tsv')
+<pre data-line="11-16" class="language-python line-numbers"><code>
+@DatasetReader.register('classification-tsv')
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
@@ -178,7 +181,8 @@ We also need to make some changes to the `forward()` method of our model. When w
 
 In order to support prediction, first you need to make the `label` parameter optional by specifying its default value (`None`). This will let you feed unlabeled instances to the model. Second, you need to compute the loss only when the label is supplied. See the modified version of `forward()` below:
 
-<pre data-line="4,16-19" class="language-python line-numbers"><code>class SimpleClassifier(Model):
+<pre data-line="4,16-19" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
