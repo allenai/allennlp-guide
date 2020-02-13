@@ -283,6 +283,11 @@ const JuniperCell = styled.div`
     button {
         margin: 15px 32px 32px;
     }
+
+    pre {
+        background: transparent !important;
+        line-height: 1.5 !important;
+    }
 `;
 
 const JuniperInput = styled.div``;
