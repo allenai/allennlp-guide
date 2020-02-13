@@ -140,6 +140,13 @@ const GlobalStyle = createGlobalStyle`
         display: flex;
         flex-direction: column;
         height: 100%;
+
+        & > header {
+            main {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+        }
     }
 
     // Reset styles ported from SASS
