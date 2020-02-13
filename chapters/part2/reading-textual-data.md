@@ -131,7 +131,8 @@ When you are just writing your dataset reader and the model, you rarely need to 
 
 The final constructed vocab gets passed to the model automatically. In the model constructor, you can use the information from `Vocabulary` to initialize model parameters. For example, in the `SimpleClassifier` model we built in Part 1, the size of the `"labels"` namespace is used to initialize the final linear layer of the classifier:
 
-<pre data-line="4,10" class="language-python line-numbers"><code>@Model.register('simple_classifier')
+<pre data-line="4,10" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
