@@ -15,7 +15,7 @@ By this point, you should be familiar with what AllenNLP is and what it's useful
 
 Text classification is one of the simplest NLP tasks where the model, given some input text, predicts a label for the text. See the figure below for an illustration.
 
-<img src="/introduction/text-classification.svg" alt="Text classification" />
+<img src="/part1/introduction/text-classification.svg" alt="Text classification" />
 
 There are a variety of applications of text classification, such as spam filtering, sentiment analysis, and topic detection, as shown in the table below.
 

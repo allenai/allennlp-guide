@@ -31,7 +31,7 @@ class SimpleClassifier(Model):
 
 In the exercise below, we create a toy model and observe how instances get batched and passed to the `forward()` method.
 
-<codeblock source="building-your-model/model_forward" setup="building-your-model/setup"></codeblock>
+<codeblock source="part2/building-your-model/model_forward" setup="part2/building-your-model/setup"></codeblock>
 
 As mentioned above, `Model.forward()` returns a dictionary, instead of a tensor. Although technically you can put anything you want in this dictionary, if you want to train your model through backpropagation using our `Trainer`, the return value must contain a `"loss"` key pointing to a scalar `Tensor` that represents the loss, which then gets minimized by the optimizer. For example, here's the snippet from the forward method of `SimpleClassifier`, where a dictionary consisting of `"probs"` and an optional `"loss"` is returned:
 
@@ -60,7 +60,7 @@ The `decode()` method is one of them. It takes the dictionary returned by the `f
 
 There are two model methods—`forward_on_instance()` and `forward_on_instances()`—that come in handy when you run inference using your model. Both take instance(s) instead of batched tensors, convert them to indices and batch them on the fly, and run the forward pass (including the `decode()` method). Before returning the results, these methods also convert any `torch.Tensors` in the result dictionary to numpy arrays and separate the batched tensors into a list of individual dictionaries per instance. As you might have guessed, `forward_on_instance()` runs inference on a single instance, while `forward_on_instances()` does it with multiple instances by batching them. These methods are used by `Predictors`.
 
-<codeblock source="building-your-model/model_predict" setup="building-your-model/setup"></codeblock>
+<codeblock source="part2/building-your-model/model_predict" setup="part2/building-your-model/setup"></codeblock>
 
 ## Getting metrics with get_metrics()
 

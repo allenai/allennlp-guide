@@ -13,7 +13,7 @@ In the previous chapter, we learned what text classification is. In this part of
 
 <exercise id="1" title="Reading data">
 
-<img src="/your-first-model/dataset-reader.svg" alt="How dataset reader works" />
+<img src="/part1/your-first-model/dataset-reader.svg" alt="How dataset reader works" />
 
 The first step for building an NLP application is to read the dataset and represent it with some internal data structure. 
 
@@ -76,7 +76,7 @@ There are lots of places where this could be made better for a more flexible and
 
 <exercise id="3" title="Building your model">
 
-<img src="/your-first-model/designing-a-model.svg" alt="Designing a model" />
+<img src="/part1/your-first-model/designing-a-model.svg" alt="Designing a model" />
 
 The next thing we need is a `Model` that will take a batch of `Instances`, predict the outputs from the inputs, and compute a loss.
 
@@ -96,7 +96,7 @@ Also, remember that we *used these names* (`text` and `label`) for the fields in
 
 ## What should our model do?
 
-<img src="/your-first-model/designing-a-model-1.svg" alt="Designing a model 1" />
+<img src="/part1/your-first-model/designing-a-model-1.svg" alt="Designing a model 1" />
 
 Conceptually, a generic model for classifying text does the following:
 
@@ -108,26 +108,26 @@ In AllenNLP, we make each of these conceptual steps into a generic abstraction t
 
 ## Representing text with token IDs
 
-<img src="/your-first-model/designing-a-model-2.svg" alt="Designing a model 2" />
+<img src="/part1/your-first-model/designing-a-model-2.svg" alt="Designing a model 2" />
 
 The first step is changing the strings in the input text into token ids, which is handled by the `DatasetReader` (that's done by the `SingleIdTokenIndexer` that we used previously).
 
 ## Embedding tokens
 
-<img src="/your-first-model/designing-a-model-3.svg" alt="Designing a model 3" />
+<img src="/part1/your-first-model/designing-a-model-3.svg" alt="Designing a model 3" />
 
 The first thing our `Model` does is apply an `Embedding` function that converts each token ID that we got as input into a vector.  This gives us a vector for each input token, so we have a large tensor here.
 
 ## Apply Seq2Vec encoder
 
-<img src="/your-first-model/designing-a-model-4.svg" alt="Designing a model 4" />
+<img src="/part1/your-first-model/designing-a-model-4.svg" alt="Designing a model 4" />
 
 Next we apply some function that takes the sequence of vectors for each input token and
 squashes it into a single vector. Before the days of pretrained language models like BERT, this was typically an LSTM or convolutional encoder.  With BERT we might just take the embedding of the `[CLS]` token (more on [how to do that later](/next-steps)).
 
 ## Computing distribution over labels
 
-<img src="/your-first-model/designing-a-model-5.svg" alt="Designing a model 5" />
+<img src="/part1/your-first-model/designing-a-model-5.svg" alt="Designing a model 5" />
 
 Finally, we take that single feature vector (for each `Instance` in the batch), and classify it as a label, which will give us a categorical probability distribution over our label space.
 
@@ -137,7 +137,7 @@ Finally, we take that single feature vector (for each `Instance` in the batch), 
 
 ## AllenNLP Model basics
 
-<img src="/your-first-model/allennlp-model.svg" alt="AllenNLP model" />
+<img src="/part1/your-first-model/allennlp-model.svg" alt="AllenNLP model" />
 
 Now that we now what our model is going to do, we need to implement it. First, we'll say a few words about how `Models` work in AllenNLP:
 
