@@ -29,7 +29,7 @@ class SimpleClassifier(Model):
         self.accuracy = CategoricalAccuracy()
 </code></pre>
 
-<img src="/next-steps/pretrained-contextualizers.svg" alt="Using pre-trained contextualizers" />
+<img src="/part1/next-steps/pretrained-contextualizers.svg" alt="Using pre-trained contextualizers" />
 
 To recap, the model first uses `embedder` (of type `TextFieldEmbedder`) to convert the text into an embedding, then uses `encoder` (of type `Seq2VecEncoder`) to convert it to a vector (or a set of vectors when batched). The beauty of how models are designed in AllenNLP is that they mostly define "what" should be done in terms of abstractions and data types without being explicit about "how" it should be done. In fact, both `TextFieldEmbedder` and `Seq2VecEncoder` are defined as abstract classes, meaning they only provide interfaces, not implementations.
 
@@ -123,7 +123,7 @@ pip install allennlp-server
 allennlp-configure --include-package my_text_classifier
 ```
 
-<img src="/next-steps/config-wizard.png" alt="Config wizard" />
+<img src="/part1/next-steps/config-wizard.png" alt="Config wizard" />
 
 For more details, read [the chapter](/using-config-files) on config files, registrable, and from_params.
 
@@ -155,7 +155,7 @@ python allennlp-server/server_simple.py \
 
 Note that you need to specify the name of the field(s) to accept input. You can access `localhost:8000` in your browser to see the simple demo:
 
-<img src="/next-steps/simple-demo.png" alt="Simple demo" />
+<img src="/part1/next-steps/simple-demo.png" alt="Simple demo" />
 
 It is also relatively easy to customize this demo if you know basic HTML, CSS, and JavaScript. By default, all the assets (HTML, JavasScript code, and CSS) are hard-coded in `server_simple.py`, a Python script to launch the demo. You can change where these assets are served from by specifying the `--static-dir` option when running the script. See [this tutorial by AllenNLP](https://github.com/allenai/allennlp/blob/master/tutorials/getting_started/predicting_paper_venues/predicting_paper_venues_pt2.md) for more details on how to customize the demo.
 

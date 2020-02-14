@@ -25,7 +25,7 @@ Below we have code that you can run (and modify if you want). We are using a uti
 
 In practice, you'll be using AllenNLP commands such as `allennlp train` and `allennlp predict` in the terminal. We'll discuss AllenNLP commands later.
 
-<codeblock source="training-and-prediction/dataset_reader" setup="training-and-prediction/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/dataset_reader" setup="part1/training-and-prediction/setup"></codeblock>
 
 When you run the code snippet above, you should see the dumps of the first ten instances and their content, including their text and label fields. This is a great way to check if your dataset reader is working as expected. (Note that we are only showing the first 64 tokens per instance by specifying `"max_tokens": 64`).
 
@@ -35,7 +35,7 @@ In the next example, we are going to instantiate the model and feed batches of i
 
 When you run this, you should see the outputs returned from the model. Each returned dict includes the `loss` key as well as the `probs` key, which contains probabilities for each label. 
 
-<codeblock source="training-and-prediction/model" setup="training-and-prediction/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/model" setup="part1/training-and-prediction/setup"></codeblock>
 
 ## Training the model
 
@@ -43,7 +43,7 @@ Finally, we'll run backpropagation and train the model. AllenNLP uses a `Trainer
 
 When you run this, the `Trainer` goes over the training data five times (`"num_epochs": 5`). After each epoch, AllenNLP runs your model against the validation set to monitor how well (or badly) it's doing. This is useful if you want to do, e.g., early stopping, and for monitoring in general. Observe that the training loss decreases gradually—this is a sign that your model and the training pipeline are doing what they are supposed to do (that is, to minimize the loss).
 
-<codeblock source="training-and-prediction/training" setup="training-and-prediction/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/training" setup="part1/training-and-prediction/setup"></codeblock>
 
 In practice, you'd be running AllenNLP commands from your terminal. For training a model, you'd do:
 
@@ -121,7 +121,7 @@ Now that your model is ready to compute the metric, let's run the entire pipelin
 
 In the code snippet below, we are reading a test set using the dataset reader, and using AllenNLP's utility function `evaluate()` to run your model and get the metric on the test set. Notice that AllenNLP now shows values for the defined metric as well as the the loss after each batch during training and validation.
 
-<codeblock source="training-and-prediction/evaluation" setup="training-and-prediction/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/evaluation" setup="part1/training-and-prediction/setup"></codeblock>
 
 When this code snippet finishes running, you should see the evaluation result:
 
@@ -233,7 +233,7 @@ AllenNLP provides implementations of `Predictors` for common tasks. In fact, it 
 
 Now, let's put all the pieces together and make predictions for some unseen data.  In the code snippet below, you are first training your model using the same configuration as the one we used in the previous section, then wrapping the model with a `SentenceClassifierPredictor` to make predictions for new instances. Because the returned result (`output['probs']`) is just an array of probabilities for class labels, we use `vocab.get_token_from_index()` to convert a label ID back to its label string.
 
-<codeblock source="training-and-prediction/prediction" setup="training-and-prediction/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/prediction" setup="part1/training-and-prediction/setup"></codeblock>
 
 When you run the code above, you should get results similar to:
 
