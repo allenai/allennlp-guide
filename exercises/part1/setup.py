@@ -85,6 +85,7 @@ class SimpleClassifier(Model):
 
 def run_config(config):
     params = Params(json.loads(config))
+    params_copy = params.duplicate()
 
     if 'dataset_reader' in params:
         reader = DatasetReader.from_params(params.pop('dataset_reader'))
@@ -155,6 +156,7 @@ def run_config(config):
                 trainer.train()
 
     return {
+        'params': params_copy,
         'dataset_reader': reader,
         'vocab': vocab,
         'iterator': iterator,

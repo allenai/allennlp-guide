@@ -72,9 +72,29 @@ The method receives a boolean flag `reset`, which indicates whether to reset the
 
 <exercise id="3" title="Saving and loading a model">
 
-* Model.load()
-* Model archiving
-* exercise
+## Saving your model
+
+Oftentimes, you want to save and load trained models on disk. In order to properly serialize and restore an AllenNLP model, you need to take care of the following three things:
+
+* Model config (specifications used to train the model)
+* Model weights (trained parameters of the model)
+* Vocabulary
+
+In AllenNLP, model config is managed by the `Params` class (which we'll cover more in depth [later](/using-config-files)) and can be saved to disk using the `to_file()` method. You can retrieve the model weights using `model.state_dict()` and save them to disk using PyTorch's `torch.save()`. The `Vocabulary.save_to_files()` method serializes a `Vocabulary` object to a directory.
+
+Because it is cumbersome to deal with these three elements every time you need to save, load, and move around your model, AllenNLP provides utility functions for archiving and unarchiving your model files. You can package up the model config, weights, and the vocabulary into a single `tar.gz` file, along with any additional supplementary files, using the `archive_model()` method.
+
+## Loading your model
+
+In order to restore your model from files, you can use the `Model.load()` class method. It takes a `Params` object which contains the model config, as well as the directory path where the model weights and the vocabulary are serialized. The method also loads and restores the vocabulary.
+
+Alternatively, you can simply use `load_archive()` to restore the model from an archive file. This returns an `Archive` object, which contains the config and the model.
+
+In the following exercises, you save and load your model using the two methods explained above, and make sure the predictions stay the same before and after the serialization.
+
+<codeblock source="part2/building-your-model/model_io" setup="part1/setup"></codeblock>
+
+In practice, as long as you use AllenNLP commands (for example, `allennlp train`), model archiving is automatically taken care of. When the training finishes or gets interrupted, the command automatically saves the best model to a `model.tar.gz` file. You can also resume training from a serialized directory.
 
 </exercise>
 
