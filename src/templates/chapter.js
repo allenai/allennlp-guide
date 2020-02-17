@@ -239,6 +239,19 @@ const GlobalStyle = createGlobalStyle`
                 }
             }
 
+            .ant-menu-submenu-title {
+                &:hover {
+                    .ant-menu-submenu-arrow {
+                        &:before,
+                        &:after {
+                            background: linear-gradient(90deg, ${({ theme }) => `${theme.color.B5}, ${theme.color.B5}`}) !important;
+                        }
+                    }
+                }
+            }
+
+            // Support multi-line items without truncation
+            .ant-menu-submenu-title,
             .ant-menu-item {
                 overflow: visible !important;
                 white-space: normal !important;
@@ -246,7 +259,9 @@ const GlobalStyle = createGlobalStyle`
                 line-height: 1.5 !important;
                 padding-top: 9px !important;
                 padding-bottom 10px !important;
-                
+            }
+
+            .ant-menu-item {
                 a {
                     color: ${({ theme }) => theme.color.N10};
                     
@@ -309,6 +324,8 @@ const SideNav = styled.nav`
     padding-top: 30px;
     position: sticky;
     top: 115px;
+    height: calc(100vh - 175px);
+    overflow: auto;
 `;
 
 const RightContainer = styled.div`
