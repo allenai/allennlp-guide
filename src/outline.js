@@ -26,7 +26,7 @@ export const outline = {
             color: 'orange'
         },
         {
-            title: 'Part 2: Abstractions, Design, and Testing? Abstractions, Design, and Testing',
+            title: 'Part 2: Abstractions, Design, and Testing',
             description: 'Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.',
             chapterSlugs: [
                 '/reading-textual-data',
