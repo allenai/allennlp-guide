@@ -68,11 +68,11 @@ export default Layout;
 const HeaderColumnsWithSpace = styled(HeaderColumns)`
     padding: 9px 0;
     align-items: center;
-    
+
     nav ul {
       display: flex;
       justify-content: flex-end;
-      
+
       li + li {
         margin-left: 40px;
       }
@@ -176,11 +176,11 @@ const GlobalStyle = createGlobalStyle`
         line-height: 0;
         vertical-align: baseline;
     }
-    
+
     sup {
         top: -0.5em;
     }
-    
+
     sub {
         bottom: -0.15em;
     }
@@ -190,12 +190,12 @@ const GlobalStyle = createGlobalStyle`
         height: auto;
         max-width: 100%;
     }
-    
+
     svg {
         max-width: 100%;
         color-interpolation-filters: sRGB;
         fill: currentColor;
-    
+
         &:not(:root) {
             overflow: hidden;
         }
@@ -206,20 +206,20 @@ const GlobalStyle = createGlobalStyle`
         overflow: visible;
         height: 0;
     }
-    
+
     table {
         text-align: left;
         width: 100%;
         max-width: 100%;
         border-collapse: collapse;
         margin-bottom: 2rem;
-    
+
         td, th {
             vertical-align: top;
             padding: 0.5rem;
             border-bottom: 1px solid #eee;
         }
-    
+
         code {
             white-space: nowrap;
         }
@@ -266,7 +266,7 @@ const GlobalStyle = createGlobalStyle`
             overflow: auto;
         }
     }
-    
+
     // Prism highlighting styles
 
     /* PrismJS 1.16.0
@@ -415,77 +415,77 @@ const GlobalStyle = createGlobalStyle`
         background: #f7f7f7;
         color: #403f53;
         word-wrap: break-word;
-    
+
         .CodeMirror-line {
             padding: 0;
         }
-    
+
         .CodeMirror-selected {
             background: #7a81812b;
         }
-    
+
         .CodeMirror-cursor {
             border-left-color: currentColor;
         }
-    
+
         .cm-variable-2 {
             color: inherit;
             font-style: italic;
         }
-    
+
         .cm-comment {
             color: #989fb1;
         }
-    
+
         .cm-keyword, .cm-builtin {
             color: #994cc3;
         }
-    
+
         .cm-operator {
             color: #994cc3;
         }
-    
+
         .cm-string {
             color: #994cc3;
         }
-    
+
         .cm-number {
             color: #aa0982;
         }
-    
+
         .cm-def {
             color: #4876d6;
         }
     }
-    
+
     .jp-RenderedText pre {
         .ansi-cyan-fg.ansi-cyan-fg {
             color: #00d8ff;
         }
-    
+
         .ansi-green-fg.ansi-green-fg {
             color: #12dc55;
         }
-    
+
         .ansi-red-fg.ansi-red-fg {
             color: #f76464;
         }
     }
-    
+
     // Gatsby image styles
-    
+
     .gatsby-resp-image-link {
         border: 0;
     }
-    
+
     .gatsby-resp-image-figure {
         margin-bottom: 4rem;
     }
-    
+
     .gatsby-resp-image-figcaption {
         padding-top: 1rem;
         text-align: center;
-    
+
         code {
             color: inherit;
         }
