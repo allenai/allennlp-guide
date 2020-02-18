@@ -302,7 +302,7 @@ const Wrapper = styled.div`
 // Left-aligned container with white background
 const LeftContainer = styled.div`
     background: ${({ theme }) => theme.color.N1};
-    width: calc(${({ theme }) => `314px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    width: calc(${({ theme }) => `324px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
     height: 100%;
     display: flex;
     position: relative;
@@ -311,7 +311,7 @@ const LeftContainer = styled.div`
 
 // Constrained content descendent of LeftContainer (holds sidenav)
 const LeftContent = styled.div`
-    width: 340px;
+    width: 350px;
     height: 100%;
     margin-left: auto;
 `;
@@ -348,7 +348,7 @@ const RightContainer = styled.div`
 `;
 
 const RightContent = styled.div`
-    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue() - (314 / 16)}rem;
+    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue() - (324 / 16)}rem;
     height: 100%;
     display: flex;
     flex-direction: column;

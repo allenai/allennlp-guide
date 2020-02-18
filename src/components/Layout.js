@@ -124,6 +124,7 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
         height: 100%;
         background: ${({ theme }) => theme.color.N1} !important;
+        font-size: 100% !important;
     }
 
     body {
