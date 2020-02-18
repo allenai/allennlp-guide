@@ -302,7 +302,7 @@ const Wrapper = styled.div`
 // Left-aligned container with white background
 const LeftContainer = styled.div`
     background: ${({ theme }) => theme.color.N1};
-    width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    width: calc(${({ theme }) => `314px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
     height: 100%;
     display: flex;
     position: relative;
@@ -311,7 +311,7 @@ const LeftContainer = styled.div`
 
 // Constrained content descendent of LeftContainer (holds sidenav)
 const LeftContent = styled.div`
-    width: 326px;
+    width: 340px;
     height: 100%;
     margin-left: auto;
 `;
@@ -331,7 +331,7 @@ const SideNav = styled.nav`
 const RightContainer = styled.div`
     position: relative;
     flex: 1;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
+    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue()}rem;
     height: 100%;
 
     &:before {
@@ -348,13 +348,13 @@ const RightContainer = styled.div`
 `;
 
 const RightContent = styled.div`
-    width: 100%;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
+    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue() - (314 / 16)}rem;
     height: 100%;
     display: flex;
     flex-direction: column;
     padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
     box-sizing: border-box;
+    margin-right: ${({ theme }) => theme.spacing.xxl};
 `;
 
 // Intro content rendered from markdown frontmatter and outline data

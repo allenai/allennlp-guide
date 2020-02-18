@@ -145,6 +145,7 @@ const GlobalStyle = createGlobalStyle`
             main {
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
+                max-width: 1252px !important;
             }
         }
     }
