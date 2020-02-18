@@ -29,8 +29,44 @@ const Template = ({ data, location }) => {
     const { frontmatter, fields, htmlAst } = markdownRemark;
     const { title, description } = frontmatter;
     const { slug } = fields;
+
+    // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
+    let slugList = {}
+    slugList[`${outline.overview.slug}`] = "";
+    outline.parts.forEach((part) => {
+      if (part.chapterSlugs) {
+        part.chapterSlugs.forEach((slug) => {
+          slugList[`${slug}`] = part.title;
+        });
+      }
+    });
+
+    // Util consts for slugs and outline data
+    const groupedChapters = getGroupedChapters(allMarkdownRemark);
+    const links = Object.keys(slugList);
+    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
+    const isOverview = slug === outline.overview.slug;
+    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
+
     const [activeExc, setActiveExc] = useState(null);
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
+
+    const [storedUserExpandedGroups, setUserExpandedGroups] = useLocalStorage('expandedGroups');
+
+    let userExpandedGroups = [].concat(storedUserExpandedGroups);
+    if (!isOverview && !userExpandedGroups.includes(thisPart.title)) {
+        userExpandedGroups.push(thisPart.title);
+    }
+    const toggleMenuKey = (key) => {
+            const index = userExpandedGroups.indexOf(key);
+            if (index > -1) {
+                userExpandedGroups.splice(index, 1);
+            } else {
+                userExpandedGroups.push(key);
+            }
+            setUserExpandedGroups(userExpandedGroups);
+    };
+
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
@@ -54,33 +90,17 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let slugList = {}
-    slugList[`${outline.overview.slug}`] = "";
-    outline.parts.forEach((part) => {
-      if (part.chapterSlugs) {
-        part.chapterSlugs.forEach((slug) => {
-          slugList[`${slug}`] = part.title;
-        });
-      }
-    });
-
-    // Util consts for slugs and outline data
-    const groupedChapters = getGroupedChapters(allMarkdownRemark);
-    const links = Object.keys(slugList);
-    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
-    const isOverview = slug === outline.overview.slug;
-    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
-
     const getMenuIcon = (icon) => icon === 'tools' ? (
         <Icon type="setting" />
     ) : (
         <CustomIcon component={() => getIcon(icon)} />
     );
 
+    console.log(userExpandedGroups);
+
     return (
         <ChapterContext.Provider
-            value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted }}
+            value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted, userExpandedGroups, setUserExpandedGroups }}
         >
             <Layout title={title} description={description}>
                 <GlobalStyle />
@@ -90,7 +110,7 @@ const Template = ({ data, location }) => {
                             <SideNav>
                                 <Menu
                                     defaultSelectedKeys={[slug]}
-                                    defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
+                                    defaultOpenKeys={userExpandedGroups}
                                     mode="inline">
                                     <Menu.Item key={outline.overview.slug}>
                                         <Link to={outline.overview.slug}>
@@ -101,6 +121,7 @@ const Template = ({ data, location }) => {
                                     {outline.parts.map((part) => part.chapterSlugs && (
                                         <Menu.SubMenu
                                             key={part.title}
+                                            onTitleClick={() => toggleMenuKey(part.title)}
                                             title={
                                                 <span>
                                                     {getMenuIcon(part.icon)}
@@ -204,7 +225,7 @@ const GlobalStyle = createGlobalStyle`
             svg {
                 color: ${({ theme }) => theme.color.N8};
             }
-            
+
             ${CustomIcon} {
                 svg {
                     width: 17px;
@@ -214,10 +235,10 @@ const GlobalStyle = createGlobalStyle`
                     stroke: ${({ theme }) => theme.color.N8};
                 }
             }
-            
+
             .ant-menu-submenu {
                 border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
-                
+
                 &.ant-menu-submenu-selected {
                     span,
                     i,
@@ -264,7 +285,7 @@ const GlobalStyle = createGlobalStyle`
             .ant-menu-item {
                 a {
                     color: ${({ theme }) => theme.color.N10};
-                    
+
                     &:hover {
                         &,
                         svg {
@@ -274,14 +295,14 @@ const GlobalStyle = createGlobalStyle`
                         text-decoration: none;
                     }
                 }
-                
+
                 &.ant-menu-item-selected {
                     background: ${({ theme }) => theme.color.B1} !important;
-                    
+
                     &:after {
                         border-color: ${({ theme }) => theme.color.B5} !important;
                     }
-                    
+
                     a {
                         color: ${({ theme }) => theme.color.B5} !important;
                     }
@@ -376,7 +397,7 @@ const ChapterIntroText = styled.div`
         margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
         color: ${({ theme }) => theme.color.B6};
     }
-    
+
     p {
         ${({ theme }) => theme.typography.bodyBig}
     }
@@ -387,7 +408,7 @@ const Pagination = styled.div`
     padding: 54px 0;
     width: 100%;
     display: flex;
-    
+
     div:last-child {
         margin-left: auto;
     }
