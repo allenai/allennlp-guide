@@ -50,21 +50,21 @@ const Template = ({ data, location }) => {
 
     const [activeExc, setActiveExc] = useState(null);
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
-
     const [storedUserExpandedGroups, setUserExpandedGroups] = useLocalStorage('expandedGroups');
 
+    // User-defined nav group expand/collapse state
     let userExpandedGroups = [].concat(storedUserExpandedGroups);
     if (!isOverview && !userExpandedGroups.includes(thisPart.title)) {
         userExpandedGroups.push(thisPart.title);
     }
     const toggleMenuKey = (key) => {
-            const index = userExpandedGroups.indexOf(key);
-            if (index > -1) {
-                userExpandedGroups.splice(index, 1);
-            } else {
-                userExpandedGroups.push(key);
-            }
-            setUserExpandedGroups(userExpandedGroups);
+        const index = userExpandedGroups.indexOf(key);
+        if (index > -1) {
+            userExpandedGroups.splice(index, 1);
+        } else {
+            userExpandedGroups.push(key);
+        }
+        setUserExpandedGroups(userExpandedGroups);
     };
 
     const html = renderAst(htmlAst);
@@ -95,8 +95,6 @@ const Template = ({ data, location }) => {
     ) : (
         <CustomIcon component={() => getIcon(icon)} />
     );
-
-    console.log(userExpandedGroups);
 
     return (
         <ChapterContext.Provider
