@@ -1,20 +1,26 @@
 import json
+import os
 import tempfile
 from typing import Dict, Iterable, List
 
 import torch
+from allennlp.common import JsonDict
 from allennlp.common.params import Params
 from allennlp.data import DatasetReader, Instance
 from allennlp.data import Vocabulary
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import SpacyTokenizer
+from allennlp.data.tokenizers import Token, Tokenizer
 from allennlp.models import Model
+from allennlp.models.archival import archive_model, load_archive
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
+from allennlp.predictors import Predictor
 from allennlp.training import Trainer
 from allennlp.training.metrics import CategoricalAccuracy
+from overrides import overrides
 
 
 @DatasetReader.register('classification-tsv')
@@ -83,8 +89,25 @@ class SimpleClassifier(Model):
         return {"accuracy": self.accuracy.get_metric(reset)}
 
 
+@Predictor.register("sentence_classifier")
+class SentenceClassifierPredictor(Predictor):
+    def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
+        super().__init__(model, dataset_reader)
+        self._tokenizer = SpacyTokenizer()
+
+    def predict(self, sentence: str) -> JsonDict:
+        return self.predict_json({"sentence": sentence})
+
+    @overrides
+    def _json_to_instance(self, json_dict: JsonDict) -> Instance:
+        sentence = json_dict["sentence"]
+        tokens = self._tokenizer.tokenize(sentence)
+        return self._dataset_reader.text_to_instance(tokens)
+
+
 def run_config(config):
     params = Params(json.loads(config))
+    params_copy = params.duplicate()
 
     if 'dataset_reader' in params:
         reader = DatasetReader.from_params(params.pop('dataset_reader'))
@@ -155,6 +178,7 @@ def run_config(config):
                 trainer.train()
 
     return {
+        'params': params_copy,
         'dataset_reader': reader,
         'vocab': vocab,
         'iterator': iterator,
