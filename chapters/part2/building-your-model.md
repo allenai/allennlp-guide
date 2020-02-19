@@ -31,7 +31,7 @@ class SimpleClassifier(Model):
 
 In the exercise below, we create a toy model and observe how instances get batched and passed to the `forward()` method.
 
-<codeblock source="part2/building-your-model/model_forward" setup="part2/building-your-model/setup"></codeblock>
+<codeblock source="part2/building-your-model/model_forward" setup="part2/building-your-model/setup_model_forward"></codeblock>
 
 As mentioned above, `Model.forward()` returns a dictionary, instead of a tensor. Although technically you can put anything you want in this dictionary, if you want to train your model through backpropagation using our `Trainer`, the return value must contain a `"loss"` key pointing to a scalar `Tensor` that represents the loss, which then gets minimized by the optimizer. For example, here's the snippet from the forward method of `SimpleClassifier`, where a dictionary consisting of `"probs"` and an optional `"loss"` is returned:
 
@@ -90,9 +90,9 @@ In order to restore your model from files, you can use the `Model.load()` class 
 
 Alternatively, you can simply use `load_archive()` to restore the model from an archive file. This returns an `Archive` object, which contains the config and the model.
 
-In the following exercises, you save and load your model using the two methods explained above, and make sure the predictions stay the same before and after the serialization.
+In the example code below, we save and load our model using the two methods explained above, and make sure the predictions stay the same before and after the serialization.
 
-<codeblock source="part2/building-your-model/model_io" setup="part1/setup"></codeblock>
+<codeblock source="part2/building-your-model/model_io" setup="part2/building-your-model/setup_model_io"></codeblock>
 
 In practice, as long as you use AllenNLP commands (for example, `allennlp train`), model archiving is automatically taken care of. When the training finishes or gets interrupted, the command automatically saves the best model to a `model.tar.gz` file. You can also resume training from a serialized directory.
 
