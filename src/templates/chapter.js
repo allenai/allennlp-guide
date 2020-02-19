@@ -29,8 +29,44 @@ const Template = ({ data, location }) => {
     const { frontmatter, fields, htmlAst } = markdownRemark;
     const { title, description } = frontmatter;
     const { slug } = fields;
+
+    // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
+    let slugList = {}
+    slugList[`${outline.overview.slug}`] = "";
+    outline.parts.forEach((part) => {
+      if (part.chapterSlugs) {
+        part.chapterSlugs.forEach((slug) => {
+          slugList[`${slug}`] = part.title;
+        });
+      }
+    });
+
+    // Util consts for slugs and outline data
+    const groupedChapters = getGroupedChapters(allMarkdownRemark);
+    const links = Object.keys(slugList);
+    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
+    const isOverview = slug === outline.overview.slug;
+    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
+
     const [activeExc, setActiveExc] = useState(null);
     const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
+    const [storedUserExpandedGroups, setUserExpandedGroups] = useLocalStorage('expandedGroups');
+
+    // User-defined nav group expand/collapse state
+    let userExpandedGroups = [].concat(storedUserExpandedGroups);
+    if (!isOverview && !userExpandedGroups.includes(thisPart.title)) {
+        userExpandedGroups.push(thisPart.title);
+    }
+    const toggleMenuKey = (key) => {
+        const index = userExpandedGroups.indexOf(key);
+        if (index > -1) {
+            userExpandedGroups.splice(index, 1);
+        } else {
+            userExpandedGroups.push(key);
+        }
+        setUserExpandedGroups(userExpandedGroups);
+    };
+
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
@@ -54,24 +90,6 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let slugList = {}
-    slugList[`${outline.overview.slug}`] = "";
-    outline.parts.forEach((part) => {
-      if (part.chapterSlugs) {
-        part.chapterSlugs.forEach((slug) => {
-          slugList[`${slug}`] = part.title;
-        });
-      }
-    });
-
-    // Util consts for slugs and outline data
-    const groupedChapters = getGroupedChapters(allMarkdownRemark);
-    const links = Object.keys(slugList);
-    const thisPart = outline.parts.find(part => part.title === slugList[slug]);
-    const isOverview = slug === outline.overview.slug;
-    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
-
     const getMenuIcon = (icon) => icon === 'tools' ? (
         <Icon type="setting" />
     ) : (
@@ -80,7 +98,7 @@ const Template = ({ data, location }) => {
 
     return (
         <ChapterContext.Provider
-            value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted }}
+            value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted, userExpandedGroups, setUserExpandedGroups }}
         >
             <Layout title={title} description={description}>
                 <GlobalStyle />
@@ -90,7 +108,7 @@ const Template = ({ data, location }) => {
                             <SideNav>
                                 <Menu
                                     defaultSelectedKeys={[slug]}
-                                    defaultOpenKeys={[!isOverview ? thisPart.title : null ]}
+                                    defaultOpenKeys={userExpandedGroups}
                                     mode="inline">
                                     <Menu.Item key={outline.overview.slug}>
                                         <Link to={outline.overview.slug}>
@@ -101,6 +119,7 @@ const Template = ({ data, location }) => {
                                     {outline.parts.map((part) => part.chapterSlugs && (
                                         <Menu.SubMenu
                                             key={part.title}
+                                            onTitleClick={() => toggleMenuKey(part.title)}
                                             title={
                                                 <span>
                                                     {getMenuIcon(part.icon)}
@@ -204,7 +223,7 @@ const GlobalStyle = createGlobalStyle`
             svg {
                 color: ${({ theme }) => theme.color.N8};
             }
-            
+
             ${CustomIcon} {
                 svg {
                     width: 17px;
@@ -214,10 +233,10 @@ const GlobalStyle = createGlobalStyle`
                     stroke: ${({ theme }) => theme.color.N8};
                 }
             }
-            
+
             .ant-menu-submenu {
                 border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
-                
+
                 &.ant-menu-submenu-selected {
                     span,
                     i,
@@ -239,6 +258,19 @@ const GlobalStyle = createGlobalStyle`
                 }
             }
 
+            .ant-menu-submenu-title {
+                &:hover {
+                    .ant-menu-submenu-arrow {
+                        &:before,
+                        &:after {
+                            background: linear-gradient(90deg, ${({ theme }) => `${theme.color.B5}, ${theme.color.B5}`}) !important;
+                        }
+                    }
+                }
+            }
+
+            // Support multi-line items without truncation
+            .ant-menu-submenu-title,
             .ant-menu-item {
                 overflow: visible !important;
                 white-space: normal !important;
@@ -246,10 +278,12 @@ const GlobalStyle = createGlobalStyle`
                 line-height: 1.5 !important;
                 padding-top: 9px !important;
                 padding-bottom 10px !important;
-                
+            }
+
+            .ant-menu-item {
                 a {
                     color: ${({ theme }) => theme.color.N10};
-                    
+
                     &:hover {
                         &,
                         svg {
@@ -259,14 +293,14 @@ const GlobalStyle = createGlobalStyle`
                         text-decoration: none;
                     }
                 }
-                
+
                 &.ant-menu-item-selected {
                     background: ${({ theme }) => theme.color.B1} !important;
-                    
+
                     &:after {
                         border-color: ${({ theme }) => theme.color.B5} !important;
                     }
-                    
+
                     a {
                         color: ${({ theme }) => theme.color.B5} !important;
                     }
@@ -287,7 +321,7 @@ const Wrapper = styled.div`
 // Left-aligned container with white background
 const LeftContainer = styled.div`
     background: ${({ theme }) => theme.color.N1};
-    width: calc(${({ theme }) => `300px + ((100vw - ${theme.breakpoints.xl} - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    width: calc(${({ theme }) => `324px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
     height: 100%;
     display: flex;
     position: relative;
@@ -296,7 +330,7 @@ const LeftContainer = styled.div`
 
 // Constrained content descendent of LeftContainer (holds sidenav)
 const LeftContent = styled.div`
-    width: 326px;
+    width: 350px;
     height: 100%;
     margin-left: auto;
 `;
@@ -309,12 +343,14 @@ const SideNav = styled.nav`
     padding-top: 30px;
     position: sticky;
     top: 115px;
+    height: calc(100vh - 175px);
+    overflow: auto;
 `;
 
 const RightContainer = styled.div`
     position: relative;
     flex: 1;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue()}rem;
+    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue()}rem;
     height: 100%;
 
     &:before {
@@ -331,13 +367,13 @@ const RightContainer = styled.div`
 `;
 
 const RightContent = styled.div`
-    width: 100%;
-    max-width: ${({ theme }) => theme.breakpoints.xl.getRemValue() - theme.spacing.xxl.getRemValue() - (300 / 16)}rem;
+    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue() - (324 / 16)}rem;
     height: 100%;
     display: flex;
     flex-direction: column;
     padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
     box-sizing: border-box;
+    margin-right: ${({ theme }) => theme.spacing.xxl};
 `;
 
 // Intro content rendered from markdown frontmatter and outline data
@@ -359,7 +395,7 @@ const ChapterIntroText = styled.div`
         margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
         color: ${({ theme }) => theme.color.B6};
     }
-    
+
     p {
         ${({ theme }) => theme.typography.bodyBig}
     }
@@ -370,7 +406,7 @@ const Pagination = styled.div`
     padding: 54px 0;
     width: 100%;
     display: flex;
-    
+
     div:last-child {
         margin-left: auto;
     }
