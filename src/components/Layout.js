@@ -240,7 +240,7 @@ const GlobalStyle = createGlobalStyle`
         p > code,
         li > code {
             font-family: 'Roboto Mono', Courier, monospace;
-            font-size: 0.87rem;
+            font-size: 0.8625rem;
             -webkit-font-smoothing: subpixel-antialiased;
         }
 
@@ -412,65 +412,65 @@ const GlobalStyle = createGlobalStyle`
 
     .CodeMirror.cm-s-default {
         font-family: 'Roboto Mono', monospace;
-        background: #f7f7f7;
+        background: transparent !important;
         color: #403f53;
         word-wrap: break-word;
 
-        .CodeMirror-line {
-            padding: 0;
-        }
+        // .CodeMirror-line {
+        //     padding: 0;
+        // }
 
         .CodeMirror-selected {
             background: #7a81812b;
         }
 
-        .CodeMirror-cursor {
-            border-left-color: currentColor;
-        }
-
-        .cm-variable-2 {
-            color: inherit;
-            font-style: italic;
-        }
-
-        .cm-comment {
-            color: #989fb1;
-        }
-
-        .cm-keyword, .cm-builtin {
-            color: #994cc3;
-        }
-
-        .cm-operator {
-            color: #994cc3;
-        }
-
-        .cm-string {
-            color: #994cc3;
-        }
-
-        .cm-number {
-            color: #aa0982;
-        }
-
-        .cm-def {
-            color: #4876d6;
-        }
+        // .CodeMirror-cursor {
+        //     border-left-color: currentColor;
+        // }
+        //
+        // .cm-variable-2 {
+        //     color: inherit;
+        //     font-style: italic;
+        // }
+        //
+        // .cm-comment {
+        //     color: #989fb1;
+        // }
+        //
+        // .cm-keyword, .cm-builtin {
+        //     color: #994cc3;
+        // }
+        //
+        // .cm-operator {
+        //     color: #994cc3;
+        // }
+        //
+        // .cm-string {
+        //     color: #994cc3;
+        // }
+        //
+        // .cm-number {
+        //     color: #aa0982;
+        // }
+        //
+        // .cm-def {
+        //     color: #4876d6;
+        // }
     }
 
-    .jp-RenderedText pre {
-        .ansi-cyan-fg.ansi-cyan-fg {
-            color: #00d8ff;
-        }
-
-        .ansi-green-fg.ansi-green-fg {
-            color: #12dc55;
-        }
-
-        .ansi-red-fg.ansi-red-fg {
-            color: #f76464;
-        }
-    }
+    // .jp-RenderedText pre {
+    //     .ansi-cyan-fg.ansi-cyan-fg {
+    //         color: #00d8ff;
+    //     }
+    //
+    //     .ansi-green-fg.ansi-green-fg {
+    //         color: #12dc55;
+    //     }
+    //
+    //     .ansi-red-fg.ansi-red-fg {
+    //         color: #f76464;
+    //     }
+    // }
 
     // Gatsby image styles
 

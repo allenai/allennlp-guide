@@ -7,14 +7,26 @@ import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 import { window } from 'browser-monads';
 import styled from 'styled-components';
+import AnimateHeight from 'react-animate-height';
+
+import { Card } from '../components/Card';
+import { ExpandCollapseIcon } from '../components/inlineSVG';
 
 class Juniper extends React.Component {
     outputRef = null;
     inputRef = null;
-    state = { content: null, cm: null, kernel: null, renderers: null, fromStorage: null };
+    state = {
+        content: null,
+        cm: null,
+        kernel: null,
+        renderers: null,
+        fromStorage: null,
+        setupIsVisible: false
+    };
 
     static defaultProps = {
-        children: '',
+        setupFile: '',
+        sourceFile: '',
         branch: 'master',
         url: 'https://mybinder.org',
         serverSettings: {},
@@ -33,7 +45,8 @@ class Juniper extends React.Component {
     };
 
     static propTypes = {
-        children: PropTypes.string,
+        setupFile: PropTypes.string,
+        sourceFile: PropTypes.string,
         repo: PropTypes.string.isRequired,
         branch: PropTypes.string,
         url: PropTypes.string,
@@ -49,10 +62,11 @@ class Juniper extends React.Component {
         msgLoading: PropTypes.string,
         msgError: PropTypes.string,
         actions: PropTypes.func,
+        handleReset: PropTypes.func
     };
 
     componentDidMount() {
-        this.setState({ content: this.props.children });
+        this.setState({ content: this.props.sourceFile });
         const renderers = standardRendererFactories.filter(factory =>
             factory.mimeTypes.includes('text/latex') ? window.MathJax : true
         );
@@ -63,7 +77,7 @@ class Juniper extends React.Component {
         });
 
         const cm = new CodeMirror(this.inputRef, {
-            value: this.props.children.trim(),
+            value: this.props.sourceFile.trim(),
             mode: this.props.lang,
             theme: this.props.theme,
         });
@@ -85,9 +99,9 @@ class Juniper extends React.Component {
         }
     }
 
-    componentWillReceiveProps({ children }) {
-        if (children !== this.state.content && this.state.cm) {
-            this.state.cm.setValue(children.trim());
+    componentWillReceiveProps({ sourceFile }) {
+        if (sourceFile !== this.state.content && this.state.cm) {
+            this.state.cm.setValue(sourceFile.trim());
         }
     }
 
@@ -255,16 +269,47 @@ class Juniper extends React.Component {
 
     render() {
         return (
-            <JuniperCell>
-                <JuniperInput ref={x => {this.inputRef = x}} />
-                {this.props.msgButton && (
-                    <button onClick={this.state.runCode}>
-                        {this.props.msgButton}
-                    </button>
+            <CodeBlockContainer>
+                {this.props.setupFile !== '' && (
+                    <CodeBlockSection>
+                        <SetupSectionToggle onClick={() => this.setState({setupIsVisible: !this.state.setupIsVisible})}>
+                            <strong>Setup</strong>
+                            <span className={`${this.state.setupIsVisible ? 'label-visible' : ''}`}>(Read-only)</span>
+                            <TriggerIcon isExpanded={this.state.setupIsVisible} />
+                        </SetupSectionToggle>
+                        <AnimateHeight animateOpacity={true} height={this.state.setupIsVisible ? 'auto' : 0}>
+                            <SetupSectionContent>
+                                <pre className="language-python line-numbers"><code>{this.props.setupFile}</code></pre>
+                            </SetupSectionContent>
+                        </AnimateHeight>
+                    </CodeBlockSection>
                 )}
-                {this.props.actions && this.props.actions(this.state)}
-                <JuniperOutput ref={x => {this.outputRef = x}} />
-            </JuniperCell>
+                <CodeBlockSection>
+                    <CodeBlockSectionHeader>
+                        <strong>Source</strong>
+                    </CodeBlockSectionHeader>
+                    <CodeBlockSectionContent>
+                        <div ref={x => {this.inputRef = x}} />
+                    </CodeBlockSectionContent>
+                    {this.props.msgButton && (
+                        <button onClick={this.state.runCode}>
+                            {this.props.msgButton}
+                        </button>
+                    )}
+                    {this.props.actions && this.props.actions(this.state)}
+                </CodeBlockSection>
+                <AnimateHeight animateOpacity={true} height={this.state.fromStorage !== null ? 'auto' : 0}>
+                    <OutputSection>
+                        <CodeBlockSectionHeader>
+                            <strong>Output</strong>
+                            <ClearBtn onClick={this.props.handleReset}>Clear</ClearBtn>
+                        </CodeBlockSectionHeader>
+                        <CodeBlockSectionContent>
+                            <div ref={x => {this.outputRef = x}} />
+                        </CodeBlockSectionContent>
+                    </OutputSection>
+                </AnimateHeight>
+            </CodeBlockContainer>
         );
     }
 }
@@ -274,45 +319,111 @@ export default Juniper;
 // CSS ported from SASS
 // TODO(aarons): Revisit these styles
 
-const JuniperCell = styled.div`
-    & > div:first-child {
-        padding: 1.5rem 2rem 1rem;
-        position: relative;
-    }
+const CodeBlockContainer = styled(Card)`
+    background: ${({ theme }) => theme.color.N9};
+    overflow: hidden;
+    position: relative;
+    z-index: 3;
+`;
 
-    button {
-        margin: 15px 32px 32px;
-    }
+const CodeBlockSection = styled.div`
+    margin-bottom: ${({ theme }) => theme.spacing.xxs};
+`;
 
-    pre {
-        background: transparent !important;
-        line-height: 1.5 !important;
+const CodeBlockSectionHeader = styled.div`
+    background: ${({ theme }) => theme.color.N8};
+    font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+    color: ${({ theme }) => theme.color.N5};
+    padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+    display: flex;
+    transition: background-color 0.2s ease;
+
+    & > span {
+        ${({ theme }) => theme.typography.bodySmall};
+        font-weight: normal;
+        color: ${({ theme }) => theme.color.N6};
+        padding-left: ${({ theme }) => theme.spacing.xs};
+        opacity: 0;
+        transition: opacity 0.2s ease;
+
+        &.label-visible {
+            opacity: 1;
+        }
     }
 `;
 
-const JuniperInput = styled.div``;
+const SetupSectionToggle = styled(CodeBlockSectionHeader)`
+    cursor: pointer;
 
-const JuniperOutput = styled.div`
-    padding: 2rem 9rem 2rem 3rem;
-    background: #47515C;
-    color: #f7f7f7;
-    position: relative;
-
-    &:before {
-        content: "Output";
-        display: block;
-        background: #616C7A;
-        color: #E8ECF2;
-        padding: 0 0.5rem;
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        font-size: 13px;
-        text-transform: uppercase;
+    &:hover {
+        background: #6d7784;
     }
 
-    pre,
-    code {
+    &:active {
+        background: ${({ theme }) => theme.color.N8};
+        transition-duration: 0s;
+    }
+`;
+
+// Morphing expand/collapse caret
+const TriggerIcon = styled(ExpandCollapseIcon)`
+    margin-left: auto;
+    margin-right: -${({ theme }) => theme.spacing.xs};
+
+    span {
+        background: ${({ theme }) => theme.color.N6} !important;
+    }
+`;
+
+const ClearBtn = styled.button`
+    display: block;
+    border: none;
+    font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+    cursor: pointer;
+    background: transparent;
+    margin: 0;
+    margin-left: auto;
+    padding: 0;
+    appearance: none;
+    ${({ theme }) => theme.typography.bodySmall};
+    color: ${({ theme }) => theme.color.N7};
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: ${({ theme }) => theme.color.N5};
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+const CodeBlockSectionContent = styled.div`
+    padding: ${({ theme }) => theme.spacing.md};
+    padding-bottom: ${({ theme }) => theme.spacing.xl};
+
+    pre {
+        padding: 0;
+        overflow-y: hidden;
+        overflow-x: auto;
+        margin: 0;
         background: transparent !important;
+    }
+`;
+
+const SetupSectionContent = styled(CodeBlockSectionContent)`
+    padding-left: 0;
+`;
+
+const OutputSection = styled.div`
+    background: ${({ theme }) => theme.color.N10};
+
+    color: #f7f7f7;
+    font-family: 'Roboto Mono', Courier, monospace;
+    font-size: 0.8625rem;
+    -webkit-font-smoothing: subpixel-antialiased;
+
+    ${CodeBlockSectionContent} {
+        padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
     }
 `;

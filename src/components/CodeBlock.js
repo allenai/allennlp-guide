@@ -4,18 +4,12 @@ import styled from 'styled-components';
 
 import { Button } from '@allenai/varnish/components/button';
 
-function getFiles({ allCode }, sourceId, solutionId, testId, setupId) {
+function getFiles({ allCode }, sourceId, setupId) {
     var files = {};
     allCode.edges.forEach(({ node }) => {
         const filename = node.dir + '/' + node.name;
         if (filename.includes(sourceId)) {
             files['sourceFile'] = node.code;
-        }
-        if (filename.includes(solutionId)) {
-            files['solutionFile'] = node.code;
-        }
-        if (filename.includes(testId)) {
-            files['testFile'] = node.code;
         }
         if (filename.includes(setupId)) {
             files['setupFile'] = node.code;
@@ -24,31 +18,17 @@ function getFiles({ allCode }, sourceId, solutionId, testId, setupId) {
     return files;
 }
 
-function makeTest(template, testFile, solution) {
-    // Escape quotation marks in the solution code, for cases where we
-    // can only place the solution in regular quotes.
-    const solutionEscaped = solution.replace(/"/g, '\\"');
-    return template
-        .replace(/\${solutionEscaped}/g, solutionEscaped)
-        .replace(/\${solution}/g, solution)
-        .replace(/\${test}/g, testFile);
-}
-
 function addSetupCode(code, setup) {
     // Prepend setup code if specified.
     return setup ? setup + code : code;
 }
 
 class CodeBlock extends React.Component {
-    state = { Juniper: null, showSolution: false, key: 0 };
-
-    handleShowSolution() {
-        this.setState({ showSolution: true });
-    }
+    state = { Juniper: null, key: 0 };
 
     handleReset() {
         // Using the key as a hack to force component to rerender
-        this.setState({ showSolution: false, key: this.state.key + 1 });
+        this.setState({ key: this.state.key + 1 });
     }
 
     updateJuniper() {
@@ -75,11 +55,9 @@ class CodeBlock extends React.Component {
     }
 
     render() {
-        const { Juniper, showSolution } = this.state;
-        const { id, source, solution, test, setup, executable } = this.props;
+        const { Juniper } = this.state;
+        const { id, source, setup, executable } = this.props;
         const sourceId = source || `${id}_source`;
-        const solutionId = solution || `${id}_solution`;
-        const testId = test || `${id}_test`;
         const setupId = setup || `${id}_setup`;
         const execute = executable !== "false";
 
@@ -89,7 +67,6 @@ class CodeBlock extends React.Component {
                     {
                         site {
                             siteMetadata {
-                                testTemplate
                                 juniper {
                                     repo
                                     branch
@@ -111,9 +88,8 @@ class CodeBlock extends React.Component {
                     }
                 `}
                 render={data => {
-                    const { testTemplate } = data.site.siteMetadata
-                    const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper
-                    const {sourceFile, solutionFile, testFile, setupFile} = getFiles(data, sourceId, solutionId, testId, setupId)
+                    const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper;
+                    const { sourceFile, setupFile } = getFiles(data, sourceId, setupId);
                     return (
                         <StyledCodeBlock key={this.state.key}>
                             {Juniper && (
@@ -123,31 +99,16 @@ class CodeBlock extends React.Component {
                                     branch={branch}
                                     lang={lang}
                                     kernelType={kernelType}
+                                    handleReset={() => this.handleReset()}
                                     debug={debug}
-                                    actions={({ runCode }) => (
-                                        <React.Fragment>
-                                            {execute && (
-                                            <Button onClick={() =>
-                                                runCode(code =>
-                                                    addSetupCode(code, setupFile))}>Run Code</Button>
-                                            )}
-                                            {execute && testFile && (
-                                                <Button
-                                                    variant="primary"
-                                                    onClick={() =>
-                                                        runCode(value =>
-                                                            makeTest(testTemplate, testFile, value)
-                                                        )
-                                                    }
-                                                >
-                                                    Submit
-                                                </Button>
-                                            )}
-                                        </React.Fragment>
+                                    setupFile={setupFile}
+                                    sourceFile={sourceFile}
+                                    actions={({ runCode }) => execute && (
+                                        <CodeBlockToolbar>
+                                            <RunButton onClick={() => runCode(code => addSetupCode(code, setupFile))}>Run Code</RunButton>
+                                        </CodeBlockToolbar>
                                     )}
-                                >
-                                    {showSolution ? solutionFile : sourceFile}
-                                </Juniper>
+                                />
                             )}
                         </StyledCodeBlock>
                     )
@@ -162,9 +123,23 @@ export default CodeBlock;
 // CSS ported from SASS
 // TODO(aarons): Revisit these styles
 const StyledCodeBlock = styled.div`
-    margin-left: -2rem;
-    width: calc(100% + 4rem);
     margin-bottom: 2rem;
     margin-top: 2rem;
-    font-size: 0.87rem;
+    font-size: 0.8625rem;
+`;
+
+const RunButton = styled(Button)`
+    &&& {
+        background: ${({ theme }) => theme.color.N1};
+        color: ${({ theme }) => theme.color.B6};
+    }
+`;
+
+const CodeBlockToolbar = styled.div`
+    display: flex;
+    padding: 0 ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md}`} 0;
+
+    ${RunButton} {
+        margin-left: auto;
+    }
 `;
