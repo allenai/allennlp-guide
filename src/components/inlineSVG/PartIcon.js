@@ -1,4 +1,4 @@
-// This SVG asset displays a "rocket" icon intended for Quick Start section
+// This component is an SVG boilerplate wrapper for part icons
 
 import React from 'react';
 
