@@ -1,17 +1,17 @@
 import React from 'react';
 import { CubeIcon, RocketIcon, StackIcon, ToolsIcon, TextIcon } from './components/inlineSVG';
 
-export const getIcon = (icon) => {
+export const getIcon = (icon, size = 108) => {
     if (icon === 'stack') {
-        return <StackIcon />;
+        return <StackIcon size={size} />;
     } else if (icon === 'rocket') {
-        return <RocketIcon />;
+        return <RocketIcon size={size} />;
     } else if (icon === 'cube') {
-        return <CubeIcon />;
+        return <CubeIcon size={size} />;
     } else if (icon === 'tools') {
-        return <ToolsIcon />;
+        return <ToolsIcon size={size} />;
     } else { // 'default'
-        return <TextIcon />;
+        return <TextIcon size={size} />;
     }
 };
 
