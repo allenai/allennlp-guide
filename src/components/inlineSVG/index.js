@@ -3,6 +3,7 @@ export * from './ArrowRightIcon';
 export * from './CheckMark';
 export * from './CubeIcon';
 export * from './ExpandCollapseIcon';
+export * from './PartIcon';
 export * from './RocketIcon';
 export * from './StackIcon';
 export * from './ToolsIcon';

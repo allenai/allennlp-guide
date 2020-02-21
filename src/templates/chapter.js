@@ -93,7 +93,7 @@ const Template = ({ data, location }) => {
     const getMenuIcon = (icon) => icon === 'tools' ? (
         <Icon type="setting" />
     ) : (
-        <CustomIcon component={() => getIcon(icon)} />
+        <CustomIcon component={() => getIcon(icon, 17)} />
     );
 
     return (
