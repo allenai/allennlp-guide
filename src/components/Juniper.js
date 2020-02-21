@@ -80,6 +80,7 @@ class Juniper extends React.Component {
             value: this.props.sourceFile.trim(),
             mode: this.props.lang,
             theme: this.props.theme,
+            lineNumbers: true
         });
         this.setState({ cm });
 
