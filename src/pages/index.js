@@ -25,7 +25,7 @@ export default ({ data }) => {
             <About>
                 <SectionIntro>
                     <h2>About this course</h2>
-                    <p>{data.site.siteMetadata.description}</p>
+                    <p>We walk through the basics of using AllenNLP, describing all of the main abstractions used and why we chose them, how to use specific functionality like configuration files or pre-trained representations, and how to build various kinds of models, from simple to complex.</p>
                 </SectionIntro>
                 <PartContainer>
                     <StandaloneChapterLink to={outline.overview.slug}>
@@ -115,7 +115,7 @@ const SectionIntro = styled.div`
     h2 {
         ${({ theme }) => theme.typography.h4};
     }
-    
+
     p {
         margin: 0;
         padding-top: ${({ theme }) => theme.spacing.xxs};
@@ -172,7 +172,7 @@ const PartHeaderText = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    
+
     & > :last-child {
         margin-bottom: 0;
     }
@@ -190,7 +190,7 @@ const BeginLink = styled.div`
     display: grid;
     grid-template-columns: max-content;
     margin-top: auto;
-    
+
     div {
         display: flex;
         align-items: center;
@@ -215,7 +215,7 @@ const StandaloneChapterLink = styled(Link)`
             ${PartTitle} {
                 color: ${({ theme }) => theme.color.B6};
             }
-            
+
             p {
                 color: ${({ theme }) => theme.palette.text.primary};
             }
@@ -333,7 +333,7 @@ const ChapterListTrigger = styled.div`
 const TriggerTooltip = styled.span`
     ${({ theme }) => theme.typography.bodySmall}
     color: ${({ theme }) => theme.color.B6};
-    
+
     &:hover {
         text-decoration: underline;
     }
