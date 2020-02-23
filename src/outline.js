@@ -31,6 +31,7 @@ export const outline = {
             chapterSlugs: [
                 '/reading-textual-data',
                 '/building-your-model',
+                '/common-architectures',
                 '/representing-text-as-features'
             ],
             icon: 'cube',
