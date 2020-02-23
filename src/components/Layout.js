@@ -282,7 +282,7 @@ const GlobalStyle = createGlobalStyle`
         color: black;
         background: none;
         text-align: left;
-        white-space: pre;
+        white-space: pre-wrap;
         word-spacing: normal;
         word-break: normal;
         word-wrap: normal;

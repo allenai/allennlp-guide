@@ -24,11 +24,11 @@ function addSetupCode(code, setup) {
 }
 
 class CodeBlock extends React.Component {
-    state = { Juniper: null, key: 0 };
+    state = { Juniper: null, key: 0, outputIsVisible: false };
 
     handleReset() {
         // Using the key as a hack to force component to rerender
-        this.setState({ key: this.state.key + 1 });
+        this.setState({ key: this.state.key + 1, outputIsVisible: false });
     }
 
     updateJuniper() {
@@ -55,7 +55,7 @@ class CodeBlock extends React.Component {
     }
 
     render() {
-        const { Juniper } = this.state;
+        const { Juniper, outputIsVisible } = this.state;
         const { id, source, setup, executable } = this.props;
         const sourceId = source || `${id}_source`;
         const setupId = setup || `${id}_setup`;
@@ -100,12 +100,16 @@ class CodeBlock extends React.Component {
                                     lang={lang}
                                     kernelType={kernelType}
                                     handleReset={() => this.handleReset()}
+                                    outputIsVisible={outputIsVisible}
                                     debug={debug}
                                     setupFile={setupFile}
                                     sourceFile={sourceFile}
                                     actions={({ runCode }) => execute && (
                                         <CodeBlockToolbar>
-                                            <RunButton onClick={() => runCode(code => addSetupCode(code, setupFile))}>Run Code</RunButton>
+                                            <RunButton onClick={() => {
+                                                runCode(code => addSetupCode(code, setupFile));
+                                                this.setState({ outputIsVisible: true });
+                                            }}>Run Code</RunButton>
                                         </CodeBlockToolbar>
                                     )}
                                 />
@@ -120,8 +124,6 @@ class CodeBlock extends React.Component {
 
 export default CodeBlock;
 
-// CSS ported from SASS
-// TODO(aarons): Revisit these styles
 const StyledCodeBlock = styled.div`
     margin-bottom: 2rem;
     margin-top: 2rem;
