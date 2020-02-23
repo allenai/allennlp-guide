@@ -28,6 +28,8 @@ The main modeling operations done on natural language inputs include summarizing
 
 * SpanField
 * SpanExtractor
+* Sample code
+* pruning
 
 </exercise>
 
