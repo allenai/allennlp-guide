@@ -1,41 +1,54 @@
 ---
 title: 'Common architectures'
-description: 'In this chapter we'll introduce neural architectures and AllenNLP abstractions that are commonly used for building your NLP model.'
+description: "In this chapter we'll introduce neural architectures and AllenNLP abstractions that are commonly used for building your NLP model."
 type: chapter
 ---
 
-<exercise id="1" title="Two abstractions of RNNs (Seq2Vec and Seq2Seq)">
+<textblock>
+The main modeling operations done on natural language inputs include summarizing sequences, contextualizing sequences (that is, computing contextualized embeddings from sequences), modeling spans within a longer sequence, and modeling similarities between sequences using attention. In the following sections we'll learn AllenNLP abstractions for these operations.
+</textblock>
+
+<exercise id="1" title="Summarizing sequences">
 
 * Seq2VecEncoder
-* Seq2SeqEncoder
+    * RNN, CNN
 * Sample code
 
 </exercise>
 
-<exercise id="2" title="Attention and the Transformer">
+<exercise id="2" title="Contextualizing sequences">
+
+* Seq2SeqEncoder
+    * RNN
+* Sample code
+
+</exercise>
+
+<exercise id="3" title="Modeling spans in sequences">
+
+* SpanField
+* SpanExtractor
+
+</exercise>
+
+<exercise id="4" title="Modeling similarities between sequences">
 
 * Attention
 * MatrixAttention
     * Why two abstractions for attention
 * Sample code
-* StackedSelfAttentionEncoder
-* A word on SimpleSeq2Seq and ComposedSeq2Seq
+    * Similarity matrix computation in BiDAF
 
 </exercise>
 
-<exercise id="3" title="Convolutional Neural Networks (CNN)">
+<exercise id="5" title="Common neural network techniques">
 
-* CnnEncoder
-* GatedCnnEncoder
-* Sample code
-
-</exercise>
-
-<exercise id="4" title="Common neural network techniques">
-
+* FeedForward
 * Activations
     * Sample code
 * ConditionalRandomField
 * Highway and residual connection
+* TimeDistributed
+* GatedSum
 
 </exercise>
