@@ -35,7 +35,7 @@ class Juniper extends React.Component {
         storageExpire: 60,
         debug: true,
         msgLoading: 'Loading...',
-        msgError: 'Connecting failed. Please reload and try again.',
+        msgError: 'Connecting failed. Please reload and try again.'
     };
 
     componentDidMount() {

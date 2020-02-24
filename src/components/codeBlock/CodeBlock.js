@@ -559,7 +559,7 @@ const OutputSection = styled.div`
         color: #f7f7f7;
 
         ${SectionContent} {
-            padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+            padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg} ${theme.spacing.xl} ${theme.spacing.lg}`};
             min-height: 150px;
         }
     }
