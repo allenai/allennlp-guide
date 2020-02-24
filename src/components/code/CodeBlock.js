@@ -277,6 +277,7 @@ const SectionHeader = styled.div`
         padding-left: ${({ theme }) => theme.spacing.xs};
         opacity: 0;
         transition: opacity 0.2s ease;
+        margin-top: 2px;
 
         &.label-visible {
             opacity: 1;
