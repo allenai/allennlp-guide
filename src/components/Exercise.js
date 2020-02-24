@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Button } from '@allenai/varnish/components/button';
 
 import { ChapterContext } from '../context';
-import { Card, CardContent } from '../components/Card';
+import { Card, CardContent } from './Card';
+import { ExpandCollapseIcon } from './inlineSVG';
 
 const Exercise = ({ id, title, type, children }) => {
     const excRef = useRef();
@@ -43,6 +44,7 @@ const Exercise = ({ id, title, type, children }) => {
                     {excId}
                 </SectionId>
                 {title}
+                <TriggerIcon isExpanded={isExpanded} />
             </SectionTitle>
             {isExpanded && (
                 <StyledCardContent>
@@ -60,6 +62,32 @@ const Exercise = ({ id, title, type, children }) => {
 
 export default Exercise;
 
+const TriggerIcon = styled(ExpandCollapseIcon)`
+    margin: 2px -${({ theme }) => theme.spacing.sm} 0 auto;
+`;
+
+const SectionTitle = styled.h2`
+    ${({ theme }) => theme.typography.bodyBig}
+    display: flex;
+    margin: 0;
+    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
+    cursor: pointer;
+
+    svg {
+        margin-left: auto;
+        margin-right: -6px;
+        opacity: 0;
+    }
+
+    &:hover {
+        ${TriggerIcon} {
+            span {
+                background: ${({ theme }) => theme.color.B6};
+            }
+        }
+    }
+`;
+
 const Toolbar = styled.div`
     display: flex;
 
@@ -76,12 +104,13 @@ const Toolbar = styled.div`
 
 const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     border: 1px solid transparent;
+    transition: border-color 0.1s ease;
 
-    ${({ isExpanded, theme }) => !isExpanded ? `
-        &:hover {
+    &:hover {
+        ${({ isExpanded, theme }) => !isExpanded ? `
             border-color: ${theme.color.B6};
-        }
-    ` : null}
+        ` : null}
+    }
 
     // This is a hack to hide the last section "next" button.
     // I couldn't figure out how to get an array of Excercise components from
@@ -107,20 +136,6 @@ const Anchor = styled.div`
     height: 164px;
     margin-top: -164px;
     transform: translateX(-10px);
-`;
-
-const SectionTitle = styled.h2`
-    ${({ theme }) => theme.typography.bodyBig}
-    display: flex;
-    margin: 0;
-    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
-    cursor: pointer;
-
-    svg {
-        margin-left: auto;
-        margin-right: -6px;
-        opacity: 0;
-    }
 `;
 
 const SectionId = styled.span`

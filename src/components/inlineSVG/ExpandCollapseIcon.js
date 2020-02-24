@@ -70,7 +70,7 @@ const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)
 
     ${LeftInner},
     ${RightInner} {
-        background: ${({ theme, isExpanded }) => isExpanded ? theme.color.B6 : theme.color.N6};
+        background: ${({ theme }) => theme.color.N6};
     }
 
     ${({ isExpanded, theme }) => isExpanded ? `
