@@ -1,3 +1,6 @@
+// This component is a wrapper for Juniper and CodeMirror. It's used for Source and Output
+// rendering in conjunction with <codeblock> exercises.
+
 import React from 'react';
 import CodeMirror from 'codemirror';
 import { Widget } from '@phosphor/widgets';
@@ -247,15 +250,13 @@ class Juniper extends React.Component {
             <React.Fragment>
                 <CodeSection
                     title="Source"
-                    actions={this.props.actions && this.props.actions(this.state)}
-                >
+                    actions={this.props.actions && this.props.actions(this.state)}>
                     <CodeMirrorRender ref={x => {this.inputRef = x}} />
                 </CodeSection>
                 <AnimateHeight animateOpacity={true} height={this.props.outputIsVisible ? 'auto' : 0}>
                     <CodeSection
                         title="Output"
-                        clearFunction={this.props.handleReset}
-                    >
+                        clearFunction={this.props.handleReset}>
                         <OutputRender ref={x => {this.outputRef = x}} />
                     </CodeSection>
                 </AnimateHeight>

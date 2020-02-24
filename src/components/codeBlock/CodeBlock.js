@@ -1,3 +1,6 @@
+// This set of components wraps and styles the Juniper component and is
+// the injection point for instances of <codeblock>
+
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { css } from 'styled-components';
@@ -29,11 +32,18 @@ function addSetupCode(code, setup) {
 }
 
 export default class CodeBlock extends React.Component {
-    state = { Juniper: null, key: 0, outputIsVisible: false };
+    state = {
+        Juniper: null,
+        key: 0,
+        outputIsVisible: false
+    };
 
     handleReset() {
         // Using the key as a hack to force component to rerender
-        this.setState({ key: this.state.key + 1, outputIsVisible: false });
+        this.setState({
+            key: this.state.key + 1,
+            outputIsVisible: false
+        });
     }
 
     updateJuniper() {
@@ -131,6 +141,45 @@ export default class CodeBlock extends React.Component {
     }
 }
 
+// Styled wrapper for the CodeBlock exercise structure
+const Container = styled(Card)`
+    background: ${({ theme }) => theme.color.N9};
+    overflow: hidden;
+    position: relative;
+    z-index: 3;
+
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    font-size: 0.8625rem;
+`;
+
+// Text styles used for code exercises and inline prism codeblocks
+export const codeBlockTextStyles = css`
+    font-family: 'Roboto Mono', Courier, monospace !important;
+    font-size: 0.8625rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    line-height: 1.5 !important;
+`;
+
+// Wrapping styles used for code exercises and inline prism codeblocks
+export const codeBlockWrappingStyles = css`
+    background: none;
+    text-align: left;
+    white-space: pre-wrap;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: break-word;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+`;
+
+// Header and Content section within a CodeBlock
 export const CodeSection = ({
     actions,
     children,
@@ -179,30 +228,6 @@ export const CodeSection = ({
     );
 };
 
-export const codeBlockTextStyles = css`
-    font-family: 'Roboto Mono', Courier, monospace !important;
-    font-size: 0.8625rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    line-height: 1.5 !important;
-`;
-
-export const codeBlockWrappingStyles = css`
-    background: none;
-    text-align: left;
-    white-space: pre-wrap;
-    word-spacing: normal;
-    word-break: normal;
-    word-wrap: break-word;
-    line-height: 1.5;
-    -moz-tab-size: 4;
-    -o-tab-size: 4;
-    tab-size: 4;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
-    hyphens: none;
-`;
-
 const RunButton = styled(Button)`
     &&& {
         background: ${({ theme }) => theme.color.N1};
@@ -230,17 +255,6 @@ const Toolbar = styled.div`
     ${RunButton} {
         margin-left: auto;
     }
-`;
-
-const Container = styled(Card)`
-    background: ${({ theme }) => theme.color.N9};
-    overflow: hidden;
-    position: relative;
-    z-index: 3;
-
-    margin-bottom: 2rem;
-    margin-top: 2rem;
-    font-size: 0.8625rem;
 `;
 
 const InputSection = styled.div`
