@@ -1,7 +1,6 @@
 import torch
-from allennlp.common import Params
-from allennlp.nn import InitializerApplicator, Initializer
-import json
+from allennlp.nn.initializers import InitializerApplicator, \
+    XavierUniformInitializer, ConstantInitializer, NormalInitializer
 
 
 class Net(torch.nn.Module):
@@ -20,37 +19,32 @@ print('Initial parameters:')
 for name, param in model.named_parameters():
     print(name, param)
 
-init_uniform = Initializer.from_params(Params({'type': 'xavier_uniform'}))
+init_uniform = XavierUniformInitializer()
 init_uniform(model.linear1.weight)
 init_uniform(model.linear2.weight)
 
-init_const = Initializer.from_params(Params({'type': 'constant', 'val': 10}))
+init_const = ConstantInitializer(val=10.)
 init_const(model.linear1.bias)
 init_const(model.linear2.bias)
 
-init_normal = Initializer.from_params(Params({'type': 'normal', 'mean': 0., 'std': 10.}))
+init_normal = NormalInitializer(mean=0., std=10.)
 init_normal(model.conv.weight)
 init_normal(model.conv.bias)
 
-print('After applying initializers individually:')
+print('\nAfter applying initializers individually:')
 for name, param in model.named_parameters():
     print(name, param)
 
 
-config = """
-{"initializer":
-    [
-        ["linear.*weight", {"type": "xavier_uniform"}],
-        ["linear.*bias", {"type": "constant", "val": 10}],
-        ["conv.*", {"type": "normal", "mean": 0.0, "std": 10.0}]
-    ]
-}
-"""
 model = Net()
-params = Params(json.loads(config))
-applicator = InitializerApplicator.from_params(params['initializer'])
+applicator = InitializerApplicator(
+    regexes=[
+        ('linear.*weight', init_uniform),
+        ('linear.*bias', init_const),
+        ('conv.*', init_normal)
+    ])
 applicator(model)
 
-print('After applying an applicator:')
+print('\nAfter applying an applicator:')
 for name, param in model.named_parameters():
     print(name, param)

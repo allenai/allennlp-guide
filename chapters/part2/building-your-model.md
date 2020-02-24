@@ -102,27 +102,21 @@ In practice, as long as you use AllenNLP commands (for example, `allennlp train`
 
 ## Initialization
 
-There are some cases where you want to initialize model parameters in a specific way (for example, using [Xavier initialization](https://www.semanticscholar.org/paper/Understanding-the-difficulty-of-training-deep-Glorot-Bengio/b71ac1e9fb49420d13e084ac67254a0bbd40f83f)). In vanilla PyTorch, you need to include your initialization logic in your model constructor, or you need to make sure it's properly initialized after creating the model. AllenNLP provides a convenient abstraction that allows you to inject an initialization logic using model config. 
+There are some cases where you want to initialize model parameters in a specific way (for example, using [Xavier initialization](https://www.semanticscholar.org/paper/Understanding-the-difficulty-of-training-deep-Glorot-Bengio/b71ac1e9fb49420d13e084ac67254a0bbd40f83f)). AllenNLP provides a convenient abstraction for including initialization logic in the model constructor that makes it easy to apply specific initializations based on regex matches on parameter names.
 
-AllenNLP uses `Initializers` to initialize model parameters, which are basically just Python methods that take a tensor of parameters and apply some specific operations to it. 
+In order to initialize individual model parameters, you use `Initializers` in AllenNLP, which are basically just Python methods that take a tensor of parameters and apply some specific operations to it. In most cases they are simply thin wrappers around PyTorch's initializers (the methods you can find in `torch.nn.init`). AllenNLP provides a convenient abstraction that allows you to apply them to your whole model. 
 
-`Initializers` can be instantiated via the `Initializer.from_params()` class method and can be used to initialize specific model parameters, although in reality you rarely need to deal with individual `Initializers` yourself. Instead, AllenNLP provides a class called `InitializerApplicator` which, given a list of regexes and their corresponding `Initializers`, applies initialization based on regex matches on model parameter names. Below is a config that instantiates an `InitializerApplicator`:
+You can instantiate specific `Initializers` manually, although in reality you rarely need to deal with individual `Initializers` yourself. Instead, AllenNLP provides a class called `InitializerApplicator` which, given a list of regexes and their corresponding `Initializers`, applies initialization based on regex matches on model parameter names. Below is a constructor call that instantiates an `InitializerApplicator`:
 
-```
-"initializer": [
-    ["parameter_regex_match1",
-        {
-            "type": "normal",
-            "mean": 0.01,
-            "std": 0.1
-        }
-    ],
-    ["parameter_regex_match2", "uniform"]
-    ["prevent_init_regex", "prevent"]
-]
+```python
+applicator = InitializerApplicator(
+    regexes = [
+        ("parameter_regex_match1", NormalInitializer(mean=0.01, std=0.1)),
+        ("parameter_regex_match2", UniformInitializer())],
+    prevent_regexes = ["prevent_init_regex"])
 ```
 
-It takes a list of `(regex, initializer)` where `regex` is the regular expression that gets matched against model parameter names, and `initializer` is the config used to instantiate an `Initializer`. You can also specify a special keyword `"prevent"` or `{"type": "prevent"}` as the initializer config, in which case any parameter matching the regex will be prevented from being initialized. In the code example below, we create a toy model and initialize its parameter in two different ways—using individual `Initializers` and using an `InitializerApplicator`.
+The first parameter is a list of `(regex, initializer)` where `regex` is the regular expression that gets matched against model parameter names, and `initializer` is an `Initializer` used for initialization. You can also specify a list of regexes as `prevent_regexes`, in which case any parameter matching the regex will be prevented from being initialized. In the code example below, we create a toy model and initialize its parameter in two different ways—using individual `Initializers` and using an `InitializerApplicator`.
 
 <codeblock source="part2/building-your-model/model_init"></codeblock>
 
@@ -145,33 +139,24 @@ class YourModel(Model):
 
 Regularization in AllenNLP works in a similar way to how initialization works. AllenNLP provides an abstraction called `Regularizers`, which are thin wrappers around Python methods that calculate and return the penalty term (a scalar tensor) given model parameters. 
 
-In many cases, you may want to apply the penalty only to part of your model (for example, apply an L2 penalty only to weights but not to biases). AllenNLP implements the `RegularizerApplicator` class, which works in a very similar way to `InitializerApplicator`, except the former returns the penalty term instead of modifying the model parameters. `RegularizerApplicator`, given a list of regexes and their corresponding `Regularizers`, applies regularization based on regex matches on model parameter names and returns the sum of all the computed penalties. Below is a sample config that instantiates an `RegularizerApplicator`:
+In many cases, you may want to apply the penalty only to part of your model (for example, apply an L2 penalty only to weights but not to biases). AllenNLP implements the `RegularizerApplicator` class, which works in a very similar way to `InitializerApplicator`, except it returns the penalty term instead of modifying the model parameters. `RegularizerApplicator`, given a list of regexes and their corresponding `Regularizers`, applies regularization based on regex matches on model parameter names and returns the sum of all the computed penalties. Below is a constructor call that instantiates an `RegularizerApplicator`:
 
-```
-"regularizer": [
-    ["parameter_regex_match1", {"type": "l1", "alpha": 0.01}],
-    ["parameter_regex_match2", "l2"]
-]
+```python
+applicator = RegularizerApplicator(
+    regexes=[
+        ("parameter_regex_match1", L1Regularizer(alpha=.01)),
+        ("parameter_regex_match2", L2Regularizer())
+    ])
 ```
 
 This applies an L1 penalty (with `alpha=0.01`) to all model parameters that match `"parameter_regex_match1"`, and an L2 penalty (with its default parameters) to ones that match `"parameter_regex_match2"`. `Model` returns the penalty term computed by a regularizer applicator via the `get_regularization_penalty()` method, which is then used by the trainer and added to the loss.
 
-You need to make sure that your model takes an `RegularizerApplicator` as a constructor parameter and it is passed to the parent class, where `get_regularization_penalty()` is implemented. You can do this by modifying your model definition as follows:
-
-<pre data-line="6,8" class="language-python line-numbers"><code>
-class YourModel(Model):
-    def __init__(
-        self,
-        vocab: Vocabulary,
-        ...
-        regularizer: Optional[RegularizerApplicator] = None
-    ) -> None:
-        super().__init__(vocab, regularizer)
-        ...
-</code></pre>
+All you need to do to make your model support regularizers is to make sure the model constructor takes a `**kwargs` argument and passes it to the superclass by calling `super().__init__(**kwargs)` in the constructor. In this way, the `RegularizerApplicator` is automatically passed over to the base `Model`, where it is used to compute regularization in `get_regularization_penalty()`.
 
 In the following code, we create a toy model and obtain the regularization term in two different ways—using individual `Regularizers` and using a `RegularizerApplicator`:
 
 <codeblock source="part2/building-your-model/model_regularization"></codeblock>
+
+Finally, note that you can also choose to take the regularization in your model by computing the penalty term yourself and adding it to the loss in the forward method. The abstractions we covered so far are a convenient way to get the regularization for all models automatically by default, by having it available in the super class. This requires using AllenNLP's default trainer. If you are using a different trainer than the built-in one, you need to put the regularization in your `Model.forward()` method.
 
 </exercise>
