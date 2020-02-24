@@ -20,6 +20,8 @@ import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
 import { Link } from '../components/Link';
+import { codeBlockTextStyles, codeBlockWrappingStyles } from '../components/code/CodeBlock';
+
 import { outline } from '../outline';
 import { getGroupedChapters, getIcon } from '../utils';
 
@@ -304,6 +306,207 @@ const GlobalStyle = createGlobalStyle`
                     a {
                         color: ${({ theme }) => theme.color.B5} !important;
                     }
+                }
+            }
+        }
+
+        // Generic Elements
+
+        img {
+            border: 0;
+            height: auto;
+            max-width: 100%;
+        }
+
+        svg {
+            max-width: 100%;
+            color-interpolation-filters: sRGB;
+            fill: currentColor;
+
+            &:not(:root) {
+                overflow: hidden;
+            }
+        }
+
+        hr {
+            box-sizing: content-box;
+            overflow: visible;
+            height: 0;
+        }
+
+        table {
+            text-align: left;
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+
+            td, th {
+                vertical-align: top;
+                padding: 0.5rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            code {
+                white-space: nowrap;
+            }
+        }
+
+        progress {
+            appearance: none;
+        }
+
+        // Inline Code styles
+
+        pre,
+        code,
+        code[class*="language-"],
+        pre[class*="language-"],
+        p > code,
+        li > code {
+            ${codeBlockTextStyles}
+        }
+
+        pre,
+        p > code,
+        li > code {
+            // Halfway between Varnish N2 and N3
+            background: #f4f6f8 !important;
+        }
+
+        pre > code {
+            background: transparent;
+        }
+
+        p > code,
+        li > code {
+           padding-left: 0.3rem;
+           padding-right: 0.3rem;
+        }
+
+        pre {
+            overflow: visible;
+        }
+
+        /* Code blocks */
+        [class*="MarkdownContainer"] > pre,
+        .gatsby-highlight > pre {
+            padding: 1rem 1.25rem 1rem;
+            margin: 1.75rem 0;
+            overflow: visible;
+        }
+
+        /* Inline code */
+        :not(pre) > code[class*="language-"] {
+            padding: .1em;
+            border-radius: .3em;
+            white-space: normal;
+        }
+
+        pre[data-line] {
+            overflow-x: hidden !important;
+        }
+
+        code[class*="language-"],
+        pre[class*="language-"] {
+            color: black;
+            ${codeBlockWrappingStyles}
+
+            // Prism highlighting styles
+
+            .token.comment,
+            .token.prolog,
+            .token.doctype,
+            .token.cdata {
+                color: slategray;
+            }
+
+            .token.punctuation {
+                color: #999;
+            }
+
+            .namespace {
+                opacity: .7;
+            }
+
+            .token.property,
+            .token.tag,
+            .token.boolean,
+            .token.number,
+            .token.constant,
+            .token.symbol,
+            .token.deleted {
+                color: #905;
+            }
+
+            .token.selector,
+            .token.attr-name,
+            .token.string,
+            .token.char,
+            .token.inserted {
+                color: #690;
+            }
+
+            .token.operator,
+            .token.entity,
+            .token.url,
+            .language-css .token.string,
+            .style .token.string {
+                color: #9a6e3a;
+            }
+
+            .token.atrule,
+            .token.attr-value,
+            .token.keyword,
+            .token.builtin {
+                color: #07a;
+            }
+
+            .token.function,
+            .token.class-name {
+                color: #DD4A68;
+            }
+
+            .token.regex,
+            .token.important,
+            .token.variable {
+                color: #e90;
+            }
+
+            .token.important,
+            .token.bold {
+                font-weight: bold;
+            }
+            .token.italic {
+                font-style: italic;
+            }
+
+            .token.entity {
+                cursor: help;
+            }
+
+            .line-highlight {
+                background: ${({ theme }) => theme.color.N4} !important;
+                outline: 1px solid ${({ theme }) => theme.color.N5};
+                margin-top: 15px;
+            }
+
+            .line-numbers-rows {
+                z-index: 1;
+                border-right-color: ${({ theme }) => theme.color.N5} !important;
+
+                & > span:before {
+                    color: ${({ theme }) => theme.color.N6};
+                }
+            }
+
+            &.line-numbers {
+                & > code {
+                    z-index: 2;
+                }
+
+                .line-numbers-rows {
+                    top: -1px;
                 }
             }
         }

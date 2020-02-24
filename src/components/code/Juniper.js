@@ -1,58 +1,48 @@
+// This component is a wrapper for Juniper and CodeMirror. It's used for Source and Output
+// rendering in conjunction with <codeblock> exercises.
+
 import React from 'react';
-import PropTypes from 'prop-types';
 import CodeMirror from 'codemirror';
 import { Widget } from '@phosphor/widgets';
 import { Kernel, ServerConnection } from '@jupyterlab/services';
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 import { window } from 'browser-monads';
-import styled from 'styled-components';
+import AnimateHeight from 'react-animate-height';
+
+import { CodeSection, CodeMirrorRender, OutputRender } from './CodeBlock';
 
 class Juniper extends React.Component {
     outputRef = null;
     inputRef = null;
-    state = { content: null, cm: null, kernel: null, renderers: null, fromStorage: null };
+    state = {
+        content: null,
+        cm: null,
+        kernel: null,
+        renderers: null,
+        fromStorage: null
+    };
 
     static defaultProps = {
-        children: '',
+        setupFile: '',
+        sourceFile: '',
         branch: 'master',
         url: 'https://mybinder.org',
         serverSettings: {},
         kernelType: 'python3',
         lang: 'python',
-        theme: 'default',
         isolateCells: true,
         useBinder: true,
         storageKey: 'juniper',
         useStorage: true,
         storageExpire: 60,
         debug: true,
-        msgButton: 'run',
         msgLoading: 'Loading...',
-        msgError: 'Connecting failed. Please reload and try again.',
-    };
-
-    static propTypes = {
-        children: PropTypes.string,
-        repo: PropTypes.string.isRequired,
-        branch: PropTypes.string,
-        url: PropTypes.string,
-        serverSettings: PropTypes.object,
-        kernelType: PropTypes.string,
-        lang: PropTypes.string,
-        theme: PropTypes.string,
-        isolateCells: PropTypes.bool,
-        useBinder: PropTypes.bool,
-        useStorage: PropTypes.bool,
-        storageExpire: PropTypes.number,
-        msgButton: PropTypes.string,
-        msgLoading: PropTypes.string,
-        msgError: PropTypes.string,
-        actions: PropTypes.func,
+        msgError: 'Connecting failed. Please reload and try again.'
     };
 
     componentDidMount() {
-        this.setState({ content: this.props.children });
+        this.setState({ content: this.props.sourceFile });
         const renderers = standardRendererFactories.filter(factory =>
             factory.mimeTypes.includes('text/latex') ? window.MathJax : true
         );
@@ -63,9 +53,11 @@ class Juniper extends React.Component {
         });
 
         const cm = new CodeMirror(this.inputRef, {
-            value: this.props.children.trim(),
+            value: this.props.sourceFile.trim(),
             mode: this.props.lang,
-            theme: this.props.theme,
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4
         });
         this.setState({ cm });
 
@@ -85,9 +77,9 @@ class Juniper extends React.Component {
         }
     }
 
-    componentWillReceiveProps({ children }) {
-        if (children !== this.state.content && this.state.cm) {
-            this.state.cm.setValue(children.trim());
+    componentWillReceiveProps({ sourceFile }) {
+        if (sourceFile !== this.state.content && this.state.cm) {
+            this.state.cm.setValue(sourceFile.trim());
         }
     }
 
@@ -255,64 +247,22 @@ class Juniper extends React.Component {
 
     render() {
         return (
-            <JuniperCell>
-                <JuniperInput ref={x => {this.inputRef = x}} />
-                {this.props.msgButton && (
-                    <button onClick={this.state.runCode}>
-                        {this.props.msgButton}
-                    </button>
-                )}
-                {this.props.actions && this.props.actions(this.state)}
-                <JuniperOutput ref={x => {this.outputRef = x}} />
-            </JuniperCell>
+            <React.Fragment>
+                <CodeSection
+                    title="Source"
+                    actions={this.props.actions && this.props.actions(this.state)}>
+                    <CodeMirrorRender ref={x => {this.inputRef = x}} />
+                </CodeSection>
+                <AnimateHeight animateOpacity={true} height={this.props.outputIsVisible ? 'auto' : 0}>
+                    <CodeSection
+                        title="Output"
+                        clearFunction={this.props.handleReset}>
+                        <OutputRender ref={x => {this.outputRef = x}} />
+                    </CodeSection>
+                </AnimateHeight>
+            </React.Fragment>
         );
     }
 }
 
 export default Juniper;
-
-// CSS ported from SASS
-// TODO(aarons): Revisit these styles
-
-const JuniperCell = styled.div`
-    & > div:first-child {
-        padding: 1.5rem 2rem 1rem;
-        position: relative;
-    }
-
-    button {
-        margin: 15px 32px 32px;
-    }
-
-    pre {
-        background: transparent !important;
-        line-height: 1.5 !important;
-    }
-`;
-
-const JuniperInput = styled.div``;
-
-const JuniperOutput = styled.div`
-    padding: 2rem 9rem 2rem 3rem;
-    background: #47515C;
-    color: #f7f7f7;
-    position: relative;
-
-    &:before {
-        content: "Output";
-        display: block;
-        background: #616C7A;
-        color: #E8ECF2;
-        padding: 0 0.5rem;
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        font-size: 13px;
-        text-transform: uppercase;
-    }
-
-    pre,
-    code {
-        background: transparent !important;
-    }
-`;
