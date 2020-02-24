@@ -313,9 +313,6 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
         ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
             ${TriggerIcon} {
                 transform: translateY(-2px);
-                span {
-                    background: ${theme.color.N6};
-                }
             }
         ` : null}
     }
