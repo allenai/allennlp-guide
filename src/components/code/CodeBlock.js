@@ -4,10 +4,8 @@
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { css } from 'styled-components';
-
-import { Button } from '@allenai/varnish/components/button';
-
 import AnimateHeight from 'react-animate-height';
+import { Button } from '@allenai/varnish/components/button';
 
 import { Card } from '../Card';
 import { ExpandCollapseIcon } from '../inlineSVG';
@@ -31,7 +29,7 @@ function addSetupCode(code, setup) {
     return setup ? setup + code : code;
 }
 
-export default class CodeBlock extends React.Component {
+export class CodeBlock extends React.Component {
     state = {
         Juniper: null,
         key: 0,

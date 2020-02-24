@@ -20,7 +20,7 @@ import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
 import { Link } from '../components/Link';
-import { codeBlockTextStyles, codeBlockWrappingStyles } from '../components/codeBlock/codeBlock';
+import { codeBlockTextStyles, codeBlockWrappingStyles } from '../components/code/CodeBlock';
 
 import { outline } from '../outline';
 import { getGroupedChapters, getIcon } from '../utils';
