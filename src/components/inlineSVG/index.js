@@ -1,6 +1,5 @@
 export * from './AllenNLPLogo';
 export * from './ArrowRightIcon';
-export * from './CheckMark';
 export * from './CubeIcon';
 export * from './ExpandCollapseIcon';
 export * from './PartIcon';
