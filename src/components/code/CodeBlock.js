@@ -33,7 +33,8 @@ export class CodeBlock extends React.Component {
     state = {
         Juniper: null,
         key: 0,
-        outputIsVisible: false
+        outputIsVisible: false,
+        focused: false
     };
 
     handleReset() {
@@ -68,7 +69,7 @@ export class CodeBlock extends React.Component {
     }
 
     render() {
-        const { Juniper, outputIsVisible } = this.state;
+        const { Juniper, outputIsVisible, focused } = this.state;
         const { id, source, setup, executable } = this.props;
         const sourceId = source || `${id}_source`;
         const setupId = setup || `${id}_setup`;
@@ -104,7 +105,7 @@ export class CodeBlock extends React.Component {
                     const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper;
                     const { sourceFile, setupFile } = getFiles(data, sourceId, setupId);
                     return (
-                        <Container>
+                        <Container className={focused ? 'Container-focused' : ''}>
                             {setupFile && setupFile !== '' && (
                                 <CodeSection
                                     title="Setup"
@@ -145,10 +146,8 @@ const Container = styled(Card)`
     overflow: hidden;
     position: relative;
     z-index: 3;
-
     margin-bottom: 2rem;
     margin-top: 2rem;
-    font-size: 0.8625rem;
 `;
 
 // Text styles used for code exercises and inline prism codeblocks
