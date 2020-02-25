@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import AnimateHeight from 'react-animate-height';
 import { Button } from '@allenai/varnish/components/button';
 
@@ -34,14 +34,15 @@ export class CodeBlock extends React.Component {
         Juniper: null,
         key: 0,
         outputIsVisible: false,
-        focused: false
+        resetButtonIsVisible: false
     };
 
     handleReset() {
         // Using the key as a hack to force component to rerender
         this.setState({
             key: this.state.key + 1,
-            outputIsVisible: false
+            outputIsVisible: false,
+            resetButtonIsVisible: false
         });
     }
 
@@ -69,7 +70,7 @@ export class CodeBlock extends React.Component {
     }
 
     render() {
-        const { Juniper, outputIsVisible, focused } = this.state;
+        const { Juniper, outputIsVisible, resetButtonIsVisible } = this.state;
         const { id, source, setup, executable } = this.props;
         const sourceId = source || `${id}_source`;
         const setupId = setup || `${id}_setup`;
@@ -105,7 +106,7 @@ export class CodeBlock extends React.Component {
                     const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper;
                     const { sourceFile, setupFile } = getFiles(data, sourceId, setupId);
                     return (
-                        <Container className={focused ? 'Container-focused' : ''}>
+                        <Container>
                             {setupFile && setupFile !== '' && (
                                 <CodeSection
                                     title="Setup"
@@ -119,16 +120,23 @@ export class CodeBlock extends React.Component {
                                     branch={branch}
                                     lang={lang}
                                     kernelType={kernelType}
-                                    handleReset={() => this.handleReset()}
                                     outputIsVisible={outputIsVisible}
+                                    resetButtonIsVisible={resetButtonIsVisible}
+                                    hideOutput={() => this.setState({ outputIsVisible: false })}
+                                    showResetButton={() => this.setState({ resetButtonIsVisible: true })}
                                     debug={debug}
                                     setupFile={setupFile}
                                     sourceFile={sourceFile}
                                     actions={({ runCode }) => execute && (
-                                        <RunButton onClick={() => {
-                                            runCode(code => addSetupCode(code, setupFile));
-                                            this.setState({ outputIsVisible: true });
-                                        }}>Run Code</RunButton>
+                                        <React.Fragment>
+                                            {resetButtonIsVisible && (
+                                                <ResetButton onClick={() => this.handleReset()}>Reset</ResetButton>
+                                            )}
+                                            <RunButton onClick={() => {
+                                                runCode(code => addSetupCode(code, setupFile));
+                                                this.setState({ outputIsVisible: true });
+                                            }}>Run Code</RunButton>
+                                        </React.Fragment>
                                     )}
                                 />
                             )}
@@ -245,9 +253,60 @@ const RunButton = styled(Button)`
     }
 `;
 
+const fadeIn = keyframes`
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+`;
+
+const ResetButton = styled(Button)`
+    &&& {
+        background: transparent;
+        margin-right: ${({ theme }) => theme.spacing.lg};
+        color: ${({ theme }) => theme.color.N7};
+        border-color: ${({ theme }) => theme.color.N7};
+        animation: ${fadeIn} 0.2s ease forwards;
+        transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+
+        &:hover {
+            border-color: ${({ theme }) => theme.color.N1};
+            color: ${({ theme }) => theme.color.N1};
+        }
+
+        &:focus {
+            border-color: ${({ theme }) => theme.color.B5};
+            color: ${({ theme }) => theme.color.N1};
+        }
+    }
+
+    // display: block;
+    // border: none;
+    // font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+    // cursor: pointer;
+    // background: transparent;
+    // margin: 0;
+    // margin-right: 36px;
+    // padding: 0;
+    // appearance: none;
+    // ${({ theme }) => theme.typography.bodySmall};
+    // color: ${({ theme }) => theme.color.N7};
+    // transition: color 0.2s ease;
+    //
+    // &:hover {
+    //     color: ${({ theme }) => theme.color.N5};
+    // }
+    //
+    // &:focus {
+    //     outline: none;
+    // }
+`;
+
 const Toolbar = styled.div`
     display: flex;
-    padding: 0 ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md}`} 0;
+    padding: 0 ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md} ${theme.spacing.lg}`};
 
     ${RunButton} {
         margin-left: auto;

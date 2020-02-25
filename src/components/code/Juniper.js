@@ -67,6 +67,11 @@ class Juniper extends React.Component {
         };
         const setValue = value => cm.setValue(value);
         cm.setOption('extraKeys', { 'Shift-Enter': runCode });
+        cm.on('change', () => {
+            if (!this.props.resetButtonIsVisible) {
+                this.props.showResetButton();
+            }
+        });
         Widget.attach(outputArea, this.outputRef);
         this.setState({ runCode, setValue });
     }
@@ -190,36 +195,36 @@ class Juniper extends React.Component {
      * @param {string} code - The code to execute.
      */
     execute(outputArea, code) {
-        this.log(() => console.info('executing'))
+        this.log(() => console.info('executing'));
+        const url = this.props.url.split('//')[1];
+        const action = !this.state.fromStorage ? 'Launching' : 'Reconnecting to';
+        outputArea.model.clear();
+        outputArea.model.add({
+            output_type: 'stream',
+            name: 'stdout',
+            text: `${action} Docker container on ${url}...`,
+        });
+        this.log(() => console.info('requesting kernel'));
         if (this.state.kernel) {
             if (this.props.isolateCells) {
                 this.state.kernel
                     .restart()
                     .then(() => this.renderResponse(outputArea, code))
                     .catch(() => {
-                        this.log(() => console.error('failed'))
-                        this.setState({ kernel: null })
-                        outputArea.model.clear()
+                        this.log(() => console.error('failed'));
+                        this.setState({ kernel: null });
+                        outputArea.model.clear();
                         outputArea.model.add({
                             output_type: 'stream',
                             name: 'failure',
-                            text: this.props.msgError,
-                        })
-                    })
-                return
+                            text: this.props.msgError
+                        });
+                    });
+                return;
             }
-            this.renderResponse(outputArea, code)
-            return
+            this.renderResponse(outputArea, code);
+            return;
         }
-        this.log(() => console.info('requesting kernel'))
-        const url = this.props.url.split('//')[1]
-        const action = !this.state.fromStorage ? 'Launching' : 'Reconnecting to'
-        outputArea.model.clear()
-        outputArea.model.add({
-            output_type: 'stream',
-            name: 'stdout',
-            text: `${action} Docker container on ${url}...`,
-        })
         new Promise((resolve, reject) =>
             this.getKernel()
                 .then(resolve)
@@ -251,12 +256,12 @@ class Juniper extends React.Component {
                 <CodeSection
                     title="Source"
                     actions={this.props.actions && this.props.actions(this.state)}>
-                    <CodeMirrorRender ref={x => {this.inputRef = x}} />
+                    <CodeMirrorRender ref={x => {this.inputRef = x}} onChange={() => {console.log("edited")}} />
                 </CodeSection>
                 <AnimateHeight animateOpacity={true} height={this.props.outputIsVisible ? 'auto' : 0}>
                     <CodeSection
                         title="Output"
-                        clearFunction={this.props.handleReset}>
+                        clearFunction={() => this.props.hideOutput()}>
                         <OutputRender ref={x => {this.outputRef = x}} />
                     </CodeSection>
                 </AnimateHeight>
