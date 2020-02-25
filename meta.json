@@ -14,6 +14,5 @@
     "headerLinks": [
         { "text": "AllenNLP Website", "url": "https://allennlp.org/" },
         { "text": "AllenNLP Docs", "url": "https://allenai.github.io/allennlp-docs/" }
-    ],
-    "theme": "#265ED4"
+    ]
 }

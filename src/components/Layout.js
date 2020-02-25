@@ -16,8 +16,6 @@ const Layout = ({ title, description, children }) => {
                 {
                     site {
                         siteMetadata {
-                            title
-                            description
                             headerLinks {
                                 text
                                 url
@@ -27,7 +25,7 @@ const Layout = ({ title, description, children }) => {
                 }
             `}
             render={data => {
-                const { title, description, headerLinks } = data.site.siteMetadata;
+                const { headerLinks } = data.site.siteMetadata;
                 return (
                     <ThemeProvider>
                         <Head title={title} description={description} />
