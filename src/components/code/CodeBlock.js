@@ -281,27 +281,6 @@ const ResetButton = styled(Button)`
             color: ${({ theme }) => theme.color.N1};
         }
     }
-
-    // display: block;
-    // border: none;
-    // font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-    // cursor: pointer;
-    // background: transparent;
-    // margin: 0;
-    // margin-right: 36px;
-    // padding: 0;
-    // appearance: none;
-    // ${({ theme }) => theme.typography.bodySmall};
-    // color: ${({ theme }) => theme.color.N7};
-    // transition: color 0.2s ease;
-    //
-    // &:hover {
-    //     color: ${({ theme }) => theme.color.N5};
-    // }
-    //
-    // &:focus {
-    //     outline: none;
-    // }
 `;
 
 const Toolbar = styled.div`
