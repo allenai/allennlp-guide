@@ -256,7 +256,7 @@ class Juniper extends React.Component {
                 <CodeSection
                     title="Source"
                     actions={this.props.actions && this.props.actions(this.state)}>
-                    <CodeMirrorRender ref={x => {this.inputRef = x}} onChange={() => {console.log("edited")}} />
+                    <CodeMirrorRender ref={x => {this.inputRef = x}} />
                 </CodeSection>
                 <AnimateHeight animateOpacity={true} height={this.props.outputIsVisible ? 'auto' : 0}>
                     <CodeSection
