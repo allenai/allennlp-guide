@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600px" height="214px" viewBox="0 0 600 214" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Slice</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="137" height="95" rx="4"></rect>
+        <filter x="-8.8%" y="-12.6%" width="120.4%" height="129.5%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <text id="text-3" font-family="Helvetica" font-size="20" font-weight="normal" fill="#46505E">
+            <tspan x="139" y="117">…</tspan>
+        </text>
+        <filter x="-60.0%" y="-50.0%" width="220.0%" height="200.0%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-5" x="0" y="0" width="31" height="95" rx="4"></rect>
+        <filter x="-38.7%" y="-12.6%" width="190.3%" height="129.5%" filterUnits="objectBoundingBox" id="filter-6">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-7" x="278" y="48" width="120" height="120" rx="4"></rect>
+        <filter x="-10.0%" y="-10.0%" width="123.3%" height="123.3%" filterUnits="objectBoundingBox" id="filter-8">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Part-2,-common-architectures" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2" transform="translate(67.000000, 64.000000)">
+            <g id="Rectangle">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="10" y="38" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill="#32C5FF" x="10" y="23" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="10" y="53" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" x="10" y="8" width="10" height="10" rx="5"></rect>
+            <line x1="31" y1="2" x2="31" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
+            <line x1="61" y1="2" x2="61" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
+            <line x1="107" y1="2" x2="107" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+        <path id="Line" d="M247.75,103 L261.75,110 L247.75,117 L247.75,111 L221.25,111 L221.25,109 L247.75,109 L247.75,103 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <path id="Line" d="M446.75,103 L460.75,110 L446.75,117 L446.75,111 L420.25,111 L420.25,109 L446.75,109 L446.75,103 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <text id="input_dim" transform="translate(55.500000, 109.500000) rotate(-90.000000) translate(-55.500000, -109.500000) " font-family="CourierNewPS-BoldMT, Courier New" font-size="10" font-weight="bold" fill="#47515C">
+            <tspan x="28.4956055" y="112">input_dim</tspan>
+        </text>
+        <text id="sequence_length" font-family="CourierNewPS-BoldMT, Courier New" font-size="10" font-weight="bold" fill="#47515C">
+            <tspan x="90.4926758" y="176">sequence_length</tspan>
+        </text>
+        <g id="…" fill="#46505E" fill-opacity="1">
+            <use filter="url(#filter-4)" xlink:href="#text-3"></use>
+            <use xlink:href="#text-3"></use>
+        </g>
+        <g id="Group-2" transform="translate(486.000000, 64.000000)">
+            <g id="Rectangle">
+                <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-5"></use>
+            </g>
+            <rect id="Rectangle" fill="#32C5FF" x="10" y="38" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.750218531" fill="#32C5FF" x="10" y="23" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.22426792" fill="#32C5FF" x="10" y="53" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.369154283" fill="#32C5FF" x="10" y="8" width="10" height="10" rx="5"></rect>
+        </g>
+        <text id="output_dim" transform="translate(474.500000, 112.500000) rotate(-90.000000) translate(-474.500000, -112.500000) " font-family="CourierNewPS-BoldMT, Courier New" font-size="10" font-weight="bold" fill="#47515D">
+            <tspan x="444.495117" y="115">output_dim</tspan>
+        </text>
+        <g id="Rectangle">
+            <use fill="black" fill-opacity="1" filter="url(#filter-8)" xlink:href="#path-7"></use>
+            <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-7"></use>
+        </g>
+        <text id="Seq2Vec-Encoder" font-family="Helvetica" font-size="20" font-weight="normal" fill="#596676">
+            <tspan x="297.414062" y="103">Seq2Vec</tspan>
+            <tspan x="300.753906" y="127">Encoder</tspan>
+        </text>
+        <text id="Input" font-family="Helvetica" font-size="20" font-weight="normal" fill="#586676">
+            <tspan x="113.258789" y="50">Input</tspan>
+        </text>
+        <text id="Output" font-family="Helvetica" font-size="20" font-weight="normal" fill="#586577">
+            <tspan x="471.480469" y="45">Output</tspan>
+        </text>
+    </g>
+</svg>
