@@ -162,22 +162,55 @@ const MarkdownContainer = styled.div`
         ul {
             padding-left: 20px;
             margin: 1.5rem 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            li {
+                margin: 2px 0 2px 6px;
+                padding-left: 2px;
+            }
+
+            li > p,
+            ol,
+            ul {
+                margin: 0;
+            }
+        }
+
+        img {
+            margin-bottom: 1.5rem;
         }
     }
 
     ul {
-      list-style: disc;
+        list-style: disc;
 
-      ul {
-        list-style: circle;
-      }
+        ul {
+            list-style: circle;
+
+            ul {
+                list-style-type: square;
+            }
+        }
+    }
+
+    ol {
+        ol {
+            list-style-type: lower-roman;
+
+            ol {
+                list-style-type: lower-alpha;
+            }
+        }
     }
 
     a {
       text-decoration: none;
 
       &&:hover {
-        text-decoration: underline;
+          text-decoration: underline;
       }
     }
 
@@ -186,7 +219,7 @@ const MarkdownContainer = styled.div`
     pre,
     div[class^="code-module-root"],
     .gatsby-highlight {
-        & + ${Toolbar}{
+        & + ${Toolbar} {
             border: none;
             padding-top: 0;
         }

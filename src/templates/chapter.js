@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
 import { Menu, Icon } from 'antd';
 import useLocalStorage from '@illinois/react-use-local-storage';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 import { Button } from '@allenai/varnish/components/button';
 
 import { renderAst } from '../markdown';
@@ -216,6 +216,11 @@ export const pageQuery = graphql`
 
 const CustomIcon = styled(Icon)``;
 
+const codeBgStyles = css`
+    // Halfway between Varnish N2 and N3
+    background: #f4f6f8 !important;
+`;
+
 // Resetting Ant Menu Styles
 const GlobalStyle = createGlobalStyle`
     &&& {
@@ -339,12 +344,23 @@ const GlobalStyle = createGlobalStyle`
             width: 100%;
             max-width: 100%;
             border-collapse: collapse;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
 
             td, th {
+                ${({ theme }) => theme.typography.body}
                 vertical-align: top;
-                padding: 0.5rem;
-                border-bottom: 1px solid #eee;
+                padding: 0.5rem 0.75rem;
+                border: 1px solid ${({ theme }) => theme.color.N4};
+            }
+
+            th {
+                color: ${({ theme }) => theme.color.N10};
+            }
+
+            tbody {
+                tr:nth-child(even) {
+                    background: ${({ theme }) => theme.color.N2};
+                }
             }
 
             code {
@@ -363,29 +379,32 @@ const GlobalStyle = createGlobalStyle`
         code[class*="language-"],
         pre[class*="language-"],
         p > code,
-        li > code {
+        li > code,
+        th > code,
+        td > code,
+        a > code {
             ${codeBlockTextStyles}
         }
 
-        pre,
-        p > code,
-        li > code {
-            // Halfway between Varnish N2 and N3
-            background: #f4f6f8 !important;
+        pre {
+            ${codeBgStyles}
+            overflow: visible;
         }
 
         pre > code {
             background: transparent;
         }
 
-        p > code,
-        li > code {
-           padding-left: 0.3rem;
-           padding-right: 0.3rem;
-        }
-
-        pre {
-            overflow: visible;
+        p,
+        li,
+        th,
+        td,
+        a {
+            & > code {
+                ${codeBgStyles}
+                padding-left: 0.3rem;
+                padding-right: 0.3rem;
+            }
         }
 
         /* Code blocks */
