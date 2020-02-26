@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import AnimateHeight from 'react-animate-height';
 import { Button } from '@allenai/varnish/components/button';
 
@@ -34,14 +34,17 @@ export class CodeBlock extends React.Component {
         Juniper: null,
         key: 0,
         outputIsVisible: false,
-        focused: false
+        resetButtonIsVisible: false,
+        resetConfirmationIsVisible: false
     };
 
     handleReset() {
         // Using the key as a hack to force component to rerender
         this.setState({
             key: this.state.key + 1,
-            outputIsVisible: false
+            outputIsVisible: false,
+            resetButtonIsVisible: false,
+            resetConfirmationIsVisible: false
         });
     }
 
@@ -69,11 +72,23 @@ export class CodeBlock extends React.Component {
     }
 
     render() {
-        const { Juniper, outputIsVisible, focused } = this.state;
+        const {
+            Juniper,
+            outputIsVisible,
+            resetButtonIsVisible,
+            resetConfirmationIsVisible
+        } = this.state;
         const { id, source, setup, executable } = this.props;
+
         const sourceId = source || `${id}_source`;
         const setupId = setup || `${id}_setup`;
         const execute = executable !== "false";
+
+        const resetText = {
+            buttonLabel: 'Reset',
+            tooltip: 'Reset code exercise to its initial state',
+            confirmation: 'Edits will be lost.'
+        };
 
         return (
             <StaticQuery
@@ -105,7 +120,7 @@ export class CodeBlock extends React.Component {
                     const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper;
                     const { sourceFile, setupFile } = getFiles(data, sourceId, setupId);
                     return (
-                        <Container className={focused ? 'Container-focused' : ''}>
+                        <Container>
                             {setupFile && setupFile !== '' && (
                                 <CodeSection
                                     title="Setup"
@@ -119,16 +134,46 @@ export class CodeBlock extends React.Component {
                                     branch={branch}
                                     lang={lang}
                                     kernelType={kernelType}
-                                    handleReset={() => this.handleReset()}
                                     outputIsVisible={outputIsVisible}
+                                    resetButtonIsVisible={resetButtonIsVisible}
+                                    hideOutput={() => this.setState({ outputIsVisible: false })}
+                                    showResetButton={() => this.setState({ resetButtonIsVisible: true })}
                                     debug={debug}
                                     setupFile={setupFile}
                                     sourceFile={sourceFile}
                                     actions={({ runCode }) => execute && (
-                                        <RunButton onClick={() => {
-                                            runCode(code => addSetupCode(code, setupFile));
-                                            this.setState({ outputIsVisible: true });
-                                        }}>Run Code</RunButton>
+                                        <React.Fragment>
+                                            {resetButtonIsVisible && (
+                                                <ResetButtonContainer>
+                                                    {resetConfirmationIsVisible ? (
+                                                        <React.Fragment>
+                                                            <ResetConfirmation>
+                                                                <span>{resetText.confirmation}</span>
+                                                                <ResetCancel
+                                                                    onClick={() => this.setState({ resetConfirmationIsVisible: false })}>
+                                                                    Cancel
+                                                                </ResetCancel>
+                                                                <ResetButton
+                                                                    onClick={() => this.handleReset()}
+                                                                    title={resetText.tooltip}>
+                                                                    {resetText.buttonLabel}
+                                                                </ResetButton>
+                                                            </ResetConfirmation>
+                                                        </React.Fragment>
+                                                    ) : (
+                                                        <ResetConfirmationTrigger
+                                                            onClick={() => this.setState({ resetConfirmationIsVisible: true })}
+                                                            title={resetText.tooltip}>
+                                                            {resetText.buttonLabel}
+                                                        </ResetConfirmationTrigger>
+                                                    )}
+                                                </ResetButtonContainer>
+                                            )}
+                                            <RunButton onClick={() => {
+                                                runCode(code => addSetupCode(code, setupFile));
+                                                this.setState({ outputIsVisible: true });
+                                            }}>Run Code</RunButton>
+                                        </React.Fragment>
                                     )}
                                 />
                             )}
@@ -225,43 +270,6 @@ export const CodeSection = ({
     );
 };
 
-const RunButton = styled(Button)`
-    &&& {
-        background: ${({ theme }) => theme.color.N1};
-        color: ${({ theme }) => theme.color.B6};
-        transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
-
-        &:hover {
-            background: ${({ theme }) => theme.color.B5};
-            border-color: ${({ theme }) => theme.color.B5};
-            color: ${({ theme }) => theme.color.N1};
-        }
-
-        &:focus {
-            background: ${({ theme }) => theme.color.N1};
-            border-color: ${({ theme }) => theme.color.B5};
-            color: ${({ theme }) => theme.color.B6};
-        }
-    }
-`;
-
-const Toolbar = styled.div`
-    display: flex;
-    padding: 0 ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md}`} 0;
-
-    ${RunButton} {
-        margin-left: auto;
-    }
-`;
-
-const InputSection = styled.div`
-    margin-bottom: ${({ theme }) => theme.spacing.xxs};
-
-    & > .rah-static > div {
-        display: block !important;
-    }
-`;
-
 const SectionHeader = styled.div`
     background: ${({ theme }) => theme.color.N8};
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
@@ -308,8 +316,89 @@ const TriggerIcon = styled(ExpandCollapseIcon)`
     }
 `;
 
-const ClearBtn = styled.button`
-    display: block;
+const InputSection = styled.div`
+    margin-bottom: ${({ theme }) => theme.spacing.xxs};
+
+    & > .rah-static > div {
+        display: block !important;
+    }
+`;
+
+// Reset and Run Code toolbar
+const Toolbar = styled.div`
+    display: flex;
+    padding: 0 ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md} ${theme.spacing.lg}`};
+`;
+
+// Container for Reset button and confirmation
+const ResetButtonContainer = styled.div`
+    display: flex;
+`;
+
+const fadeIn = keyframes`
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+`;
+
+const confirmEntrance = keyframes`
+    0%{
+        max-width: 64px;
+    }
+    100%{
+        max-width: 450px;
+    }
+`;
+
+const ResetConfirmationTrigger = styled(Button)`
+    &&& {
+        background: transparent;
+        margin-right: ${({ theme }) => theme.spacing.lg};
+        color: ${({ theme }) => theme.color.N7};
+        border-color: ${({ theme }) => theme.color.N7};
+        animation: ${fadeIn} 0.2s ease forwards;
+        transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+
+        &:hover,
+        &:focus {
+            border-color: ${({ theme }) => theme.color.N1};
+            color: ${({ theme }) => theme.color.N1};
+        }
+    }
+`;
+
+const ResetConfirmation = styled.div`
+    user-select: none;
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    text-align: center;
+    display: inline-block;
+    color: ${({ theme }) => theme.color.N7};
+    line-height: inherit;
+    height: auto;
+    font-weight: 700;
+    text-transform: auto;
+    padding: 0.5rem 1rem;
+    max-width: 0;
+    overflow: hidden;
+    border: 1px solid ${({ theme }) => theme.color.N7};
+    animation: ${confirmEntrance} 0.3s ease forwards;
+
+    span {
+        color: ${({ theme }) => theme.color.N5};
+    }
+
+    span,
+    button {
+        animation: ${fadeIn} 0.3s ease forwards;
+    }
+`;
+
+const inlineButtonStyles = css`
     border: none;
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
     cursor: pointer;
@@ -328,6 +417,41 @@ const ClearBtn = styled.button`
 
     &:focus {
         outline: none;
+    }
+`;
+
+const ResetCancel = styled.button`
+    ${inlineButtonStyles}
+    display: inline-block;
+    margin-left: 18px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
+const ResetButton = styled(ResetCancel)`
+    color: ${({ theme }) => theme.color.N5};
+`;
+
+const RunButton = styled(Button)`
+    &&& {
+        background: ${({ theme }) => theme.color.N1};
+        color: ${({ theme }) => theme.color.B6};
+        transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+        margin-left: auto;
+
+        &:hover {
+            background: ${({ theme }) => theme.color.B5};
+            border-color: ${({ theme }) => theme.color.B5};
+            color: ${({ theme }) => theme.color.N1};
+        }
+
+        &:focus {
+            background: ${({ theme }) => theme.color.N1};
+            border-color: ${({ theme }) => theme.color.B5};
+            color: ${({ theme }) => theme.color.B6};
+        }
     }
 `;
 
@@ -575,4 +699,10 @@ const OutputSection = styled.div`
             min-height: 150px;
         }
     }
+`;
+
+const ClearBtn = styled.button`
+    ${inlineButtonStyles}
+    display: block;
+    margin-left: auto;
 `;
