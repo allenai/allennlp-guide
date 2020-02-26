@@ -151,10 +151,18 @@ const StyledCardContent = styled(CardContent)`
 
 const MarkdownContainer = styled.div`
     h1,
-    h2,
+    h2 {
+        ${({ theme }) => theme.typography.h4}
+        margin-bottom: 1.5rem;
+    }
+
     h3,
     h4 {
-      ${({ theme }) => theme.typography.h4}
+        ${({ theme }) => theme.typography.h5}
+    }
+
+    h4 {
+        ${({ theme }) => theme.typography.body}
     }
 
     &&& {
@@ -162,22 +170,55 @@ const MarkdownContainer = styled.div`
         ul {
             padding-left: 20px;
             margin: 1.5rem 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            li {
+                margin: 2px 0 2px 6px;
+                padding-left: 2px;
+            }
+
+            li > p,
+            ol,
+            ul {
+                margin: 0;
+            }
+        }
+
+        img {
+            margin-bottom: 1.5rem;
         }
     }
 
     ul {
-      list-style: disc;
+        list-style: disc;
 
-      ul {
-        list-style: circle;
-      }
+        ul {
+            list-style: circle;
+
+            ul {
+                list-style-type: square;
+            }
+        }
+    }
+
+    ol {
+        ol {
+            list-style-type: lower-roman;
+
+            ol {
+                list-style-type: lower-alpha;
+            }
+        }
     }
 
     a {
       text-decoration: none;
 
       &&:hover {
-        text-decoration: underline;
+          text-decoration: underline;
       }
     }
 
@@ -186,9 +227,17 @@ const MarkdownContainer = styled.div`
     pre,
     div[class^="code-module-root"],
     .gatsby-highlight {
-        & + ${Toolbar}{
+        & + ${Toolbar} {
             border: none;
             padding-top: 0;
         }
+    }
+
+    hr {
+        display: block;
+        border: none;
+        height: 1px;
+        margin: 2rem 0;
+        background: ${({ theme }) => theme.color.N4};
     }
 `;
