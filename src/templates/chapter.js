@@ -149,6 +149,9 @@ const Template = ({ data, location }) => {
                                     />
                                 </div>
                                 <ChapterIntroText>
+                                    {!isOverview && (
+                                        <PartTitle>{thisPart.title}</PartTitle>
+                                    )}
                                     {title && <h1>{title}</h1>}
                                     {description && (
                                         <p>{description}</p>
@@ -614,7 +617,15 @@ const ChapterIntroText = styled.div`
 
     p {
         ${({ theme }) => theme.typography.bodyBig}
+        color: ${({ theme }) => theme.color.N10};
     }
+`;
+
+const PartTitle = styled.strong`
+    ${({ theme }) => theme.typography.h6}
+    display: block;
+    text-transform: uppercase;
+    margin: 0 0 23px 2px;
 `;
 
 // Previous / Next chapter buttons

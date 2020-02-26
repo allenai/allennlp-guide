@@ -1,14 +1,37 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import Layout from '../components/Layout';
+import { Footer } from '../components/Footer';
 
 export default () => {
     return (
         <Layout>
-            {/* TODO: Replace inline style with styled component when that package is merged */}
-            <div style={{textAlign: 'center'}}>
-              <h1>Error 404</h1>
+            <CenteredContent>
+              <span>404</span>
               <p>Page not found.</p>
-            </div>
+            </CenteredContent>
+            <Footer />
         </Layout>
     );
 };
+
+const CenteredContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    span {
+        display: block;
+        line-height: 20rem;
+        margin: 4vh 0;
+        font-size: 16rem;
+        color: ${({ theme }) => theme.color.N4};
+    }
+
+    p {
+        ${({ theme }) => theme.typography.bodyJumbo}
+    }
+`;
