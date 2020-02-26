@@ -333,12 +333,6 @@ const GlobalStyle = createGlobalStyle`
             }
         }
 
-        hr {
-            box-sizing: content-box;
-            overflow: visible;
-            height: 0;
-        }
-
         table {
             text-align: left;
             width: 100%;

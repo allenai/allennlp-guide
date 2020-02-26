@@ -9,58 +9,6 @@ type: chapter
 
 AllenNLP is an open source framework for research on deep learning methods in natural language processing, developed by [the Allen Institute for Artificial Intelligence](https://allenai.org/). It is built on top of PyTorch and is designed to support researchers, engineers, students etc. who wish to build high quality deep NLP models with ease. It provides high-level abstractions and APIs for common components and models in modern NLP. It also provides an extensible framework that makes it easy to run and manage NLP experiments.
 
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
-
-Suspendisse id pellentesque sapien. Pellentesque sit amet odio vitae nisi volutpat semper eget ac mauris. Morbi dapibus lorem non turpis condimentum ultricies. Ut semper viverra mollis. Praesent in tortor sit amet quam eleifend varius eu vitae libero. In maximus nibh vitae nibh aliquet porttitor. Cras posuere id est in maximus. Integer aliquet fermentum justo, quis iaculis ipsum malesuada vel.
-
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-    - Lorem ipsum dolor sit amet
-    - Lorem ipsum dolor sit amet
-    - Lorem ipsum dolor sit amet
-    - Lorem ipsum dolor sit amet
-        - Lorem ipsum dolor sit amet
-        - Lorem ipsum dolor sit amet
-        - Lorem ipsum dolor sit amet
-            - Lorem ipsum dolor sit amet
-            - Lorem ipsum dolor sit amet
-            - Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-- Lorem ipsum dolor sit amet
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque euismod elit in tellus tincidunt tristique. Pellentesque augue sem, mollis pulvinar erat nec, dictum accumsan ante. Maecenas a tortor massa. Praesent enim quam, bibendum non dui eget, iaculis accumsan nunc.
-
-1. Lorem ipsum dolor sit amet
-2. Lorem ipsum dolor sit amet
-3. Lorem ipsum dolor sit amet
-4. Lorem ipsum dolor sit amet
-5. Lorem ipsum dolor sit amet
-    1. Lorem ipsum dolor sit amet
-    1. Lorem ipsum dolor sit amet
-    1. Lorem ipsum dolor sit amet
-    1. Lorem ipsum dolor sit amet
-        1. Lorem ipsum dolor sit amet
-        1. Lorem ipsum dolor sit amet
-        1. Lorem ipsum dolor sit amet
-            1. Lorem ipsum dolor sit amet
-            1. Lorem ipsum dolor sit amet
-            1. Lorem ipsum dolor sit amet
-6. Lorem ipsum dolor sit amet
-7. Lorem ipsum dolor sit amet
-8. Lorem ipsum dolor sit amet
-9. Lorem ipsum dolor sit amet
-
-Suspendisse id pellentesque sapien. Pellentesque sit amet odio vitae nisi volutpat semper eget ac mauris. Morbi dapibus lorem non turpis condimentum ultricies. Ut semper viverra mollis. Praesent in tortor sit amet quam eleifend varius eu vitae libero. In maximus nibh vitae nibh aliquet porttitor. Cras posuere id est in maximus. Integer aliquet fermentum justo, quis iaculis ipsum malesuada vel.
-
 In a nutshell, AllenNLP is
 - a library with well-thought-out abstractions encapsulating the common data and model operations
   that are done in NLP research

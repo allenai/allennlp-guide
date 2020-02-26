@@ -224,4 +224,12 @@ const MarkdownContainer = styled.div`
             padding-top: 0;
         }
     }
+
+    hr {
+        display: block;
+        border: none;
+        height: 1px;
+        margin: 2rem 0;
+        background: ${({ theme }) => theme.color.N4};
+    }
 `;
