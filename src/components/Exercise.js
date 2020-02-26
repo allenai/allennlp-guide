@@ -151,10 +151,17 @@ const StyledCardContent = styled(CardContent)`
 
 const MarkdownContainer = styled.div`
     h1,
-    h2,
+    h2 {
+        ${({ theme }) => theme.typography.h4}
+    }
+
     h3,
     h4 {
-      ${({ theme }) => theme.typography.h4}
+        ${({ theme }) => theme.typography.h5}
+    }
+
+    h4 {
+        ${({ theme }) => theme.typography.body}
     }
 
     &&& {
