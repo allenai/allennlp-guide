@@ -153,6 +153,7 @@ const MarkdownContainer = styled.div`
     h1,
     h2 {
         ${({ theme }) => theme.typography.h4}
+        margin-bottom: 1.5rem;
     }
 
     h3,
