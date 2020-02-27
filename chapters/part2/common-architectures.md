@@ -10,9 +10,44 @@ The main modeling operations done on natural language inputs include summarizing
 
 <exercise id="1" title="Summarizing sequences">
 
-* Seq2VecEncoder
-    * RNN, CNN
-* Sample code
+Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, embedding_dim)` and produces another of shape `(batch_size, encoding_dim)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
+
+<img src="/part2/common-architectures/seq2vec.svg" alt="Seq2Vec encoder" />
+
+RNNs are a popular choice for summarizing sequences in many NLP models. Instead of implementing its own RNN-based `Seq2VecEncoders`, AllenNLP offers `PytorchSeq2VecWrapper`, which wraps PyTorch's existing RNN implementations (such as `torch.nn.LSTM` and `torch.nn.GRU`) and make them compatible with AllenNLP's `Seq2VecEncoder` interface. In most cases, though, you don't need to use the wrapper yourself—wrapped `Seq2VecEncoders` are already defined by AllenNLP as e.g., `LstmSeq2VecEncoder` and `GruSeq2VecEncoder`.
+
+Other commonly used `Seq2VecEncoders` include `CnnEncoder`, which is a combinations of convolutional layers and a pooling layer on top of them, as well as `BertPooler`, which returns the embedding for the `[CLS]` token of the BERT model.
+
+We already used a `Seq2VecEncoder` when we built [a sentiment classifier in Part 1](your-first-model#3). Remember that we defined the constructor of `SimpleClassifier` to take any `Seq2VecEncoder`:
+
+<pre data-line="6,9" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        super().__init__(vocab)
+        self.embedder = embedder
+        self.encoder = encoder
+        num_labels = vocab.get_vocab_size("labels")
+        self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
+</code></pre>
+
+This allows you to plug in any `Seq2VecEncoder` implementations when defining the model. For example, you can do:
+
+```python
+...
+encoder = LstmSeq2VecEncoder(input_size=5, hidden_size=2, num_layers=1)
+model = SimpleClassifier(vocab, embedder, encoder)
+...
+```
+
+Your model will use a 1-layer LSTM with `input_size=5` and `hidden_size=2` for summarizing the input sequence. 
+
+In the following example code, we instantiate two different `Seq2VecEncoders` (LSTM and CNN) and feed them a tensor of shape `(batch_size, sequence_length, input_size)` as input. Notice that you get an output tensor of shape `(batch_size, output_size)` no matter what `Seq2VecEncoder` you use.
+
+<codeblock source="part2/common-architectures/seq2vec"></codeblock>
 
 </exercise>
 
