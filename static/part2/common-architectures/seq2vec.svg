@@ -43,14 +43,25 @@
                 <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
                 <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
             </g>
-            <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="10" y="38" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill="#32C5FF" x="10" y="23" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="10" y="53" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" x="10" y="8" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="10" y="43" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill="#32C5FF" x="10" y="28" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="10" y="58" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.339707168" fill="#32C5FF" x="10" y="73" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" x="10" y="13" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill="#32C5FF" x="116" y="28" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="116" y="44" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.339707168" fill="#32C5FF" x="116" y="59" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" x="116" y="13" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="40" y="28" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill="#32C5FF" x="40" y="13" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="40" y="43" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.339707168" fill="#32C5FF" x="40" y="58" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.3" fill="#32C5FF" x="40" y="73" width="10" height="10" rx="5"></rect>
             <line x1="31" y1="2" x2="31" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
             <line x1="61" y1="2" x2="61" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
             <line x1="107" y1="2" x2="107" y2="93" id="Line-2" stroke="#979797" stroke-width="2" stroke-linecap="square"></line>
         </g>
+        <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="183" y="137" width="10" height="10" rx="5"></rect>
         <path id="Line" d="M247.75,103 L261.75,110 L247.75,117 L247.75,111 L221.25,111 L221.25,109 L247.75,109 L247.75,103 Z" fill="#47515C" fill-rule="nonzero"></path>
         <path id="Line" d="M446.75,103 L460.75,110 L446.75,117 L446.75,111 L420.25,111 L420.25,109 L446.75,109 L446.75,103 Z" fill="#47515C" fill-rule="nonzero"></path>
         <text id="input_dim" transform="translate(55.500000, 109.500000) rotate(-90.000000) translate(-55.500000, -109.500000) " font-family="CourierNewPS-BoldMT, Courier New" font-size="10" font-weight="bold" fill="#47515C">
@@ -68,10 +79,11 @@
                 <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
                 <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-5"></use>
             </g>
-            <rect id="Rectangle" fill="#32C5FF" x="10" y="38" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill-opacity="0.750218531" fill="#32C5FF" x="10" y="23" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill-opacity="0.22426792" fill="#32C5FF" x="10" y="53" width="10" height="10" rx="5"></rect>
-            <rect id="Rectangle" fill-opacity="0.369154283" fill="#32C5FF" x="10" y="8" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill="#32C5FF" x="10" y="42" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.750218531" fill="#32C5FF" x="10" y="27" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.750218531" fill="#32C5FF" x="10" y="72" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.22426792" fill="#32C5FF" x="10" y="57" width="10" height="10" rx="5"></rect>
+            <rect id="Rectangle" fill-opacity="0.369154283" fill="#32C5FF" x="10" y="12" width="10" height="10" rx="5"></rect>
         </g>
         <text id="output_dim" transform="translate(474.500000, 112.500000) rotate(-90.000000) translate(-474.500000, -112.500000) " font-family="CourierNewPS-BoldMT, Courier New" font-size="10" font-weight="bold" fill="#47515D">
             <tspan x="444.495117" y="115">output_dim</tspan>

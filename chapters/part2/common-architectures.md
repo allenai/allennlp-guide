@@ -10,7 +10,7 @@ The main modeling operations done on natural language inputs include summarizing
 
 <exercise id="1" title="Summarizing sequences">
 
-Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
+Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, embedding_dim)` and produces another of shape `(batch_size, encoding_dim)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
 
 <img src="/part2/common-architectures/seq2vec.svg" alt="Seq2Vec encoder" />
 
@@ -38,12 +38,16 @@ This allows you to plug in any `Seq2VecEncoder` implementations when defining th
 
 ```python
 ...
-encoder = LstmSeq2VecEncoder(input_size=10, hidden_size=10, num_layers=1)
+encoder = LstmSeq2VecEncoder(input_size=5, hidden_size=2, num_layers=1)
 model = SimpleClassifier(vocab, embedder, encoder)
 ...
 ```
 
-Your model will use a 1-layer LSTM with `input_size=10` and `hidden_size=10` for summarizing the input sequence.
+Your model will use a 1-layer LSTM with `input_size=5` and `hidden_size=2` for summarizing the input sequence. 
+
+In the following example code, we instantiate two different `Seq2VecEncoders` (LSTM and CNN) and feed them a tensor of shape `(batch_size, sequence_length, input_size)` as input. Notice that you get an output tensor of shape `(batch_size, output_size)` no matter what `Seq2VecEncoder` you use.
+
+<codeblock source="part2/common-architectures/seq2vec"></codeblock>
 
 </exercise>
 
