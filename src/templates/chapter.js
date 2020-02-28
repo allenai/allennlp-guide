@@ -571,7 +571,8 @@ const SideNav = styled.nav`
     position: sticky;
     top: 115px;
     height: calc(100vh - 175px);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 `;
 
 const RightContainer = styled.div`
