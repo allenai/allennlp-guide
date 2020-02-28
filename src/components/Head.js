@@ -79,8 +79,22 @@ const Head = ({ title, description }) => (
                 },
             ];
 
+            const gaId = siteMetadata.googleAnalyticsId;
+
             return (
-                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link} />
+                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link}>
+                    {gaId !== '' && (
+                        <script async="" src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+                    )}
+                    {gaId !== '' && (
+                        <script>{`
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag() { dataLayer.push(arguments); }
+                            gtag('js', new Date());
+                            gtag('config', '${gaId}');
+                        `}</script>
+                    )}
+                </Helmet>
             )
         }}
     />
@@ -95,6 +109,7 @@ const query = graphql`
                 title
                 description
                 twitter
+                googleAnalyticsId
             }
         }
     }
