@@ -2,13 +2,13 @@
  * This component renders part icons in colored gradient boxes.
  * 
  * Supported `color` values:
- *     'teal',
+ *     'aqua',
+ *     'blue',
+ *     'green',
  *     'orange',
  *     'purpe',
- *     'aqua'
- *     'blue',
  *     'red',
- *     'green'
+ *     'teal',
  *     'default' (generic neutral color)
  */
 
@@ -29,20 +29,20 @@ export const IconBox = ({ className, icon, color }) => (
 // Colored square that contains part icon
 const StyledIconBox = styled(({ color, ...props }) => <div {...props} />)`
     background: linear-gradient(151.76deg, ${({ color }) => {
-        if (color === 'teal') {
-            return '#1EC2CC 17.77%, #0191A7';
+        if (color === 'aqua') {
+            return '#00C1E8 17.77%, #0278A7';
+        } else if (color === 'blue') {
+            return '#6192fb 17.77%, #295ece';
+        } else if (color === 'green') {
+            return '#32c694 17.77%, #099d6b';
         } else if (color === 'orange') {
             return '#FFC72E 17.77%, #FF9100';
         } else if (color === 'purple') {
             return '#D864C8 17.77%, #A44397';
-        } else if (color === 'aqua') {
-            return '#00C1E8 17.77%, #0278A7';
-        } else if (color === 'blue') {
-            return '#6192fb 17.77%, #295ece';
         } else if (color === 'red') {
             return '#fb6769 17.77%, #d23e40';
-        } else if (color === 'green') {
-            return '#32c694 17.77%, #099d6b';
+        } else if (color === 'teal') {
+            return '#1EC2CC 17.77%, #0191A7';
         } else { // 'default'
             return '#a3b0be 17.77%, #79899c';
         }
