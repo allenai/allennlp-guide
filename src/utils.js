@@ -26,3 +26,8 @@ export const getGroupedChapters = (data) => {
     return acc;
   }, {});
 };
+
+// Convert px number value to rem string value
+export const toRem = (value) => {
+    return `${value / 16}rem`;
+};
