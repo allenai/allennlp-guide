@@ -1,10 +1,10 @@
-const path = require('path')
-const { createFilePath } = require('gatsby-source-filesystem')
+const path = require('path');
+const { createFilePath } = require('gatsby-source-filesystem');
 
-const chapterTemplate = path.resolve('src/templates/chapter.js')
+const chapterTemplate = path.resolve('src/templates/chapter.js');
 
 function replacePath(pagePath) {
-    return pagePath === `/` ? pagePath : pagePath.replace(/\/$/, ``)
+    return pagePath === `/` ? pagePath : pagePath.replace(/\/$/, ``);
 }
 
 async function onCreateNode({
@@ -13,21 +13,22 @@ async function onCreateNode({
     getNode,
     loadNodeContent,
     createNodeId,
-    createContentDigest,
+    createContentDigest
 }) {
-    const { createNodeField, createNode, createParentChildLink } = actions
+    const { createNodeField, createNode, createParentChildLink } = actions;
     if (node.internal.type === 'MarkdownRemark') {
-        const slug = createFilePath({ node, getNode, basePath: 'chapters', trailingSlash: false })
+        const slug = createFilePath({ node, getNode, basePath: 'chapters', trailingSlash: false });
         // Use regex to remove any subdirectory strings preceeding the target md file in the path
+        // eslint-disable-next-line no-useless-escape
         const formattedSlug = `/${slug.match(/([^\/]+$)/gm)}`;
-        createNodeField({ name: 'slug', node, value: formattedSlug })
+        createNodeField({ name: 'slug', node, value: formattedSlug });
     } else if (node.extension === 'py') {
         // Load the contents of the Python file and make it available via GraphQL
         // https://www.gatsbyjs.org/docs/creating-a-transformer-plugin/
-        const content = await loadNodeContent(node)
-        const contentDigest = createContentDigest(content)
-        const id = createNodeId(`${node.id}-code`)
-        const internal = { type: 'Code', contentDigest }
+        const content = await loadNodeContent(node);
+        const contentDigest = createContentDigest(content);
+        const id = createNodeId(`${node.id}-code`);
+        const internal = { type: 'Code', contentDigest };
         const codeNode = {
             id,
             parent: node.id,
@@ -35,17 +36,17 @@ async function onCreateNode({
             code: content,
             name: node.name,
             dir: node.dir,
-            internal,
-        }
-        createNode(codeNode)
-        createParentChildLink({ parent: node, child: codeNode })
+            internal
+        };
+        createNode(codeNode);
+        createParentChildLink({ parent: node, child: codeNode });
     }
 }
 
-exports.onCreateNode = onCreateNode
+exports.onCreateNode = onCreateNode;
 
 exports.createPages = ({ actions, graphql }) => {
-    const { createPage } = actions
+    const { createPage } = actions;
     return graphql(`
         {
             allMarkdownRemark {
@@ -64,17 +65,17 @@ exports.createPages = ({ actions, graphql }) => {
         }
     `).then(result => {
         if (result.errors) {
-            return Promise.reject(result.errors)
+            return Promise.reject(result.errors);
         }
         const posts = result.data.allMarkdownRemark.edges.filter(
             ({ node }) => node.frontmatter.type === 'chapter'
-        )
+        );
         posts.forEach(({ node }) => {
             createPage({
                 path: replacePath(node.fields.slug),
                 component: chapterTemplate,
-                context: { slug: node.fields.slug },
-            })
-        })
-    })
-}
+                context: { slug: node.fields.slug }
+            });
+        });
+    });
+};
