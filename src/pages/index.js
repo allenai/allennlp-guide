@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { graphql } from 'gatsby';
 import styled, { css } from 'styled-components';
 import AnimateHeight from 'react-animate-height';
+import { above } from '@allenai/varnish/theme/breakpoints';
 
 import { outline } from '../outline';
 import { getGroupedChapters } from '../utils';
@@ -11,7 +12,7 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon, ExpandCollapseIcon } from '../components/inlineSVG';
+import { ArrowRightIcon, ExpandCollapseIcon, MobileDisclosure } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
@@ -138,6 +139,7 @@ const SectionIntro = styled.div`
 
         p {
             ${({ theme }) => theme.typography.bodyBig};
+            padding-bottom: 0;
         }
     }
 `;
@@ -150,10 +152,15 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
         <StyledIconBox color={color} icon={icon} />
         <PartHeaderText>
             {title && (
-                <PartTitle>{title}</PartTitle>
+                <PartTitle><span>{title}</span></PartTitle>
             )}
             {description && (
-                <p>{description}</p>
+                <PartDescription>
+                    <p>{description}</p>
+                    {slug && (
+                        <Disclosure />
+                    )}
+                </PartDescription>
             )}
             {slug && (
                 <BeginLink><div>Begin Chapter <StyledArrowRightIcon /></div></BeginLink>
@@ -190,6 +197,12 @@ const PartHeaderContainer = styled.div`
 // Colored box with icon
 const StyledIconBox = styled(IconBox)`
     width: ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+    }
 `;
 
 // Container for part title and description
@@ -200,8 +213,16 @@ const PartHeaderText = styled.div`
     display: flex;
     flex-direction: column;
 
-    & > :last-child {
+    p {
         margin-bottom: 0;
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: 0 0 ${({ theme }) => theme.spacing.xxxl} 0;
+
+        p {
+            padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+        }
     }
 `;
 
@@ -209,6 +230,31 @@ const PartTitle = styled.h3`
     ${({ theme }) => theme.typography.h4};
     padding-bottom: 0;
     color: ${({ theme }) => theme.color.B6};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        background: ${({ theme }) => theme.color.N2};
+        font-size: 20px;
+        padding-left: 80px;
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+
+        span {
+            padding: 0 ${({ theme }) => theme.spacing.lg};
+        }
+    }
+`;
+
+const PartDescription = styled.div`
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: flex;
+        align-items: center;
+        padding-right: ${({ theme }) => theme.spacing.md};
+
+        p {
+            flex: 1;
+        }
+    }
 `;
 
 // Begin Chapter link for Overview
@@ -222,13 +268,23 @@ const BeginLink = styled.div`
         display: flex;
         align-items: center;
 
-        &:hover {
-            text-decoration: underline;
+        @media ${({ theme }) => above(theme.breakpoints.md)} {
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-        ${activeStyledArrowRightIconStyles}
+        display: none;
+    }
+`;
+
+const Disclosure = styled(MobileDisclosure)`
+    display: none;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: block;
     }
 `;
 
@@ -250,6 +306,20 @@ const StandaloneChapterLink = styled(Link)`
 
         ${PartHeaderText} {
             padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem;
+
+            @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+                padding-bottom: 0;
+
+                p {
+                    margin-bottom: ${({ theme }) => theme.spacing.sm};
+                }
+            }
+        }
+
+        &:hover {
+            ${Disclosure} {
+                fill: ${({ theme }) => theme.color.B6};
+            }
         }
     }
 `;
@@ -287,6 +357,7 @@ const Part = ({ data, groupedChapters }) => {
                                     {groupedChapters[chapterSlug].node.frontmatter.description}
                                     <StyledArrowRightIcon />
                                 </p>
+                                <Disclosure />
                             </ChapterLink>
                         ))}
                     </ChapterList>
@@ -317,31 +388,40 @@ const TriggerClickArea = styled.div`
     width: calc(100% - ${({ theme }) => theme.spacing.xxl.getRemValue() * 4}rem);
     position: relative;
     cursor: pointer;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        width: 100%;
+        padding: 0 ${({ theme }) => theme.spacing.lg};
+    }
 `;
 
 // Styled wrapper for `Part` component
 const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...props} />)`
     overflow: hidden;
-    ${({ chapterListIsVisible }) => chapterListIsVisible ? activeCardStyles : null}
-
-    &:hover {
-        ${activeCardStyles}
+    @media ${({ theme }) => above(theme.breakpoints.md)} {
+        ${({ chapterListIsVisible }) => chapterListIsVisible ? activeCardStyles : null}
     }
 
-    [class*="PartHeader"]:hover + div,
-    ${TriggerClickArea}:hover {
-        ${TriggerIcon} {
-            transform: translateY(2px);
-            span {
-                background: ${({ theme }) => theme.color.B6};
-            }
+    @media ${({ theme }) => above(theme.breakpoints.md)} {
+        &:hover {
+            ${activeCardStyles}
         }
 
-        ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
+        [class*="PartHeader"]:hover + div,
+        ${TriggerClickArea}:hover {
             ${TriggerIcon} {
-                transform: translateY(-2px);
+                transform: translateY(2px);
+                span {
+                    background: ${({ theme }) => theme.color.B6};
+                }
             }
-        ` : null}
+
+            ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
+                ${TriggerIcon} {
+                    transform: translateY(-2px);
+                }
+            ` : null}
+        }
     }
 `;
 
@@ -358,8 +438,10 @@ const TriggerTooltip = styled.span`
     ${({ theme }) => theme.typography.bodySmall}
     color: ${({ theme }) => theme.color.B6};
 
-    &:hover {
-        text-decoration: underline;
+    @media ${({ theme }) => above(theme.breakpoints.md)} {
+        &:hover {
+            text-decoration: underline;
+        }
     }
 `;
 
@@ -367,6 +449,10 @@ const TriggerTooltip = styled.span`
 const ChapterList = styled(CardContent)`
     background: ${({ theme }) => theme.color.N2};
     padding-bottom: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding-top: 0;
+    }
 `;
 
 // Clickable item in a chapter list
@@ -403,7 +489,30 @@ const ChapterLink = styled(Link)`
         }
 
         @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            padding: ${({ theme }) => theme.spacing.md};
             ${activeStyledArrowRightIconStyles}
+            display: flex;
+            align-items: center;
+
+            h4 {
+                ${({ theme }) => theme.typography.body}
+                flex: 1;
+                padding-right: ${({ theme }) => theme.spacing.md};
+            }
+
+            p {
+                display: none;
+            }
+
+            ${Disclosure} {
+                margin-left: auto;
+            }
+
+            &:hover {
+                ${Disclosure} {
+                    fill: ${({ theme }) => theme.color.B6};
+                }
+            }
         }
     }
 

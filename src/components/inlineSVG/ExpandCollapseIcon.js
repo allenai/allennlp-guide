@@ -3,6 +3,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { above } from '@allenai/varnish/theme/breakpoints';
 import { toRem } from '../../utils';
 
 export const ExpandCollapseIcon = ({ className, isExpanded = false }) => (
@@ -86,10 +87,12 @@ const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)
         }
     ` : null}
 
-    &:hover {
-        ${LeftInner},
-        ${RightInner} {
-            background: ${({ theme }) => theme.color.B6};
+    @media ${({ theme }) => above(theme.breakpoints.md)} {
+        &:hover {
+            ${LeftInner},
+            ${RightInner} {
+                background: ${({ theme }) => theme.color.B6};
+            }
         }
     }
 `;
