@@ -150,9 +150,9 @@ const Template = ({ data, location }) => {
                                 </div>
                                 <ChapterIntroText>
                                     {!isOverview && (
-                                        <PartTitle>{thisPart.title}</PartTitle>
+                                        <PartTitle><span>{thisPart.title}</span></PartTitle>
                                     )}
-                                    {title && <h1>{title}</h1>}
+                                    {title && <h1><span>{title}</span></h1>}
                                     {description && (
                                         <p>{description}</p>
                                     )}
@@ -622,11 +622,26 @@ const ChapterIntro = styled.div`
     display: grid;
     grid-template-columns: 75px auto;
     grid-gap: ${({ theme }) => theme.spacing.xl};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: block;
+    }
 `;
 
 // Colored box with icon that denotes Part
 const StyledIconBox = styled(IconBox)`
     width: 75px;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        width: 50px;
+    }
+`;
+
+const mobileChapterTitleStyles = css`
+    margin: -50px 0 24px 74px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
 `;
 
 // Text displayed in chapter intro next to icon
@@ -635,6 +650,14 @@ const ChapterIntroText = styled.div`
         ${({ theme }) => theme.typography.h2}
         margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
         color: ${({ theme }) => theme.color.B6};
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            ${({ theme }) => theme.typography.h3}
+
+            &:first-child {
+                ${mobileChapterTitleStyles}
+            }
+        }
     }
 
     p {
@@ -648,6 +671,10 @@ const PartTitle = styled.strong`
     display: block;
     text-transform: uppercase;
     margin: 0 0 23px 2px;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        ${mobileChapterTitleStyles}
+    }
 `;
 
 // Previous / Next chapter buttons
