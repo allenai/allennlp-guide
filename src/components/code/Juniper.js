@@ -12,34 +12,20 @@ import AnimateHeight from 'react-animate-height';
 
 import { CodeSection, CodeMirrorRender, OutputRender } from './CodeBlock';
 
-class Juniper extends React.Component {
-    outputRef = null;
-    inputRef = null;
-    state = {
-        content: null,
-        cm: null,
-        kernel: null,
-        renderers: null,
-        fromStorage: null
-    };
+export default class Juniper extends React.Component {
+    constructor(props) {
+        super(props);
+        this.inputRef = React.createRef();
+        this.outputRef = React.createRef();
 
-    static defaultProps = {
-        setupFile: '',
-        sourceFile: '',
-        branch: 'master',
-        url: 'https://mybinder.org',
-        serverSettings: {},
-        kernelType: 'python3',
-        lang: 'python',
-        isolateCells: true,
-        useBinder: true,
-        storageKey: 'juniper',
-        useStorage: true,
-        storageExpire: 60,
-        debug: true,
-        msgLoading: 'Loading...',
-        msgError: 'Connecting failed. Please reload and try again.'
-    };
+        this.state = {
+            content: null,
+            cm: null,
+            kernel: null,
+            renderers: null,
+            fromStorage: null
+        };
+    }
 
     componentDidMount() {
         this.setState({ content: this.props.sourceFile });
@@ -270,4 +256,20 @@ class Juniper extends React.Component {
     }
 }
 
-export default Juniper;
+Juniper.defaultProps = {
+    setupFile: '',
+    sourceFile: '',
+    branch: 'master',
+    url: 'https://mybinder.org',
+    serverSettings: {},
+    kernelType: 'python3',
+    lang: 'python',
+    isolateCells: true,
+    useBinder: true,
+    storageKey: 'juniper',
+    useStorage: true,
+    storageExpire: 60,
+    debug: true,
+    msgLoading: 'Loading...',
+    msgError: 'Connecting failed. Please reload and try again.'
+};

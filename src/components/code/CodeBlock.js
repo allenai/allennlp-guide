@@ -30,13 +30,17 @@ function addSetupCode(code, setup) {
 }
 
 export class CodeBlock extends React.Component {
-    state = {
-        Juniper: null,
-        key: 0,
-        outputIsVisible: false,
-        resetButtonIsVisible: false,
-        resetConfirmationIsVisible: false
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            Juniper: null,
+            key: 0,
+            outputIsVisible: false,
+            resetButtonIsVisible: false,
+            resetConfirmationIsVisible: false
+        };
+    }
 
     handleReset() {
         // Using the key as a hack to force component to rerender

@@ -2,8 +2,7 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
-import { Header } from '@allenai/varnish/components/Header';
-import { HeaderColumns } from '@allenai/varnish/components/Header';
+import { Header, HeaderColumns } from '@allenai/varnish/components/Header';
 
 import Head from './Head';
 import { Link } from './Link';
