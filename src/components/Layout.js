@@ -2,7 +2,7 @@ import React from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
-import { Header, HeaderColumns } from '@allenai/varnish/components/Header';
+import { Header } from '@allenai/varnish/components/Header';
 
 import Head from './Head';
 import { Link } from './Link';
@@ -30,7 +30,7 @@ const Layout = ({ title, description, children }) => {
                         <Head title={title} description={description} />
                         <GlobalStyle />
                         <Header alwaysVisible={true}>
-                            <HeaderColumnsWithSpace gridTemplateColumns="18rem auto">
+                            <HeaderColumns>
                                 <LogoContainer>
                                     <Link to="/">
                                         <AllenNLPLogo />
@@ -48,7 +48,7 @@ const Layout = ({ title, description, children }) => {
                                         ))}
                                     </ul>
                                 </nav>
-                            </HeaderColumnsWithSpace>
+                            </HeaderColumns>
                         </Header>
                         <Main>
                             {children}
@@ -62,7 +62,11 @@ const Layout = ({ title, description, children }) => {
 
 export default Layout;
 
-const HeaderColumnsWithSpace = styled(HeaderColumns)`
+const HeaderColumns = styled.div`
+    display: grid;
+    grid-template-columns: 18rem auto;
+    grid-gap: 1rem;
+    width: 100%;
     padding: 9px 0;
     align-items: center;
 
@@ -73,6 +77,12 @@ const HeaderColumnsWithSpace = styled(HeaderColumns)`
       li + li {
         margin-left: 40px;
       }
+    }
+
+    @media (max-width: 1024px) {
+        nav {
+            display: none;
+        }
     }
 `;
 

@@ -535,6 +535,10 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.color.N3};
+
+    @media (max-width: 1024px) {
+        display: block;
+    }
 `;
 
 // Left-aligned container with white background
@@ -545,6 +549,10 @@ const LeftContainer = styled.div`
     display: flex;
     position: relative;
     z-index: 3;
+
+    @media (max-width: 1024px) {
+        display: none;
+    }
 `;
 
 // Constrained content descendent of LeftContainer (holds sidenav)
@@ -582,6 +590,10 @@ const RightContainer = styled.div`
         z-index: 2;
         margin-left: -30px;
         box-shadow: 0 -${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl} ${theme.spacing.lg} ${theme.color.N3}`};
+
+        @media (max-width: 1024px) {
+            display: none;
+        }
     }
 `;
 
@@ -593,6 +605,11 @@ const RightContent = styled.div`
     padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
     box-sizing: border-box;
     margin-right: ${({ theme }) => theme.spacing.xxl};
+
+    @media (max-width: 1024px) {
+        max-width: 100%;
+        padding-right: 0 ${({ theme }) => theme.spacing.xxl};
+    }
 `;
 
 // Intro content rendered from markdown frontmatter and outline data
