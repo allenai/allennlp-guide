@@ -44,22 +44,24 @@ const RightOuter = styled.div`
     right: 0;
 `;
 
+const strokeWeight = 1.5;
+
 const innerStyles = css`
     display: block;
     transform-origin: 50% 50%;
     width: ${({ theme }) => theme.spacing.sm};
-    height: ${toRem(1.5)};
+    height: ${toRem(strokeWeight)};
     transition: background-color 0.2s ease;
 `;
 
 const LeftInner = styled.span`
     ${innerStyles}
-    transform: rotate(45deg) translate(${toRem(0.375 /* 1.5/4 */)}, 0);
+    transform: rotate(45deg) translate(${toRem(strokeWeight / 4)}, 0);
 `;
 
 const RightInner = styled.span`
     ${innerStyles}
-    transform: rotate(-45deg) translate(-${toRem(0.375)}, 0);
+    transform: rotate(-45deg) translate(-${toRem(strokeWeight / 4)}, 0);
 `;
 
 const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)`
