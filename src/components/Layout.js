@@ -84,37 +84,67 @@ const HeaderColumns = styled.div`
             display: none;
         }
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+        line-height: 1.5 !important;
+        min-height: 50px;
+    }
 `;
 
 const LogoContainer = styled.div`
     a {
-      display: flex;
-      align-items: center;
-
-      svg {
-        display: block;
-        transition: fill 0.2s ease;
-      }
-
-      span {
-        display: block;
-        font-size: 34px;
-        padding-left: 14px;
-        transition: color 0.2s ease;
-        color: ${({ theme }) => theme.color.N10};
-      }
-
-      &:hover {
-        text-decoration: none !important;
+        display: flex;
+        align-items: center;
 
         svg {
-          fill: ${({ theme }) => theme.color.B6};
+          display: block;
+          transition: fill 0.2s ease;
         }
 
         span {
-          color: ${({ theme }) => theme.color.B6};
+          display: block;
+          font-size: 34px;
+          padding-left: 14px;
+          transition: color 0.2s ease;
+          color: ${({ theme }) => theme.color.N10};
         }
-      }
+
+        &:hover {
+          text-decoration: none !important;
+
+          svg {
+            fill: ${({ theme }) => theme.color.B6};
+          }
+
+          span {
+            color: ${({ theme }) => theme.color.B6};
+          }
+        }
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        height: 100%;
+
+        a {
+            height: 100%;
+
+            svg {
+                width: 116px;
+                height: 20px;
+                fill: ${({ theme }) => theme.color.B6};
+            }
+
+            span {
+                font-size: 27px;
+                padding-left: 11px;
+                color: ${({ theme }) => theme.color.B6};
+            }
+        }
     }
 `;
 

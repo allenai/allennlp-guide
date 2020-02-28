@@ -17,6 +17,10 @@ export const Container = ({ children, className }) => (
 const StyledContainer = styled.div`
     width: 100%;
     padding: 72px 32px;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => theme.spacing.lg};
+    }
 `;
 
 const Content = styled.div`

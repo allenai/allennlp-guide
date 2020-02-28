@@ -97,6 +97,16 @@ const Banner = styled(Container)`
         margin: 0 auto;
         max-width: 720px;
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        background: url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
+                    linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
+
+        h1 {
+            font-size: 30px;
+            line-height: 1.5;
+        }
+    }
 `;
 
 // Intro Content
@@ -114,6 +124,10 @@ const SectionIntro = styled.div`
 
     h2 {
         ${({ theme }) => theme.typography.h4};
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            text-align: center;
+        }
     }
 
     p {
@@ -145,7 +159,17 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
 
 // Right arrow icon for chapter links
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
-    transition: transform 0.2s ease;
+    opacity: 0;
+    margin-left: 8px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    fill: ${({ theme }) => theme.color.B6};
+`;
+
+const activeStyledArrowRightIconStyles = css`
+    ${StyledArrowRightIcon} {
+        opacity: 1;
+        transform: translateX(2px);
+    }
 `;
 
 // Styled wrapper for `PartHeader` component
@@ -154,9 +178,7 @@ const PartHeaderContainer = styled.div`
     cursor: pointer;
 
     &:hover {
-        ${StyledArrowRightIcon} {
-            transform: translateX(2px);
-        }
+        ${activeStyledArrowRightIconStyles}
     }
 `;
 
@@ -200,8 +222,8 @@ const BeginLink = styled.div`
         }
     }
 
-    svg {
-        margin-left: ${({ theme }) => theme.spacing.xs};
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        ${activeStyledArrowRightIconStyles}
     }
 `;
 
@@ -363,13 +385,6 @@ const ChapterLink = styled(Link)`
           color: ${({ theme }) => theme.color.N10};
         }
 
-        ${StyledArrowRightIcon} {
-            opacity: 0;
-            margin-left: 8px;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            fill: ${({ theme }) => theme.color.B6};
-        }
-
         &:hover {
             text-decoration: none;
             border-color: ${({ theme }) => theme.color.B6};
@@ -379,10 +394,11 @@ const ChapterLink = styled(Link)`
                 color: ${({ theme }) => theme.color.B6};
             }
 
-            ${StyledArrowRightIcon} {
-                opacity: 1;
-                transform: translateX(2px);
-            }
+            ${activeStyledArrowRightIconStyles}
+        }
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            ${activeStyledArrowRightIconStyles}
         }
     }
 

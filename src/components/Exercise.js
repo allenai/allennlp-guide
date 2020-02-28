@@ -86,6 +86,10 @@ const SectionTitle = styled.h2`
             }
         }
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+    }
 `;
 
 const Toolbar = styled.div`

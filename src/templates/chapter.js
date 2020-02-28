@@ -608,7 +608,12 @@ const RightContent = styled.div`
 
     @media (max-width: 1024px) {
         max-width: 100%;
-        padding-right: 0 ${({ theme }) => theme.spacing.xxl};
+        padding-right: ${({ theme }) => theme.spacing.xxl};
+        margin-right: 0;
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => theme.spacing.lg};
     }
 `;
 
@@ -662,5 +667,10 @@ const ChapterFooter = styled(Footer)`
         padding: ${({ theme }) => theme.spacing.xl} 0;
         background: transparent;
         text-align: left;
+
+        @media (max-width: 1024px) {
+            text-align: center;
+            padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+        }
     }
 `;

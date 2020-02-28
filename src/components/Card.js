@@ -14,8 +14,20 @@ export const Card = styled.div`
     & + & {
         margin-top: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        margin: 0 -6px;
+
+        & + & {
+            margin-top: ${({ theme }) => theme.spacing.lg};
+        }
+    }
 `;
 
 export const CardContent = styled.div`
     padding: ${({ theme }) => theme.spacing.md.getRemValue() * 2}rem;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => theme.spacing.md};
+    }
 `;
