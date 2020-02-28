@@ -92,10 +92,10 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    const getMenuIcon = (icon) => icon === 'tools' ? (
-        <Icon type="setting" />
-    ) : (
-        <CustomIcon component={() => getIcon(icon, 17)} />
+    const getMenuIcon = (obj) => obj.antMenuIcon ? (
+        <Icon type={obj.antMenuIcon} />
+    ) : obj.icon && (
+        <CustomIcon component={() => getIcon(obj.icon, 17)} />
     );
 
     return (
@@ -114,7 +114,7 @@ const Template = ({ data, location }) => {
                                     mode="inline">
                                     <Menu.Item key={outline.overview.slug}>
                                         <Link to={outline.overview.slug}>
-                                            {getMenuIcon(outline.overview.icon)}
+                                            {getMenuIcon(outline.overview)}
                                             <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
                                         </Link>
                                     </Menu.Item>
@@ -124,7 +124,7 @@ const Template = ({ data, location }) => {
                                             onTitleClick={() => toggleMenuKey(part.title)}
                                             title={
                                                 <span>
-                                                    {getMenuIcon(part.icon)}
+                                                    {getMenuIcon(part)}
                                                     <span>{part.title}</span>
                                                 </span>
                                             }>

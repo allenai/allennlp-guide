@@ -1,16 +1,15 @@
 // This outline builds our chapter navigation structure, grouped by Part.
-
-// Supported `icon` values:   'stack', 'rocket', 'cube', 'tools' and 'default' (generic text icon)
-// Supported `color` values:   'aqua', 'orange', 'purpe', 'blue' and 'default' (generic neutral color)
-// If more parts need to be added then consider adding additional icon assets to src/components/inlineSVG/
-// and additional color gradients to src/pages/index.js
+// If more parts need to be added then consider adding additional icon assets to src/components/inlineSVG/.
+// See src/components/IconBox for supported color values.
+// If separate icon for sidenav is required for readability, see https://ant.design/components/icon/
+// for supported `antMenuIcon` values.
 
 export const outline = {
     // See overview.md for title and description of this standalone chapter.
     overview: {
         slug: '/overview',
         icon: 'stack',
-        color: 'aqua'
+        color: 'teal'
     },
     parts: [
         {
@@ -44,7 +43,8 @@ export const outline = {
                 '/semantic-parsing'
             ],
             icon: 'tools',
-            color: 'blue'
+            antMenuIcon: 'setting',
+            color: 'aqua'
         }
     ]
 };
