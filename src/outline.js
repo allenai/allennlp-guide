@@ -1,6 +1,8 @@
 // This outline builds our chapter navigation structure, grouped by Part.
 // If more parts need to be added then consider adding additional icon assets to src/components/inlineSVG/.
 // See src/components/IconBox for supported color values.
+// If separate icon for sidenav is required for readability, see https://ant.design/components/icon/
+// for supported values.
 
 export const outline = {
     // See overview.md for title and description of this standalone chapter.
@@ -41,6 +43,7 @@ export const outline = {
                 '/semantic-parsing'
             ],
             icon: 'tools',
+            antMenuIcon: 'setting',
             color: 'aqua'
         }
     ]
