@@ -80,7 +80,19 @@ const Head = ({ title, description }) => (
             ];
 
             return (
-                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link} />
+                <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link}>
+                    {siteMetadata.googleAnalyticsId !== '' && (
+                        <script async="" src={`https://www.googletagmanager.com/gtag/js?id=${siteMetadata.googleAnalyticsId}`} />
+                    )}
+                    {siteMetadata.googleAnalyticsId !== '' && (
+                        <script>{`
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag() { dataLayer.push(arguments); }
+                            gtag('js', new Date());
+                            gtag('config', '${siteMetadata.googleAnalyticsId}');
+                        `}</script>
+                    )}
+                </Helmet>
             )
         }}
     />
@@ -95,6 +107,7 @@ const query = graphql`
                 title
                 description
                 twitter
+                googleAnalyticsId
             }
         }
     }

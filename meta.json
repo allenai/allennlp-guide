@@ -4,6 +4,7 @@
     "description": "In this course, we'll walk through the basics of using AllenNLP, describing all of the main abstractions used and how to build various kinds of models.",
     "siteUrl": "https://allennlp.org/",
     "twitter": "ai2_allennlp",
+    "googleAnalyticsId": "",
     "juniper": {
         "repo": "allenai/allennlp-course-examples",
         "branch": "master",
