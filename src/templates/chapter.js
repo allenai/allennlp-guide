@@ -342,6 +342,9 @@ const GlobalStyle = createGlobalStyle`
             max-width: 100%;
             border-collapse: collapse;
             margin-bottom: 1.5rem;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
 
             td, th {
                 ${({ theme }) => theme.typography.body}

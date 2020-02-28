@@ -184,6 +184,10 @@ const GlobalStyle = createGlobalStyle`
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
                 max-width: 1252px !important;
+
+                @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+                    padding: 0 18px !important;
+                }
             }
         }
     }

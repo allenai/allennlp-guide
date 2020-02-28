@@ -103,8 +103,9 @@ const Banner = styled(Container)`
                     linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
 
         h1 {
-            font-size: 30px;
-            line-height: 1.5;
+            font-size: 28px;
+            line-height: 1.3;
+            margin: ${({ theme }) => theme.spacing.md} auto;
         }
     }
 `;
@@ -124,16 +125,20 @@ const SectionIntro = styled.div`
 
     h2 {
         ${({ theme }) => theme.typography.h4};
-
-        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-            text-align: center;
-        }
     }
 
     p {
         margin: 0;
         padding-top: ${({ theme }) => theme.spacing.xxs};
         padding-bottom: ${({ theme }) => theme.spacing.xs};
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        text-align: center;
+
+        p {
+            ${({ theme }) => theme.typography.bodyBig};
+        }
     }
 `;
 

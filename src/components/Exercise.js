@@ -244,4 +244,8 @@ const MarkdownContainer = styled.div`
         margin: 2rem 0;
         background: ${({ theme }) => theme.color.N4};
     }
+
+    @media (max-width: 1024px) {
+        overflow: auto;
+    }
 `;
