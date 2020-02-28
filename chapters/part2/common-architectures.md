@@ -10,7 +10,7 @@ The main modeling operations done on natural language inputs include summarizing
 
 <exercise id="1" title="Summarizing sequences">
 
-Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, embedding_dim)` and produces another of shape `(batch_size, encoding_dim)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
+Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_size)` and produces another of shape `(batch_size, output_size)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
 
 <img src="/part2/common-architectures/seq2vec.svg" alt="Seq2Vec encoder" />
 
@@ -53,9 +53,21 @@ In the following example code, we instantiate two different `Seq2VecEncoders` (L
 
 <exercise id="2" title="Contextualizing sequences">
 
-* Seq2SeqEncoder
-    * RNN
-* Sample code
+In the previous section, we covered `Seq2VecEncoders`, which abstract an operation for summarizing sequences, but almost as common is a situation where you want to contextualize sequences, that is, processing a sequence of tokens and obtaining another sequence of some embeddings. AllenNLP provides `Seq2SeqEncoder`, which abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_size)` and produces another, modified tensor of shape `(batch_size, sequence_length, output_size)`. This can be something as simple as returning the input tensor unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as the Transformer Encoder.
+
+<img src="/part2/common-architectures/seq2seq.svg" alt="Seq2Seq encoder" />
+
+As with `Seq2VecEncoders`, AllenNLP provides a convenient class `PytorchSeq2SeqWrapper` that wraps PyTorch-based RNNs and turns them into AllenNLP-compatible `Seq2SeqEncoders`. But again, you don't need to use the wrapper yourself—AllenNLP provides pre-defined `Seq2SeqEncoders` such as `LstmSeq2SeqEncoder` and `GruSeq2SeqEncoder`.
+
+You might want to stack multiple `Seq2SeqEncoders` on top of each other and apply them in sequence. For example, you might want to contextualize the input using an `LstmSeq2SeqEncoder` first then further transform it using a `FeedForwardEncoder`, which applies `FeedForward` to each item in the sequence. AllenNLP offers a seq2seq encoder called `ComposeEncoder` which does exactly this—it takes a list of `Seq2SeqEncoders` and applies them in sequence.
+
+In the following code example, we instantiate two different `Seq2SeqEncoders` and observe the shapes of the input and the output tensors. The first two dimensions are unchanged (`batch_size` and `sequence_length`) but the size of the output embeddings depends on the specific module you are using.
+
+<codeblock source="part2/common-architectures/seq2seq"></codeblock>
+
+Note that AllenNLP implements two different abstractions for RNNs—RNN for summarizing (`Seq2VecEncoder`) and RNN for contextualizing (`Seq2SeqEncoder`). Although they are implemented in a very similar way (they both use PyTorch's RNN implementations), they are conceptually different, since the class of possible replacements for the former (e.g., CNN) is different from the that for the latter (e.g., Transformer encoder). This is one example of how AllenNLP designs abstractions—they abstract *what* is done to *what*, instead of *how* it's done.
+
+Some pre-trained contextualizers (including BERT) are implemented as `TokenEmbedders` instead of `Seq2SeqEncoders`. We'll cover these [in the next chapter](representing-text-as-features).
 
 </exercise>
 
