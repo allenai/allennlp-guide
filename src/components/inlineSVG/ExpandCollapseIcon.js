@@ -3,6 +3,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { toRem } from '../../utils';
 
 export const ExpandCollapseIcon = ({ className, isExpanded = false }) => (
     <PaddedContainer className={className} isExpanded={isExpanded} title={`${isExpanded ? 'Collapse' : 'Expand'} panel`}>
@@ -46,19 +47,19 @@ const RightOuter = styled.div`
 const innerStyles = css`
     display: block;
     transform-origin: 50% 50%;
-    width: 0.75rem;
-    height: 0.09375rem;
+    width: ${({ theme }) => theme.spacing.sm};
+    height: ${toRem(1.5)};
     transition: background-color 0.2s ease;
 `;
 
 const LeftInner = styled.span`
     ${innerStyles}
-    transform: rotate(45deg);
+    transform: rotate(45deg) translate(${toRem(0.375 /* 1.5/4 */)}, 0);
 `;
 
 const RightInner = styled.span`
     ${innerStyles}
-    transform: rotate(-45deg);
+    transform: rotate(-45deg) translate(-${toRem(0.375)}, 0);
 `;
 
 const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)`
