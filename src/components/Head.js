@@ -79,17 +79,19 @@ const Head = ({ title, description }) => (
                 },
             ];
 
+            const gaId = siteMetadata.googleAnalyticsId;
+
             return (
                 <Helmet defer={false} htmlAttributes={{ lang }} title={pageTitle} meta={meta} link={link}>
-                    {siteMetadata.googleAnalyticsId !== '' && (
-                        <script async="" src={`https://www.googletagmanager.com/gtag/js?id=${siteMetadata.googleAnalyticsId}`} />
+                    {gaId !== '' && (
+                        <script async="" src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
                     )}
-                    {siteMetadata.googleAnalyticsId !== '' && (
+                    {gaId !== '' && (
                         <script>{`
                             window.dataLayer = window.dataLayer || [];
                             function gtag() { dataLayer.push(arguments); }
                             gtag('js', new Date());
-                            gtag('config', '${siteMetadata.googleAnalyticsId}');
+                            gtag('config', '${gaId}');
                         `}</script>
                     )}
                 </Helmet>
