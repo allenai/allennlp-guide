@@ -1,9 +1,9 @@
 {
-    "name": "course-starter-python",
+    "name": "allennlp-course",
     "private": true,
-    "description": "Starter package to build interactive Python courses",
-    "version": "0.0.1",
-    "author": "Ines Montani <ines@explosion.ai>",
+    "description": "Diving Into Natural Language Processing With AllenNLP",
+    "version": "1.0.0",
+    "author": "AllenNLP <allennlp-contact@allenai.org>",
     "dependencies": {
         "@allenai/varnish": "0.8.11",
         "@illinois/react-use-local-storage": "^1.1.0",
@@ -14,6 +14,15 @@
         "autoprefixer": "^9.4.7",
         "babel-plugin-styled-components": "^1.10.7",
         "codemirror": "^5.43.0",
+        "eslint": "^6.7.2",
+        "eslint-config-prettier": "^6.7.0",
+        "eslint-config-standard": "^14.1.0",
+        "eslint-plugin-import": "^2.19.1",
+        "eslint-plugin-node": "^10.0.0",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-react": "^7.17.0",
+        "eslint-plugin-standard": "^4.0.1",
         "gatsby": "^2.1.4",
         "gatsby-image": "^2.0.29",
         "gatsby-plugin-antd": "^2.1.0",
@@ -47,16 +56,17 @@
     "scripts": {
         "build": "gatsby build",
         "dev": "gatsby develop",
-        "lint": "eslint **",
+        "lint": "eslint '**/*.{js,ts,tsx,json}'",
+        "lint:fix": "eslint '**/*.{js,ts,tsx,json}' --fix && echo '🛠  Lint --fix complete.'",
         "clear": "rm -rf .cache",
         "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
     },
     "devDependencies": {
         "browser-monads": "^1.0.0",
-        "prettier": "^1.16.4"
+        "prettier": "^1.19.1"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ines/course-starter-python"
+        "url": "https://github.com/allenai/allennlp-course"
     }
 }
