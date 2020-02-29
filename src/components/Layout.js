@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
@@ -6,9 +6,11 @@ import { Header } from '@allenai/varnish/components/Header';
 
 import Head from './Head';
 import { Link } from './Link';
-import { AllenNLPLogo } from './inlineSVG/AllenNLPLogo';
+import { AllenNLPLogo, MenuIcon } from './inlineSVG';
 
 const Layout = ({ title, description, children }) => {
+    const [mobileNavIsActive, setMobileNav] = useState(false);
+
     return (
         <StaticQuery
             query={graphql`
@@ -48,6 +50,11 @@ const Layout = ({ title, description, children }) => {
                                         ))}
                                     </ul>
                                 </nav>
+                                <MobileNavTrigger
+                                    onClick={() => setMobileNav(!mobileNavIsActive)}
+                                    aria-label="Toggle navigation">
+                                    <MenuIcon mobileNavIsActive={mobileNavIsActive} />
+                                </MobileNavTrigger>
                             </HeaderColumns>
                         </Header>
                         <Main>
@@ -64,6 +71,7 @@ export default Layout;
 
 const HeaderColumns = styled.div`
     display: grid;
+    position: relative;
     grid-template-columns: 18rem auto;
     grid-gap: 1rem;
     width: 100%;
@@ -152,6 +160,24 @@ const Main = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
+`;
+
+// This is the menu trigger element that includes hamburger menu icon
+const MobileNavTrigger = styled.button`
+    display: none;
+
+    // Show mobile menu below tablet portrait
+    @media (max-width: 1024px) {
+        display: grid;
+        border: none;
+        outline: none;
+        background: transparent;
+        cursor: pointer;
+        position: absolute;
+        right: -18px;
+        top: 0;
+        padding: 13px;
+    }
 `;
 
 // Resetting root layout
