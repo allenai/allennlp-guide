@@ -2,6 +2,7 @@ export * from './AllenNLPLogo';
 export * from './ArrowRightIcon';
 export * from './CubeIcon';
 export * from './ExpandCollapseIcon';
+export * from './MenuIcon';
 export * from './MobileDisclosure';
 export * from './PartIcon';
 export * from './RocketIcon';
