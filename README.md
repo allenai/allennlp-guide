@@ -47,7 +47,7 @@ Like most AI2 web apps, the front-end is powered by the [Varnish](https://github
 
 Unlike most AI2 web apps, package management is handled via [NPM](https://www.npmjs.com/) instead of Yarn, and the routing and static site generation is driven by [Gatsby](http://gatsbyjs.org/) instead of NextJS. This app also does not use TypeScript, as it was not included in the template that this app was forked from.
 
-Read-only code blocks are rendred with [Prism](https://prismjs.com/) and interactive code blocks are rendered with [CodeMirror](https://codemirror.net/).
+Read-only code blocks are rendered with [Prism](https://prismjs.com/) and interactive code blocks are rendered with [CodeMirror](https://codemirror.net/).
 
 See [`package.json`](https://github.com/allenai/allennlp-course/blob/master/package.json) for list of all packages used in this app.
 
