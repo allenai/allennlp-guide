@@ -53,7 +53,7 @@ In the following example code, we instantiate two different `Seq2VecEncoders` (L
 
 <exercise id="2" title="Contextualizing sequences">
 
-In the previous section, we covered `Seq2VecEncoders`, which abstract an operation for summarizing sequences, but almost as common is a situation where you want to contextualize sequences, that is, processing a sequence of tokens and obtaining another sequence of some embeddings. AllenNLP provides `Seq2SeqEncoder`, which abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_size)` and produces another, modified tensor of shape `(batch_size, sequence_length, output_size)`. This can be something as simple as returning the input tensor unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as the Transformer Encoder.
+In the previous section, we covered `Seq2VecEncoders`, which abstract an operation for summarizing sequences, but almost as common is a situation where you want to contextualize sequences, that is, process a sequence of tokens and obtain another sequence of some embeddings. AllenNLP provides `Seq2SeqEncoder`, which abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_dim)` and produces another, modified tensor of shape `(batch_size, sequence_length, output_dim)`. This can be something as simple as returning the input tensor unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as the Transformer Encoder.
 
 <img src="/part2/common-architectures/seq2seq.svg" alt="Seq2Seq encoder" />
 
