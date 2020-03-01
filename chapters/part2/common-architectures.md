@@ -49,6 +49,8 @@ In the following example code, we instantiate two different `Seq2VecEncoders` (L
 
 <codeblock source="part2/common-architectures/seq2vec"></codeblock>
 
+Note that these `Seq2VecEncoders` operate on batched, padded input. A single batch may contain sequences of different lengths, and shorter sequences get padded so that the batch has a uniform shape. RNN-based `Seq2VecEncoders` need to know the length of each sequence in the batch in order to return the correct hidden states. In AllenNLP, we use use masks to pass this information to the RNN. A mask is simply a tensor of 0s and 1s that indicate which locations of the batch are padded and non-padded. We'll discuss padding and masking more in details in [Representing text as features](/representing-text-as-features).
+
 </exercise>
 
 <exercise id="2" title="Contextualizing sequences">
@@ -61,7 +63,7 @@ As with `Seq2VecEncoders`, AllenNLP provides a convenient class `PytorchSeq2SeqW
 
 You might want to stack multiple `Seq2SeqEncoders` on top of each other and apply them in sequence. For example, you might want to contextualize the input using an `LstmSeq2SeqEncoder` first then further transform it using a `FeedForwardEncoder`, which applies `FeedForward` to each item in the sequence. AllenNLP offers a seq2seq encoder called `ComposeEncoder` which does exactly this—it takes a list of `Seq2SeqEncoders` and applies them in sequence.
 
-In the following code example, we instantiate two different `Seq2SeqEncoders` and observe the shapes of the input and the output tensors. The first two dimensions are unchanged (`batch_size` and `sequence_length`) but the size of the output embeddings depends on the specific module you are using.
+In the following code example, we instantiate two different `Seq2SeqEncoders` and observe the shapes of the input and the output tensors. The first two dimensions are unchanged (`batch_size` and `sequence_length`) but the size of the output embeddings depends on the specific module you are using. Note again that `Seq2SeqEncoders` take `mask` as an argument to `forward()`. RNN-based seq2seq encoders need to know the padded and un-padded locations in order to properly handle the statefulness (that is, using the final state of a batch as the inital state of the next one).
 
 <codeblock source="part2/common-architectures/seq2seq"></codeblock>
 
