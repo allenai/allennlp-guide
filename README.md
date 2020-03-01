@@ -56,7 +56,7 @@ type: chapter # important: this creates a standalone page from the chapter
 
 ### `outline.js` and Chapter Organization
 
-Chapter navigation is rendered programmatically via [`outline.json`](https://github.com/allenai/allennlp-course/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
+Chapter navigation is rendered programmatically via [`outline.js`](https://github.com/allenai/allennlp-course/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
 
 Each part supports the following properties:
 
