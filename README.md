@@ -1,22 +1,5 @@
 # AllenNLP Course
 
-This course app was forked from the
-[`course-starter-python`](https://github.com/ines/course-starter-python) template developed by Ines Montani.
-
-The outline for the course that I'm envisioning looks like this.  These are the main sections,
-which might themselves be several chapters long.
-
-1. Introduction to the course
-2. AllenNLP's core abstractions (at a high level, how they all fit together)
-3. Deep dives into several of the core abstractions (there's one there for `TextField` and related
-   classes).
-4. Using AllenNLP - built-in commands, configuration files, etc.
-5. Testing with AllenNLP
-6. Task-specific chapters (many of these on different tasks)
-7. Building demos with AllenNLP
-
-Some of these could maybe be combined or rearranged, but that's the basic idea.
-
 ## Running the app
 
 To start the local development server, install [Gatsby](https://gatsbyjs.org)
@@ -73,7 +56,7 @@ type: chapter # important: this creates a standalone page from the chapter
 
 ### `outline.js` and Chapter Organization
 
-Chapter navigation is rendered programmatically via [`package.json`](https://github.com/allenai/allennlp-course/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
+Chapter navigation is rendered programmatically via [`outline.json`](https://github.com/allenai/allennlp-course/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
 
 Each part supports the following properties:
 
@@ -134,3 +117,8 @@ Enter your repository URL, click "launch" and wait for it to install the depende
 and build the image.
 
 ![Binder](https://user-images.githubusercontent.com/13643239/39412757-a518d416-4c21-11e8-9dad-8b4cc14737bc.png)
+
+---
+
+This course was initially forked from the
+[`course-starter-python`](https://github.com/ines/course-starter-python) template developed by Ines Montani.
