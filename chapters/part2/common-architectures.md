@@ -10,7 +10,7 @@ The main modeling operations done on natural language inputs include summarizing
 
 <exercise id="1" title="Summarizing sequences">
 
-Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, embedding_dim)` and produces another of shape `(batch_size, encoding_dim)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
+Taking a sequence of tokens and summarizing it to a fixed-size vector is one of the most fundamental operations done on natural language inputs. AllenNLP provides an abstraction called `Seq2VecEncoder` for this, which is a class of architectures that take a sequence of vectors and summarize it to a single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_size)` and produces another of shape `(batch_size, output_size)`. This includes a wide range of models, from something very simple (a bag-of-embedding model which simply sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the following diagram for an illustration:
 
 <img src="/part2/common-architectures/seq2vec.svg" alt="Seq2Vec encoder" />
 
@@ -49,13 +49,31 @@ In the following example code, we instantiate two different `Seq2VecEncoders` (L
 
 <codeblock source="part2/common-architectures/seq2vec"></codeblock>
 
+Note that these `Seq2VecEncoders` operate on batched, padded input. A single batch may contain sequences of different lengths, and shorter sequences get padded so that the batch has a uniform shape. RNN-based `Seq2VecEncoders` need to know the length of each sequence in the batch in order to return the correct hidden states. In AllenNLP, we use use masks to pass this information to the RNN. A mask is simply a tensor of 0s and 1s that indicate which locations of the batch are padded and non-padded. We'll discuss padding and masking more in details in [Representing text as features](/representing-text-as-features).
+
 </exercise>
 
 <exercise id="2" title="Contextualizing sequences">
 
-* Seq2SeqEncoder
-    * RNN
-* Sample code
+In the previous section, we covered `Seq2VecEncoders`, which abstract an operation for summarizing sequences, but almost as common is a situation where you want to contextualize sequences, that is, process a sequence of tokens and obtain another sequence of some embeddings. AllenNLP provides `Seq2SeqEncoder`, which abstracts any operation that takes a tensor of shape `(batch_size, sequence_length, input_dim)` and produces another, modified tensor of shape `(batch_size, sequence_length, output_dim)`. This can be something as simple as returning the input tensor unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as the Transformer Encoder.
+
+<img src="/part2/common-architectures/seq2seq.svg" alt="Seq2Seq encoder" />
+
+As with `Seq2VecEncoders`, AllenNLP provides a convenient class `PytorchSeq2SeqWrapper` that wraps PyTorch-based RNNs and turns them into AllenNLP-compatible `Seq2SeqEncoders`. But again, you don't need to use the wrapper yourself—AllenNLP provides pre-defined `Seq2SeqEncoders` such as `LstmSeq2SeqEncoder` and `GruSeq2SeqEncoder`.
+
+You might want to stack multiple `Seq2SeqEncoders` on top of each other and apply them in sequence. For example, you might want to contextualize the input using an `LstmSeq2SeqEncoder` first then further transform it using a `FeedForwardEncoder`, which applies `FeedForward` to each item in the sequence. AllenNLP offers a seq2seq encoder called `ComposeEncoder` which does exactly this—it takes a list of `Seq2SeqEncoders` and applies them in sequence.
+
+In the following code example, we instantiate two different `Seq2SeqEncoders` and observe the shapes of the input and the output tensors. The first two dimensions are unchanged (`batch_size` and `sequence_length`) but the size of the output embeddings depends on the specific module you are using. Note again that `Seq2SeqEncoders` take `mask` as an argument to `forward()`. RNN-based seq2seq encoders need to know the padded and un-padded locations in order to properly handle the statefulness (that is, using the final state of a batch as the inital state of the next one).
+
+<codeblock source="part2/common-architectures/seq2seq"></codeblock>
+
+## Why not just use torch.nn.LSTM (or similar) directly?
+
+If this does what you want, go for it, there's nothing wrong with using LSTM modules directly in your model.  The reasons you might want to use a `Seq2SeqEncoder` instead are two-fold: first, it encourages you to think at a higher level about what basic operations your model is doing (am I contextualizing, summarizing, or both?).  Second, it allows you to do controlled experiments easier, if you think you might one day want to try a different contextualizer in your model.  Using an abstraction that encapsulates the options you want to experiment with is a powerful way to get very easy, controlled experiments.
+
+Note also that we've now seen two different abstractions for RNNs—RNN for summarizing (`Seq2VecEncoder`) and RNN for contextualizing (`Seq2SeqEncoder`). Although they are implemented in a very similar way (they both use PyTorch's RNN implementations), they are conceptually different, since the class of possible replacements for the former (e.g., CNN) is different from the that for the latter (e.g., Transformer encoder). This is one example of how AllenNLP designs abstractions—they abstract *what* is done to *what*, instead of *how* it's done.
+
+Some pre-trained contextualizers (including BERT) are implemented as `TokenEmbedders` instead of `Seq2SeqEncoders`. We'll cover these [in the next chapter](representing-text-as-features).
 
 </exercise>
 
