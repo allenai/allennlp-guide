@@ -65,7 +65,11 @@ In the following code example, we instantiate two different `Seq2SeqEncoders` an
 
 <codeblock source="part2/common-architectures/seq2seq"></codeblock>
 
-Note that AllenNLP implements two different abstractions for RNNs—RNN for summarizing (`Seq2VecEncoder`) and RNN for contextualizing (`Seq2SeqEncoder`). Although they are implemented in a very similar way (they both use PyTorch's RNN implementations), they are conceptually different, since the class of possible replacements for the former (e.g., CNN) is different from the that for the latter (e.g., Transformer encoder). This is one example of how AllenNLP designs abstractions—they abstract *what* is done to *what*, instead of *how* it's done.
+## Why not just use torch.nn.LSTM (or similar) directly?
+
+If this does what you want, go for it, there's nothing wrong with using LSTM modules directly in your model.  The reasons you might want to use a `Seq2SeqEncoder` instead are two-fold: first, it encourages you to think at a higher level about what basic operations your model is doing (am I contextualizing, summarizing, or both?).  Second, it allows you to do controlled experiments easier, if you think you might one day want to try a different contextualizer in your model.  Using an abstraction that encapsulates the options you want to experiment with is a powerful way to get very easy, controlled experiments.
+
+Note also that we've now seen two different abstractions for RNNs—RNN for summarizing (`Seq2VecEncoder`) and RNN for contextualizing (`Seq2SeqEncoder`). Although they are implemented in a very similar way (they both use PyTorch's RNN implementations), they are conceptually different, since the class of possible replacements for the former (e.g., CNN) is different from the that for the latter (e.g., Transformer encoder). This is one example of how AllenNLP designs abstractions—they abstract *what* is done to *what*, instead of *how* it's done.
 
 Some pre-trained contextualizers (including BERT) are implemented as `TokenEmbedders` instead of `Seq2SeqEncoders`. We'll cover these [in the next chapter](representing-text-as-features).
 
