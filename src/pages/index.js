@@ -437,7 +437,7 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
         ${TriggerClickArea}:hover {
             ${TriggerIcon} {
                 transform: translateY(2px);
-                span {
+                span.rect {
                     background: ${({ theme }) => theme.color.B6};
                 }
             }

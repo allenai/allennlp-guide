@@ -77,7 +77,7 @@ const SectionTitle = styled.h2`
 
     &:hover {
         ${TriggerIcon} {
-            span {
+            span.rect {
                 background: ${({ theme }) => theme.color.B6};
             }
         }
