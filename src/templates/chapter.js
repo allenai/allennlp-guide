@@ -33,14 +33,14 @@ const Template = ({ data, location }) => {
     const { slug } = fields;
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
-    let slugList = {}
-    slugList[`${outline.overview.slug}`] = "";
-    outline.parts.forEach((part) => {
-      if (part.chapterSlugs) {
-        part.chapterSlugs.forEach((slug) => {
-          slugList[`${slug}`] = part.title;
-        });
-      }
+    const slugList = {};
+    slugList[`${outline.overview.slug}`] = '';
+    outline.parts.forEach(part => {
+        if (part.chapterSlugs) {
+            part.chapterSlugs.forEach(slug => {
+                slugList[`${slug}`] = part.title;
+            });
+        }
     });
 
     // Util consts for slugs and outline data
@@ -48,18 +48,21 @@ const Template = ({ data, location }) => {
     const links = Object.keys(slugList);
     const thisPart = outline.parts.find(part => part.title === slugList[slug]);
     const isOverview = slug === outline.overview.slug;
-    const getProp = (prop) => isOverview ? outline.overview[prop] : thisPart[prop];
+    const getProp = prop => (isOverview ? outline.overview[prop] : thisPart[prop]);
 
     const [activeExc, setActiveExc] = useState(null);
-    const [completed, setCompleted] = useLocalStorage(`${courseId}-completed-${slug.substring(1)}`, []);
+    const [completed, setCompleted] = useLocalStorage(
+        `${courseId}-completed-${slug.substring(1)}`,
+        []
+    );
     const [storedUserExpandedGroups, setUserExpandedGroups] = useLocalStorage('expandedGroups');
 
     // User-defined nav group expand/collapse state
-    let userExpandedGroups = [].concat(storedUserExpandedGroups);
+    const userExpandedGroups = [].concat(storedUserExpandedGroups);
     if (!isOverview && !userExpandedGroups.includes(thisPart.title)) {
         userExpandedGroups.push(thisPart.title);
     }
-    const toggleMenuKey = (key) => {
+    const toggleMenuKey = key => {
         const index = userExpandedGroups.indexOf(key);
         if (index > -1) {
             userExpandedGroups.splice(index, 1);
@@ -72,7 +75,7 @@ const Template = ({ data, location }) => {
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
-    const handleSetActiveExc = (id) => {
+    const handleSetActiveExc = id => {
         const loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
@@ -92,16 +95,23 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    const getMenuIcon = (obj) => obj.antMenuIcon ? (
-        <Icon type={obj.antMenuIcon} />
-    ) : obj.icon && (
-        <CustomIcon component={() => getIcon(obj.icon, 17)} />
-    );
+    const getMenuIcon = obj =>
+        obj.antMenuIcon ? (
+            <Icon type={obj.antMenuIcon} />
+        ) : (
+            obj.icon && <CustomIcon component={() => getIcon(obj.icon, 17)} />
+        );
 
     return (
         <ChapterContext.Provider
-            value={{ activeExc, setActiveExc: handleSetActiveExc, completed, setCompleted, userExpandedGroups, setUserExpandedGroups }}
-        >
+            value={{
+                activeExc,
+                setActiveExc: handleSetActiveExc,
+                completed,
+                setCompleted,
+                userExpandedGroups,
+                setUserExpandedGroups
+            }}>
             <Layout title={title} description={description}>
                 <GlobalStyle />
                 <Wrapper>
@@ -115,26 +125,39 @@ const Template = ({ data, location }) => {
                                     <Menu.Item key={outline.overview.slug}>
                                         <Link to={outline.overview.slug}>
                                             {getMenuIcon(outline.overview)}
-                                            <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
+                                            <span>
+                                                {
+                                                    groupedChapters[outline.overview.slug].node
+                                                        .frontmatter.title
+                                                }
+                                            </span>
                                         </Link>
                                     </Menu.Item>
-                                    {outline.parts.map((part) => part.chapterSlugs && (
-                                        <Menu.SubMenu
-                                            key={part.title}
-                                            onTitleClick={() => toggleMenuKey(part.title)}
-                                            title={
-                                                <span>
-                                                    {getMenuIcon(part)}
-                                                    <span>{part.title}</span>
-                                                </span>
-                                            }>
-                                            {part.chapterSlugs.map((chapterSlug) => (
-                                                <Menu.Item key={chapterSlug}>
-                                                    <Link to={chapterSlug}>{groupedChapters[chapterSlug].node.frontmatter.title}</Link>
-                                                </Menu.Item>
-                                            ))}
-                                        </Menu.SubMenu>
-                                    ))}
+                                    {outline.parts.map(
+                                        part =>
+                                            part.chapterSlugs && (
+                                                <Menu.SubMenu
+                                                    key={part.title}
+                                                    onTitleClick={() => toggleMenuKey(part.title)}
+                                                    title={
+                                                        <span>
+                                                            {getMenuIcon(part)}
+                                                            <span>{part.title}</span>
+                                                        </span>
+                                                    }>
+                                                    {part.chapterSlugs.map(chapterSlug => (
+                                                        <Menu.Item key={chapterSlug}>
+                                                            <Link to={chapterSlug}>
+                                                                {
+                                                                    groupedChapters[chapterSlug]
+                                                                        .node.frontmatter.title
+                                                                }
+                                                            </Link>
+                                                        </Menu.Item>
+                                                    ))}
+                                                </Menu.SubMenu>
+                                            )
+                                    )}
                                 </Menu>
                             </SideNav>
                         </LeftContent>
@@ -150,26 +173,42 @@ const Template = ({ data, location }) => {
                                 </div>
                                 <ChapterIntroText>
                                     {!isOverview && (
-                                        <PartTitle><span>{thisPart.title}</span></PartTitle>
+                                        <PartTitle>
+                                            <span>{thisPart.title}</span>
+                                        </PartTitle>
                                     )}
-                                    {title && <h1><span>{title}</span></h1>}
-                                    {description && (
-                                        <p>{description}</p>
+                                    {title && (
+                                        <h1>
+                                            <span>{title}</span>
+                                        </h1>
                                     )}
+                                    {description && <p>{description}</p>}
                                 </ChapterIntroText>
                             </ChapterIntro>
                             {html}
                             <Pagination>
-                              <div>
-                                {links.indexOf(slug) !== 0 && (
-                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) - 1])}>« Previous Chapter</Button>
-                                )}
-                              </div>
-                              <div>
-                                {links.indexOf(slug) !== links.length - 1 && (
-                                    <Button variant="primary" onClick={() => navigate(links[links.indexOf(slug) + 1])}>Next Chapter »</Button>
-                                )}
-                              </div>
+                                <div>
+                                    {links.indexOf(slug) !== 0 && (
+                                        <Button
+                                            variant="primary"
+                                            onClick={() =>
+                                                navigate(links[links.indexOf(slug) - 1])
+                                            }>
+                                            « Previous Chapter
+                                        </Button>
+                                    )}
+                                </div>
+                                <div>
+                                    {links.indexOf(slug) !== links.length - 1 && (
+                                        <Button
+                                            variant="primary"
+                                            onClick={() =>
+                                                navigate(links[links.indexOf(slug) + 1])
+                                            }>
+                                            Next Chapter »
+                                        </Button>
+                                    )}
+                                </div>
                             </Pagination>
                             <ChapterFooter />
                         </RightContent>
@@ -273,7 +312,8 @@ const GlobalStyle = createGlobalStyle`
                     .ant-menu-submenu-arrow {
                         &:before,
                         &:after {
-                            background: linear-gradient(90deg, ${({ theme }) => `${theme.color.B5}, ${theme.color.B5}`}) !important;
+                            background: linear-gradient(90deg, ${({ theme }) =>
+                                `${theme.color.B5}, ${theme.color.B5}`}) !important;
                         }
                     }
                 }
@@ -544,7 +584,10 @@ const Wrapper = styled.div`
 // Left-aligned container with white background
 const LeftContainer = styled.div`
     background: ${({ theme }) => theme.color.N1};
-    width: calc(${({ theme }) => `324px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`});
+    width: calc(
+        ${({ theme }) =>
+            `324px + ((100vw - (${theme.breakpoints.xl} + ${theme.spacing.xxl}) - ${theme.spacing.xxl}) / 2) + ${theme.spacing.xxl}`}
+    );
     height: 100%;
     display: flex;
     position: relative;
@@ -578,14 +621,17 @@ const SideNav = styled.nav`
 const RightContainer = styled.div`
     position: relative;
     flex: 1;
-    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue()}rem;
+    max-width: ${({ theme }) =>
+        theme.breakpoints.xl.getRemValue() +
+        theme.spacing.xxl.getRemValue() -
+        theme.spacing.xxl.getRemValue()}rem;
     height: 100%;
 
     &:before {
         position: fixed;
         top: 65px;
         display: block;
-        content: "";
+        content: '';
         width: 100%;
         height: 50px;
         z-index: 2;
@@ -599,7 +645,11 @@ const RightContainer = styled.div`
 `;
 
 const RightContent = styled.div`
-    max-width: ${({ theme }) => (theme.breakpoints.xl.getRemValue() + theme.spacing.xxl.getRemValue()) - theme.spacing.xxl.getRemValue() - (324 / 16)}rem;
+    max-width: ${({ theme }) =>
+        theme.breakpoints.xl.getRemValue() +
+        theme.spacing.xxl.getRemValue() -
+        theme.spacing.xxl.getRemValue() -
+        324 / 16}rem;
     height: 100%;
     display: flex;
     flex-direction: column;

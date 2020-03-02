@@ -15,10 +15,10 @@ function getFiles({ allCode }, sourceId, setupId) {
     allCode.edges.forEach(({ node }) => {
         const filename = node.dir + '/' + node.name;
         if (filename.includes(sourceId)) {
-            files['sourceFile'] = node.code;
+            files.sourceFile = node.code;
         }
         if (filename.includes(setupId)) {
-            files['setupFile'] = node.code;
+            files.setupFile = node.code;
         }
     });
     return files;
@@ -86,7 +86,7 @@ export class CodeBlock extends React.Component {
 
         const sourceId = source || `${id}_source`;
         const setupId = setup || `${id}_setup`;
-        const execute = executable !== "false";
+        const execute = executable !== 'false';
 
         const resetText = {
             buttonLabel: 'Reset',
@@ -121,15 +121,18 @@ export class CodeBlock extends React.Component {
                     }
                 `}
                 render={data => {
-                    const { repo, branch, kernelType, debug, lang } = data.site.siteMetadata.juniper;
+                    const {
+                        repo,
+                        branch,
+                        kernelType,
+                        debug,
+                        lang
+                    } = data.site.siteMetadata.juniper;
                     const { sourceFile, setupFile } = getFiles(data, sourceId, setupId);
                     return (
                         <Container>
                             {setupFile && setupFile !== '' && (
-                                <CodeSection
-                                    title="Setup"
-                                    setupFile={setupFile}
-                                />
+                                <CodeSection title="Setup" setupFile={setupFile} />
                             )}
                             {Juniper && (
                                 <Juniper
@@ -141,48 +144,69 @@ export class CodeBlock extends React.Component {
                                     outputIsVisible={outputIsVisible}
                                     resetButtonIsVisible={resetButtonIsVisible}
                                     hideOutput={() => this.setState({ outputIsVisible: false })}
-                                    showResetButton={() => this.setState({ resetButtonIsVisible: true })}
+                                    showResetButton={() =>
+                                        this.setState({ resetButtonIsVisible: true })
+                                    }
                                     debug={debug}
                                     setupFile={setupFile}
                                     sourceFile={sourceFile}
-                                    actions={({ runCode }) => execute && (
-                                        <React.Fragment>
-                                            {resetButtonIsVisible && (
-                                                <ResetButtonContainer>
-                                                    {resetConfirmationIsVisible ? (
-                                                        <React.Fragment>
-                                                            <ResetConfirmation>
-                                                                <span>{resetText.confirmation}</span>
-                                                                <ResetCancel
-                                                                    onClick={() => this.setState({ resetConfirmationIsVisible: false })}>
-                                                                    Cancel
-                                                                </ResetCancel>
-                                                                <ResetButton
-                                                                    onClick={() => this.handleReset()}
-                                                                    title={resetText.tooltip}>
-                                                                    {resetText.buttonLabel}
-                                                                </ResetButton>
-                                                            </ResetConfirmation>
-                                                        </React.Fragment>
-                                                    ) : (
-                                                        <ResetConfirmationTrigger
-                                                            onClick={() => this.setState({ resetConfirmationIsVisible: true })}
-                                                            title={resetText.tooltip}>
-                                                            {resetText.buttonLabel}
-                                                        </ResetConfirmationTrigger>
-                                                    )}
-                                                </ResetButtonContainer>
-                                            )}
-                                            <RunButton onClick={() => {
-                                                runCode(code => addSetupCode(code, setupFile));
-                                                this.setState({ outputIsVisible: true });
-                                            }}>Run Code</RunButton>
-                                        </React.Fragment>
-                                    )}
+                                    actions={({ runCode }) =>
+                                        execute && (
+                                            <React.Fragment>
+                                                {resetButtonIsVisible && (
+                                                    <ResetButtonContainer>
+                                                        {resetConfirmationIsVisible ? (
+                                                            <React.Fragment>
+                                                                <ResetConfirmation>
+                                                                    <span>
+                                                                        {resetText.confirmation}
+                                                                    </span>
+                                                                    <ResetCancel
+                                                                        onClick={() =>
+                                                                            this.setState({
+                                                                                resetConfirmationIsVisible: false
+                                                                            })
+                                                                        }>
+                                                                        Cancel
+                                                                    </ResetCancel>
+                                                                    <ResetButton
+                                                                        onClick={() =>
+                                                                            this.handleReset()
+                                                                        }
+                                                                        title={resetText.tooltip}>
+                                                                        {resetText.buttonLabel}
+                                                                    </ResetButton>
+                                                                </ResetConfirmation>
+                                                            </React.Fragment>
+                                                        ) : (
+                                                            <ResetConfirmationTrigger
+                                                                onClick={() =>
+                                                                    this.setState({
+                                                                        resetConfirmationIsVisible: true
+                                                                    })
+                                                                }
+                                                                title={resetText.tooltip}>
+                                                                {resetText.buttonLabel}
+                                                            </ResetConfirmationTrigger>
+                                                        )}
+                                                    </ResetButtonContainer>
+                                                )}
+                                                <RunButton
+                                                    onClick={() => {
+                                                        runCode(code =>
+                                                            addSetupCode(code, setupFile)
+                                                        );
+                                                        this.setState({ outputIsVisible: true });
+                                                    }}>
+                                                    Run Code
+                                                </RunButton>
+                                            </React.Fragment>
+                                        )
+                                    }
                                 />
                             )}
                         </Container>
-                    )
+                    );
                 }}
             />
         );
@@ -226,50 +250,37 @@ export const codeBlockWrappingStyles = css`
 `;
 
 // Header and Content section within a CodeBlock
-export const CodeSection = ({
-    actions,
-    children,
-    className,
-    clearFunction,
-    setupFile,
-    title
-}) => {
+export const CodeSection = ({ actions, children, className, clearFunction, setupFile, title }) => {
     const [sectionIsVisible, setSectionVisibility] = useState(false);
     const Header = setupFile ? ToggleableSectionHeader : SectionHeader;
-    const Section = title === "Output" ? OutputSection : InputSection;
+    const Section = title === 'Output' ? OutputSection : InputSection;
     return (
         <Section className={className}>
             <Header onClick={setupFile ? () => setSectionVisibility(!sectionIsVisible) : () => {}}>
                 <strong>{title}</strong>
                 {setupFile && (
-                    <span className={`${sectionIsVisible ? 'label-visible' : ''}`}>(Read-only)</span>
+                    <span className={`${sectionIsVisible ? 'label-visible' : ''}`}>
+                        (Read-only)
+                    </span>
                 )}
-                {clearFunction && (
-                    <ClearBtn onClick={clearFunction}>Clear</ClearBtn>
-                )}
-                {setupFile && (
-                    <TriggerIcon isExpanded={sectionIsVisible} />
-                )}
+                {clearFunction && <ClearBtn onClick={clearFunction}>Clear</ClearBtn>}
+                {setupFile && <TriggerIcon isExpanded={sectionIsVisible} />}
             </Header>
             {setupFile ? (
                 <AnimateHeight animateOpacity={true} height={sectionIsVisible ? 'auto' : 0}>
                     <SectionContent>
                         <PrismRender>
-                            <pre className="language-python line-numbers"><code>{setupFile}</code></pre>
+                            <pre className="language-python line-numbers">
+                                <code>{setupFile}</code>
+                            </pre>
                             <PrismSelect defaultValue={setupFile} readOnly={true} />
                         </PrismRender>
                     </SectionContent>
                 </AnimateHeight>
             ) : (
-                <SectionContent>
-                    {children}
-                </SectionContent>
+                <SectionContent>{children}</SectionContent>
             )}
-            {actions && (
-                <Toolbar>
-                    {actions}
-                </Toolbar>
-            )}
+            {actions && <Toolbar>{actions}</Toolbar>}
         </Section>
     );
 };
@@ -466,7 +477,8 @@ export const OutputRender = styled.div``;
 
 const SectionContent = styled.div`
     &&& {
-        padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xs} ${theme.spacing.xl} ${theme.spacing.xs}`};
+        padding: ${({ theme }) =>
+            `${theme.spacing.md} ${theme.spacing.xs} ${theme.spacing.xl} ${theme.spacing.xs}`};
 
         .CodeMirror.cm-s-default {
           width: 100%;
@@ -699,7 +711,8 @@ const OutputSection = styled.div`
         color: #f7f7f7;
 
         ${SectionContent} {
-            padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg} ${theme.spacing.xl} ${theme.spacing.lg}`};
+            padding: ${({ theme }) =>
+                `${theme.spacing.md} ${theme.spacing.lg} ${theme.spacing.xl} ${theme.spacing.lg}`};
             min-height: 150px;
         }
     }

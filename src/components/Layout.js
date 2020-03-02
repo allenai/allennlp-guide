@@ -41,11 +41,9 @@ const Layout = ({ title, description, children }) => {
                                 </LogoContainer>
                                 <nav>
                                     <ul>
-                                        {headerLinks.map((headerLink) => (
+                                        {headerLinks.map(headerLink => (
                                             <li key={headerLink.url}>
-                                                <Link to={headerLink.url}>
-                                                    {headerLink.text}
-                                                </Link>
+                                                <Link to={headerLink.url}>{headerLink.text}</Link>
                                             </li>
                                         ))}
                                     </ul>
@@ -57,9 +55,7 @@ const Layout = ({ title, description, children }) => {
                                 </MobileNavTrigger>
                             </HeaderColumns>
                         </Header>
-                        <Main>
-                            {children}
-                        </Main>
+                        <Main>{children}</Main>
                     </ThemeProvider>
                 );
             }}
@@ -79,12 +75,12 @@ const HeaderColumns = styled.div`
     align-items: center;
 
     nav ul {
-      display: flex;
-      justify-content: flex-end;
+        display: flex;
+        justify-content: flex-end;
 
-      li + li {
-        margin-left: 40px;
-      }
+        li + li {
+            margin-left: 40px;
+        }
     }
 
     @media (max-width: 1024px) {
@@ -110,28 +106,28 @@ const LogoContainer = styled.div`
         align-items: center;
 
         svg {
-          display: block;
-          transition: fill 0.2s ease;
+            display: block;
+            transition: fill 0.2s ease;
         }
 
         span {
-          display: block;
-          font-size: 34px;
-          padding-left: 14px;
-          transition: color 0.2s ease;
-          color: ${({ theme }) => theme.color.N10};
+            display: block;
+            font-size: 34px;
+            padding-left: 14px;
+            transition: color 0.2s ease;
+            color: ${({ theme }) => theme.color.N10};
         }
 
         &:hover {
-          text-decoration: none !important;
+            text-decoration: none !important;
 
-          svg {
-            fill: ${({ theme }) => theme.color.B6};
-          }
+            svg {
+                fill: ${({ theme }) => theme.color.B6};
+            }
 
-          span {
-            color: ${({ theme }) => theme.color.B6};
-          }
+            span {
+                color: ${({ theme }) => theme.color.B6};
+            }
         }
     }
 

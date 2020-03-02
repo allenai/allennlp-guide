@@ -12,8 +12,9 @@ const Exercise = ({ id, title, type, children }) => {
     const { activeExc, setActiveExc } = useContext(ChapterContext);
     const isExpanded = activeExc === excId;
 
-    const handleEscape = (e) => {
-        if (e.keyCode === 27) {  // 27 is ESC
+    const handleEscape = e => {
+        if (e.keyCode === 27) {
+            // 27 is ESC
             setActiveExc(null);
         }
     };
@@ -22,7 +23,7 @@ const Exercise = ({ id, title, type, children }) => {
         document.addEventListener('keyup', handleEscape, false);
         return () => {
             document.removeEventListener('keyup', handleEscape, false);
-        }
+        };
     });
 
     const handleExpand = useCallback(() => setActiveExc(isExpanded ? null : excId), [
@@ -31,18 +32,13 @@ const Exercise = ({ id, title, type, children }) => {
         excId
     ]);
 
-    const handleNext = useCallback(() => setActiveExc(excId + 1), [
-        setActiveExc,
-        excId
-    ]);
+    const handleNext = useCallback(() => setActiveExc(excId + 1), [setActiveExc, excId]);
 
     return (
         <StyledCard isExpanded={isExpanded}>
             <Anchor id={id} ref={excRef} />
             <SectionTitle onClick={handleExpand}>
-                <SectionId>
-                    {excId}
-                </SectionId>
+                <SectionId>{excId}</SectionId>
                 {title}
                 <TriggerIcon isExpanded={isExpanded} />
             </SectionTitle>
@@ -111,9 +107,12 @@ const StyledCard = styled(({ isExpanded, ...props }) => <Card {...props} />)`
     transition: border-color 0.1s ease;
 
     &:hover {
-        ${({ isExpanded, theme }) => !isExpanded ? `
+        ${({ isExpanded, theme }) =>
+            !isExpanded
+                ? `
             border-color: ${theme.color.B6};
-        ` : null}
+        `
+                : null}
     }
 
     // This is a hack to hide the last section "next" button.
@@ -143,10 +142,10 @@ const Anchor = styled.div`
 `;
 
 const SectionId = styled.span`
-   font-weight: normal;
-   color: ${({ theme }) => theme.color.B6};
-   font-size: 19px;
-   padding-right: 20px;
+    font-weight: normal;
+    color: ${({ theme }) => theme.color.B6};
+    font-size: 19px;
+    padding-right: 20px;
 `;
 
 const StyledCardContent = styled(CardContent)`
@@ -219,17 +218,17 @@ const MarkdownContainer = styled.div`
     }
 
     a {
-      text-decoration: none;
+        text-decoration: none;
 
-      &&:hover {
-          text-decoration: underline;
-      }
+        &&:hover {
+            text-decoration: underline;
+        }
     }
 
     table,
     hr,
     pre,
-    div[class^="code-module-root"],
+    div[class^='code-module-root'],
     .gatsby-highlight {
         & + ${Toolbar} {
             border: none;
