@@ -8,8 +8,8 @@ export default () => {
     return (
         <Layout>
             <CenteredContent>
-              <span>404</span>
-              <p>Page not found.</p>
+                <span>404</span>
+                <p>Page not found.</p>
             </CenteredContent>
             <Footer />
         </Layout>

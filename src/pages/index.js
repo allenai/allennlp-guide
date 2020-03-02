@@ -26,7 +26,12 @@ export default ({ data }) => {
             <About>
                 <SectionIntro>
                     <h2>About this course</h2>
-                    <p>We walk through the basics of using AllenNLP, describing all of the main abstractions used and why we chose them, how to use specific functionality like configuration files or pre-trained representations, and how to build various kinds of models, from simple to complex.</p>
+                    <p>
+                        We walk through the basics of using AllenNLP, describing all of the main
+                        abstractions used and why we chose them, how to use specific functionality
+                        like configuration files or pre-trained representations, and how to build
+                        various kinds of models, from simple to complex.
+                    </p>
                 </SectionIntro>
                 <PartContainer>
                     <StandaloneChapterLink to={outline.overview.slug}>
@@ -34,7 +39,9 @@ export default ({ data }) => {
                             color={outline.overview.color}
                             icon={outline.overview.icon}
                             title={groupedChapters[outline.overview.slug].node.frontmatter.title}
-                            description={groupedChapters[outline.overview.slug].node.frontmatter.description}
+                            description={
+                                groupedChapters[outline.overview.slug].node.frontmatter.description
+                            }
                             slug={outline.overview.slug}
                         />
                     </StandaloneChapterLink>
@@ -44,13 +51,21 @@ export default ({ data }) => {
                 <SectionIntro>
                     <h2>Explore the course material</h2>
                 </SectionIntro>
-                {outline.parts.map((part) => part.chapterSlugs && (
-                    <Part data={part} groupedChapters={groupedChapters} key={part.title} />
-                ))}
+                {outline.parts.map(
+                    part =>
+                        part.chapterSlugs && (
+                            <Part data={part} groupedChapters={groupedChapters} key={part.title} />
+                        )
+                )}
             </Parts>
             <Credits>
-                Written by the <Link to={data.site.siteMetadata.siteUrl}>AllenNLP</Link> team at the <Link to="https://allenai.org/">Allen Institute for AI</Link>.<br />
-              This course was inspired by <Link to="https://github.com/ines/course-starter-python">Online Course Starter</Link>.
+                Written by the <Link to={data.site.siteMetadata.siteUrl}>AllenNLP</Link> team at the{' '}
+                <Link to="https://allenai.org/">Allen Institute for AI</Link>.<br />
+                This course was inspired by{' '}
+                <Link to="https://github.com/ines/course-starter-python">
+                    Online Course Starter
+                </Link>
+                .
             </Credits>
             <Footer />
         </Layout>
@@ -62,8 +77,8 @@ export const pageQuery = graphql`
     {
         site {
             siteMetadata {
-                siteUrl,
-                title,
+                siteUrl
+                title
                 description
             }
         }
@@ -86,8 +101,8 @@ export const pageQuery = graphql`
 // Hero Banner
 const Banner = styled(Container)`
     background: url('/ui/bannerDotsLeft.svg') left center / auto 100% no-repeat,
-                url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
-                linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
+        url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
+        linear-gradient(168.81deg, #1b4596 27.29%, #1052d2 82.34%);
 
     h1 {
         font-size: ${({ theme }) => theme.spacing.xl};
@@ -101,7 +116,7 @@ const Banner = styled(Container)`
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
         background: url('/ui/bannerDotsRight.svg') right center / auto 100% no-repeat,
-                    linear-gradient(168.81deg, #1B4596 27.29%, #1052D2 82.34%);
+            linear-gradient(168.81deg, #1b4596 27.29%, #1052d2 82.34%);
 
         h1 {
             font-size: 28px;
@@ -152,18 +167,22 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
         <StyledIconBox color={color} icon={icon} />
         <PartHeaderText>
             {title && (
-                <PartTitle><span>{title}</span></PartTitle>
+                <PartTitle>
+                    <span>{title}</span>
+                </PartTitle>
             )}
             {description && (
                 <PartDescription>
                     <p>{description}</p>
-                    {slug && (
-                        <Disclosure />
-                    )}
+                    {slug && <Disclosure />}
                 </PartDescription>
             )}
             {slug && (
-                <BeginLink><div>Begin Chapter <StyledArrowRightIcon /></div></BeginLink>
+                <BeginLink>
+                    <div>
+                        Begin Chapter <StyledArrowRightIcon />
+                    </div>
+                </BeginLink>
             )}
         </PartHeaderText>
     </PartHeaderContainer>
@@ -207,8 +226,13 @@ const StyledIconBox = styled(IconBox)`
 
 // Container for part title and description
 const PartHeaderText = styled.div`
-    padding: ${({ theme }) => `${(theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem ${(theme.spacing.md.getRemValue() * 2)}rem`};
-    padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) + theme.spacing.xxl.getRemValue() - theme.spacing.xxs.getRemValue()}rem;
+    padding: ${({ theme }) =>
+        `${theme.spacing.md.getRemValue() * 2 -
+            theme.spacing.xxs.getRemValue()}rem ${theme.spacing.md.getRemValue() * 2}rem`};
+    padding-bottom: ${({ theme }) =>
+        theme.spacing.md.getRemValue() * 2 +
+        theme.spacing.xxl.getRemValue() -
+        theme.spacing.xxs.getRemValue()}rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -305,7 +329,8 @@ const StandaloneChapterLink = styled(Link)`
         }
 
         ${PartHeaderText} {
-            padding-bottom: ${({ theme }) => (theme.spacing.md.getRemValue() * 2) - theme.spacing.xxs.getRemValue()}rem;
+            padding-bottom: ${({ theme }) =>
+                theme.spacing.md.getRemValue() * 2 - theme.spacing.xxs.getRemValue()}rem;
 
             @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
                 padding-bottom: 0;
@@ -341,18 +366,19 @@ const Part = ({ data, groupedChapters }) => {
             />
             <div>
                 <ChapterListTrigger>
-                    <TriggerClickArea onClick={() => setChaperListVisibility(!chapterListIsVisible)}>
-                        <TriggerTooltip>Explore {title.substr(0, title.indexOf(':'))}</TriggerTooltip>
+                    <TriggerClickArea
+                        onClick={() => setChaperListVisibility(!chapterListIsVisible)}>
+                        <TriggerTooltip>
+                            Explore {title.substr(0, title.indexOf(':'))}
+                        </TriggerTooltip>
                         <TriggerIcon isExpanded={chapterListIsVisible} />
                     </TriggerClickArea>
                 </ChapterListTrigger>
                 <AnimateHeight animateOpacity={true} height={chapterListIsVisible ? 'auto' : 0}>
                     <ChapterList>
-                        {chapterSlugs.map((chapterSlug) => (
+                        {chapterSlugs.map(chapterSlug => (
                             <ChapterLink key={chapterSlug} to={chapterSlug}>
-                                <h4>
-                                    {groupedChapters[chapterSlug].node.frontmatter.title}
-                                </h4>
+                                <h4>{groupedChapters[chapterSlug].node.frontmatter.title}</h4>
                                 <p>
                                     {groupedChapters[chapterSlug].node.frontmatter.description}
                                     <StyledArrowRightIcon />
@@ -399,7 +425,7 @@ const TriggerClickArea = styled.div`
 const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...props} />)`
     overflow: hidden;
     @media ${({ theme }) => above(theme.breakpoints.md)} {
-        ${({ chapterListIsVisible }) => chapterListIsVisible ? activeCardStyles : null}
+        ${({ chapterListIsVisible }) => (chapterListIsVisible ? activeCardStyles : null)}
     }
 
     @media ${({ theme }) => above(theme.breakpoints.md)} {
@@ -407,7 +433,7 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
             ${activeCardStyles}
         }
 
-        [class*="PartHeader"]:hover + div,
+        [class*='PartHeader']:hover + div,
         ${TriggerClickArea}:hover {
             ${TriggerIcon} {
                 transform: translateY(2px);
@@ -416,11 +442,14 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
                 }
             }
 
-            ${({ chapterListIsVisible, theme }) => chapterListIsVisible ? `
+            ${({ chapterListIsVisible, theme }) =>
+                chapterListIsVisible
+                    ? `
                 ${TriggerIcon} {
                     transform: translateY(-2px);
                 }
-            ` : null}
+            `
+                    : null}
         }
     }
 `;
@@ -466,20 +495,21 @@ const ChapterLink = styled(Link)`
         padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
 
         h4 {
-          ${({ theme }) => theme.typography.bodyBig}
-          transition: color 0.1s ease;
-          margin: 0;
+            ${({ theme }) => theme.typography.bodyBig}
+            transition: color 0.1s ease;
+            margin: 0;
         }
 
         p {
-          margin: 0;
-          color: ${({ theme }) => theme.color.N10};
+            margin: 0;
+            color: ${({ theme }) => theme.color.N10};
         }
 
         &:hover {
             text-decoration: none;
             border-color: ${({ theme }) => theme.color.B6};
-            box-shadow: 0 ${({ theme }) => `${theme.spacing.xxs} ${theme.spacing.sm}`} rgba(10, 41, 57, 0.1);
+            box-shadow: 0 ${({ theme }) => `${theme.spacing.xxs} ${theme.spacing.sm}`}
+                rgba(10, 41, 57, 0.1);
 
             h4 {
                 color: ${({ theme }) => theme.color.B6};

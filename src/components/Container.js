@@ -8,9 +8,7 @@ import styled from 'styled-components';
 
 export const Container = ({ children, className }) => (
     <StyledContainer className={className}>
-        <Content>
-            {children}
-        </Content>
+        <Content>{children}</Content>
     </StyledContainer>
 );
 

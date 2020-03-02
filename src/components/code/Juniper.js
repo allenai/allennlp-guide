@@ -35,7 +35,7 @@ export default class Juniper extends React.Component {
 
         const outputArea = new OutputArea({
             model: new OutputAreaModel({ trusted: true }),
-            rendermime: new RenderMimeRegistry({ initialFactories: renderers }),
+            rendermime: new RenderMimeRegistry({ initialFactories: renderers })
         });
 
         const cm = new CodeMirror(this.inputRef, {
@@ -82,36 +82,36 @@ export default class Juniper extends React.Component {
      * @returns {Promise} - Resolved with Binder settings, rejected with Error.
      */
     requestBinder(repo, branch, url) {
-        const binderUrl = `${url}/build/gh/${repo}/${branch}`
-        this.log(() => console.info('building', { binderUrl }))
+        const binderUrl = `${url}/build/gh/${repo}/${branch}`;
+        this.log(() => console.info('building', { binderUrl }));
         return new Promise((resolve, reject) => {
-            const es = new EventSource(binderUrl)
+            const es = new EventSource(binderUrl);
             es.onerror = err => {
-                es.close()
-                this.log(() => console.error('failed'))
-                reject(new Error(err))
-            }
-            let phase = null
+                es.close();
+                this.log(() => console.error('failed'));
+                reject(new Error(err));
+            };
+            let phase = null;
             es.onmessage = ({ data }) => {
-                const msg = JSON.parse(data)
+                const msg = JSON.parse(data);
                 if (msg.phase && msg.phase !== phase) {
-                    phase = msg.phase.toLowerCase()
-                    this.log(() => console.info(phase === 'ready' ? 'server-ready' : phase))
+                    phase = msg.phase.toLowerCase();
+                    this.log(() => console.info(phase === 'ready' ? 'server-ready' : phase));
                 }
                 if (msg.phase === 'failed') {
-                    es.close()
-                    reject(new Error(msg))
+                    es.close();
+                    reject(new Error(msg));
                 } else if (msg.phase === 'ready') {
-                    es.close()
+                    es.close();
                     const settings = {
                         baseUrl: msg.url,
                         wsUrl: `ws${msg.url.slice(4)}`,
-                        token: msg.token,
-                    }
-                    resolve(settings)
+                        token: msg.token
+                    };
+                    resolve(settings);
                 }
-            }
-        })
+            };
+        });
     }
 
     /**
@@ -121,19 +121,19 @@ export default class Juniper extends React.Component {
      */
     requestKernel(settings) {
         if (this.props.useStorage) {
-            const timestamp = new Date().getTime() + this.props.storageExpire * 60 * 1000
-            const json = JSON.stringify({ settings, timestamp })
-            window.localStorage.setItem(this.props.storageKey, json)
+            const timestamp = new Date().getTime() + this.props.storageExpire * 60 * 1000;
+            const json = JSON.stringify({ settings, timestamp });
+            window.localStorage.setItem(this.props.storageKey, json);
         }
-        const serverSettings = ServerConnection.makeSettings(settings)
+        const serverSettings = ServerConnection.makeSettings(settings);
         return Kernel.startNew({
             type: this.props.kernelType,
             name: this.props.kernelType,
-            serverSettings,
+            serverSettings
         }).then(kernel => {
-            this.log(() => console.info('ready'))
-            return kernel
-        })
+            this.log(() => console.info('ready'));
+            return kernel;
+        });
     }
 
     /**
@@ -142,22 +142,24 @@ export default class Juniper extends React.Component {
      */
     getKernel() {
         if (this.props.useStorage) {
-            const stored = window.localStorage.getItem(this.props.storageKey)
+            const stored = window.localStorage.getItem(this.props.storageKey);
             if (stored) {
-                this.setState({ fromStorage: true })
-                const { settings, timestamp } = JSON.parse(stored)
+                this.setState({ fromStorage: true });
+                const { settings, timestamp } = JSON.parse(stored);
                 if (timestamp && new Date().getTime() < timestamp) {
-                    return this.requestKernel(settings)
+                    return this.requestKernel(settings);
                 }
-                window.localStorage.removeItem(this.props.storageKey)
+                window.localStorage.removeItem(this.props.storageKey);
             }
         }
         if (this.props.useBinder) {
-            return this.requestBinder(this.props.repo, this.props.branch, this.props.url).then(
-                settings => this.requestKernel(settings)
-            )
+            return this.requestBinder(
+                this.props.repo,
+                this.props.branch,
+                this.props.url
+            ).then(settings => this.requestKernel(settings));
         }
-        return this.requestKernel(this.props.serverSettings)
+        return this.requestKernel(this.props.serverSettings);
     }
 
     /**
@@ -166,13 +168,13 @@ export default class Juniper extends React.Component {
      * @param {string} code - The code to execute.
      */
     renderResponse(outputArea, code) {
-        outputArea.future = this.state.kernel.requestExecute({ code })
+        outputArea.future = this.state.kernel.requestExecute({ code });
         outputArea.model.add({
             output_type: 'stream',
             name: 'loading',
-            text: this.props.msgLoading,
-        })
-        outputArea.model.clear(true)
+            text: this.props.msgLoading
+        });
+        outputArea.model.clear(true);
     }
 
     /**
@@ -188,7 +190,7 @@ export default class Juniper extends React.Component {
         outputArea.model.add({
             output_type: 'stream',
             name: 'stdout',
-            text: `${action} Docker container on ${url}...`,
+            text: `${action} Docker container on ${url}...`
         });
         this.log(() => console.info('requesting kernel'));
         if (this.state.kernel) {
@@ -217,23 +219,23 @@ export default class Juniper extends React.Component {
                 .catch(reject)
         )
             .then(kernel => {
-                this.setState({ kernel })
-                this.renderResponse(outputArea, code)
+                this.setState({ kernel });
+                this.renderResponse(outputArea, code);
             })
             .catch(() => {
-                this.log(() => console.error('failed'))
-                this.setState({ kernel: null })
+                this.log(() => console.error('failed'));
+                this.setState({ kernel: null });
                 if (this.props.useStorage) {
-                    this.setState({ fromStorage: false })
-                    window.localStorage.removeItem(this.props.storageKey)
+                    this.setState({ fromStorage: false });
+                    window.localStorage.removeItem(this.props.storageKey);
                 }
-                outputArea.model.clear()
+                outputArea.model.clear();
                 outputArea.model.add({
                     output_type: 'stream',
                     name: 'failure',
-                    text: this.props.msgError,
-                })
-            })
+                    text: this.props.msgError
+                });
+            });
     }
 
     render() {
@@ -242,13 +244,21 @@ export default class Juniper extends React.Component {
                 <CodeSection
                     title="Source"
                     actions={this.props.actions && this.props.actions(this.state)}>
-                    <CodeMirrorRender ref={x => {this.inputRef = x}} />
+                    <CodeMirrorRender
+                        ref={x => {
+                            this.inputRef = x;
+                        }}
+                    />
                 </CodeSection>
-                <AnimateHeight animateOpacity={true} height={this.props.outputIsVisible ? 'auto' : 0}>
-                    <CodeSection
-                        title="Output"
-                        clearFunction={() => this.props.hideOutput()}>
-                        <OutputRender ref={x => {this.outputRef = x}} />
+                <AnimateHeight
+                    animateOpacity={true}
+                    height={this.props.outputIsVisible ? 'auto' : 0}>
+                    <CodeSection title="Output" clearFunction={() => this.props.hideOutput()}>
+                        <OutputRender
+                            ref={x => {
+                                this.outputRef = x;
+                            }}
+                        />
                     </CodeSection>
                 </AnimateHeight>
             </React.Fragment>

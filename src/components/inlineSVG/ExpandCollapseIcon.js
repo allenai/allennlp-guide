@@ -7,7 +7,10 @@ import { above } from '@allenai/varnish/theme/breakpoints';
 import { toRem } from '../../utils';
 
 export const ExpandCollapseIcon = ({ className, isExpanded = false }) => (
-    <PaddedContainer className={className} isExpanded={isExpanded} title={`${isExpanded ? 'Collapse' : 'Expand'} panel`}>
+    <PaddedContainer
+        className={className}
+        isExpanded={isExpanded}
+        title={`${isExpanded ? 'Collapse' : 'Expand'} panel`}>
         <IconContainer>
             <LeftOuter>
                 <LeftInner />
@@ -77,7 +80,9 @@ const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)
         background: ${({ theme }) => theme.color.N6};
     }
 
-    ${({ isExpanded, theme }) => isExpanded ? `
+    ${({ isExpanded, theme }) =>
+        isExpanded
+            ? `
         ${LeftOuter} {
             transform: rotate(-90deg);
         }
@@ -85,7 +90,8 @@ const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)
         ${RightOuter} {
             transform: rotate(90deg);
         }
-    ` : null}
+    `
+            : null}
 
     @media ${({ theme }) => above(theme.breakpoints.md)} {
         &:hover {

@@ -1,5 +1,5 @@
-const meta = require('./meta.json')
-const autoprefixer = require('autoprefixer')
+const meta = require('./meta.json');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
     siteMetadata: meta,
@@ -9,29 +9,29 @@ module.exports = {
             resolve: `gatsby-source-filesystem`,
             options: {
                 name: `chapters`,
-                path: `${__dirname}/chapters`,
-            },
+                path: `${__dirname}/chapters`
+            }
         },
         {
             resolve: `gatsby-source-filesystem`,
             options: {
                 name: `exercises`,
-                path: `${__dirname}/exercises`,
-            },
+                path: `${__dirname}/exercises`
+            }
         },
         {
             resolve: 'gatsby-plugin-react-svg',
             options: {
                 rule: {
-                    include: /static/,
-                },
-            },
+                    include: /static/
+                }
+            }
         },
         {
-          resolve: `gatsby-plugin-styled-components`,
+            resolve: `gatsby-plugin-styled-components`
         },
         {
-          resolve: 'gatsby-plugin-antd',
+            resolve: 'gatsby-plugin-antd'
         },
         {
             resolve: `gatsby-transformer-remark`,
@@ -41,14 +41,14 @@ module.exports = {
                     {
                         resolve: `gatsby-remark-prismjs`,
                         options: {
-                            noInlineHighlight: true,
-                        },
+                            noInlineHighlight: true
+                        }
                     },
                     {
                         resolve: `gatsby-remark-smartypants`,
                         options: {
-                            dashes: 'oldschool',
-                        },
+                            dashes: 'oldschool'
+                        }
                     },
                     {
                         resolve: `gatsby-remark-images`,
@@ -58,12 +58,12 @@ module.exports = {
                             sizeByPixelDensity: false,
                             showCaptions: true,
                             quality: 80,
-                            withWebp: { quality: 80 },
-                        },
+                            withWebp: { quality: 80 }
+                        }
                     },
-                    `gatsby-remark-unwrap-images`,
-                ],
-            },
+                    `gatsby-remark-unwrap-images`
+                ]
+            }
         },
         `gatsby-transformer-sharp`,
         `gatsby-plugin-sharp`,
@@ -77,9 +77,9 @@ module.exports = {
                 background_color: meta.theme,
                 theme_color: meta.theme,
                 display: `minimal-ui`,
-                legacy: false,
-            },
+                legacy: false
+            }
         },
-        `gatsby-plugin-offline`,
-    ],
-}
+        `gatsby-plugin-offline`
+    ]
+};

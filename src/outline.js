@@ -14,7 +14,8 @@ export const outline = {
     parts: [
         {
             title: 'Part 1: Quick Start',
-            description: 'Part 1 gives you a quick walk-through of main AllenNLP concepts and features. We’ll build a complete, working NLP model (text classifier) along the way.',
+            description:
+                'Part 1 gives you a quick walk-through of main AllenNLP concepts and features. We’ll build a complete, working NLP model (text classifier) along the way.',
             chapterSlugs: [
                 '/introduction',
                 '/your-first-model',
@@ -26,7 +27,8 @@ export const outline = {
         },
         {
             title: 'Part 2: Abstractions, Design, and Testing',
-            description: 'Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.',
+            description:
+                'Part 2 provides in-depth tutorials on individual abstractions and features of AllenNLP.',
             chapterSlugs: [
                 '/reading-textual-data',
                 '/building-your-model',
@@ -38,10 +40,9 @@ export const outline = {
         },
         {
             title: 'Part 3: Practical Tasks With AllenNLP',
-            description: 'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
-            chapterSlugs: [
-                '/semantic-parsing'
-            ],
+            description:
+                'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
+            chapterSlugs: ['/semantic-parsing'],
             icon: 'tools',
             antMenuIcon: 'setting',
             color: 'aqua'

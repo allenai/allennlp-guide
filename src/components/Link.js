@@ -30,8 +30,7 @@ export const Link = ({ children, to, href, onClick, className, ...other }) => {
             className={className}
             target="_blank"
             rel="noopener nofollow noreferrer"
-            {...other}
-        >
+            {...other}>
             {children}
         </a>
     );
