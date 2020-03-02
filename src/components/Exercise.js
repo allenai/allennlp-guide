@@ -86,6 +86,10 @@ const SectionTitle = styled.h2`
             }
         }
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+    }
 `;
 
 const Toolbar = styled.div`
@@ -239,5 +243,9 @@ const MarkdownContainer = styled.div`
         height: 1px;
         margin: 2rem 0;
         background: ${({ theme }) => theme.color.N4};
+    }
+
+    @media (max-width: 1024px) {
+        overflow: auto;
     }
 `;

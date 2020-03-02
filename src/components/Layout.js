@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
 import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
-import { Header, HeaderColumns } from '@allenai/varnish/components/Header';
+import { Header } from '@allenai/varnish/components/Header';
 
 import Head from './Head';
 import { Link } from './Link';
-import { AllenNLPLogo } from './inlineSVG/AllenNLPLogo';
+import { AllenNLPLogo, MenuIcon } from './inlineSVG';
 
 const Layout = ({ title, description, children }) => {
+    const [mobileNavIsActive, setMobileNav] = useState(false);
+
     return (
         <StaticQuery
             query={graphql`
@@ -30,7 +32,7 @@ const Layout = ({ title, description, children }) => {
                         <Head title={title} description={description} />
                         <GlobalStyle />
                         <Header alwaysVisible={true}>
-                            <HeaderColumnsWithSpace gridTemplateColumns="18rem auto">
+                            <HeaderColumns>
                                 <LogoContainer>
                                     <Link to="/">
                                         <AllenNLPLogo />
@@ -48,7 +50,12 @@ const Layout = ({ title, description, children }) => {
                                         ))}
                                     </ul>
                                 </nav>
-                            </HeaderColumnsWithSpace>
+                                <MobileNavTrigger
+                                    onClick={() => setMobileNav(!mobileNavIsActive)}
+                                    aria-label="Toggle navigation">
+                                    <MenuIcon mobileNavIsActive={mobileNavIsActive} />
+                                </MobileNavTrigger>
+                            </HeaderColumns>
                         </Header>
                         <Main>
                             {children}
@@ -62,7 +69,12 @@ const Layout = ({ title, description, children }) => {
 
 export default Layout;
 
-const HeaderColumnsWithSpace = styled(HeaderColumns)`
+const HeaderColumns = styled.div`
+    display: grid;
+    position: relative;
+    grid-template-columns: 18rem auto;
+    grid-gap: 1rem;
+    width: 100%;
     padding: 9px 0;
     align-items: center;
 
@@ -74,37 +86,73 @@ const HeaderColumnsWithSpace = styled(HeaderColumns)`
         margin-left: 40px;
       }
     }
+
+    @media (max-width: 1024px) {
+        nav {
+            display: none;
+        }
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+        line-height: 1.5 !important;
+        min-height: 50px;
+    }
 `;
 
 const LogoContainer = styled.div`
     a {
-      display: flex;
-      align-items: center;
-
-      svg {
-        display: block;
-        transition: fill 0.2s ease;
-      }
-
-      span {
-        display: block;
-        font-size: 34px;
-        padding-left: 14px;
-        transition: color 0.2s ease;
-        color: ${({ theme }) => theme.color.N10};
-      }
-
-      &:hover {
-        text-decoration: none !important;
+        display: flex;
+        align-items: center;
 
         svg {
-          fill: ${({ theme }) => theme.color.B6};
+          display: block;
+          transition: fill 0.2s ease;
         }
 
         span {
-          color: ${({ theme }) => theme.color.B6};
+          display: block;
+          font-size: 34px;
+          padding-left: 14px;
+          transition: color 0.2s ease;
+          color: ${({ theme }) => theme.color.N10};
         }
-      }
+
+        &:hover {
+          text-decoration: none !important;
+
+          svg {
+            fill: ${({ theme }) => theme.color.B6};
+          }
+
+          span {
+            color: ${({ theme }) => theme.color.B6};
+          }
+        }
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        height: 100%;
+
+        a {
+            height: 100%;
+
+            svg {
+                width: 116px;
+                height: 20px;
+                fill: ${({ theme }) => theme.color.B6};
+            }
+
+            span {
+                font-size: 27px;
+                padding-left: 11px;
+                color: ${({ theme }) => theme.color.B6};
+            }
+        }
     }
 `;
 
@@ -112,6 +160,24 @@ const Main = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
+`;
+
+// This is the menu trigger element that includes hamburger menu icon
+const MobileNavTrigger = styled.button`
+    display: none;
+
+    // Show mobile menu below tablet portrait
+    @media (max-width: 1024px) {
+        display: grid;
+        border: none;
+        outline: none;
+        background: transparent;
+        cursor: pointer;
+        position: absolute;
+        right: -18px;
+        top: 0;
+        padding: 13px;
+    }
 `;
 
 // Resetting root layout
@@ -144,6 +210,10 @@ const GlobalStyle = createGlobalStyle`
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
                 max-width: 1252px !important;
+
+                @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+                    padding: 0 18px !important;
+                }
             }
         }
     }

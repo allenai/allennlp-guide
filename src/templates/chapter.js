@@ -150,9 +150,9 @@ const Template = ({ data, location }) => {
                                 </div>
                                 <ChapterIntroText>
                                     {!isOverview && (
-                                        <PartTitle>{thisPart.title}</PartTitle>
+                                        <PartTitle><span>{thisPart.title}</span></PartTitle>
                                     )}
-                                    {title && <h1>{title}</h1>}
+                                    {title && <h1><span>{title}</span></h1>}
                                     {description && (
                                         <p>{description}</p>
                                     )}
@@ -535,6 +535,10 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.color.N3};
+
+    @media (max-width: 1024px) {
+        display: block;
+    }
 `;
 
 // Left-aligned container with white background
@@ -545,6 +549,10 @@ const LeftContainer = styled.div`
     display: flex;
     position: relative;
     z-index: 3;
+
+    @media (max-width: 1024px) {
+        display: none;
+    }
 `;
 
 // Constrained content descendent of LeftContainer (holds sidenav)
@@ -563,7 +571,8 @@ const SideNav = styled.nav`
     position: sticky;
     top: 115px;
     height: calc(100vh - 175px);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 `;
 
 const RightContainer = styled.div`
@@ -582,6 +591,10 @@ const RightContainer = styled.div`
         z-index: 2;
         margin-left: -30px;
         box-shadow: 0 -${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl} ${theme.spacing.lg} ${theme.color.N3}`};
+
+        @media (max-width: 1024px) {
+            display: none;
+        }
     }
 `;
 
@@ -593,6 +606,16 @@ const RightContent = styled.div`
     padding: ${({ theme }) => `${theme.spacing.xxl} 0 0 ${theme.spacing.xxl}`};
     box-sizing: border-box;
     margin-right: ${({ theme }) => theme.spacing.xxl};
+
+    @media (max-width: 1024px) {
+        max-width: 100%;
+        padding-right: ${({ theme }) => theme.spacing.xxl};
+        margin-right: 0;
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding: ${({ theme }) => theme.spacing.lg};
+    }
 `;
 
 // Intro content rendered from markdown frontmatter and outline data
@@ -600,11 +623,26 @@ const ChapterIntro = styled.div`
     display: grid;
     grid-template-columns: 75px auto;
     grid-gap: ${({ theme }) => theme.spacing.xl};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        display: block;
+    }
 `;
 
 // Colored box with icon that denotes Part
 const StyledIconBox = styled(IconBox)`
     width: 75px;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        width: 50px;
+    }
+`;
+
+const mobileChapterTitleStyles = css`
+    margin: -50px 0 24px 74px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
 `;
 
 // Text displayed in chapter intro next to icon
@@ -613,6 +651,14 @@ const ChapterIntroText = styled.div`
         ${({ theme }) => theme.typography.h2}
         margin: ${({ theme }) => `-${theme.spacing.xxs} 0 ${theme.spacing.md} 0`};
         color: ${({ theme }) => theme.color.B6};
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            ${({ theme }) => theme.typography.h3}
+
+            &:first-child {
+                ${mobileChapterTitleStyles}
+            }
+        }
     }
 
     p {
@@ -626,6 +672,10 @@ const PartTitle = styled.strong`
     display: block;
     text-transform: uppercase;
     margin: 0 0 23px 2px;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        ${mobileChapterTitleStyles}
+    }
 `;
 
 // Previous / Next chapter buttons
@@ -645,5 +695,10 @@ const ChapterFooter = styled(Footer)`
         padding: ${({ theme }) => theme.spacing.xl} 0;
         background: transparent;
         text-align: left;
+
+        @media (max-width: 1024px) {
+            text-align: center;
+            padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+        }
     }
 `;
