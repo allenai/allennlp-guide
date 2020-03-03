@@ -1,3 +1,7 @@
+// This component is a generalized navigation menu used for chapter outline side-nav on desktop
+// and global navigation on mobile. Based on menu design and implementation on AI2 website:
+// https://github.com/allenai/ai2-web/blob/master/ui/lib/components/chrome/Header.tsx
+
 import React from 'react';
 import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
 import { Menu, Icon } from 'antd';
@@ -14,6 +18,7 @@ export const Navigation = ({
     defaultOpenKeys = [],
     onTitleClick = () => {}
 }) => {
+    // Default Desktop components
     let MenuContainer = DesktopMenu;
     let MenuItem = Menu.Item;
     let SubMenu = Menu.SubMenu;
@@ -21,6 +26,7 @@ export const Navigation = ({
     let SubMenuTitle = DesktopSubMenuTitle;
     let LandingLink = Link;
     let InteriorLink = Link;
+    // Mobile components
     if (isMobile) {
         MenuContainer = Menu;
         MenuItem = MobileMenuItem;
