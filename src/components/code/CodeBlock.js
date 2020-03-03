@@ -259,9 +259,9 @@ export const CodeSection = ({ actions, children, className, clearFunction, setup
             <Header onClick={setupFile ? () => setSectionVisibility(!sectionIsVisible) : () => {}}>
                 <strong>{title}</strong>
                 {setupFile && (
-                    <span className={`${sectionIsVisible ? 'label-visible' : ''}`}>
+                    <Label className={`${sectionIsVisible ? 'label-visible' : ''}`}>
                         (Read-only)
-                    </span>
+                    </Label>
                 )}
                 {clearFunction && <ClearBtn onClick={clearFunction}>Clear</ClearBtn>}
                 {setupFile && <TriggerIcon isExpanded={sectionIsVisible} />}
@@ -285,6 +285,20 @@ export const CodeSection = ({ actions, children, className, clearFunction, setup
     );
 };
 
+const Label = styled.span`
+    ${({ theme }) => theme.typography.bodySmall};
+    font-weight: normal;
+    color: ${({ theme }) => theme.color.N6};
+    padding-left: ${({ theme }) => theme.spacing.xs};
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-top: 2px;
+
+    &.label-visible {
+        opacity: 1;
+    }
+`;
+
 const SectionHeader = styled.div`
     background: ${({ theme }) => theme.color.N8};
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
@@ -292,20 +306,6 @@ const SectionHeader = styled.div`
     padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
     display: flex;
     transition: background-color 0.2s ease;
-
-    & > span {
-        ${({ theme }) => theme.typography.bodySmall};
-        font-weight: normal;
-        color: ${({ theme }) => theme.color.N6};
-        padding-left: ${({ theme }) => theme.spacing.xs};
-        opacity: 0;
-        transition: opacity 0.2s ease;
-        margin-top: 2px;
-
-        &.label-visible {
-            opacity: 1;
-        }
-    }
 `;
 
 const ToggleableSectionHeader = styled(SectionHeader)`
@@ -326,7 +326,7 @@ const TriggerIcon = styled(ExpandCollapseIcon)`
     margin-left: auto;
     margin-right: -${({ theme }) => theme.spacing.xs};
 
-    span {
+    span.rect {
         background: ${({ theme }) => theme.color.N6} !important;
     }
 `;
