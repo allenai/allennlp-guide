@@ -75,16 +75,23 @@ const Template = ({ data, location }) => {
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
-    const handleSetActiveExc = id => {
-        const loc = window.location;
+    const handleSetActiveExc = (id) => {
+        let scrollV, scrollH, loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
         } else {
-            // Prevent #null from showing up in the URL
-            loc.replace('#');
-            if (typeof window.history.replaceState === 'function') {
-                window.history.replaceState({}, '', loc.href.slice(0, -1));
+            if ('pushState' in history) {
+                history.pushState('', document.title, loc.pathname + loc.search);
+            } else {
+                // Prevent scrolling by storing the page's current scroll offset
+                scrollV = document.body.scrollTop;
+                scrollH = document.body.scrollLeft;
+                loc.hash = '';
+                // Restore the scroll offset, should be flicker free
+                document.body.scrollTop = scrollV;
+                document.body.scrollLeft = scrollH;
             }
+
         }
         setActiveExc(id);
     };

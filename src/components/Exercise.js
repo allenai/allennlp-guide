@@ -20,11 +20,14 @@ const Exercise = ({ id, title, type, children }) => {
     };
 
     useEffect(() => {
+        if (isExpanded && excRef.current) {
+            excRef.current.scrollIntoView();
+        }
         document.addEventListener('keyup', handleEscape, false);
         return () => {
             document.removeEventListener('keyup', handleEscape, false);
         };
-    });
+    }, [isExpanded]);
 
     const handleExpand = useCallback(() => setActiveExc(isExpanded ? null : excId), [
         isExpanded,
