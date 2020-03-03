@@ -20,6 +20,7 @@ import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
 import { Link } from '../components/Link';
 import { Navigation } from '../components/Navigation';
+import { Disclosure } from '../components/inlineSVG';
 import { codeBlockTextStyles, codeBlockWrappingStyles } from '../components/code/CodeBlock';
 
 import { outline } from '../outline';
@@ -153,13 +154,12 @@ const Template = ({ data, location }) => {
                             <Pagination>
                                 <div>
                                     {links.indexOf(slug) !== 0 && (
-                                        <Button
-                                            variant="primary"
+                                        <PrevButton
                                             onClick={() =>
                                                 navigate(links[links.indexOf(slug) - 1])
                                             }>
-                                            « Previous Chapter
-                                        </Button>
+                                            <DisclosureIcon /> Previous Chapter
+                                        </PrevButton>
                                     )}
                                 </div>
                                 <div>
@@ -169,7 +169,7 @@ const Template = ({ data, location }) => {
                                             onClick={() =>
                                                 navigate(links[links.indexOf(slug) + 1])
                                             }>
-                                            Next Chapter »
+                                            Next Chapter <DisclosureIcon />
                                         </Button>
                                     )}
                                 </div>
@@ -608,6 +608,26 @@ const Pagination = styled.div`
 
     div:last-child {
         margin-left: auto;
+    }
+`;
+
+const DisclosureIcon = styled(Disclosure)`
+    height: 12px;
+    width: auto;
+    margin: 0 2px;
+    transform: translate(5px, 1px);
+`;
+
+const PrevButton = styled(Button)`
+    &&& {
+        span {
+            color: ${({ theme }) => theme.color.B6};
+        }
+
+        ${DisclosureIcon} {
+            transform: rotate(180deg) translate(5px, -1px);
+            fill: ${({ theme }) => theme.color.B6};
+        }
     }
 `;
 

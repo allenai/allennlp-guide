@@ -12,7 +12,7 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon, ExpandCollapseIcon, MobileDisclosure } from '../components/inlineSVG';
+import { ArrowRightIcon, ExpandCollapseIcon, Disclosure } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
@@ -174,7 +174,7 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
             {description && (
                 <PartDescription>
                     <p>{description}</p>
-                    {slug && <Disclosure />}
+                    {slug && <MobileDisclosure />}
                 </PartDescription>
             )}
             {slug && (
@@ -304,8 +304,10 @@ const BeginLink = styled.div`
     }
 `;
 
-const Disclosure = styled(MobileDisclosure)`
+const MobileDisclosure = styled(Disclosure)`
     display: none;
+    fill: ${({ theme }) => theme.color.N6};
+    transition: fill 0.2s ease;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
         display: block;
@@ -383,7 +385,7 @@ const Part = ({ data, groupedChapters }) => {
                                     {groupedChapters[chapterSlug].node.frontmatter.description}
                                     <StyledArrowRightIcon />
                                 </p>
-                                <Disclosure />
+                                <MobileDisclosure />
                             </ChapterLink>
                         ))}
                     </ChapterList>
