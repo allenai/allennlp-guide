@@ -10,8 +10,8 @@ export const Navigation = ({
     isMobile = false,
     headerLinks,
     groupedChapters,
-    defaultSelectedKeys,
-    defaultOpenKeys,
+    defaultSelectedKeys = [],
+    defaultOpenKeys = [],
     onTitleClick = () => {}
 }) => {
     let MenuContainer = Menu;

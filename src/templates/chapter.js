@@ -111,7 +111,7 @@ const Template = ({ data, location }) => {
                 description={description}
                 groupedChapters={groupedChapters}
                 defaultSelectedKeys={[slug]}
-                defaultOpenKeys={[thisPart.title]}>
+                defaultOpenKeys={!isOverview && [thisPart.title]}>
                 <GlobalStyle />
                 <Wrapper>
                     <LeftContainer>
