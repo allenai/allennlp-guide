@@ -7,7 +7,7 @@ import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
 import { Menu, Icon } from 'antd';
 import { Link } from '../components/Link';
 import { outline } from '../outline';
-import { getIcon } from '../utils';
+import { getIcon, toRem } from '../utils';
 
 export const Navigation = ({
     className,
@@ -272,7 +272,7 @@ const mobileNavItemStyles = () => css`
     ${MobileLandingLink},
     ${MobileInteriorLink} {
         ${({ theme }) => theme.typography.bodyBig};
-        padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+        padding: ${({ theme }) => `${theme.spacing.md} ${toRem(18)}`};
         color: ${({ theme }) => theme.color.N9};
         text-decoration: none;
     }
@@ -328,7 +328,7 @@ const MobileSubMenu = styled(Menu.SubMenu)`
         // Giving expand/collapse trigger a wider hit target
         .ant-menu-submenu-title {
             ${mobileNavLinkContainerStyles}
-            padding-right: ${({ theme }) => theme.spacing.xxxl};
+            padding-right: ${({ theme }) => theme.spacing.xl};
         }
 
         // Giving nested list offset to compensate for shorter SubMenuItems
@@ -350,7 +350,7 @@ const MobileSubMenu = styled(Menu.SubMenu)`
         &:hover {
             .ant-menu-submenu-arrow {
                 top: calc(50% + 2px);
-                right: ${({ theme }) => theme.spacing.lg.getPxValue()}px;
+                right: 18px;
                 width: ${({ theme }) => theme.spacing.md.getPxValue()}px;
 
                 &:before,
@@ -424,6 +424,13 @@ const MobileSubMenu = styled(Menu.SubMenu)`
         .ant-menu-submenu-arrow {
             top: 34px !important;
         }
+
+        a {
+            &,
+            span {
+                text-decoration: none !important;
+            }
+        }
     }
 
     // Disable hard-coded Ant menu background and pipe styling
@@ -437,6 +444,6 @@ const MobileSubMenu = styled(Menu.SubMenu)`
 // Mobile Submenu Item
 const MobileSubMenuItem = styled(Menu.Item)`
     ${MobileInteriorLink} {
-        padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
+        padding: ${({ theme }) => `${theme.spacing.xs} ${toRem(18)}`};
     }
 `;
