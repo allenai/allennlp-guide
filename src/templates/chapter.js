@@ -75,8 +75,10 @@ const Template = ({ data, location }) => {
     const html = renderAst(htmlAst);
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
-    const handleSetActiveExc = (id) => {
-        let scrollV, scrollH, loc = window.location;
+    const handleSetActiveExc = id => {
+        let scrollV;
+        let scrollH;
+        const loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
         } else {
@@ -91,7 +93,6 @@ const Template = ({ data, location }) => {
                 document.body.scrollTop = scrollV;
                 document.body.scrollLeft = scrollH;
             }
-
         }
         setActiveExc(id);
     };
