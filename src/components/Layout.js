@@ -17,7 +17,8 @@ const Layout = ({
     groupedChapters,
     defaultSelectedKeys = [],
     defaultOpenKeys = [],
-    children }) => {
+    children
+}) => {
     const [mobileNavIsActive, setMobileNav] = useState(false);
 
     return (
@@ -54,7 +55,9 @@ const Layout = ({
                                         <ul>
                                             {headerLinks.map(headerLink => (
                                                 <li key={headerLink.url}>
-                                                    <Link to={headerLink.url}>{headerLink.text}</Link>
+                                                    <Link to={headerLink.url}>
+                                                        {headerLink.text}
+                                                    </Link>
                                                 </li>
                                             ))}
                                         </ul>
@@ -95,7 +98,7 @@ const HeaderContainer = styled(({ mobileNavIsActive, ...props }) => <div {...pro
     z-index: ${({ theme }) => theme.zIndex.header};
 
     @media (max-width: 1024px) {
-        min-height: ${({ mobileNavIsActive }) => mobileNavIsActive ? '100%' : '0'};
+        min-height: ${({ mobileNavIsActive }) => (mobileNavIsActive ? '100%' : '0')};
     }
 `;
 
@@ -227,15 +230,18 @@ const MobileNavContainer = styled(({ mobileNavIsActive, ...props }) => <div {...
 
     // Only show MobileNavContainer if mobileNavIsActive is true
     // AND screen width is tablet portrait or below
-    ${({ mobileNavIsActive, theme }) => mobileNavIsActive ? `
+    ${({ mobileNavIsActive, theme }) =>
+        mobileNavIsActive
+            ? `
         @media (max-width: 1024px) {
             display: block;
         }
-    ` : ''}
+    `
+            : ''}
 `;
 
 // Keyframe data for mobile nav entrance animation
-const mobileNavEntrance = (yOffset) => keyframes`
+const mobileNavEntrance = yOffset => keyframes`
     0% {
         opacity: 0;
         // Passing y offset value from where this animation is called
@@ -301,7 +307,9 @@ const GlobalStyle = createGlobalStyle`
     // height of viewport so user cannot scroll past the menu and wind up
     // in a confusing scroll state -- but it only does this if mobile
     // nav is open and screen width is below tablet portrait
-    ${({ mobileNavIsActive, theme }) => mobileNavIsActive ? `
+    ${({ mobileNavIsActive, theme }) =>
+        mobileNavIsActive
+            ? `
         @media (max-width: 1024px) {
             html,
             body,
@@ -312,7 +320,8 @@ const GlobalStyle = createGlobalStyle`
                 overflow: hidden;
             }
         }
-    ` : ''}
+    `
+            : ''}
 
     // Gatsby image styles
 

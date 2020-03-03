@@ -32,9 +32,7 @@ export const Navigation = ({
 
     return (
         <React.Fragment>
-            {!isMobile && (
-                <GlobalDesktopStyle />
-            )}
+            {!isMobile && <GlobalDesktopStyle />}
             <MenuContainer
                 className={className}
                 defaultSelectedKeys={defaultSelectedKeys}
@@ -50,12 +48,7 @@ export const Navigation = ({
                 <MenuItem key={outline.overview.slug}>
                     <Link to={outline.overview.slug}>
                         {!isMobile && getMenuIcon(outline.overview)}
-                        <span>
-                            {
-                                groupedChapters[outline.overview.slug].node
-                                    .frontmatter.title
-                            }
-                        </span>
+                        <span>{groupedChapters[outline.overview.slug].node.frontmatter.title}</span>
                     </Link>
                 </MenuItem>
                 {outline.parts.map(
@@ -73,23 +66,21 @@ export const Navigation = ({
                                 {part.chapterSlugs.map(chapterSlug => (
                                     <MenuItem key={chapterSlug}>
                                         <Link to={chapterSlug}>
-                                            {
-                                                groupedChapters[chapterSlug]
-                                                    .node.frontmatter.title
-                                            }
+                                            {groupedChapters[chapterSlug].node.frontmatter.title}
                                         </Link>
                                     </MenuItem>
                                 ))}
                             </SubMenu>
                         )
                 )}
-                {isMobile && headerLinks.map(headerLink => (
-                    <MenuItem key={headerLink.url}>
-                        <Link to={headerLink.url}>
-                            <span>{headerLink.text}</span>
-                        </Link>
-                    </MenuItem>
-                ))}
+                {isMobile &&
+                    headerLinks.map(headerLink => (
+                        <MenuItem key={headerLink.url}>
+                            <Link to={headerLink.url}>
+                                <span>{headerLink.text}</span>
+                            </Link>
+                        </MenuItem>
+                    ))}
             </MenuContainer>
         </React.Fragment>
     );

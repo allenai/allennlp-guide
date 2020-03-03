@@ -96,13 +96,6 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    const getMenuIcon = obj =>
-        obj.antMenuIcon ? (
-            <Icon type={obj.antMenuIcon} />
-        ) : (
-            obj.icon && <CustomIcon component={() => getIcon(obj.icon, 17)} />
-        );
-
     return (
         <ChapterContext.Provider
             value={{
@@ -118,8 +111,7 @@ const Template = ({ data, location }) => {
                 description={description}
                 groupedChapters={groupedChapters}
                 defaultSelectedKeys={[slug]}
-                defaultOpenKeys={[thisPart.title]}
-            >
+                defaultOpenKeys={[thisPart.title]}>
                 <GlobalStyle />
                 <Wrapper>
                     <LeftContainer>
@@ -129,7 +121,8 @@ const Template = ({ data, location }) => {
                                     groupedChapters={groupedChapters}
                                     defaultSelectedKeys={[slug]}
                                     defaultOpenKeys={userExpandedGroups}
-                                    onTitleClick={toggleMenuKey.bind(this)} />
+                                    onTitleClick={toggleMenuKey.bind(this)}
+                                />
                             </SideNav>
                         </LeftContent>
                     </LeftContainer>
