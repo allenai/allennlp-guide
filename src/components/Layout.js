@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StaticQuery, graphql } from 'gatsby';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import { ThemeProvider } from '@allenai/varnish/theme';
 import { Header } from '@allenai/varnish/components/Header';
 import { Menu } from 'antd';
 
 import Head from './Head';
 import { Link } from './Link';
-import { Navigation } from './Navigation';
+import { Navigation, mobileNavEntrance } from './Navigation';
 import { AllenNLPLogo, MenuIcon } from './inlineSVG';
 import { toRem } from '../utils';
 
@@ -209,7 +209,7 @@ const MobileNavTrigger = styled.button`
         background: transparent;
         cursor: pointer;
         position: relative;
-        right: -18px;
+        right: -16px;
         margin-left: auto;
         top: 0;
         padding: 13px;
@@ -225,7 +225,8 @@ const MobileNavContainer = styled(({ mobileNavIsActive, ...props }) => <div {...
     position: absolute;
     top: 0;
     left: 0;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: none;
 
     // Only show MobileNavContainer if mobileNavIsActive is true
@@ -238,21 +239,6 @@ const MobileNavContainer = styled(({ mobileNavIsActive, ...props }) => <div {...
         }
     `
             : ''}
-`;
-
-// Keyframe data for mobile nav entrance animation
-const mobileNavEntrance = yOffset => keyframes`
-    0% {
-        opacity: 0;
-        // Passing y offset value from where this animation is called
-        transform: translateY(-${yOffset});
-    }
-    50% {
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 1;
-    }
 `;
 
 const MobileNavContent = styled.div`
@@ -289,7 +275,7 @@ const GlobalStyle = createGlobalStyle`
         flex-direction: column;
         height: 100%;
 
-        & > header {
+        & > ${HeaderContainer} > header {
             main {
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
