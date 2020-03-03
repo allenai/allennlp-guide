@@ -4,5 +4,13 @@
 import styled from 'styled-components';
 
 export const TextBlock = styled.div`
-    padding-bottom: ${({ theme }) => theme.spacing.lg};
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        margin: ${({ theme }) => `-${theme.spacing.sm} 0 ${theme.spacing.lg} 0`};
+    }
+
+    & {
+        *:last-child {
+            margin-bottom: 0;
+        }
+    }
 `;

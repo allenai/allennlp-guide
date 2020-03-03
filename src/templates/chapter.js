@@ -586,6 +586,11 @@ const ChapterIntroText = styled.div`
     p {
         ${({ theme }) => theme.typography.bodyBig}
         color: ${({ theme }) => theme.color.N10};
+        margin-bottom: ${({ theme }) => theme.spacing.xxl};
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            margin-bottom: ${({ theme }) => theme.spacing.lg};
+        }
     }
 `;
 
