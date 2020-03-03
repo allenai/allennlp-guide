@@ -344,7 +344,7 @@ const StandaloneChapterLink = styled(Link)`
         }
 
         &:hover {
-            ${Disclosure} {
+            ${MobileDisclosure} {
                 fill: ${({ theme }) => theme.color.B6};
             }
         }
@@ -496,6 +496,10 @@ const ChapterLink = styled(Link)`
         transition: border-color 0.1s ease, box-shadow 0.1s ease;
         padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
 
+        & + & {
+            margin-top: ${({ theme }) => theme.spacing.md} !important;
+        }
+
         h4 {
             ${({ theme }) => theme.typography.bodyBig}
             transition: color 0.1s ease;
@@ -536,20 +540,16 @@ const ChapterLink = styled(Link)`
                 display: none;
             }
 
-            ${Disclosure} {
+            ${MobileDisclosure} {
                 margin-left: auto;
             }
 
             &:hover {
-                ${Disclosure} {
+                ${MobileDisclosure} {
                     fill: ${({ theme }) => theme.color.B6};
                 }
             }
         }
-    }
-
-    && + && {
-        margin-top: ${({ theme }) => theme.spacing.md};
     }
 `;
 
