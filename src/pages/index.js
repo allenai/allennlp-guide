@@ -19,7 +19,7 @@ export default ({ data }) => {
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
     return (
-        <Layout>
+        <Layout groupedChapters={groupedChapters}>
             <Banner>
                 <h1>{data.site.siteMetadata.title}</h1>
             </Banner>
