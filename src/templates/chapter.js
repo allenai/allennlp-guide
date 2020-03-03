@@ -76,8 +76,8 @@ const Template = ({ data, location }) => {
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
     const handleSetActiveExc = id => {
-        let scrollV;
-        let scrollH;
+        let scrollX;
+        let scrollY;
         const loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
@@ -86,12 +86,11 @@ const Template = ({ data, location }) => {
                 history.pushState('', document.title, loc.pathname + loc.search);
             } else {
                 // Prevent scrolling by storing the page's current scroll offset
-                scrollV = document.body.scrollTop;
-                scrollH = document.body.scrollLeft;
+                scrollX = document.body.scrollLeft;
+                scrollY = document.body.scrollTop;
                 loc.hash = '';
-                // Restore the scroll offset, should be flicker free
-                document.body.scrollTop = scrollV;
-                document.body.scrollLeft = scrollH;
+                document.body.scrollLeft = scrollX;
+                document.body.scrollTop = scrollY;
             }
         }
         setActiveExc(id);
