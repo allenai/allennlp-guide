@@ -77,7 +77,7 @@ const SectionTitle = styled.h2`
 
     &:hover {
         ${TriggerIcon} {
-            span {
+            span.rect {
                 background: ${({ theme }) => theme.color.B6};
             }
         }
@@ -139,6 +139,11 @@ const Anchor = styled.div`
     height: 164px;
     margin-top: -164px;
     transform: translateX(-10px);
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        height: 130px;
+        margin-top: -130px;
+    }
 `;
 
 const SectionId = styled.span`

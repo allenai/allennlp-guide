@@ -3,8 +3,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const MobileDisclosure = ({ className }) => (
-    <SVG
+export const Disclosure = ({ className }) => (
+    <svg
         width={11}
         height={18}
         className={className}
@@ -21,10 +21,5 @@ export const MobileDisclosure = ({ className }) => (
             height={12}
             transform="matrix(-0.707107 0.707107 0.707107 0.707107 1.77295 0.287842)"
         />
-    </SVG>
+    </svg>
 );
-
-const SVG = styled.svg`
-    fill: ${({ theme }) => theme.color.N6};
-    transition: fill 0.2s ease;
-`;

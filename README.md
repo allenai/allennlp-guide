@@ -20,6 +20,15 @@ This app uses REVIZ-preferred code formatting. To ensure components are formatte
 npm run lint:fix
 ```
 
+### Mobile Development
+If you're developing on a Mac and wish to test changes on an iPhone, the following command will allow the Gatsby server running locally on your machine to be accessed by any device connected to the same Wi-fi network:
+
+```
+gatsby develop -H $(hostname) -p 8000
+```
+
+Look for the web address and port that the Gatsby server exposes. It should look something like `http://YOUR-COMPUTER-NAME.local:8000/`.
+
 ## Dependencies
 
 ### Back-end

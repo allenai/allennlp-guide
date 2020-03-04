@@ -12,14 +12,14 @@ import { Container } from '../components/Container';
 import { Card, CardContent } from '../components/Card';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
-import { ArrowRightIcon, ExpandCollapseIcon, MobileDisclosure } from '../components/inlineSVG';
+import { ArrowRightIcon, ExpandCollapseIcon, Disclosure } from '../components/inlineSVG';
 
 // Home Page Export
 export default ({ data }) => {
     const groupedChapters = getGroupedChapters(data.allMarkdownRemark);
 
     return (
-        <Layout>
+        <Layout groupedChapters={groupedChapters}>
             <Banner>
                 <h1>{data.site.siteMetadata.title}</h1>
             </Banner>
@@ -174,7 +174,7 @@ const PartHeader = ({ className, color, icon, title, description, slug, onClick 
             {description && (
                 <PartDescription>
                     <p>{description}</p>
-                    {slug && <Disclosure />}
+                    {slug && <MobileDisclosure />}
                 </PartDescription>
             )}
             {slug && (
@@ -304,8 +304,10 @@ const BeginLink = styled.div`
     }
 `;
 
-const Disclosure = styled(MobileDisclosure)`
+const MobileDisclosure = styled(Disclosure)`
     display: none;
+    fill: ${({ theme }) => theme.color.N6};
+    transition: fill 0.2s ease;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
         display: block;
@@ -342,7 +344,7 @@ const StandaloneChapterLink = styled(Link)`
         }
 
         &:hover {
-            ${Disclosure} {
+            ${MobileDisclosure} {
                 fill: ${({ theme }) => theme.color.B6};
             }
         }
@@ -383,7 +385,7 @@ const Part = ({ data, groupedChapters }) => {
                                     {groupedChapters[chapterSlug].node.frontmatter.description}
                                     <StyledArrowRightIcon />
                                 </p>
-                                <Disclosure />
+                                <MobileDisclosure />
                             </ChapterLink>
                         ))}
                     </ChapterList>
@@ -437,7 +439,7 @@ const PartContainer = styled(({ chapterListIsVisible, ...props }) => <Card {...p
         ${TriggerClickArea}:hover {
             ${TriggerIcon} {
                 transform: translateY(2px);
-                span {
+                span.rect {
                     background: ${({ theme }) => theme.color.B6};
                 }
             }
@@ -494,6 +496,10 @@ const ChapterLink = styled(Link)`
         transition: border-color 0.1s ease, box-shadow 0.1s ease;
         padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.md.getRemValue() * 2}rem`};
 
+        & + & {
+            margin-top: ${({ theme }) => theme.spacing.md} !important;
+        }
+
         h4 {
             ${({ theme }) => theme.typography.bodyBig}
             transition: color 0.1s ease;
@@ -534,20 +540,16 @@ const ChapterLink = styled(Link)`
                 display: none;
             }
 
-            ${Disclosure} {
+            ${MobileDisclosure} {
                 margin-left: auto;
             }
 
             &:hover {
-                ${Disclosure} {
+                ${MobileDisclosure} {
                     fill: ${({ theme }) => theme.color.B6};
                 }
             }
         }
-    }
-
-    && + && {
-        margin-top: ${({ theme }) => theme.spacing.md};
     }
 `;
 

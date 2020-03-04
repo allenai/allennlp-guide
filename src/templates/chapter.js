@@ -9,7 +9,6 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
-import { Menu, Icon } from 'antd';
 import useLocalStorage from '@illinois/react-use-local-storage';
 import styled, { createGlobalStyle, css } from 'styled-components';
 import { Button } from '@allenai/varnish/components/button';
@@ -20,10 +19,12 @@ import Layout from '../components/Layout';
 import { Footer } from '../components/Footer';
 import { IconBox } from '../components/IconBox';
 import { Link } from '../components/Link';
+import { Navigation } from '../components/Navigation';
+import { Disclosure } from '../components/inlineSVG';
 import { codeBlockTextStyles, codeBlockWrappingStyles } from '../components/code/CodeBlock';
 
 import { outline } from '../outline';
-import { getGroupedChapters, getIcon } from '../utils';
+import { getGroupedChapters } from '../utils';
 
 const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data;
@@ -63,6 +64,7 @@ const Template = ({ data, location }) => {
         userExpandedGroups.push(thisPart.title);
     }
     const toggleMenuKey = key => {
+        console.log(key);
         const index = userExpandedGroups.indexOf(key);
         if (index > -1) {
             userExpandedGroups.splice(index, 1);
@@ -95,13 +97,6 @@ const Template = ({ data, location }) => {
         }
     }, [location.hash]);
 
-    const getMenuIcon = obj =>
-        obj.antMenuIcon ? (
-            <Icon type={obj.antMenuIcon} />
-        ) : (
-            obj.icon && <CustomIcon component={() => getIcon(obj.icon, 17)} />
-        );
-
     return (
         <ChapterContext.Provider
             value={{
@@ -112,53 +107,23 @@ const Template = ({ data, location }) => {
                 userExpandedGroups,
                 setUserExpandedGroups
             }}>
-            <Layout title={title} description={description}>
+            <Layout
+                title={title}
+                description={description}
+                groupedChapters={groupedChapters}
+                defaultSelectedKeys={[slug]}
+                defaultOpenKeys={!isOverview && [thisPart.title]}>
                 <GlobalStyle />
                 <Wrapper>
                     <LeftContainer>
                         <LeftContent>
                             <SideNav>
-                                <Menu
+                                <Navigation
+                                    groupedChapters={groupedChapters}
                                     defaultSelectedKeys={[slug]}
                                     defaultOpenKeys={userExpandedGroups}
-                                    mode="inline">
-                                    <Menu.Item key={outline.overview.slug}>
-                                        <Link to={outline.overview.slug}>
-                                            {getMenuIcon(outline.overview)}
-                                            <span>
-                                                {
-                                                    groupedChapters[outline.overview.slug].node
-                                                        .frontmatter.title
-                                                }
-                                            </span>
-                                        </Link>
-                                    </Menu.Item>
-                                    {outline.parts.map(
-                                        part =>
-                                            part.chapterSlugs && (
-                                                <Menu.SubMenu
-                                                    key={part.title}
-                                                    onTitleClick={() => toggleMenuKey(part.title)}
-                                                    title={
-                                                        <span>
-                                                            {getMenuIcon(part)}
-                                                            <span>{part.title}</span>
-                                                        </span>
-                                                    }>
-                                                    {part.chapterSlugs.map(chapterSlug => (
-                                                        <Menu.Item key={chapterSlug}>
-                                                            <Link to={chapterSlug}>
-                                                                {
-                                                                    groupedChapters[chapterSlug]
-                                                                        .node.frontmatter.title
-                                                                }
-                                                            </Link>
-                                                        </Menu.Item>
-                                                    ))}
-                                                </Menu.SubMenu>
-                                            )
-                                    )}
-                                </Menu>
+                                    onTitleClick={toggleMenuKey.bind(this)}
+                                />
                             </SideNav>
                         </LeftContent>
                     </LeftContainer>
@@ -189,13 +154,12 @@ const Template = ({ data, location }) => {
                             <Pagination>
                                 <div>
                                     {links.indexOf(slug) !== 0 && (
-                                        <Button
-                                            variant="primary"
+                                        <PrevButton
                                             onClick={() =>
                                                 navigate(links[links.indexOf(slug) - 1])
                                             }>
-                                            « Previous Chapter
-                                        </Button>
+                                            <DisclosureIcon /> Previous Chapter
+                                        </PrevButton>
                                     )}
                                 </div>
                                 <div>
@@ -205,7 +169,7 @@ const Template = ({ data, location }) => {
                                             onClick={() =>
                                                 navigate(links[links.indexOf(slug) + 1])
                                             }>
-                                            Next Chapter »
+                                            Next Chapter <DisclosureIcon />
                                         </Button>
                                     )}
                                 </div>
@@ -256,7 +220,7 @@ export const pageQuery = graphql`
     }
 `;
 
-const CustomIcon = styled(Icon)``;
+// const CustomIcon = styled(Icon)``;
 
 const codeBgStyles = css`
     // Halfway between Varnish N2 and N3
@@ -266,98 +230,6 @@ const codeBgStyles = css`
 // Resetting Ant Menu Styles
 const GlobalStyle = createGlobalStyle`
     &&& {
-        .ant-menu {
-            border: none !important;
-
-            svg {
-                color: ${({ theme }) => theme.color.N8};
-            }
-
-            ${CustomIcon} {
-                svg {
-                    width: 17px;
-                    height: 17px;
-                    margin-right: -4px;
-                    transform: translate(-2px, 1.5px);
-                    stroke: ${({ theme }) => theme.color.N8};
-                }
-            }
-
-            .ant-menu-submenu {
-                border-top: 1px solid ${({ theme }) => theme.color.N4} !important;
-
-                &.ant-menu-submenu-selected {
-                    span,
-                    i,
-                    svg {
-                        color: ${({ theme }) => theme.color.B5} !important;
-                        stroke: ${({ theme }) => theme.color.B5};
-                    }
-                }
-
-                .ant-menu-submenu-title:hover {
-                    span,
-                    i,
-                    svg,
-                    i:before,
-                    i:after {
-                        color: ${({ theme }) => theme.color.B5} !important;
-                        stroke: ${({ theme }) => theme.color.B5};
-                    }
-                }
-            }
-
-            .ant-menu-submenu-title {
-                &:hover {
-                    .ant-menu-submenu-arrow {
-                        &:before,
-                        &:after {
-                            background: linear-gradient(90deg, ${({ theme }) =>
-                                `${theme.color.B5}, ${theme.color.B5}`}) !important;
-                        }
-                    }
-                }
-            }
-
-            // Support multi-line items without truncation
-            .ant-menu-submenu-title,
-            .ant-menu-item {
-                overflow: visible !important;
-                white-space: normal !important;
-                height: auto !important;
-                line-height: 1.5 !important;
-                padding-top: 9px !important;
-                padding-bottom 10px !important;
-            }
-
-            .ant-menu-item {
-                a {
-                    color: ${({ theme }) => theme.color.N10};
-
-                    &:hover {
-                        &,
-                        svg {
-                            color: ${({ theme }) => theme.color.B5};
-                            stroke: ${({ theme }) => theme.color.B5};
-                        }
-                        text-decoration: none;
-                    }
-                }
-
-                &.ant-menu-item-selected {
-                    background: ${({ theme }) => theme.color.B1} !important;
-
-                    &:after {
-                        border-color: ${({ theme }) => theme.color.B5} !important;
-                    }
-
-                    a {
-                        color: ${({ theme }) => theme.color.B5} !important;
-                    }
-                }
-            }
-        }
-
         // Generic Elements
 
         img {
@@ -714,6 +586,11 @@ const ChapterIntroText = styled.div`
     p {
         ${({ theme }) => theme.typography.bodyBig}
         color: ${({ theme }) => theme.color.N10};
+        margin-bottom: ${({ theme }) => theme.spacing.xxl};
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            margin-bottom: ${({ theme }) => theme.spacing.lg};
+        }
     }
 `;
 
@@ -736,6 +613,26 @@ const Pagination = styled.div`
 
     div:last-child {
         margin-left: auto;
+    }
+`;
+
+const DisclosureIcon = styled(Disclosure)`
+    height: 12px;
+    width: auto;
+    margin: 0 2px;
+    transform: translate(5px, 1px);
+`;
+
+const PrevButton = styled(Button)`
+    &&& {
+        span {
+            color: ${({ theme }) => theme.color.B6};
+        }
+
+        ${DisclosureIcon} {
+            transform: rotate(180deg) translate(5px, -1px);
+            fill: ${({ theme }) => theme.color.B6};
+        }
     }
 `;
 

@@ -13,16 +13,17 @@ export const ExpandCollapseIcon = ({ className, isExpanded = false }) => (
         title={`${isExpanded ? 'Collapse' : 'Expand'} panel`}>
         <IconContainer>
             <LeftOuter>
-                <LeftInner />
+                <LeftInner className="rect" />
             </LeftOuter>
             <RightOuter>
-                <RightInner />
+                <RightInner className="rect" />
             </RightOuter>
         </IconContainer>
     </PaddedContainer>
 );
 
-const IconContainer = styled.div`
+const IconContainer = styled.span`
+    display: block;
     width: 18px;
     height: 11px;
     position: relative;
@@ -38,12 +39,12 @@ const outerStyles = css`
     top: 50%;
 `;
 
-const LeftOuter = styled.div`
+const LeftOuter = styled.span`
     ${outerStyles}
     left: -0.1rem;
 `;
 
-const RightOuter = styled.div`
+const RightOuter = styled.span`
     ${outerStyles}
     right: 0;
 `;
@@ -68,7 +69,7 @@ const RightInner = styled.span`
     transform: rotate(-45deg) translate(-${toRem(strokeWeight / 4)}, 0);
 `;
 
-const PaddedContainer = styled(({ isExpanded, ...props }) => <div {...props} />)`
+const PaddedContainer = styled(({ isExpanded, ...props }) => <span {...props} />)`
     width: ${({ theme }) => theme.spacing.lg};
     height: ${({ theme }) => theme.spacing.lg};
     display: flex;
