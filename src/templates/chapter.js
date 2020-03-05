@@ -78,14 +78,21 @@ const Template = ({ data, location }) => {
     import(`prismjs/components/prism-python`).then(() => Prism.highlightAll());
 
     const handleSetActiveExc = id => {
+        let scrollX;
+        let scrollY;
         const loc = window.location;
         if (id !== null) {
             loc.hash = `${id}`;
         } else {
-            // Prevent #null from showing up in the URL
-            loc.replace('#');
-            if (typeof window.history.replaceState === 'function') {
-                window.history.replaceState({}, '', loc.href.slice(0, -1));
+            if ('pushState' in history) {
+                history.pushState('', document.title, loc.pathname + loc.search);
+            } else {
+                // Prevent scrolling by storing the page's current scroll offset
+                scrollX = document.body.scrollLeft;
+                scrollY = document.body.scrollTop;
+                loc.hash = '';
+                document.body.scrollLeft = scrollX;
+                document.body.scrollTop = scrollY;
             }
         }
         setActiveExc(id);
