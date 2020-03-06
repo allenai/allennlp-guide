@@ -79,10 +79,25 @@ Some pre-trained contextualizers (including BERT) are implemented as `TokenEmbed
 
 <exercise id="3" title="Modeling spans in sequences">
 
+Representing spans is also a very powerful (and underused) abstraction in modern NLP that has a wide range of applications including constituency parsing, reading comprehension, and coreference resolution. AllenNLP provides convenient abstractions for representing and embedding spans, along with some utility methods that make it easier to work with spans.
+
+## Representing spans
+
 * SpanField
+
+## Embedding spans
+
 * SpanExtractor
-* Sample code
-* pruning
+
+<codeblock source="part2/common-architectures/span"></codeblock>
+
+## Pruning spans
+
+* masked_topk()
+
+## Representing spans without using abstractions
+
+You can also represent spans without using the abstractions covered in this section. For example, if you have just one span per each instance, you can model the distribution of start and end positions directly, and use a negative log-likelihood objective to optimize the model.
 
 </exercise>
 
