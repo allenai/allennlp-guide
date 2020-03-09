@@ -32,7 +32,7 @@ tokens_tensor, spans_tensor = tensors['tokens'], tensors['spans']
 
 # Embed the input
 embedding_dim = 8
-token_embedder =  Embedding(embedding_dim=embedding_dim, vocab=vocab)
+token_embedder = Embedding(embedding_dim=embedding_dim, vocab=vocab)
 embedder = BasicTextFieldEmbedder({'tokens': token_embedder})
 embedded_tokens = embedder(tokens_tensor)
 print('shape of embedded_tokens', embedded_tokens.shape)

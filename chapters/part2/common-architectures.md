@@ -83,11 +83,19 @@ Representing spans is also a very powerful (and underused) abstraction in modern
 
 ## Representing spans
 
-* SpanField
+Spans are usually represented as pairs of integers, one for the start and the other for the end indices. AllenNLP uses `SpanFields`, which are a type of `Fields`, to represent such pairs. In order to instantiate a `SpanField`, you need to provide a start index, an end index, as well as a `SequenceField` (such as a `TextField`) that these indices are referring to, which is used to validate whether the span is well defined. The start/end indices are inclusive. `SpanFields` are converted to a tensor of size `(batch_size, 2)` when batched.
+
+In many cases, however, a single instance can have an arbitrary number of spans. For example, a single parse tree can contain multiple spans over the text corresponding to multiple constituents. You can use `ListFields`, a type of `Fields` that represent lists of other fields, to put spans together into a single field. When batched, these fields are converted to a tensor of size `(batch_size, num_spans, 2)`. See the code example below for an illustration.
+
+[`PennTreeBankConstituencySpanDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/penn_tree_bank.py#L40) and [`ConllCorefReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/coreference_resolution/conll.py#L19) are two dataset readers that generate instances with spans.
 
 ## Embedding spans
 
-* SpanExtractor
+The next step for modeling spans in sequences is to embed them. This is usually done first by contextualizing the input sequence by using e.g., a `Seq2SeqEncoder`, then by applying some operation on the embeddings at/between the start and end indices. AllenNLP abstracts this as `SpanExtractors`, which take a tensor of shape `(batch_size, sequence_length, embedding_dim)` and a span tensor of shape `(batch_size, num_spans, 2)`, and return a tensor of size `(batch_size, num_spans, ...)` where the size of the last dimension depends on the specific operation applied to embed the spans.
+
+`EndpointSpanExtractors`, a type of `SpanExtractors`, embed spans using a combination of the embeddings at the end points, as its name suggests. They take the embeddings of the end points and apply some element-wise operation (such as multiplication or subtraction) to them. `SelfAttentiveSpanExtractors`, another type of `SpanExtractors`, compute span representations first by generating unnormalized attention scores for input tokens, then by taking a weighted sum of the embeddings inside the span with respected to the normalized scores.
+
+In the code example below, we first create a toy instance that contains a list of `SpanFields`, then compute a span representation using an `EndpointSpanExtractor`. We observe the shapes of the input tensors as well as the output when using different operations.
 
 <codeblock source="part2/common-architectures/span"></codeblock>
 
