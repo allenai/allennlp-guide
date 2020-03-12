@@ -91,9 +91,11 @@ In many cases, however, a single instance can have an arbitrary number of spans.
 
 ## Embedding spans
 
-The next step for modeling spans in sequences is to embed them. This is usually done first by contextualizing the input sequence by using e.g., a `Seq2SeqEncoder`, then by applying some operation on the embeddings at/between the start and end indices. AllenNLP abstracts this as `SpanExtractors`, which take a tensor of shape `(batch_size, sequence_length, embedding_dim)` and a span tensor of shape `(batch_size, num_spans, 2)`, and return a tensor of size `(batch_size, num_spans, ...)` where the size of the last dimension depends on the specific operation applied to embed the spans.
+The next step for modeling spans in sequences is to embed them. This is usually done first by contextualizing the input sequence by using e.g., a `Seq2SeqEncoder`, then by applying some operation on the embeddings at/between the start and end indices. AllenNLP abstracts this as `SpanExtractors`, which take a tensor of shape `(batch_size, sequence_length, embedding_dim)` and a span tensor of shape `(batch_size, num_spans, 2)`, and return a tensor of size `(batch_size, num_spans, ...)` where the size of the last dimension depends on the specific operation applied to embed the spans. The figure below illustrates how `SpanExtractors` work.
 
-`EndpointSpanExtractors`, a type of `SpanExtractors`, embed spans using a combination of the embeddings at the end points, as its name suggests. They take the embeddings of the end points and apply some element-wise operation (such as multiplication or subtraction) to them. `SelfAttentiveSpanExtractors`, another type of `SpanExtractors`, compute span representations first by generating unnormalized attention scores for input tokens, then by taking a weighted sum of the embeddings inside the span with respected to the normalized scores.
+<img src="/part2/common-architectures/spans.svg" alt="Embedding spans" />
+
+`EndpointSpanExtractors`, the simplest type of `SpanExtractors`, embed spans using a combination of the embeddings at the end points, as its name suggests. They take the embeddings of the end points and apply some element-wise operation (such as multiplication or subtraction) to them. `SelfAttentiveSpanExtractors`, another type of `SpanExtractors`, compute span representations first by generating unnormalized attention scores for input tokens, then by taking a weighted sum of the embeddings inside the span with respected to the normalized scores.
 
 In the code example below, we first create a toy instance that contains a list of `SpanFields`, then compute a span representation using an `EndpointSpanExtractor`. We observe the shapes of the input tensors as well as the output when using different operations.
 
@@ -101,7 +103,13 @@ In the code example below, we first create a toy instance that contains a list o
 
 ## Pruning spans
 
-* masked_topk()
+Many span-based models involve some kind of enumeration of spans and need to consider all possible spans in a given sentence or document. The number of possible spans is quadratic (O(n^2)) to the length of the input, so in practice it is important to keep only the promising spans by *pruning* them.
+
+There are many possible ways to prune spans. One (probably the easiest) way is to filter them using heuristics in your `DatasetReader`. For example, for the co-reference task, mentions rarely span across sentences. In many tasks, it is often practically sufficient to consider spans of length up to some small number of tokens. The utility `enumerate_spans()` method in `allennlp.data.dataset_readers.dataset_utils.span_utils` lets you enumerate all valid spans by providing a maximum and minimum span width, as well as a boolean function to determine if any given span should be included.
+
+However, you cannot prune all the unnecessary spans just by using heuristics in your `DatasetReader` this way. A common practice is to score span candidates in your model and only use the top *k* spans for loss computation, disregarding the rest. 
+
+You can use a learned function (usually a feedforward network) to score span candidates. After feeding the span embeddings to the scoring network and obtaining a score per span, you can use the [`masked_topk()`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/util.py#L1705) utility method in the `allennlp.nn` module to extract only the top-k items.
 
 ## Representing spans without using abstractions
 
