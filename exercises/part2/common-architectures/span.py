@@ -1,13 +1,13 @@
+from allennlp.data.batch import Batch
+from allennlp.data.dataset_readers.dataset_utils.span_utils import enumerate_spans
 from allennlp.data.fields import TextField, ListField, SpanField
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer
 from allennlp.data.tokenizers import Token
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.modules.span_extractors import EndpointSpanExtractor
-from allennlp.modules.token_embedders import Embedding
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
-from allennlp.data.batch import Batch
-
+from allennlp.modules.token_embedders import Embedding
 
 # Create an instance with multiple spans
 tokens = ['I', 'shot', 'an', 'elephant', 'in', 'my', 'pajamas', '.']
@@ -22,6 +22,21 @@ instance = Instance({
     'tokens': text_field,
     'spans': span_fields
 })
+
+# Alternatively, you can also enumerate all spans
+spans = enumerate_spans(tokens, max_span_width=3)
+print('all spans up to length 3:')
+print(spans)
+
+
+def filter_function(span_tokens):
+    return not any(t == Token('.') for t in span_tokens)
+
+
+spans = enumerate_spans(tokens, max_span_width=3, filter_function=filter_function)
+print('all spans up to length 3, excluding punctuation:')
+print(spans)
+
 
 # Index and convert to tensors
 vocab = Vocabulary.from_instances([instance])
