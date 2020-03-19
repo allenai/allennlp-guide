@@ -150,12 +150,38 @@ In the following code snippet, we instantiate different types of `Attention` and
 
 <exercise id="5" title="Common neural network techniques">
 
-* FeedForward
-* Activations
-    * Sample code
-* ConditionalRandomField
-* Highway and residual connection
-* TimeDistributed
-* GatedSum
+In addition to the modeling operations covered above, AllenNLP provides a variety of convenient abstractions and modules for building your NLP model.
+
+## FeedForward
+
+The [`FeedForward` module](https://github.com/allenai/allennlp/blob/master/allennlp/modules/feedforward.py) is just a sequence of linear layers `torch.nn.Linear`. It also supports activations and (optional) dropout in between layers.
+
+## GatedSum and Highway layers
+
+Linear combination of multiple components is a common operation used in modern-day neural networks. A [highway layer](https://github.com/allenai/allennlp/blob/master/allennlp/modules/highway.py) computes a gated sum of the original input `x` and its non-linear transformation: `y = g * x + (1 - g) * f(A(x))`, where `A()` is a linear transformation and `f` is an element-wise nonlinearity. Highway layers are used e.g., in ELMo after a CNN layer.
+
+A somewhat similar operation, [gated sum](https://github.com/allenai/allennlp/blob/master/allennlp/modules/gated_sum.py) computes a gated sum of two tensors `a` and `b` as in: `f = activation(W [a; b]) out = f * a + (1 - f) * b`. 
+
+## TimeDistributed
+
+In some cases you may want to apply the same operation repeatedly over time (or along some other dimensions). For example, in a sequential labeling task, you need to apply the same linear layer to the output logits at every timestep. 
+
+[`TimeDistributed`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/time_distributed.py) is a convenient module that makes this easier to implement. Given an input of shape `(batch_size, time_steps, [rest])`, and some `Module` that takes inputs of shape `(batch_size, [rest])`, the module unrolls the second (time) dimension into the first (batch) dimension, reshaping it to be `(batch_size * time_steps, [rest])`, applies the given module, and rolls it back to the original shape.
+
+Besides being used for sequential labeling models, `TimeDistributed` is also used to apply a feedforward network to every span representation in span-based models (see above).
+
+## Activations
+
+AllenNLP abstracts activation functions as [`Activations`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/activations.py) so that they can be easily plugged into other modules. They are just a thin wrapper around PyTorch's activation functions (such as `torch.nn.ReLU`). `Activations` are mostly intended for use from config files, and if you want to instantiate a specific type of activation function from Python code, you can do:
+
+```activation = Activation.by_name('relu')()```
+
+## Conditional random field
+
+The (linear-chain) conditional random field (CRF) is a popular model used for sequential labeling in NLP. It defines a conditional probability distribution over label sequences given an input sequence by considering the dependency between labels (transition probabilities) and between the input and the labels (emission probabilities).
+
+AllenNLP's [`ConditionalRandomField`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/conditional_random_field.py) implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes the log likelihood of the sequence. The module has transition probabilities as trainable parameters, and can find the sequence of most likely tags using the Viterbi algorithm.
+
+A CRF sequential tagger is implemented as the [`CrfTagger` module](https://github.com/allenai/allennlp/blob/master/allennlp/models/crf_tagger.py). It takes a sequence of indexed tokens, embeds them using a `TextFieldEmbedder`, encodes them with a `Seq2SeqEncoder`, applies a `TimeDistributed` linear layer, and finally applies a `ConditionalRandomField` module.
 
 </exercise>
