@@ -140,7 +140,7 @@ You may be wondering why there are two different abstractions for attention, eve
 passage_question_similarity = self._matrix_attention(encoded_passage, encoded_question)
 ```
 
-Note that there are some subtle differences between `Attention` and `MatrixAttention`. The latter does not normalize the output and does not support masking. It's up to the caller what to do with the result.
+Note that there are some subtle differences between `Attention` and `MatrixAttention`. The latter does not normalize the output and thus does not take a mask. This is because there are a few different ways you could decide to normalize the output; it's up to the caller to do any desired (masked) normalization.
 
 In the following code snippet, we instantiate different types of `Attention` and `MatrixAttention` and observe the shapes of the input and the output. 
 
