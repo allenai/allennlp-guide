@@ -123,7 +123,7 @@ AllenNLP provides two types of abstractions for attention—`Attention` and `Mat
 
 AllenNLP's `Attention` modules compute similarities between (each row of) a matrix of size `(batch_size, sequence_length, embedding_dim)` and a vector of size `(batch_size, embedding_dim)` and return a (typically normalized) similarity vector of size `(batch_size, sequence_length)`. For Seq2Seq models, for example, the input matrix is a sequence of encoder hidden states, and the input vector is the decoder hidden state. 
 
-The specific type of operation applied to the inputs depends on the  implementation of `Attention`. One of the simplest implementations is `DotProductAttention`, which simply computes the dot product between the  vector and each row of the matrix. The embedding dimension of these two inputs must be the same size (because it's just a dot product).
+There are many ways to compute the similarity between two vectors, and in AllenNLP each similarity method has its own subclass of `Attention`. One of the simplest implementations is `DotProductAttention`, which simply computes the dot product between the  vector and each row of the matrix. The embedding dimension of these two inputs must be the same size (because it's just a dot product).
 
 A more general implementation is `BilinearAttention`, which computes `x^T W y + b` for a given vector `x` and a matrix `y` using a matrix of weights `W` and a bias `b`. The sizes of the embedding dimensions do not need to match.
 
