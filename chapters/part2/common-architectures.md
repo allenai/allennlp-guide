@@ -115,11 +115,36 @@ You can use a learned function (usually a feedforward network) to score span can
 
 <exercise id="4" title="Modeling similarities between sequences">
 
-* Attention
-* MatrixAttention
-    * Why two abstractions for attention
-* Sample code
-    * Similarity matrix computation in BiDAF
+Many modern NLP models make use of attention to compute similarities (some sort of relatedness score) between sequences. For example, Seq2Seq models, for which the attention mechanism was first invented, use attention to model similarities between the encoder and the decoder hidden states.
+
+AllenNLP provides two types of abstractions for attention—`Attention` and `MatrixAttention`. We'll discuss these two in detail below.
+
+## Attention
+
+AllenNLP's `Attention` modules compute similarities between (each row of) a matrix of size `(batch_size, sequence_length, embedding_dim)` and a vector of size `(batch_size, embedding_dim)` and return a (typically normalized) similarity vector of size `(batch_size, sequence_length)`. For Seq2Seq models, for example, the input matrix is a sequence of encoder hidden states, and the input vector is the decoder hidden state. 
+
+There are many ways to compute the similarity between two vectors, and in AllenNLP each similarity method has its own subclass of `Attention`. One of the simplest implementations is `DotProductAttention`, which simply computes the dot product between the  vector and each row of the matrix. The embedding dimension of these two inputs must be the same size (because it's just a dot product).
+
+A more general implementation is `BilinearAttention`, which computes `x^T W y + b` for a given vector `x` and a matrix `y` using a matrix of weights `W` and a bias `b`. The sizes of the embedding dimensions do not need to match.
+
+Another general type of operation is implemented by `LinearAttention`, which computes a dot product between a weight vector and a configurable combination of the two input vectors, followed by an optional activation function. For example, if you specify `x,y,x*y` as the combination, this will compute `w^T [x; y; x*y] + b` where `[;]` is vector concatenation and `*` is elementwise multiplication. You can replicate [Bahdanau et al. 2016](https://www.semanticscholar.org/paper/Neural-Machine-Translation-by-Jointly-Learning-to-Bahdanau-Cho/fa72afa9b2cbc8f0d7b05d52548906610ffbb9c5)'s attention by specifying `combination='x,y'` and a tanh activation, for example.
+
+## MatrixAttention
+
+AllenNLP provides another type of attention abstraction called `MatrixAttention`. `MatrixAttention` takes two matrices of size `(batch_size, sequence_length1, embedding_dim)` and `(batch_size, sequence_length2, embedding_dim)` and returns a matrix of size `(batch_size, sequence_length1, sequence_length2)`, which contains the similarity between each row of two input matrices. As with `Attention`, the specific type of operation applied to the inputs depends on the  implementation.
+
+You may be wondering why there are two different abstractions for attention, even though they do something very similar? The main reason is efficiency—there are many tasks where you may want to model similarities between two sequences of vectors directly, and using tensor operations specific to that case is more efficient. One such example is the [BiDAF (Bidirectional Attention Flow) model](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/rc/bidaf/bidaf_model.py) for reading comprehension, where similarities between a passage and a question are modeled using a `MatrixAttention` module:
+
+```
+# Shape: (batch_size, passage_length, question_length)
+passage_question_similarity = self._matrix_attention(encoded_passage, encoded_question)
+```
+
+Note that there are some subtle differences between `Attention` and `MatrixAttention`. The latter does not normalize the output and thus does not take a mask. This is because there are a few different ways you could decide to normalize the output; it's up to the caller to do any desired (masked) normalization.
+
+In the following code snippet, we instantiate different types of `Attention` and `MatrixAttention` and observe the shapes of the input and the output. 
+
+<codeblock source="part2/common-architectures/attention"></codeblock>
 
 </exercise>
 
