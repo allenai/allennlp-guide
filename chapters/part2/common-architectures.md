@@ -150,7 +150,7 @@ In the following code snippet, we instantiate different types of `Attention` and
 
 <exercise id="5" title="Common neural network techniques">
 
-In addition to the modeling operations covered above, AllenNLP provides a variety of convenient abstractions and modules for building your NLP model.
+In addition to the modeling operations covered above, AllenNLP provides a variety of other convenient abstractions and modules for building your NLP model.
 
 ## FeedForward
 
@@ -164,21 +164,23 @@ A somewhat similar operation, [gated sum](https://github.com/allenai/allennlp/bl
 
 ## TimeDistributed
 
-In some cases you may want to apply the same operation repeatedly over time (or along some other dimensions). For example, in a sequential labeling task, you need to apply the same linear layer to the output logits at every timestep. 
+In some cases you may want to apply the same operation repeatedly over some dimension of a tensor. For example, in a sequence labeling task, you might want to apply the same `FeedForward` layer to the output vector at every timestep. 
 
 [`TimeDistributed`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/time_distributed.py) is a convenient module that makes this easier to implement. Given an input of shape `(batch_size, time_steps, [rest])`, and some `Module` that takes inputs of shape `(batch_size, [rest])`, the module unrolls the second (time) dimension into the first (batch) dimension, reshaping it to be `(batch_size * time_steps, [rest])`, applies the given module, and rolls it back to the original shape.
 
-Besides being used for sequential labeling models, `TimeDistributed` is also used to apply a feedforward network to every span representation in span-based models (see above).
+Besides being used for sequence labeling models, `TimeDistributed` can also be used to apply a feedforward network to every span representation in span-based models (see above), to encode a list of documents using a document-level encoder, or a host of other cases where a collection of things should each have the same operation performed on them independently.
 
 ## Activations
 
-AllenNLP abstracts activation functions as [`Activations`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/activations.py) so that they can be easily plugged into other modules. They are just a thin wrapper around PyTorch's activation functions (such as `torch.nn.ReLU`). `Activations` are mostly intended for use from config files, and if you want to instantiate a specific type of activation function from Python code, you can do:
+AllenNLP abstracts activation functions as [`Activations`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/activations.py) so, e.g., `FeedForward` can have a type to represent any possible activation. This is just a thin wrapper around PyTorch's activation functions (such as `torch.nn.ReLU`). We use this type behind the scenes to instantiate objects from configuration files; if you just want to instantiate an activation function, it's just fine to create the pytorch class (like `torch.nn.ReLU`) directly yourself.  If you want, you can also do:
 
 ```activation = Activation.by_name('relu')()```
 
+The main place where we'd recommend using this type is as a constructor argument if you're creating a module that's similar to `FeedForward`, or you really want to be able to easily swap out activation functions in some place in your model.  Otherwise, you can safely ignore this type.
+
 ## Conditional random field
 
-The (linear-chain) conditional random field (CRF) is a popular model used for sequential labeling in NLP. It defines a conditional probability distribution over label sequences given an input sequence by considering the dependency between labels (transition probabilities) and between the input and the labels (emission probabilities).
+The (linear-chain) conditional random field (CRF) is a popular model used for sequence labeling in NLP. It defines a globally-normalized conditional probability distribution over label sequences given an input sequence by considering the dependency between labels (transition probabilities) and between the input and the labels (emission probabilities).
 
 AllenNLP's [`ConditionalRandomField`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/conditional_random_field.py) implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes the log likelihood of the sequence. The module has transition probabilities as trainable parameters, and can find the sequence of most likely tags using the Viterbi algorithm.
 
