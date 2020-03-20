@@ -154,25 +154,25 @@ In addition to the modeling operations covered above, AllenNLP provides a variet
 
 ## FeedForward
 
-The [`FeedForward` module](https://github.com/allenai/allennlp/blob/master/allennlp/modules/feedforward.py) is just a sequence of linear layers `torch.nn.Linear`. It also supports activations and (optional) dropout in between layers.
+The [`FeedForward` module](http://docs.allennlp.org/master/api/modules/feedforward/) is just a sequence of linear layers `torch.nn.Linear`. It also supports activations and (optional) dropout in between layers.
 
 ## GatedSum and Highway layers
 
-Linear combination of multiple components is a common operation used in modern-day neural networks. A [highway layer](https://github.com/allenai/allennlp/blob/master/allennlp/modules/highway.py) computes a gated sum of the original input `x` and its non-linear transformation: `y = g * x + (1 - g) * f(A(x))`, where `A()` is a linear transformation and `f` is an element-wise nonlinearity. Highway layers are used e.g., in ELMo after a CNN layer.
+Linear combination of multiple components is a common operation used in modern-day neural networks. A [highway layer](http://docs.allennlp.org/master/api/modules/highway/) computes a gated sum of the original input `x` and its non-linear transformation: `y = g * x + (1 - g) * f(A(x))`, where `A()` is a linear transformation and `f` is an element-wise nonlinearity. Highway layers are used e.g., in ELMo after a CNN layer.
 
-A somewhat similar operation, [gated sum](https://github.com/allenai/allennlp/blob/master/allennlp/modules/gated_sum.py) computes a gated sum of two tensors `a` and `b` as in: `f = activation(W [a; b]) out = f * a + (1 - f) * b`. 
+A somewhat similar operation, [gated sum](http://docs.allennlp.org/master/api/modules/gated_sum/) computes a gated sum of two tensors `a` and `b` as in: `f = activation(W [a; b]) out = f * a + (1 - f) * b`. 
 
 ## TimeDistributed
 
 In some cases you may want to apply the same operation repeatedly over some dimension of a tensor. For example, in a sequence labeling task, you might want to apply the same `FeedForward` layer to the output vector at every timestep. 
 
-[`TimeDistributed`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/time_distributed.py) is a convenient module that makes this easier to implement. Given an input of shape `(batch_size, time_steps, [rest])`, and some `Module` that takes inputs of shape `(batch_size, [rest])`, the module unrolls the second (time) dimension into the first (batch) dimension, reshaping it to be `(batch_size * time_steps, [rest])`, applies the given module, and rolls it back to the original shape.
+[`TimeDistributed`](http://docs.allennlp.org/master/api/modules/time_distributed/) is a convenient module that makes this easier to implement. Given an input of shape `(batch_size, time_steps, [rest])`, and some `Module` that takes inputs of shape `(batch_size, [rest])`, the module unrolls the second (time) dimension into the first (batch) dimension, reshaping it to be `(batch_size * time_steps, [rest])`, applies the given module, and rolls it back to the original shape.
 
 Besides being used for sequence labeling models, `TimeDistributed` can also be used to apply a feedforward network to every span representation in span-based models (see above), to encode a list of documents using a document-level encoder, or a host of other cases where a collection of things should each have the same operation performed on them independently.
 
 ## Activations
 
-AllenNLP abstracts activation functions as [`Activations`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/activations.py) so, e.g., `FeedForward` can have a type to represent any possible activation. This is just a thin wrapper around PyTorch's activation functions (such as `torch.nn.ReLU`). We use this type behind the scenes to instantiate objects from configuration files; if you just want to instantiate an activation function, it's just fine to create the pytorch class (like `torch.nn.ReLU`) directly yourself.  If you want, you can also do:
+AllenNLP abstracts activation functions as [`Activations`](http://docs.allennlp.org/master/api/nn/activations/) so, e.g., `FeedForward` can have a type to represent any possible activation. This is just a thin wrapper around PyTorch's activation functions (such as `torch.nn.ReLU`). We use this type behind the scenes to instantiate objects from configuration files; if you just want to instantiate an activation function, it's just fine to create the pytorch class (like `torch.nn.ReLU`) directly yourself.  If you want, you can also do:
 
 ```activation = Activation.by_name('relu')()```
 
@@ -182,8 +182,8 @@ The main place where we'd recommend using this type is as a constructor argument
 
 The (linear-chain) conditional random field (CRF) is a popular model used for sequence labeling in NLP. It defines a globally-normalized conditional probability distribution over label sequences given an input sequence by considering the dependency between labels (transition probabilities) and between the input and the labels (emission probabilities).
 
-AllenNLP's [`ConditionalRandomField`](https://github.com/allenai/allennlp/blob/master/allennlp/modules/conditional_random_field.py) implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes the log likelihood of the sequence. The module has transition probabilities as trainable parameters, and can find the sequence of most likely tags using the Viterbi algorithm.
+AllenNLP's [`ConditionalRandomField`](http://docs.allennlp.org/master/api/modules/conditional_random_field/) implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes the log likelihood of the sequence. The module has transition probabilities as trainable parameters, and can find the sequence of most likely tags using the Viterbi algorithm.
 
-A CRF sequential tagger is implemented as the [`CrfTagger` module](https://github.com/allenai/allennlp/blob/master/allennlp/models/crf_tagger.py). It takes a sequence of indexed tokens, embeds them using a `TextFieldEmbedder`, encodes them with a `Seq2SeqEncoder`, applies a `TimeDistributed` linear layer, and finally applies a `ConditionalRandomField` module.
+A CRF sequential tagger is implemented as the [`CrfTagger` module](http://docs.allennlp.org/master/api/models/crf_tagger/). It takes a sequence of indexed tokens, embeds them using a `TextFieldEmbedder`, encodes them with a `Seq2SeqEncoder`, applies a `TimeDistributed` linear layer, and finally applies a `ConditionalRandomField` module.
 
 </exercise>
