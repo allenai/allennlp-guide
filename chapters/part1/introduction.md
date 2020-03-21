@@ -29,7 +29,7 @@ There are a variety of applications of text classification, such as spam filteri
 
 <exercise id="2" title="Defining input and output">
 
-The first step for building an NLP model is to define its input and output. In AllenNLP, each training example is represented by an [Instance](/reading-textual-data) object. An Instance consists of one or more [Field](/reading-textual-data)s, which contain data such as text and label. `Field`s will get converted to tensors and fed to your model. [Part 3](/reading-textual-data) will provide more details on using `Instance`s and `Field`s to represent textual data.
+The first step for building an NLP model is to define its input and output. In AllenNLP, each training example is represented by an [Instance](/reading-data) object. An Instance consists of one or more [Field](/reading-data)s, which contain data such as text and label. `Field`s will get converted to tensors and fed to your model. [Part 3](/reading-data) will provide more details on using `Instance`s and `Field`s to represent textual data.
 
 For text classification, the input and the output are very simple. The model takes a `TextField` that represents the input text and predicts its label, which is represented by a `LabelField`:
 

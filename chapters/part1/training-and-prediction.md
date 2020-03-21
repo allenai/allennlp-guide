@@ -31,7 +31,7 @@ When you run the code snippet above, you should see the dumps of the first ten i
 
 ## Feeding instances to the model
 
-In the next example, we are going to instantiate the model and feed batches of instances to it. Note that the config file now has the `model` section, which contains the full specification for how to instantiate your model along with its sub-components. Also notice the `iterator` section in your config, which specifies how to batch instances together before passing them to your model. We go into more detail on how this works in [a chapter on reading textual data](/reading-textual-data).
+In the next example, we are going to instantiate the model and feed batches of instances to it. Note that the config file now has the `model` section, which contains the full specification for how to instantiate your model along with its sub-components. Also notice the `iterator` section in your config, which specifies how to batch instances together before passing them to your model. We go into more detail on how this works in [a chapter on reading data](/reading-data).
 
 When you run this, you should see the outputs returned from the model. Each returned dict includes the `loss` key as well as the `probs` key, which contains probabilities for each label. 
 

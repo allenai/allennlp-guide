@@ -17,7 +17,7 @@ In the previous chapter, we learned what text classification is. In this part of
 
 The first step for building an NLP application is to read the dataset and represent it with some internal data structure. 
 
-AllenNLP uses `DatasetReaders` to read the data, whose job it is to transform raw data files into [`Instances`](/reading-textual-data) that match the input / output spec. Our spec for text classification is:
+AllenNLP uses `DatasetReaders` to read the data, whose job it is to transform raw data files into [`Instances`](/reading-data) that match the input / output spec. Our spec for text classification is:
 
 ```python
 # Inputs
@@ -27,7 +27,7 @@ text: TextField
 label: LabelField
 ```
 
-We'll want one [`Field`](/reading-textual-data) for the input and another for the output, and our model will use the inputs to predict the outputs.
+We'll want one [`Field`](/reading-data) for the input and another for the output, and our model will use the inputs to predict the outputs.
 
 We assume the dataset has a simple data file format:
 `[text] [TAB] [label]`, for example:
@@ -70,7 +70,7 @@ Pay special attention to the `text` and `label` keys that were used in the `fiel
 
 Ideally, the outputs would be optional in the `Instances`, so that we can use the same code to make predictions on unlabeled data (say, in a demo), but for the rest of this chapter we'll keep things simple and ignore that.
 
-There are lots of places where this could be made better for a more flexible and fully-featured reader; see the section on [DatasetReaders](/reading-textual-data) for more information.
+There are lots of places where this could be made better for a more flexible and fully-featured reader; see the section on [DatasetReaders](/reading-data) for more information.
 
 </exercise>
 
@@ -187,7 +187,7 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
 </code></pre>
 
-`Vocabulary` manages mappings between vocabulary items (such as words and characters) and their integer IDs. In our prebuilt training loop, the vocabulary gets created by AllenNLP after reading your training data, then passed to the `Model` when it gets constructed. We'll find all tokens and labels that you use and assign them all integer IDs in separate namespaces. The way that this happens is fully configurable; see the [Vocabulary section of this course](/reading-textual-data) for more information.
+`Vocabulary` manages mappings between vocabulary items (such as words and characters) and their integer IDs. In our prebuilt training loop, the vocabulary gets created by AllenNLP after reading your training data, then passed to the `Model` when it gets constructed. We'll find all tokens and labels that you use and assign them all integer IDs in separate namespaces. The way that this happens is fully configurable; see the [Vocabulary section of this course](/reading-data) for more information.
 
 What we did in the `DatasetReader` will put the labels in the default "labels" namespace, and we grab the number of labels from the vocabulary on line 11.
 
