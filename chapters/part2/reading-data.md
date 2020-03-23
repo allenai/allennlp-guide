@@ -148,11 +148,18 @@ class SimpleClassifier(Model):
 
 </exercise>
 
-<exercise id="4" title="Iterators, batching, and padding">
+<exercise id="4" title="Datasets, the dataset loader, and samplers">
 
-* How iterating and batching works in AllenNLP
-* How padding works in AllenNLP
-* (A diagram showing how batching works)
-* Some details of bucket iterator (sorting_keys, maximum_samples_per_batch, etc.)
+AllenNLP heavily relies on PyTorch's data loading utilities. The most important component is the [`DatasetLoader`](http://docs.allennlp.org/master/api/data/dataloader/), which, given a `Dataset`, provides a Python iterable over the (possibly batched) instances. 
+
+Datasets are represented as `AllennlpDataset` objects, which are a thin wrapper around a collection of `Instances` and are basically identical to PyTorch's `Dataset` except that they support some extra features such as indexing with vocabulary. AllenNLP's `DatasetReaders` all return an `AllennlpDataset` when they finish reading a dataset.
+
+[`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/) takes a `Dataset` and produces an iterable over the dataset. By default, it yields single instances in the original order, but you can give various options to `DatasetLoader` to customize how it iterates over, samples, and/or batches the instances. For example, if you give the `batch_size` argument, it will yield batches of the specified size. You can also shuffle the dataset by providing `shuffle=True`.
+
+You can give a `Sampler` to the `DatasetLoader`'s `batch` argument in order to further customize its behavior. `Samplers` specify how to iterate over the instances in the given dataset. A `SequentialSampler`, for example, samples instances sequentially in the original order. A `RandomSampler` samples instances randomly, with or without replacement. A `BatchSampler` wraps another `Sampler` and yields mini-batches of instances produced by the underlying sampler.
+
+Finally, you can customize how a list of instances is collated by passing a function as the `collate_fn` augment. In AllenNLP, yielded instances are turned into a [`Batch` object](http://docs.allennlp.org/master/api/data/batch/), which in turn gets converted to a dict of tensors per field.
+
+<codeblock source="part2/reading-data/data_loader"></codeblock>
 
 </exercise>
