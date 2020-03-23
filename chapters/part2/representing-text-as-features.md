@@ -1,5 +1,5 @@
 ---
-title: 'Chapter 3: Representing text as features: Tokenizers, TextFields, and TextFieldEmbedders'
+title: 'Representing text as features: Tokenizers, TextFields, and TextFieldEmbedders'
 description:
   "A deep dive into AllenNLP's core abstraction: how exactly we represent textual inputs, both on
 the data side and the model side."
@@ -190,7 +190,7 @@ and index 1 is reserved for out of vocabulary (unknown) tokens.  If you change t
 tokens that you don't add to your vocabulary, you'll see they get a 1 from the
 `SingleIdTokenIndexer`.
 
-<codeblock id="chapter03/data/simple">
+<codeblock id="part2/representing-text-as-features/data/simple">
 You'll want to use a `TokenCharactersIndexer` instead of a `SingleIdTokenIndexer`, and you'll need
 to update the vocabulary, also.
 </codeblock>
@@ -199,7 +199,7 @@ This time, let's modify the same code, but to use characters as tokens.  Both of
 characters as their base input, but if we do it this way, in the model we'll get a single vector
 per _character_, instead of per _word_.
 
-<codeblock id="chapter03/data/simple2">
+<codeblock id="part2/representing-text-as-features/data/simple2">
 You'll want to modify the `Tokenizer` and the `Vocabulary`.
 </codeblock>
 
@@ -224,7 +224,7 @@ vectors for).  See if you can modify it to add a third kind of representation: p
 embeddings.  Remember that the "embeddings" happen in the model, not here; we just need to get
 _indices_ for the part of speech tags that we see in the text.
 
-<codeblock id="chapter03/data/combined">
+<codeblock id="part2/representing-text-as-features/data/combined">
 The `Tokenizer` needs to be modified to include part of speech tags, you need a third entry in the
 `token_indexers` dictionary, and the vocabulary needs to include part of speech tags.
 </codeblock>
@@ -243,7 +243,7 @@ you've settled on a basic model architecture, _without changing your model code_
 The code below shows usage with ELMo, and if you click on "show solution", we've also included an
 example with BERT.  You can run both of these to see what the data looks like.
 
-<codeblock id="chapter03/data/contextual">
+<codeblock id="part2/representing-text-as-features/data/contextual">
 </codeblock>
 
 For ELMo, you can see that each token gets a long sequence of 50 characters, the majority of which
@@ -324,7 +324,7 @@ each token, and you just want to embed the token.  As an exercise, try convertin
 character-level CNN, to match the exercise we did above in changing the data processing to use a
 `TokenCharactersIndexer`.
 
-<codeblock id="chapter03/model/simple">
+<codeblock id="part2/representing-text-as-features/model/simple">
 We gave you the imports to use at the top of the file.  `CnnEncoder` takes three arguments:
 `embedding_dim: int`, `num_filters: int`, and `ngram_filter_sizes: List[int]`.
 `TokenCharactersEncoder` takes two arguments: `embedding: Embedding` and `encoder: Seq2VecEncoder`
@@ -352,7 +352,7 @@ corresponding to part of speech tags.  If you click on "show solution", we'll sh
 token and part of speech tag vocabularies are actually used in practice to construct the embedding
 layers with the right number of embeddings.
 
-<codeblock id="chapter03/model/combined">
+<codeblock id="part2/representing-text-as-features/model/combined">
 You'll need to add another entry in the `token_tensor` dictionary, and a corresponding entry in the
 `token_embedders` dictionary passed to the `BasicTextFieldEmbedder`.
 </codeblock>
@@ -372,7 +372,7 @@ places, you'll have problems in your code.
 Below we give a simple example showing how to use pretrained embedding vectors (like GloVe) with
 AllenNLP.  It's easiest to accomplish this with `Embedding.from_params()`.
 
-<codeblock id="chapter03/model/pretrained">
+<codeblock id="part2/representing-text-as-features/model/pretrained">
 </codeblock>
 
 </exercise>
@@ -389,7 +389,7 @@ The original code shows ELMo, and if you click on "show solution" you'll see the
 Because we don't have a toy BERT model, you can't actually run the BERT code; it'll try to download
 the huge BERT model, and it will time out.
 
-<codeblock id="chapter03/model/contextual">
+<codeblock id="part2/representing-text-as-features/model/contextual">
 </codeblock>
 
 </exercise>
