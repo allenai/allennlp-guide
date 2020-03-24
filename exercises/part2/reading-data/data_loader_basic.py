@@ -1,12 +1,5 @@
-from allennlp.data import DataLoader
-from allennlp.data import Instance
-from allennlp.data.dataset_readers.dataset_reader import AllennlpDataset
-from allennlp.data.fields import LabelField
-from allennlp.data.samplers import SequentialSampler, RandomSampler, BasicBatchSampler
-from allennlp.data.vocabulary import Vocabulary
-
-# Create a toy dataset
-instances = [Instance({'label': LabelField(str(label))}) for label in range(10)]
+# Create a toy dataset from labels
+instances = [Instance({'label': LabelField(str(label))}) for label in 'abcdefghij']
 dataset = AllennlpDataset(instances)
 vocab = Vocabulary.from_instances(dataset)
 dataset.index_with(vocab)

@@ -158,8 +158,12 @@ Datasets are represented as `AllennlpDataset` objects, which are a thin wrapper 
 
 You can give a `Sampler` to the `DatasetLoader`'s `batch` argument in order to further customize its behavior. `Samplers` specify how to iterate over the instances in the given dataset. A `SequentialSampler`, for example, samples instances sequentially in the original order. A `RandomSampler` samples instances randomly, with or without replacement. A `BatchSampler` wraps another `Sampler` and yields mini-batches of instances produced by the underlying sampler.
 
-Finally, you can customize how a list of instances is collated by passing a function as the `collate_fn` augment. In AllenNLP, yielded instances are turned into a [`Batch` object](http://docs.allennlp.org/master/api/data/batch/), which in turn gets converted to a dict of tensors per field.
+<codeblock source="part2/reading-data/data_loader_basic" setup="part2/reading-data/data_loader_setup"></codeblock>
 
-<codeblock source="part2/reading-data/data_loader"></codeblock>
+`BucketBatchSampler` is the most important `Sampler` in practice and is a major feature of AllenNLP. It sorts the instances by their length (or by any sort keys you specify) and automatically groups them so that instances of similar lengths get batched together. This helps minimize the amount of padding and make the training more efficient. `Fields` all implement `__len__`, which the sampler uses to do this sorting. In the following code example, you compare `BasicBatchSampler` and `BucketBatchSampler` and the latter does reduce the amount of padding by grouping instances of similar lengths together.
+
+<codeblock source="part2/reading-data/data_loader_bucket" setup="part2/reading-data/data_loader_setup"></codeblock>
+
+Finally, you can customize how a list of instances is collated by passing a function as the `collate_fn` augment. In AllenNLP, yielded instances are turned into a [`Batch` object](http://docs.allennlp.org/master/api/data/batch/), which in turn gets converted to a dict of tensors per field.
 
 </exercise>
