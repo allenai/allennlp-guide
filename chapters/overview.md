@@ -56,7 +56,7 @@ You may also want to have a good understanding of modern deep NLP models and tec
 
 ## Part 2
 
-* [Reading textual data](/reading-data): DatasetReaders, Fields, and Instances
+* [Reading data](/reading-data): DatasetReaders, Fields, and Instances
 * Building your model
 * Common architectures
 * Representing text as features

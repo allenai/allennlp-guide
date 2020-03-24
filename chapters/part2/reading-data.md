@@ -150,7 +150,7 @@ class SimpleClassifier(Model):
 
 <exercise id="4" title="Datasets, the dataset loader, and samplers">
 
-AllenNLP heavily relies on PyTorch's data loading utilities. The most important component is the [`DatasetLoader`](http://docs.allennlp.org/master/api/data/dataloader/), which, given a `Dataset`, provides a Python iterable over the (possibly batched) instances. 
+AllenNLP heavily relies on PyTorch's data loading utilities. The most important component is the [`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/), which, given a `Dataset`, provides a Python iterable over the (possibly batched) instances. 
 
 Datasets are represented as `AllennlpDataset` objects, which are a thin wrapper around a collection of `Instances` and are basically identical to PyTorch's `Dataset` except that they support some extra features such as indexing with vocabulary. AllenNLP's `DatasetReaders` all return an `AllennlpDataset` when they finish reading a dataset.
 
