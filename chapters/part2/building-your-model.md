@@ -16,7 +16,7 @@ AllenNLP uses the class `Model` to implement NLP models. `Model` subclasses  `to
 
 There are, however, a few key differences between PyTorch `Modules` and AllenNLP `Models`. The most important is the fact that `forward()` returns a dictionary, unlike PyTorch `Modules`, which usually return a tensor. AllenNLP `Models` also implement additional features for running and processing model predictions, saving and loading models, getting metrics, etc., which we'll elaborate on below.
 
-The input/output spec of `Model.forward()` method is somewhat more strictly defined than that of PyTorch modules. Its parameters need to match field names in your data code exactly, [as we mentioned previously](/reading-textual-data#1). Instances created by the dataset reader are batched and converted to a set of tensors by AllenNLP. These batched tensors get passed to `Model.forward()` by their original field names. The following figure shows this process:
+The input/output spec of `Model.forward()` method is somewhat more strictly defined than that of PyTorch modules. Its parameters need to match field names in your data code exactly, [as we mentioned previously](/reading-data#1). Instances created by the dataset reader are batched and converted to a set of tensors by AllenNLP. These batched tensors get passed to `Model.forward()` by their original field names. The following figure shows this process:
 
 <img src="/part2/building-your-model/forward.svg" alt="Model.forward() and its parameters" />
 

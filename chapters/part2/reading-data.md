@@ -1,6 +1,6 @@
 ---
-title: 'Reading textual data'
-description: This chapter provides a deep dive into AllenNLP abstractions that are essential for reading textual data, including fields and instances, dataset readers, vocabulary, and how batching is handled in AllenNLP
+title: 'Reading data'
+description: This chapter provides a deep dive into AllenNLP abstractions that are essential for reading data, including fields and instances, dataset readers, vocabulary, and how batching is handled in AllenNLP
 type: chapter
 ---
 
@@ -22,7 +22,7 @@ Other commonly used fields include:
 
 `Fields` can be created simply by supplying the data. `Field` objects provide APIs for creating empty fields, counting vocabulary items, creating tensors, and batching tensors, among others. See the following code snippet for more detail.
 
-<codeblock source="part2/reading-textual-data/fields"></codeblock>
+<codeblock source="part2/reading-data/fields"></codeblock>
 
 ## Instances
 
@@ -30,13 +30,13 @@ An instance is the atomic unit of prediction in machine learning. In AllenNLP, `
 
 `Instances` are created by dataset readers and used to create a `Vocabulary`. The `Vocabulary` is then used to map all strings in the `Instance`'s `Fields` into integer IDs, so that they can be turned into tensors. Later in the training pipeline, these tensors are batched together and fed to the model. The following diagram shows how `Fields` and `Instances` are created from a dataset.
 
-<img src="/part2/reading-textual-data/fields-and-instances.svg" alt="Fields and Instances" />
+<img src="/part2/reading-data/fields-and-instances.svg" alt="Fields and Instances" />
 
 `Instances` can be created by passing a dictionary of field names and corresponding fields to the constructor. `Instances` know how to turn themselves into a dictionary of field names and corresponding tensors, which is then used by `Batches` to batch together tensors of the same type. See the following code snippet for how to create instances and use their APIs.
 
 The fields names are important—because the resulting dictionary of tensors is passed by name to the model after being destructured, they have to match the model's `forward()` arguments exactly.
 
-<codeblock source="part2/reading-textual-data/instances"></codeblock>
+<codeblock source="part2/reading-data/instances"></codeblock>
 
 </exercise>
 
@@ -60,7 +60,7 @@ There are dataset readers available for a wide range of NLP tasks, including:
 
 You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet below is the dataset reader we implemented in [Your first model](/your-first-model). The returned dataset is a list of `Instances` by default.
 
-<codeblock source="part2/reading-textual-data/dataset_reader_basic"></codeblock>
+<codeblock source="part2/reading-data/dataset_reader_basic"></codeblock>
 
 It is recommended that you separate out the logic for creating instances as the `text_to_instances()` method. As we mentioned in [Training and prediction](/training-and-prediction), by sharing a common logic between the training and the prediction pipelines, we are making the system less susceptible to any issues arising from possible discrepancies in how instances are created between the two, and making it very easy to put up a demo of your model. You can use the method as follows in, for example, your `Predictor`:
 
@@ -93,13 +93,13 @@ Dataset readers also support reading data in a lazy manner, where a  `DatasetRea
 
 When `lazy=True` is passed to a dataset reader's constructor, its `read()` method returns a `LazyInstances` object (instead of a list of `Instances`), which is a wrapper and an iterator that calls `_read()` and produces instances when called.
 
-<codeblock source="part2/reading-textual-data/dataset_reader_lazy"></codeblock>
+<codeblock source="part2/reading-data/dataset_reader_lazy"></codeblock>
 
 # Caching dataset
 
 Reading and preprocessing large datasets can take a very long time. `DatasetReaders` can cache datasets by serializing created instances and writing them to disk. The next time the same file is requested the instances are deseriarized from the disk instead of being created from the file.
 
-<codeblock source="part2/reading-textual-data/dataset_reader_cache"></codeblock>
+<codeblock source="part2/reading-data/dataset_reader_cache"></codeblock>
 
 Instances are serialized by `jsonpickle` by default, although you can override this behavior if you want.
 
@@ -111,7 +111,7 @@ Instances are serialized by `jsonpickle` by default, although you can override t
 
 `Vocabulary` manages different mappings using a concept called *namespaces*. Each namespace is a distinct mapping from strings to integers, so strings in different namespaces are treated separately. This allows you to have separate indices for, e.g., 'a' as a word and 'a' as a character, or 'chat' in English and 'chat' in French (which means 'cat' in English). See the diagram below for an illustration:
 
-<img src="/part2/reading-textual-data/vocabulary.svg" alt="Vocabulary" />
+<img src="/part2/reading-data/vocabulary.svg" alt="Vocabulary" />
 
 There's an important distinction between namespaces: padded and non-padded namespaces. By default, namespaces are padded, meaning the mapping reserves indices for padding and out-of-vocabulary (OOV) tokens. This is useful for indexing tokens, where OOV tokens are common and padding is needed (the next section gives more details on how padding works in AllenNLP).
 
@@ -119,11 +119,11 @@ Non-padded namespaces, on the other hand, do not reserve indices for special tok
 
 A common way to create a `Vocabulary` object is to pass a collection of `Instances` to the `from_instances` method. You can look up indices by tokens using the `get_token_index()` method. You can also do the inverse (looking up tokens by indices) using `get_token_from_index()`. 
 
-<codeblock source="part2/reading-textual-data/vocabulary_creation"></codeblock>
+<codeblock source="part2/reading-data/vocabulary_creation"></codeblock>
 
 When your dataset is too large, you may want to "prune" your vocabulary by setting a threshold and only retaining words that appear more than that threshold. You can achieve this by passing a `min_count` parameter, which specifies the minimum count tokens need to meet to be included per namespace.
 
-<codeblock source="part2/reading-textual-data/vocabulary_count"></codeblock>
+<codeblock source="part2/reading-data/vocabulary_count"></codeblock>
 
 You can instantiate `Vocabulary` not just from a collection of instances but by other means. The class method `from_files` allows you to load a serialized `Vocabulary` from a directory. This is often the one created by the `dry-run` command [mentioned previously](/next-steps#2). You can also use `from_files_and_instances` to expand a pre-built vocabulary with new data. In practice, however, you rarely need to call these class methods yourself. Specify `"type": "from_files"` in the `vocabulary` section of your config file if you want to load from a directory, and specify `"type": "extend"` if you want to extend a pre-built vocabulary (which uses the `from_files_and_instances` class method). If the `"type"` key is not specified, `Vocabulary` is created from instances by default.
 
@@ -148,11 +148,22 @@ class SimpleClassifier(Model):
 
 </exercise>
 
-<exercise id="4" title="Iterators, batching, and padding">
+<exercise id="4" title="Datasets, the dataset loader, and samplers">
 
-* How iterating and batching works in AllenNLP
-* How padding works in AllenNLP
-* (A diagram showing how batching works)
-* Some details of bucket iterator (sorting_keys, maximum_samples_per_batch, etc.)
+AllenNLP heavily relies on PyTorch's data loading utilities. The most important component is the [`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/), which, given a `Dataset`, provides a Python iterable over the (possibly batched) instances. 
+
+Datasets are represented as `AllennlpDataset` objects, which are a thin wrapper around a collection of `Instances` and are basically identical to PyTorch's `Dataset` except that they support some extra features such as indexing with vocabulary. AllenNLP's `DatasetReaders` all return an `AllennlpDataset` when they finish reading a dataset.
+
+[`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/) takes a `Dataset` and produces an iterable over the dataset. By default, it yields single instances in the original order, but you can give various options to `DatasetLoader` to customize how it iterates over, samples, and/or batches the instances. For example, if you give the `batch_size` argument, it will yield batches of the specified size. You can also shuffle the dataset by providing `shuffle=True`.
+
+You can give a `Sampler` to the `DatasetLoader`'s `batch` argument in order to further customize its behavior. `Samplers` specify how to iterate over the instances in the given dataset. A `SequentialSampler`, for example, samples instances sequentially in the original order. A `RandomSampler` samples instances randomly, with or without replacement. A `BatchSampler` wraps another `Sampler` and yields mini-batches of instances produced by the underlying sampler.
+
+<codeblock source="part2/reading-data/data_loader_basic" setup="part2/reading-data/data_loader_setup"></codeblock>
+
+`BucketBatchSampler` is the most important `Sampler` in practice and is a major feature of AllenNLP. It sorts the instances by the length of their longest `Field` (or by any sorting keys you specify) and automatically groups them so that instances of similar lengths get batched together. This helps minimize the amount of padding and makes training more efficient. `Fields` all implement `__len__`, which the sampler uses to do this sorting, and to figure out which `Field` to sort by.  For example, if you have two `TextFields`, one for a question and one for a passage, the `BucketBatchSampler` will automatically detect that it should sort by passage length. In the following code example, we compare `BasicBatchSampler` and `BucketBatchSampler`; notice the difference in the amount of padding between the two.
+
+<codeblock source="part2/reading-data/data_loader_bucket" setup="part2/reading-data/data_loader_setup"></codeblock>
+
+Finally, you can customize how a list of instances is collated by passing a function as the `collate_fn` augment. In AllenNLP, yielded instances are turned into a [`Batch` object](http://docs.allennlp.org/master/api/data/batch/), which in turn gets converted to a dict of tensors per field.
 
 </exercise>
