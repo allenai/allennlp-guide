@@ -160,7 +160,7 @@ You can give a `Sampler` to the `DatasetLoader`'s `batch` argument in order to f
 
 <codeblock source="part2/reading-data/data_loader_basic" setup="part2/reading-data/data_loader_setup"></codeblock>
 
-`BucketBatchSampler` is the most important `Sampler` in practice and is a major feature of AllenNLP. It sorts the instances by their length (or by any sort keys you specify) and automatically groups them so that instances of similar lengths get batched together. This helps minimize the amount of padding and make the training more efficient. `Fields` all implement `__len__`, which the sampler uses to do this sorting. In the following code example, you compare `BasicBatchSampler` and `BucketBatchSampler` and the latter does reduce the amount of padding by grouping instances of similar lengths together.
+`BucketBatchSampler` is the most important `Sampler` in practice and is a major feature of AllenNLP. It sorts the instances by the length of their longest `Field` (or by any sorting keys you specify) and automatically groups them so that instances of similar lengths get batched together. This helps minimize the amount of padding and makes training more efficient. `Fields` all implement `__len__`, which the sampler uses to do this sorting, and to figure out which `Field` to sort by.  For example, if you have two `TextFields`, one for a question and one for a passage, the `BucketBatchSampler` will automatically detect that it should sort by passage length. In the following code example, we compare `BasicBatchSampler` and `BucketBatchSampler`; notice the difference in the amount of padding between the two.
 
 <codeblock source="part2/reading-data/data_loader_bucket" setup="part2/reading-data/data_loader_setup"></codeblock>
 

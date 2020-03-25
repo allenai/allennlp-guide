@@ -15,8 +15,10 @@ for batch in data_loader:
     print(batch)
 
 print('Using a BucketBatchSampler:')
-# by default, a BucketBatchSampler tries to auto-detect the right sorting keys,
-# but we are specifying them explicitly here
+# The sorting_keys argument is unnecessary here, because the sampler will
+# automatically detect that 'tokens' is the right sorting key, but we are
+# including it in our example for completeness. You can remove it and see
+# that the output is the same.
 batch_sampler = BucketBatchSampler(dataset, batch_size=2, sorting_keys=['tokens'])
 data_loader = DataLoader(dataset, batch_sampler=batch_sampler)
 for batch in data_loader:
