@@ -42,7 +42,10 @@ export const outline = {
             title: 'Part 3: Practical Tasks With AllenNLP',
             description:
                 'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
-            chapterSlugs: ['/semantic-parsing'],
+            chapterSlugs: [
+                '/zero-shot-classification',
+                '/semantic-parsing'
+            ],
             icon: 'tools',
             antMenuIcon: 'setting',
             color: 'aqua'
