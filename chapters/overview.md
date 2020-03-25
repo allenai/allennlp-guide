@@ -69,7 +69,7 @@ You may also want to have a good understanding of modern deep NLP models and tec
 
 ## Part 3
 
-* Text classification
+* [Zero-shot text classification](/zero-shot-classification)
 * Sequence labeling
 * Language modeling
 * Sentence pair classification
