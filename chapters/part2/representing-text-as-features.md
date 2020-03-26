@@ -18,14 +18,15 @@ The first part of representing a string of text as numerical features is splitti
 
 Finally, each individual ID gets replaced by a vector representing that word in some abstract space. The idea here is that words that are "similar" to each other in some sense will be close in the vector space, and so will be treated similarly by the model.
 
-There are a lot of options for replacing words IDs by vector representations, including:
+There are a lot of options for converting words into vector representations, including:
 
+* GloVe or word2vec embeddings
 * Character CNNs
 * POS tag embeddings
 * Combination of GloVe and character CNNs
 * wordpieces and BERT
 
-## Steps for converting language to features
+## Main steps
 
 There were three steps in converting language to features:
 
@@ -33,7 +34,7 @@ There were three steps in converting language to features:
 2. Tokens → Ids
 3. Ids → Vectors
 
-First two are data processing, last step is in the *model*. Of these three steps, only the last step has learnable parameters. There are certainly decisions to be made in the first two steps that affect model performance, but they do not typically have learnable parameters that you want to train with backprop on your final task.
+The first two steps are data processing, while the last step is a modeling operation. Of these three steps, only the last step has learnable parameters. There are certainly decisions to be made in the first two steps that affect model performance, but they do not typically have learnable parameters that you want to train with backpropagation on your final task.
 
 This separation means that what originally looked like a simple problem (representing text as features) actually needs coordination between two very different pieces of code: a `DatasetReader`, that performs the first two steps, and a `Model`, that performs the last step.
 
@@ -43,7 +44,7 @@ This separation means that what originally looked like a simple problem (represe
 2. TextField and TokenIndexer (Tokens → Ids)
 3. TextFieldEmbedder (Ids → Vectors)
 
-We want our code to not have to specify which of all of the many possible options we're using to represent text as features; if we did that we would need to change our code to run simple experiments. Instead, we introduce high-level abstractions that encapsulate these operations and write our code using the abstractions. Then, when we run our code, we can construct the objects with the particular versions of these abstractions that we want (in software engineering, this is called _dependency injection_).
+We want our `DatasetReader` and `Model` to not have to specify which of all of the many possible options we're using to represent text as features; if we did that we would need to change our code to run simple experiments. Instead, we introduce high-level abstractions that encapsulate these operations and write our code using the abstractions. Then, when we run our code, we can construct the objects with the particular versions of these abstractions that we want (in software engineering, this is called _dependency injection_).
 
 In the following sections, we will examine the first two abstractions in detail, showing how we go from text to something that can be input to a PyTorch `Model`.
 
