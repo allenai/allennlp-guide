@@ -14,7 +14,7 @@ overview paper](https://arxiv.org/abs/1902.06006).
 
 The first part of representing a string of text as numerical features is splitting the text up into individual `Tokens` that will each get their own representation.
 
-`Tokens` are then converted into numerical values using some pre-defined `Vocabulary`.
+`Tokens` are then converted into numerical values using a `TokenIndexer` with a help of a `Vocabulary`.
 
 Finally, each individual ID gets replaced by a vector representing that word in some abstract space. The idea here is that words that are "similar" to each other in some sense will be close in the vector space, and so will be treated similarly by the model.
 
@@ -25,6 +25,10 @@ There are a lot of options for converting words into vector representations, inc
 * POS tag embeddings
 * Combination of GloVe and character CNNs
 * wordpieces and BERT
+
+For example, the following diagram illustrates the conversion steps using a combination of GloVe and character CNNs. Note that a single token is mapped to two different types of IDs, which then get converted to different embeddings. 
+
+<img src="/part2/representing-text-as-features/glove-cnn.svg" alt="Combination of GloVe and character CNNs" />
 
 ## Main steps
 

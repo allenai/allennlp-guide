@@ -4,22 +4,22 @@
     <title>Slice</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <rect id="path-1" x="0" y="0" width="46" height="166" rx="6"></rect>
-        <filter x="-23.9%" y="-6.6%" width="156.5%" height="115.7%" filterUnits="objectBoundingBox" id="filter-2">
+        <rect id="path-1" x="0" y="0" width="191" height="46" rx="6"></rect>
+        <filter x="-5.8%" y="-23.9%" width="113.6%" height="156.5%" filterUnits="objectBoundingBox" id="filter-2">
             <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
             <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
             <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
             <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
         </filter>
-        <rect id="path-3" x="0" y="0" width="46" height="166" rx="6"></rect>
-        <filter x="-23.9%" y="-6.6%" width="156.5%" height="115.7%" filterUnits="objectBoundingBox" id="filter-4">
+        <rect id="path-3" x="0" y="0" width="191" height="46" rx="6"></rect>
+        <filter x="-5.8%" y="-23.9%" width="113.6%" height="156.5%" filterUnits="objectBoundingBox" id="filter-4">
             <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
             <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
             <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
             <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
         </filter>
-        <rect id="path-5" x="0" y="0" width="46" height="166" rx="6"></rect>
-        <filter x="-23.9%" y="-6.6%" width="156.5%" height="115.7%" filterUnits="objectBoundingBox" id="filter-6">
+        <rect id="path-5" x="0" y="0" width="191" height="46" rx="6"></rect>
+        <filter x="-5.8%" y="-23.9%" width="113.6%" height="156.5%" filterUnits="objectBoundingBox" id="filter-6">
             <feOffset dx="2" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
             <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
             <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
@@ -102,7 +102,7 @@
             <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
             <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
         </filter>
-        <rect id="path-22" x="360" y="247" width="142" height="43" rx="4"></rect>
+        <rect id="path-22" x="349" y="247" width="142" height="43" rx="4"></rect>
         <filter x="-8.5%" y="-27.9%" width="119.7%" height="165.1%" filterUnits="objectBoundingBox" id="filter-23">
             <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
             <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
@@ -110,7 +110,7 @@
             <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
             <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
         </filter>
-        <rect id="path-24" x="555" y="247" width="191" height="43" rx="4"></rect>
+        <rect id="path-24" x="559" y="247" width="191" height="43" rx="4"></rect>
         <filter x="-6.3%" y="-27.9%" width="114.7%" height="165.1%" filterUnits="objectBoundingBox" id="filter-25">
             <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
             <feOffset dx="2" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
@@ -120,62 +120,62 @@
         </filter>
     </defs>
     <g id="Part-2,-features" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group" transform="translate(462.000000, 74.000000)">
+        <g id="Group" transform="translate(441.000000, 75.000000)">
             <g id="Rectangle">
                 <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
-                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="44" height="164" rx="6"></rect>
+                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="189" height="44" rx="6"></rect>
             </g>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="8" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="8" y="7" width="32" height="32" rx="6"></rect>
             <text id="40" font-family="Helvetica" font-size="20" font-weight="normal" fill="#46505E">
-                <tspan x="11.3769531" y="31">40</tspan>
+                <tspan x="12.3769531" y="30">40</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="47" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="44" y="7" width="32" height="32" rx="6"></rect>
             <text id="71" font-family="Helvetica" font-size="20" font-weight="normal" fill="#45505F">
-                <tspan x="11.3769531" y="70">71</tspan>
+                <tspan x="48.3769531" y="30">71</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="86" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="80" y="7" width="32" height="32" rx="6"></rect>
             <text id="33" font-family="Helvetica" font-size="20" font-weight="normal" fill="#45505F">
-                <tspan x="11.3769531" y="109">33</tspan>
+                <tspan x="84.3769531" y="30">33</tspan>
             </text>
         </g>
-        <g id="Group" transform="translate(516.000000, 74.000000)">
+        <g id="Group" transform="translate(441.000000, 128.000000)">
             <g id="Rectangle">
                 <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
-                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="44" height="164" rx="6"></rect>
+                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="189" height="44" rx="6"></rect>
             </g>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="8" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="7" y="7" width="32" height="32" rx="6"></rect>
             <text id="65" font-family="Helvetica" font-size="20" font-weight="normal" fill="#4F5B6A">
-                <tspan x="11.3769531" y="31">65</tspan>
+                <tspan x="11.3769531" y="30">65</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="47" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="44" y="7" width="32" height="32" rx="6"></rect>
             <text id="32" font-family="Helvetica" font-size="20" font-weight="normal" fill="#4E5B6A">
-                <tspan x="11.3769531" y="70">32</tspan>
+                <tspan x="48.3769531" y="30">32</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="86" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="81" y="7" width="32" height="32" rx="6"></rect>
             <text id="37" font-family="Helvetica" font-size="20" font-weight="normal" fill="#4E5A6B">
-                <tspan x="11.3769531" y="109">37</tspan>
+                <tspan x="85.3769531" y="30">37</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="125" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="118" y="7" width="32" height="32" rx="6"></rect>
             <text id="24" font-family="Helvetica" font-size="20" font-weight="normal" fill="#4E5A6B">
-                <tspan x="11.3769531" y="148">24</tspan>
+                <tspan x="122.376953" y="30">24</tspan>
             </text>
         </g>
-        <g id="Group" transform="translate(570.000000, 74.000000)">
+        <g id="Group" transform="translate(441.000000, 181.000000)">
             <g id="Rectangle">
                 <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
-                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="44" height="164" rx="6"></rect>
+                <rect stroke="#47515C" stroke-width="2" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="1" y="1" width="189" height="44" rx="6"></rect>
             </g>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="8" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="7" y="7" width="32" height="32" rx="6"></rect>
             <text id="5" font-family="Helvetica" font-size="20" font-weight="normal" fill="#596676">
-                <tspan x="16.9384766" y="31">5</tspan>
+                <tspan x="16.9384766" y="30">5</tspan>
             </text>
-            <rect id="Rectangle" fill="#DBC5FF" x="7" y="47" width="32" height="32" rx="6"></rect>
+            <rect id="Rectangle" fill="#DBC5FF" x="44" y="7" width="32" height="32" rx="6"></rect>
             <text id="62" font-family="Helvetica" font-size="20" font-weight="normal" fill="#586676">
-                <tspan x="11.3769531" y="70">62</tspan>
+                <tspan x="48.3769531" y="30">62</tspan>
             </text>
         </g>
         <text id="Token-IDs" font-family="Helvetica" font-size="20" font-weight="normal" fill="#46505E">
-            <tspan x="493.428711" y="63">Token IDs</tspan>
+            <tspan x="483.428711" y="63">Token IDs</tspan>
         </text>
         <g id="Group-2" transform="translate(203.000000, 75.000000)">
             <g id="Rectangle">
@@ -234,9 +234,9 @@
         </g>
         <rect id="Rectangle" fill-opacity="0.5" fill="#32C5FF" x="693.319805" y="133" width="10" height="10" rx="5"></rect>
         <rect id="Rectangle" fill-opacity="0.8" fill="#32C5FF" x="693" y="165" width="10" height="10" rx="5"></rect>
-        <path id="Line" d="M436.75,155 L450.75,162 L436.75,169 L436.75,163 L410.25,163 L410.25,161 L436.75,161 L436.75,155 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <path id="Line" d="M426.75,155 L440.75,162 L426.75,169 L426.75,163 L400.25,163 L400.25,161 L426.75,161 L426.75,155 Z" fill="#47515C" fill-rule="nonzero"></path>
         <path id="Line" d="M179.75,155 L193.75,162 L179.75,169 L179.75,163 L153.25,163 L153.25,161 L179.75,161 L179.75,155 Z" fill="#47515C" fill-rule="nonzero"></path>
-        <path id="Line" d="M656.75,155 L670.75,162 L656.75,169 L656.75,163 L630.25,163 L630.25,161 L656.75,161 L656.75,155 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <path id="Line" d="M663.75,155 L677.75,162 L663.75,169 L663.75,163 L637.25,163 L637.25,161 L663.75,161 L663.75,155 Z" fill="#47515C" fill-rule="nonzero"></path>
         <text id="Text" font-family="Helvetica" font-size="20" font-weight="normal" fill="#47515C">
             <tspan x="67.0517578" y="63">Text</tspan>
         </text>
@@ -286,16 +286,16 @@
             <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-22"></use>
         </g>
         <text id="TokenIndexer" font-family="Helvetica" font-size="20" font-weight="normal" fill="#46515D">
-            <tspan x="369.352539" y="276.5">TokenIndexer</tspan>
+            <tspan x="358.352539" y="276.5">TokenIndexer</tspan>
         </text>
-        <path id="Line" d="M431.0625,193.5 L437.963271,207.549177 L431.963,207.507 L431.687475,246.507075 L431.6804,247.50705 L429.68045,247.4929 L429.687525,246.492925 L429.963,207.492 L423.963621,207.450123 L431.0625,193.5 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <path id="Line" d="M420.0625,193.5 L426.963271,207.549177 L420.963,207.507 L420.687475,246.507075 L420.6804,247.50705 L418.68045,247.4929 L418.687525,246.492925 L418.963,207.492 L412.963621,207.450123 L420.0625,193.5 Z" fill="#47515C" fill-rule="nonzero"></path>
         <g id="Rectangle">
             <use fill="black" fill-opacity="1" filter="url(#filter-25)" xlink:href="#path-24"></use>
             <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-24"></use>
         </g>
         <text id="TextFieldEmbedder" font-family="Helvetica" font-size="20" font-weight="normal" fill="#46515D">
-            <tspan x="563.239258" y="276.5">TextFieldEmbedder</tspan>
+            <tspan x="567.239258" y="276.5">TextFieldEmbedder</tspan>
         </text>
-        <path id="Line" d="M651.0625,193.5 L657.963271,207.549177 L651.963,207.507 L651.687475,246.507075 L651.6804,247.50705 L649.68045,247.4929 L649.687525,246.492925 L649.963,207.492 L643.963621,207.450123 L651.0625,193.5 Z" fill="#47515C" fill-rule="nonzero"></path>
+        <path id="Line" d="M655.0625,193.5 L661.963271,207.549177 L655.963,207.507 L655.687475,246.507075 L655.6804,247.50705 L653.68045,247.4929 L653.687525,246.492925 L653.963,207.492 L647.963621,207.450123 L655.0625,193.5 Z" fill="#47515C" fill-rule="nonzero"></path>
     </g>
 </svg>
