@@ -128,7 +128,7 @@ from allennlp.common import Registrable
 class Muppet(Registrable):
 	pass
 
-@Muppet.register(“elmo”)
+@Muppet.register("elmo")
 class Elmo(Muppet):
 	pass
 ```
