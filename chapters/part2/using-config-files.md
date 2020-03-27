@@ -21,7 +21,7 @@ class Gaussian(FromParams):
 		self.variance = variance
 ```
 
-Importantly, we have to use type annotations for the constructor arguments: this tells FromParams how to parse the JSON in the configuration file. Once we have done this, other objects can utilize a configurable `Gaussian` simply by annotating one of their constructor arguments with the `Gaussian` type. For example:
+Importantly, we have to use type annotations for the constructor arguments: this tells FromParams how to parse the JSON in the configuration file. Once we have done this, other objects can utilize a configurable `Gaussian` using type annotations:
 
 ```python
 from allennlp.data.vocabulary import Vocabulary
