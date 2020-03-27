@@ -1,6 +1,6 @@
 ---
 title: 'Using config files: `Registrable` and `FromParams`'
-description: 'This chapter explains how AllenNLP supports .'
+description: 'This chapter explains how `FromParams` and `Registrables` work in AllenNLP.'
 type: chapter
 ---
 
