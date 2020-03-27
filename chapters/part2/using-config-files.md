@@ -1,6 +1,6 @@
 ---
 title: 'Using config files: `Registrable` and `FromParams`'
-description: 'This chapter explains how `FromParams` and `Registrables` work in AllenNLP.'
+description: 'This chapter explains how `FromParams` and `Registrable` work in AllenNLP.'
 type: chapter
 ---
 
@@ -88,7 +88,7 @@ You can write your own classes implementing FromParams and utilize them in Allen
 
 <exercise id="2" title="part2/using-config-files/registrables`">
 
-### `Registrables`: Polymorphic Dependency Injection
+### `Registrable`: Polymorphic Dependency Injection
 
 Often when we are defining a machine learning model, it makes sense to utilize abstract components. For example, we might want to write our part of speech tagging model such that it can easily be configured to use either an LSTM or a convolutional layer to encode sequences. AllenNLP supports this sort of polymorphic dependency injection using the `Registrable` interface.
 
