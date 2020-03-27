@@ -82,7 +82,7 @@ class FeedForward(torch.nn.Module, FromParams):
 
 There are a couple things to notice here. First, the type `Activation` itself extends `FromParams`: when we use it as a type annotation, AllenNLP will parse parameters recursively to guarantee that `FeedForward` receives a correctly configured `Activation` object! Second, we can use the type annotations from the built-in typing library to support various kinds of structures in the configuration file: `List` corresponds to a JSON list, `Union` corresponds to an argument with multiple options for its type, and `Dict` corresponds to an argument that should be interpreted as a JSON dictionary.
 
-You can also write your own classes implementing FromParams and utilize them in AllenNLP configs. There is one important caveat here though: you will need to run your allennlp command with the `--include-package=<YOUR_PACKAGE>` flag so that the library can find and register your custom classes.
+You can easily write your own classes implementing FromParams and utilize them in AllenNLP configs. There is one important caveat here though: you will need to run your allennlp command with the `--include-package=<YOUR_PACKAGE>` flag so that the library can find and register your custom classes.
 
 </exercise>
 
