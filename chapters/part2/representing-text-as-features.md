@@ -100,6 +100,28 @@ In the following code, we show the setup used in BiDAF—representing each token
 
 </exercise>
 
+<exercise id="4" title="The model side: TextFieldEmbedders">
+
+As a reminder, the three main steps that get us from text to features are:
+
+1. Tokenization (Text → Tokens) using `Tokenizers`
+2. Representing each token as some kind of ID (Tokens → Ids) using `TextFields` and `TokenIndexers`
+3. Embedding those IDs into a vector space (Ids → Vectors) using `TextFieldEmbedders`
+
+In AllenNLP, the last step happens inside a `Model`, and we'll examine it more closely here.
+
+AllenNLP's data processing code converts each `TextField` in an `Instance` into a `TextFieldTensors` data structure, which is just an alias of `Dict[str, Dict[str, torch.Tensor]]`. Each entry in the outer dictionary corresponds to one of the `TokenIndexers` that we talked about in the last slide. The inner dictionary contains the objects produced by a given `TokenIndexer`. We'll talk about this later in this chapter.
+
+A `TextFieldEmbedder` takes that output, embeds or encodes each of the tensors individually using a `TokenEmbedder`, then combines them in some way (typically by concatenating them), ending up with a single vector per `Token` that was originally passed to the `TextField`.  You can then take those vectors and do whatever modeling with them afterward that you want - the input text has been fully converted into features that can be used in any machine learning algorithm.
+
+In the following code, we'll use `TextFieldEmbedders` to get a vector for each token inside a `Model`. First, you'll see a simple case where you have a single ID representing each token, and you just want to embed the token. Next, you'll be using a character-level CNN, to match the exercise we did above in changing the data processing to use a `TokenCharactersIndexer`.
+
+<codeblock source="part2/representing-text-as-features/token_embedders_simple" setup="part2/representing-text-as-features/setup"></codeblock>
+
+Notice that in both cases, your model typically will just be given a `TextFieldEmbedder` - all the `Model` has to worry about is that it uses the `TextFieldEmbedder` to get a vector for each token, and it doesn't have to care about how exactly that happens. As we'll say repeatedly throughout this course, this is a very important software design consideration that allows for cleaner and more modular code.  It also helps you think at a higher level about the important parts of your model as you're writing your model code.
+
+</exercise>
+
 <exercise id="5" title="Contextualized representations in TextFields">
 
 Here we'll show how the data processing works for using ELMo and BERT with AllenNLP (and in
@@ -133,41 +155,6 @@ of your text, so you don't have to do that manually.  This is why `bert_tokens-o
 
 <exercise id="6" title="The model side: TextFieldEmbedders">
 
-# Language → Features: the model side
-
-
-# Core abstractions
-
-1. Tokenizer (Text → Tokens)
-2. TextField (Tokens → Ids)
-3. TextFieldEmbedder (Ids → Vectors)
-
-Notes: As a reminder, the three main steps that get us from text to features are tokenization,
-representing each token as some kind of id, then embedding those ids into a vector space.  In
-AllenNLP, the last step happens inside a `Model`, and we'll examine it more closely here.
-
-
-# Core abstractions: TextFieldEmbedder
-
-```python
-class TextFieldEmbedder:
-    def forward(text_field_input: Dict[str, torch.Tensor])
-
-class TokenEmbedder:
-    def forward(inputs: torch.Tensor)
-```
-
-Notes: AllenNLP's data processing code converts each `TextField` in an `Instance` into a `Dict[str,
-torch.Tensor]`, where each entry in that dictionary corresponds to one of the `TokenIndexers` that
-we talked about in the last slide.
-
-A `TextFieldEmbedder` takes that output, embeds or encodes each of the tensors individually using a
-`TokenEmbedder`, then combines them in some way (typically by concatenating them), ending up with a
-single vector per `Token` that was originally passed to the `TextField`.  You can then take those
-vectors and do whatever modeling with them afterward that you want - the input text has been fully
-converted into features that can be used in any machine learning algorithm.
-
-
 # TokenIndexer → TokenEmbedders
 
 - SingleIdTokenIndexer → Embedding
@@ -182,30 +169,6 @@ the `TokenIndexer`.  There are sometimes a few options for mixing and matching `
 sure that the collection of `TokenEmbedders` that you give to a `TextFieldEmbedder` in your model
 matches the collection of `TokenIndexers` that you passed to the `TextField`.  This is typically
 done in a [configuration file](/chapter14).
-
-</exercise>
-
-<exercise id="7" title="Embedding simple TextField inputs">
-
-In this exercise we'll use `TextFieldEmbedders` to get a vector for each token inside a `Model`.
-Below you'll see the code for doing this in the simple case where you have a single id representing
-each token, and you just want to embed the token.  As an exercise, try converting this into using a
-character-level CNN, to match the exercise we did above in changing the data processing to use a
-`TokenCharactersIndexer`.
-
-<codeblock id="part2/representing-text-as-features/model/simple">
-We gave you the imports to use at the top of the file.  `CnnEncoder` takes three arguments:
-`embedding_dim: int`, `num_filters: int`, and `ngram_filter_sizes: List[int]`.
-`TokenCharactersEncoder` takes two arguments: `embedding: Embedding` and `encoder: Seq2VecEncoder`
-(of which `CnnEncoder` is one).
-</codeblock>
-
-Notice that in both cases, your model typically will just be given a `TextFieldEmbedder` - all the
-`Model` has to worry about is that it uses the `TextFieldEmbedder` to get a vector for each token,
-and it doesn't have to care about how exactly that happens.  As we'll say repeatedly throughout
-this course, this is a very important software design consideration that allows for cleaner and
-more modular code.  It also helps you think at a higher level about the important parts of your
-model as you're writing your model code.
 
 </exercise>
 
