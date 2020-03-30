@@ -54,121 +54,49 @@ In the following sections, we will examine the first two abstractions in detail,
 
 </exercise>
 
-<exercise id="2" title="The data side: TextFields">
+<exercise id="2" title="Tokenizers and TextFields">
 
-# Language → Features: the data processing side
+## Tokenizers
 
+`Tokenizers` split strings up into individual tokens. There are three primary ways to do this in AllenNLP:
 
-# Core abstractions
-
-1. Tokenizer (Text → Tokens)
-2. TextField (Tokens → Ids)
-3. TextFieldEmbedder (Ids → Vectors)
-
-Notes: As a reminder, the three main steps that get us from text to features are tokenization,
-representing each token as some kind of id, then embedding those ids into a vector space.  In
-AllenNLP, the first two steps happen on the data processing side inside a `DatasetReader`, and
-we'll examine them more closely here.
-
-
-# Core abstractions: Tokenizer
-
-Options:
-
-- Characters ("AllenNLP is great" → ["A", "l", "l", "e", "n", "N", "L", "P", " ", "i", "s", " ",
-  "g", "r", "e", "a", "t"])
+- Characters ("AllenNLP is great" → ["A", "l", "l", "e", "n", "N", "L", "P", " ", "i", "s", " ", "g", "r", "e", "a", "t"])
 - Wordpieces ("AllenNLP is great" → ["Allen", "#NLP", "is", "great"])
 - Words ("AllenNLP is great" → ["AllenNLP", "is", "great"])
 
-Notes: There are three primary ways that NLP models today split strings up into individual tokens:
-into characters (which includes spaces!), wordpieces (which split apart some words), or words.  In
-AllenNLP, the tokenization that you choose determines what objects will get assigned single vectors
-in your model - if you want a single vector per word, you need to start with a word-level
-tokenization, even if you want that vector to depend on character-level representations.  How we
-construct the vector happens later.
+Note that characters include whitespace too. Wordpieces are similar to words, but further split words into subword units.
 
+In AllenNLP, the tokenization that you choose determines what objects will get assigned single vectors in your model - if you want a single vector per word, you need to start with a word-level tokenization, even if you want that vector to depend on character-level representations. How we construct the vector happens later.
 
-# Core abstractions: TextField
+Commonly used `Tokenizers` include `SpacyTokenizer`, which uses spaCy's tokenizer to split strings into tokens. It also supports many languages other than English. Another popular choice is `CharacterTokenizer`, which splits a string up into individual characters, even including whitespace.
 
-```python
-TextField(tokens: List[Token], token_indexers: Dict[str, TokenIndexer])
+`Tokenizers` all implement a `tokenize()` method, which returns a list of `Tokens`. A `Token` is a lightweight `namedtuple` that is similar to spaCy's `Token`.
 
-# This is quite simplified, but shows the main points.
-class TokenIndexer:
-    def count_vocab_items(token: Token)
-    def tokens_to_indices(tokens: List[Token], vocab: Vocabulary) -> Array
-```
+## TextFields
 
-Notes: A `TextField` takes a list of `Tokens` from a `Tokenizer` and represents each of them as an
-array that can be converted into a vector by the model.  It does this by means of a collection of
-`TokenIndexers`.
-
-Each `TokenIndexer` knows how to convert a `Token` into a representation that can be encoded by a
-corresponding piece of the model.  This could be just mapping the token to an index in some
-vocabulary, or it could be breaking up the token into characters or wordpieces and representing the
-token by a sequence of indexed characters.  You can specify any combination of `TokenIndexers` in a
-`TextField`, so you can, e.g., combine GloVe vectors with character CNNs in your model.
-
-This abstraction is best understood by going through some examples; keep going to get some hands on
-experience with how this works.
+A `TextField` takes a list of `Tokens` from a `Tokenizer` and represents each of them as an array that can be converted into a vector by the model. It does this by means of a collection of `TokenIndexers`. We'll discuss the token indexing mechanism in detail in the following sections.
 
 </exercise>
 
-<exercise id="3" title="A simple TextField example">
+<exercise id="3" title="TokenIndexers">
 
-In this exercise you can get some hands-on experience with how `TextField` data processing works.
-We'll tokenize text and convert it into arrays using a `TextField`, printing out what it looks like
-as we go.  First just run the code block below as is and see what comes out, then try modifying it
-however you like to see what happens.
+## TokenIndexers basics
 
-After you've gotten a feel for what's going on in the given example, as an exercise, see if you can
-switch from using a single integer id for each word to representing words by the sequence
-of characters that make them up.
+Each `TokenIndexer` knows how to convert a `Token` into a representation that can be encoded by a corresponding piece of the model. This could be just mapping the token to an index in some vocabulary, or it could be breaking up the token into characters or wordpieces and representing the token by a sequence of indexed characters. You can specify any combination of `TokenIndexers` in a `TextField`, so you can, e.g., combine GloVe vectors with character CNNs in your model.
 
-Notice as you're looking at the output that the words in the vocabulary all start with index 2.
-This is because index 0 is reserved for padding (which you can see once you finish the exercise),
-and index 1 is reserved for out of vocabulary (unknown) tokens.  If you change the text to include
-tokens that you don't add to your vocabulary, you'll see they get a 1 from the
-`SingleIdTokenIndexer`.
+In the following code snippet, we'll tokenize text and convert it into tensors using a `TextField`, printing out what it looks like as we go. First, we'll split the text into tokens (which are words) and index them with single IDs using a `SingleIdTokenIndexer`. Next, we switch to representing each token with a sequence of characters that make it up using a `TokenCharactersIndexer`. Finally, we use characters as tokens, and index them using single IDs using a `SingleIdTokenIndexer`. 
 
-<codeblock id="part2/representing-text-as-features/data/simple">
-You'll want to use a `TokenCharactersIndexer` instead of a `SingleIdTokenIndexer`, and you'll need
-to update the vocabulary, also.
-</codeblock>
+Notice as you're looking at the output that the words in the vocabulary all start with index 2. This is because index 0 is reserved for padding (which you can see in the final tensor), and index 1 is reserved for out of vocabulary (unknown) tokens.  If you change the text to include tokens that you don't add to your vocabulary, you'll see they get a 1 from the `SingleIdTokenIndexer`.
 
-This time, let's modify the same code, but to use characters as tokens.  Both of these cases use
-characters as their base input, but if we do it this way, in the model we'll get a single vector
-per _character_, instead of per _word_.
+<codeblock source="part2/representing-text-as-features/token_indexers_simple" setup="part2/representing-text-as-features/setup"></codeblock>
 
-<codeblock id="part2/representing-text-as-features/data/simple2">
-You'll want to modify the `Tokenizer` and the `Vocabulary`.
-</codeblock>
+## Combining multiple TokenIndexers
 
-</exercise>
+In some cases in NLP we want to use multiple separate methods to represent text as vectors, then combine them to get a single representation. For instance, we might want to use pre-trained [GloVe vectors](https://nlp.stanford.edu/projects/glove/) along with a character convolution to handle unseen words (this was the approach taken by the [Bidirectional Attention Flow](https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/007ab5528b3bd310a80d553cccad4b78dc496b02) (BiDAF) model, one of the first successful models on the [Stanford Question Answering Dataset](https://rajpurkar.github.io/SQuAD-explorer/)). The `TextField` abstraction is built with this in mind, allowing you specify _any number_ of `TokenIndexers` that will get their own entries in the tensors that are produced by the `TextField`.
 
-<exercise id="4" title="Combining multiple TokenIndexers">
+In the following code, we show the setup used in BiDAF—representing each token as a combination of GloVe (which happens in the model) and character embeddings. We then add a third kind of representation: part of speech tag embeddings. Remember that the "embeddings" happen in the model, not here; we just need to get _indices_ for the part of speech tags that we see in the text.
 
-In some cases in NLP we want to use multiple separate methods to represent text as vectors, then
-combine them to get a single representation.  For instance, we might want to use pre-trained [GloVe
-vectors](https://nlp.stanford.edu/projects/glove/) along with a character convolution to handle
-unseen words (this was the approach taken by the [Bidirectional Attention
-Flow](https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/007ab5528b3bd310a80d553cccad4b78dc496b02)
-model (BiDAF), one of the first successful models on the [Stanford Question Answering
-Dataset](https://rajpurkar.github.io/SQuAD-explorer/)).  The `TextField` abstraction is built with
-this in mind, allowing you specify _any number_ of `TokenIndexers` that will get their own entries
-in the tensors that are produced by the `TextField`.
-
-In the following code, we show the setup used in BiDAF.  Run it to see what the output looks like
-(pre-trained GloVe vectors happen in the model, not here, and in a real setting AllenNLP
-automatically constructs the vocabulary in a special way that's informed by what words you have
-vectors for).  See if you can modify it to add a third kind of representation: part of speech tag
-embeddings.  Remember that the "embeddings" happen in the model, not here; we just need to get
-_indices_ for the part of speech tags that we see in the text.
-
-<codeblock id="part2/representing-text-as-features/data/combined">
-The `Tokenizer` needs to be modified to include part of speech tags, you need a third entry in the
-`token_indexers` dictionary, and the vocabulary needs to include part of speech tags.
-</codeblock>
+<codeblock source="part2/representing-text-as-features/token_indexers_combined" setup="part2/representing-text-as-features/setup"></codeblock>
 
 </exercise>
 

@@ -1,12 +1,5 @@
-from allennlp.data.fields import TextField
-from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenCharactersIndexer
-from allennlp.data.token_indexers import PosTagIndexer
-from allennlp.data.tokenizers import WordTokenizer, CharacterTokenizer
-from allennlp.data.tokenizers.word_splitter import SpacyWordSplitter
-from allennlp.data import Vocabulary
-
 # Splits text into words (instead of wordpieces or characters).
-tokenizer = WordTokenizer()
+tokenizer = SpacyTokenizer()
 
 # Represents each token with both an id from a vocabulary and a sequence of characters.
 token_indexers = {'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
@@ -30,6 +23,29 @@ text_field.index(vocab)
 
 # We typically batch things together when making tensors, which requires some
 # padding computation.  Don't worry too much about the padding for now.
+padding_lengths = text_field.get_padding_lengths()
+
+tensor_dict = text_field.as_tensor(padding_lengths)
+print(tensor_dict)
+
+# Split text into words with part-of-speech tags
+tokenizer = SpacyTokenizer(pos_tags=True)
+vocab.add_tokens_to_namespace(['DT', 'VBZ', 'NN', '.'],
+                              namespace='pos_tag_vocab')
+
+# Represents each token with (1) an id from a vocabulary, (2) a sequence of characters, and (3)
+# part of speech tag ids.
+token_indexers = {'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
+                  'token_characters': TokenCharactersIndexer(namespace='character_vocab'),
+                  'pos_tags': SingleIdTokenIndexer(namespace='pos_tag_vocab', feature_name='tag_')}
+
+tokens = tokenizer.tokenize(text)
+print(tokens)
+print([token.tag_ for token in tokens])
+
+text_field = TextField(tokens, token_indexers)
+text_field.index(vocab)
+
 padding_lengths = text_field.get_padding_lengths()
 
 tensor_dict = text_field.as_tensor(padding_lengths)
