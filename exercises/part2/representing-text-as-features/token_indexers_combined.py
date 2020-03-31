@@ -2,8 +2,10 @@
 tokenizer = SpacyTokenizer()
 
 # Represents each token with both an id from a vocabulary and a sequence of characters.
-token_indexers = {'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
-                  'token_characters': TokenCharactersIndexer(namespace='character_vocab')}
+token_indexers = {
+    'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
+    'token_characters': TokenCharactersIndexer(namespace='character_vocab')
+}
 
 vocab = Vocabulary()
 vocab.add_tokens_to_namespace(['This', 'is', 'some', 'text', '.'],
@@ -15,17 +17,13 @@ text = "This is some text."
 tokens = tokenizer.tokenize(text)
 print(tokens)
 
+# The setup here is the same as what we saw above.
 text_field = TextField(tokens, token_indexers)
-
-# In order to convert the token strings into integer ids, we need to tell the
-# TextField what Vocabulary to use.
 text_field.index(vocab)
-
-# We typically batch things together when making tensors, which requires some
-# padding computation.  Don't worry too much about the padding for now.
 padding_lengths = text_field.get_padding_lengths()
-
 tensor_dict = text_field.as_tensor(padding_lengths)
+# Note now that we have two entries in this output dictionary,
+# one for each indexer that we specified.
 print(tensor_dict)
 
 # Split text into words with part-of-speech tags. This will result in the
