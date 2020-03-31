@@ -28,16 +28,21 @@ padding_lengths = text_field.get_padding_lengths()
 tensor_dict = text_field.as_tensor(padding_lengths)
 print(tensor_dict)
 
-# Split text into words with part-of-speech tags
+# Split text into words with part-of-speech tags. This will result in the
+# `tag_` variable being set on each `Token` object, which we will
+# read in the indexer.
 tokenizer = SpacyTokenizer(pos_tags=True)
 vocab.add_tokens_to_namespace(['DT', 'VBZ', 'NN', '.'],
                               namespace='pos_tag_vocab')
 
 # Represents each token with (1) an id from a vocabulary, (2) a sequence of characters, and (3)
 # part of speech tag ids.
-token_indexers = {'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
-                  'token_characters': TokenCharactersIndexer(namespace='character_vocab'),
-                  'pos_tags': SingleIdTokenIndexer(namespace='pos_tag_vocab', feature_name='tag_')}
+token_indexers = {
+    'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
+    'token_characters': TokenCharactersIndexer(namespace='character_vocab'),
+    'pos_tags': SingleIdTokenIndexer(namespace='pos_tag_vocab',
+                                     feature_name='tag_'),
+}
 
 tokens = tokenizer.tokenize(text)
 print(tokens)

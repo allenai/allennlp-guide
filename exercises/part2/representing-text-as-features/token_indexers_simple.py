@@ -25,6 +25,10 @@ text_field.index(vocab)
 padding_lengths = text_field.get_padding_lengths()
 
 tensor_dict = text_field.as_tensor(padding_lengths)
+# This output is pretty nested and might look complex.  The reason it is so
+# nested is that we need to (1) align each indexer with a corresponding
+# embedder in the model, and (2) pass a dictionary of arguments to the
+# embedder by name.  This will be more clear when we get to the embedder.
 print(tensor_dict)
 
 # Represents each token with a sequence of characters.
@@ -36,6 +40,8 @@ text_field.index(vocab)
 padding_lengths = text_field.get_padding_lengths()
 
 tensor_dict = text_field.as_tensor(padding_lengths)
+# Notice here that we've now got an extra dimension on the tensor - there's
+# a sequence of characters for every token.
 print(tensor_dict)
 
 # Splits text into characters (instead of words or wordpieces).
