@@ -20,7 +20,7 @@ export const outline = {
                 '/introduction',
                 '/your-first-model',
                 '/training-and-prediction',
-                '/next-steps'
+                '/next-steps',
             ],
             icon: 'rocket',
             color: 'orange'
@@ -33,7 +33,8 @@ export const outline = {
                 '/reading-data',
                 '/building-your-model',
                 '/common-architectures',
-                '/representing-text-as-features'
+                '/representing-text-as-features',
+                '/using-config-files',
             ],
             icon: 'cube',
             color: 'purple'
@@ -44,7 +45,7 @@ export const outline = {
                 'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
             chapterSlugs: [
                 '/zero-shot-classification',
-                '/semantic-parsing'
+                '/semantic-parsing',
             ],
             icon: 'tools',
             antMenuIcon: 'setting',
