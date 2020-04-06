@@ -120,25 +120,27 @@ In the following code, we'll use `TextFieldEmbedders` to get a vector for each t
 
 Notice that in both cases, your model typically will just be given a `TextFieldEmbedder` - all the `Model` has to worry about is that it uses the `TextFieldEmbedder` to get a vector for each token, and it doesn't have to care about how exactly that happens. As we'll say repeatedly throughout this course, this is a very important software design consideration that allows for cleaner and more modular code.  It also helps you think at a higher level about the important parts of your model as you're writing your model code.
 
+## Embedding text that has multiple TokenIndexers
+
+Here we'll parallel what we did above with using multiple `TokenIndexers`, showing how the model changes to match. We'll start with using two separate inputs, one that has single word IDs, and one that has a sequence of characters per token. Notice how at the end, we end up with one vector per input token, with both ways of encoding the tokens concatenated together.
+
+Next, we add a third input that has a different single ID, corresponding to part of speech tags. We'll show you how the token and part of speech tag vocabularies are actually used in practice to construct the embedding layers with the right number of embeddings.
+
+<codeblock source="part2/representing-text-as-features/token_embedders_combined" setup="part2/representing-text-as-features/setup"></codeblock>
+
+As we noted in the comments, you'll see that putting together the data and model side of `TextFields` in AllenNLP requires coordinating the keys used in a few different places: (1) the vocabulary namespaces used by the `TokenIndexers` and the `TokenEmbedders` need to match (where applicable), so that you get the right number of embeddings for each kind of input, and (2) the keys used for the `TokenIndexer` dictionary in the `TextField` need to match the keys used for the `TokenEmbedder` dictionary in the `BasicTextFieldEmbedder`.
+
 </exercise>
 
-<exercise id="5" title="Contextualized representations in TextFields">
+<exercise id="5" title="Using contextualizers">
 
-Here we'll show how the data processing works for using ELMo and BERT with AllenNLP (and in
-principle, other pre-trained contextualizers).  They are both just different combinations of
-`Tokenizers` and `TokenIndexers`, along with `TokenEmbedders` on the model side, which we'll get to
-later.  This lets you try your modeling ideas with very simple (and quick to evaluate) word
-representations, then move to the more sophisticated (and time-consuming) contextualizers after
-you've settled on a basic model architecture, _without changing your model code_.
+## Contextualized representations in TextFields
 
-The code below shows usage with ELMo, and if you click on "show solution", we've also included an
-example with BERT.  You can run both of these to see what the data looks like.
+Here we'll show how the data processing works for using ELMo and BERT with AllenNLP (and in principle, other pre-trained contextualizers).  They are both just different combinations of `Tokenizers`, `TokenIndexers`, and `TokenEmbedders`. This lets you try your modeling ideas with very simple (and quick to evaluate) word representations, then move to the more sophisticated (and time-consuming) contextualizers after you've settled on a basic model architecture, _without changing your model code_.
 
-<codeblock id="part2/representing-text-as-features/data/contextual">
-</codeblock>
+The code below shows usage with ELMo and BERT. You can run both of these to see what the data looks like. For ELMo, you can see that each token gets a long sequence of 50 characters, the majority of which are `261`, which ELMo uses to denote padding.
 
-For ELMo, you can see that each token gets a long sequence of 50 characters, the majority of which
-are `261`, which ELMo uses to denote padding.
+<codeblock source="part2/representing-text-as-features/token_indexers_contextual" setup="part2/representing-text-as-features/setup"></codeblock>
 
 For BERT, each token gets split into wordpieces, then encoded with a single id.  But because the
 tokens get split into wordpieces and then modeled by BERT in a single sequence, there are
@@ -169,34 +171,6 @@ the `TokenIndexer`.  There are sometimes a few options for mixing and matching `
 sure that the collection of `TokenEmbedders` that you give to a `TextFieldEmbedder` in your model
 matches the collection of `TokenIndexers` that you passed to the `TextField`.  This is typically
 done in a [configuration file](/chapter14).
-
-</exercise>
-
-<exercise id="8" title="Embedding text that has multiple TokenIndexers">
-
-Here we'll parallel what we did above with using multiple `TokenIndexers`, showing how the model
-changes to match.  We'll start with using two separate inputs, one that has single word ids, and
-one that has a sequence of characters per token.  Notice how at the end, we end up with one vector
-per input token, with both ways of encoding the tokens concatenated together.
-
-As an exercise, see if you can modify this to take a third input that has a different single id,
-corresponding to part of speech tags.  If you click on "show solution", we'll show you how the
-token and part of speech tag vocabularies are actually used in practice to construct the embedding
-layers with the right number of embeddings.
-
-<codeblock id="part2/representing-text-as-features/model/combined">
-You'll need to add another entry in the `token_tensor` dictionary, and a corresponding entry in the
-`token_embedders` dictionary passed to the `BasicTextFieldEmbedder`.
-</codeblock>
-
-As we noted in the comments in the solution we provided, you'll see that putting together the data
-and model side of `TextFields` in AllenNLP requires coordinating the keys used in a few different
-places: (1) the vocabulary namespaces used by the `TokenIndexers` and the `TokenEmbedders` need to
-match (where applicable), so that you get the right number of embeddings for each kind of input,
-and (2) the keys used for the `TokenIndexer` dictionary in the `TextField` need to match the keys
-used for the `TokenEmbedder` dictionary in the `BasicTextFieldEmbedder`.  We try to catch
-mismatches here and give helpful error messages, but if you mismatch keys in either of these
-places, you'll have problems in your code.
 
 </exercise>
 
