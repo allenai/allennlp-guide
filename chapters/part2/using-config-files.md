@@ -18,15 +18,18 @@ the job of the final script that runs things to actually configure the behavior 
 creating all of the objects that get passed to these constructors.
 
 It just fine to have your final script be python code that manually constructs a bunch of objects,
-passes them to where they need to be, and calls a training loop.  Everything in AllenNLP works just
-fine if you want to completely forget about configuration files (and we have a chapter on [setting
-up your own training loop](/TODO) that goes into detail on how to do this).  But, we find it very
-nice to be able to put all of the configuration into a simple JSON file that specifies an entire
+passes them to where they need to be, and calls a training loop.  Everything in AllenNLP still works
+if you want to completely forget about configuration files (and we have a chapter on [setting up
+your own training loop](/TODO) that goes into detail on how to do this).  But, we find it very nice
+to be able to put all of the configuration into a simple JSON file that specifies an entire
 experiment that was run.  If you have these configuration files, you can organize them, save them,
 check them into a git repository, or whatever else you want, and easily know exactly what
-configuration corresponded to a particular experiment.  This is a pattern for keeping track of
-controlled scientific experiments that we really like, so we built a light-weight dependency
-injection framework to make this easy.  This chapter explains what it is and how to use it.
+configuration corresponded to a particular experiment.  It also makes it much easier to pass around
+a single tar file that contains everything you need to run a trained model.
+
+This is a pattern for keeping track of controlled scientific experiments that we really like, so we
+built a light-weight dependency injection framework to make this easy.  This chapter explains what
+it is and how to use it.
 
 </exercise>
 
