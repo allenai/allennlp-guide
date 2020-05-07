@@ -17,7 +17,6 @@ export const outline = {
             description:
                 'Part 1 gives you a quick walk-through of main AllenNLP concepts and features. We’ll build a complete, working NLP model (text classifier) along the way.',
             chapterSlugs: [
-                '/introduction',
                 '/your-first-model',
                 '/training-and-prediction',
                 '/next-steps',

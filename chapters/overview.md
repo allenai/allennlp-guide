@@ -70,10 +70,9 @@ prior knowledge of AllenNLP—the whole point of this course is to provide onboa
 
 ## Part 1
 
-* [Introduction](/introduction): what is text classification
-* [Your first model](/your-first-model): implementing a text classification model
-* [Training and prediction](/training-and-prediction): training and evaluating the model
-* [Next steps](/next-steps): introducing pre-trained contextualizers and more AllenNLP features
+* [Your first model](/your-first-model): Implementing a text classification model
+* [Training and prediction](/training-and-prediction): Training and evaluating the model
+* [Next steps](/next-steps): Some teasers for what else you can do after your first model
 
 ## Part 2
 
