@@ -33,6 +33,7 @@ export const outline = {
                 '/building-your-model',
                 '/common-architectures',
                 '/representing-text-as-features',
+                '/testing',
                 '/using-config-files',
             ],
             icon: 'cube',

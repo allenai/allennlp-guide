@@ -9,13 +9,19 @@ type: chapter
 
 In the previous chapter, we learned how to write your own dataset reader and model.  In this
 chapter, we are going to train the text classification model and make predictions for new inputs.
+At this point, there are two ways to proceed: you can write your own script to construct the dataset
+reader and model and run the training loop, or you can write a configuration file and use the
+`allennlp train` command.  We will show you how to use both ways here.
 
 </textblock>
 
-<exercise id="1" title="Training the model">
+<exercise id="1" title="Training the model with your own script">
 
-In this exercise we'll put together a simple example of reading in data, feeding it to the model,
-and training the model.
+In this section we'll put together a simple example of reading in data, feeding it to the model,
+and training the model, using your own python script instead of `allennlp train`.  While we
+recommend using `allennlp train` for most use cases, it's easier to understand the introduction to
+the training loop in this section.  Once you get a handle on this, switching to using our built in
+command should be easy, if you want to.
 
 Before proceeding, here are a few words about the dataset we will use throughout this chapter. The
 dataset is derived from the [Movie Review
@@ -23,70 +29,196 @@ Data](http://www.cs.cornell.edu/people/pabo/movie-review-data/), collections of 
 IMDb along with their polarity. The labels are binary (positive and negative), and our task is to
 predict the label from the review text.
 
+This section is going to give a series of executable examples, that you can run yourself in your
+browser and see what they output.  They will build on each other, with code from previous examples
+ending up in the `Setup` block in subsequent examples.
+
 ## Testing your dataset reader
 
 In the first example, we'll simply instantiate the dataset reader, read the movie review dataset
-using it, and inspect the AllenNLP `Instances` produced by the dataset reader.
+using it, and inspect the AllenNLP `Instances` produced by the dataset reader.  Below we have code
+that you can run (and modify if you want).
 
-Below we have code that you can run (and modify if you want). We are using a utility method called
-`run_config()`, which parses a given config file (here, it's just a JSON string), instantiates
-components such as the dataset reader and the model, and runs the training loop (if `trainer` is
-specified). It also returns these components but we are not using them here.
-
-In practice, you'll be using AllenNLP commands such as `allennlp train` and `allennlp predict` in
-the terminal. We'll discuss AllenNLP commands later.
-
-<codeblock source="part1/training-and-prediction/dataset_reader" setup="part1/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/dataset_reader" setup="part1/training-and-prediction/dataset_reader_setup"></codeblock>
 
 When you run the code snippet above, you should see the dumps of the first ten instances and their
-content, including their text and label fields. This is a great way to check if your dataset reader
-is working as expected. (Note that we are only showing the first 64 tokens per instance by
-specifying `"max_tokens": 64`).
+content, including their text and label fields.  (Note that we are only showing the first 64 tokens
+per instance by specifying `max_tokens=64`).
+
+This is one way to check if your dataset reader is working as expected. We strongly recommend
+[writing some simple tests](/testing) for your data processing code, to be sure it's actually doing
+what you want it to.
 
 ## Feeding instances to the model
 
-In the next example, we are going to instantiate the model and feed batches of instances to it. Note
-that the config file now has the `model` section, which contains the full specification for how to
-instantiate your model along with its sub-components. Also notice the `iterator` section in your
-config, which specifies how to batch instances together before passing them to your model. We go
-into more detail on how this works in [a chapter on reading data](/reading-data).
+In the next example, we are going to instantiate the model and feed batches of instances to it.  At
+this point, we're going to start breaking up our training loop into simple functions that
+instantiate objects given their dependencies.  The `Model` needs to have a `Vocabulary` computed
+from data before we can build it, but we don't really want to put the details of our model
+construction inside our training loop function.  So to keep things sane, we'll pull out the model
+building into a separate function that we call inside the main training function.
 
 When you run this, you should see the outputs returned from the model. Each returned dict includes
 the `loss` key as well as the `probs` key, which contains probabilities for each label.
 
-<codeblock source="part1/training-and-prediction/model" setup="part1/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/model" setup="part1/training-and-prediction/model_setup"></codeblock>
 
 ## Training the model
 
-Finally, we'll run backpropagation and train the model. AllenNLP uses a `Trainer` for this
-(specified by the `trainer` section in the config file), which is responsible for connecting
-necessary components (including your model, instances, iterator, etc.) and executing the training
-loop. It also includes a section for the optimizer we use for training. We are using an Adam
-optimizer with its default parameters.
+Finally, we'll run backpropagation and train the model. AllenNLP uses a `Trainer` for this, which is
+responsible for connecting necessary components (including your model, optimizer, instances, data
+loader, etc.) and executing the training loop.
 
-When you run this, the `Trainer` goes over the training data five times (`"num_epochs": 5`). After
+When you run this, the `Trainer` goes over the training data five times (`num_epochs=5`). After
 each epoch, AllenNLP runs your model against the validation set to monitor how well (or badly) it's
 doing. This is useful if you want to do, e.g., early stopping, and for monitoring in general.
 Observe that the training loss decreases gradually—this is a sign that your model and the training
 pipeline are doing what they are supposed to do (that is, to minimize the loss).
 
+TODO: fix the code here
+
 <codeblock source="part1/training-and-prediction/training" setup="part1/setup"></codeblock>
-
-In practice, you'd be running AllenNLP commands from your terminal. For training a model, you'd do:
-
-```
-allennlp train [config.jsonnet] --serialization-dir model
-```
-
-where `[config.jsonnet]` is the config file and `--serialization-dir` specifies where to save your
-trained model. When the training finishes, this command will package up necessary files (e.g., the
-model weights and the vocabulary) into a single archive file `model.tar.gz`.
 
 Congratulations, you just trained your first model using AllenNLP!
 
 </exercise>
 
-<exercise id="2" title="Evaluating the model">
+
+<exercise id="2" title="Training the model with allennlp train">
+
+TODO: rewrite this
+
+As mentioned previously, in AllenNLP you don't need to worry about connecting the input files to the
+dataset reader, batching, feeding the data to the model, or writing the training loop. You just need
+to specify how individual components (such as the dataset reader, the model, the optimizer etc.) get
+initialized along with their parameters by writing *a configuration file*. (Well, you can do these
+things if you want to, but we think it's easier to use the configuration files in most cases.)
+
+Config files in AllenNLP are formatted in JSON (or more specifically, a superset of JSON called
+[Jsonnet](https://jsonnet.org/), which supports fancier features like variables and imports). A
+config file is just a big JSON object with several keys (or *sections*) corresponding to individual
+components of your project:
+
+```js
+{
+    "dataset_reader": [... config for the dataset reader ...],
+    "train_data_path": [... path to the training data ...],
+    "validation_data_path": [... path to the validation data ...],
+    "model": [... config for the model ...],
+    "iterator": [... config for the iterator ...],
+    "trainer": [... config for the trainer ...]
+}
+```
+
+## Initializing the dataset reader
+
+Usually each JSON object in a config file corresponds to a Python object. For example, in the first
+section, you specify how the dataset reader should be initialized:
+
+```js
+"dataset_reader" : {
+    "type": "classification-tsv",
+    "token_indexers": {
+        "tokens": {
+            "type": "single_id"
+        }
+    }
+}
+```
+
+The first key, `type`, tells which subclass of `DatasetReader` to use. Most AllenNLP classes inherit
+from the `Registrable` class, which allows you to refer to a subclass by its registered name.
+Because earlier you did:
+
+<pre data-line="1" class="language-python line-numbers"><code>
+@DatasetReader.register('classification-tsv')
+class ClassificationTsvReader(DatasetReader):
+    def __init__(self,
+                 lazy: bool = False,
+                 tokenizer: Tokenizer = None,
+                 token_indexers: Dict[str, TokenIndexer] = None):
+    ...
+</code></pre>
+
+when you defined your dataset reader, you can use its name `classification-tsv` in the config file.
+
+Other keys in a config JSON object correspond to constructor parameters. Here we are telling the
+dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The
+value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a
+`SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. AllenNLP
+looks at the type annotation on each constructor parameter, and tries to build an object of that
+type from the corresponding parameters in the JSON file.
+
+In summary, the config section for the dataset reader above has the same effect as the following
+Python snippet:
+
+```python
+reader = ClassificationTsvReader(
+    token_indexers={'tokens': SingleIdTokenIndexer()})
+```
+
+## Initializing the model
+
+The section for the model works in a very similar way as the one for the dataset reader. Here's a
+sample config section for initializing the simple classifier we implemented:
+
+```javascript
+"model": {
+    "type": "simple_classifier",
+    "embedder": {
+        "token_embedders": {
+            "tokens": {
+                "type": "embedding",
+                "embedding_dim": 10
+            }
+        }
+    },
+    "encoder": {
+        "type": "bag_of_embeddings",
+        "embedding_dim": 10
+    }
+}
+```
+
+As with dataset readers, AllenNLP models inherit from `Registrable`, which allows you to refer to
+model subclasses by their registered names. Remember that earlier we did:
+
+<pre data-line="1" class="language-python line-numbers"><code>
+@Model.register('simple_classifier')
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        ...
+</code></pre>
+
+The model section instantiates a `simple_classifier` (which is the `SimpleClassifier` class you just
+defined) with the specified constructor parameters (`embedder` and `encoder`). We are not going into
+the details here, but the model section above has the same effect as:
+
+```python
+model = SimpleClassifier(
+    embedder=BasicTextFieldEmbedder(
+        token_embedders={
+            'tokens': Embedding(
+                num_embeddings=vocab.get_vocab_size('tokens'),
+                embedding_dim=10)}),
+    encoder=BagOfEmbeddingsEncoder(
+        embedding_dim=10))
+```
+
+Note that `vocab` is automatically handled by AllenNLP, so you don't need to pass it around
+explicitly. If you are interested in learning more about how config files work, see the [chapter on
+using config files](/using-config-files) in Part 3.
+
+In the next chapter, we'll start training and making predictions using our text classification
+model!
+
+</exercise>
+
+
+<exercise id="3" title="Evaluating the model">
 
 In this section, we will be evaluating the text classification model we just trained above, by
 computing the evaluation metrics against the test set.
@@ -184,7 +316,8 @@ the path to a file containing test instances, and returns the computed metrics.
 
 </exercise>
 
-<exercise id="3" title="Making predictions for unlabeled inputs">
+
+<exercise id="4" title="Making predictions for unlabeled inputs">
 
 In this final exercise, we'll be making predictions for new, unlabeled inputs using the trained text
 classification model.
@@ -365,133 +498,3 @@ chapter. In the next chapter we'll touch upon some more AllenNLP features.
 </exercise>
 
 
-<exercise id="8" title="Writing a config file">
-
-As mentioned previously, in AllenNLP you don't need to worry about connecting the input files to the
-dataset reader, batching, feeding the data to the model, or writing the training loop. You just need
-to specify how individual components (such as the dataset reader, the model, the optimizer etc.) get
-initialized along with their parameters by writing *a configuration file*. (Well, you can do these
-things if you want to, but we think it's easier to use the configuration files in most cases.)
-
-Config files in AllenNLP are formatted in JSON (or more specifically, a superset of JSON called
-[Jsonnet](https://jsonnet.org/), which supports fancier features like variables and imports). A
-config file is just a big JSON object with several keys (or *sections*) corresponding to individual
-components of your project:
-
-```js
-{
-    "dataset_reader": [... config for the dataset reader ...],
-    "train_data_path": [... path to the training data ...],
-    "validation_data_path": [... path to the validation data ...],
-    "model": [... config for the model ...],
-    "iterator": [... config for the iterator ...],
-    "trainer": [... config for the trainer ...]
-}
-```
-
-## Initializing the dataset reader
-
-Usually each JSON object in a config file corresponds to a Python object. For example, in the first
-section, you specify how the dataset reader should be initialized:
-
-```js
-"dataset_reader" : {
-    "type": "classification-tsv",
-    "token_indexers": {
-        "tokens": {
-            "type": "single_id"
-        }
-    }
-}
-```
-
-The first key, `type`, tells which subclass of `DatasetReader` to use. Most AllenNLP classes inherit
-from the `Registrable` class, which allows you to refer to a subclass by its registered name.
-Because earlier you did:
-
-<pre data-line="1" class="language-python line-numbers"><code>
-@DatasetReader.register('classification-tsv')
-class ClassificationTsvReader(DatasetReader):
-    def __init__(self,
-                 lazy: bool = False,
-                 tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None):
-    ...
-</code></pre>
-
-when you defined your dataset reader, you can use its name `classification-tsv` in the config file.
-
-Other keys in a config JSON object correspond to constructor parameters. Here we are telling the
-dataset reader to use a dictionary for `token_indexers`, which has a single key `tokens` in it. The
-value of `tokens` is again a JSON object whose `type` is `single_id`, meaning a
-`SingleIdTokenIndexer` will be used. This process gets repeated recursively as needed. AllenNLP
-looks at the type annotation on each constructor parameter, and tries to build an object of that
-type from the corresponding parameters in the JSON file.
-
-In summary, the config section for the dataset reader above has the same effect as the following
-Python snippet:
-
-```python
-reader = ClassificationTsvReader(
-    token_indexers={'tokens': SingleIdTokenIndexer()})
-```
-
-## Initializing the model
-
-The section for the model works in a very similar way as the one for the dataset reader. Here's a
-sample config section for initializing the simple classifier we implemented:
-
-```javascript
-"model": {
-    "type": "simple_classifier",
-    "embedder": {
-        "token_embedders": {
-            "tokens": {
-                "type": "embedding",
-                "embedding_dim": 10
-            }
-        }
-    },
-    "encoder": {
-        "type": "bag_of_embeddings",
-        "embedding_dim": 10
-    }
-}
-```
-
-As with dataset readers, AllenNLP models inherit from `Registrable`, which allows you to refer to
-model subclasses by their registered names. Remember that earlier we did:
-
-<pre data-line="1" class="language-python line-numbers"><code>
-@Model.register('simple_classifier')
-class SimpleClassifier(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 embedder: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder):
-        ...
-</code></pre>
-
-The model section instantiates a `simple_classifier` (which is the `SimpleClassifier` class you just
-defined) with the specified constructor parameters (`embedder` and `encoder`). We are not going into
-the details here, but the model section above has the same effect as:
-
-```python
-model = SimpleClassifier(
-    embedder=BasicTextFieldEmbedder(
-        token_embedders={
-            'tokens': Embedding(
-                num_embeddings=vocab.get_vocab_size('tokens'),
-                embedding_dim=10)}),
-    encoder=BagOfEmbeddingsEncoder(
-        embedding_dim=10))
-```
-
-Note that `vocab` is automatically handled by AllenNLP, so you don't need to pass it around
-explicitly. If you are interested in learning more about how config files work, see the [chapter on
-using config files](/using-config-files) in Part 3.
-
-In the next chapter, we'll start training and making predictions using our text classification
-model!
-
-</exercise>
