@@ -75,9 +75,7 @@ doing. This is useful if you want to do, e.g., early stopping, and for monitorin
 Observe that the training loss decreases gradually—this is a sign that your model and the training
 pipeline are doing what they are supposed to do (that is, to minimize the loss).
 
-TODO: fix the code here
-
-<codeblock source="part1/training-and-prediction/training" setup="part1/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/training" setup="part1/training-and-prediction/training_setup"></codeblock>
 
 Congratulations, you just trained your first model using AllenNLP!
 

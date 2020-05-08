@@ -1,39 +1,68 @@
-CONFIG = """
-{
-    "dataset_reader" : {
-        "type": "classification-tsv",
-        "token_indexers": {
-            "tokens": {
-                "type": "single_id"
-            }
-        }
-    },
-    "train_data_path": "quick_start/data/movie_review/train.tsv",
-    "validation_data_path": "quick_start/data/movie_review/dev.tsv",
-    "model": {
-        "type": "simple_classifier",
-        "embedder": {
-            "token_embedders": {
-                "tokens": {
-                    "type": "embedding",
-                    "embedding_dim": 10
-                }
-            }
-        },
-        "encoder": {
-            "type": "bag_of_embeddings",
-            "embedding_dim": 10
-        }
-    },
-    "iterator": {
-        "type": "basic",
-        "batch_size": 8
-    },
-    "trainer": {
-        "optimizer": "adam",
-        "num_epochs": 5
-    }
-}
-"""
+def run_training_loop():
+    dataset_reader = build_dataset_reader()
 
-_ = run_config(CONFIG)
+    # These are a subclass of pytorch Datasets, with some allennlp-specific
+    # functionality added.
+    train_data, dev_data = read_data(dataset_reader)
+
+    vocab = build_vocab(train_data + dev_data)
+    model = build_model(vocab)
+
+    # This is the allennlp-specific functionality in the Dataset object;
+    # we need to be able convert strings in the data to integers, and this
+    # is how we do it.
+    train_data.index_with(vocab)
+    dev_data.index_with(vocab)
+
+    # These are again a subclass of pytorch DataLoaders, with an
+    # allennlp-specific collate function, that runs our indexing and
+    # batching code.
+    train_loader, dev_loader = build_data_loaders(train_data, dev_data)
+
+    # You obviously won't want to create a temporary file for your training
+    # results, but for execution in binder for this course, we need to do this.
+    with tempfile.TemporaryDirectory() as serialization_dir:
+        trainer = build_trainer(
+            model,
+            serialization_dir,
+            train_loader,
+            dev_loader
+        )
+        trainer.train()
+
+# The other `build_*` methods are things we've seen before, so they are
+# in the setup section above.
+def build_data_loader(
+    train_data: torch.utils.data.Dataset,
+    dev_data: torch.utils.data.Dataset,
+) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader]:
+    # Note that DataLoader is imported from allennlp above, *not* torch.
+    # We need to get the allennlp-specific collate function, which is
+    # what actually does indexing and batching.
+    train_loader = DataLoader(train_data, batch_size=16, shuffle=True)
+    dev_loader = DataLoader(dev_data, batch_size=16, shuffle=True)
+    return train_loader, dev_loader
+
+def build_trainer(
+    model: Model,
+    serialization_dir: str,
+    train_loader: DataLoader,
+    dev_loader: DataLoader
+) -> Trainer:
+    parameters = [
+        [n, p]
+        for n, p in model.named_parameters() if p.requires_grad
+    ]
+    optimizer = AdamOptimizer(parameters)
+    trainer = Trainer(
+        model=model,
+        serialization_dir=serialization_dir,
+        data_loader=train_loader,
+        validation_data_loader=dev_loader,
+        num_epochs=5,
+        optimizer=optimizer,
+    )
+    return trainer
+
+
+run_training_loop()
