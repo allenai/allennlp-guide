@@ -40,7 +40,7 @@ def build_data_loader(
     # We need to get the allennlp-specific collate function, which is
     # what actually does indexing and batching.
     train_loader = DataLoader(train_data, batch_size=8, shuffle=True)
-    dev_loader = DataLoader(dev_data, batch_size=8, shuffle=True)
+    dev_loader = DataLoader(dev_data, batch_size=8, shuffle=False)
     return train_loader, dev_loader
 
 def build_trainer(

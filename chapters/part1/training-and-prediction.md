@@ -236,9 +236,9 @@ computing the evaluation metrics against the test set.
 ## Defining the metrics
 
 In AllenNLP, you implement the logic to compute the metrics in your `Model` class. AllenNLP includes
-an abstraction called `Metric` that represents various metrics. Here, we'll be simply using accuracy
-(`CategoricalAccuracy`), the fraction of instances for which our model predicted the label
-correctly.
+an abstraction called `Metric` that gives some useful functionality for tracking metrics during
+training. Here, we'll be using an accuracy `Metric`, `CategoricalAccuracy`, which computes the
+fraction of instances for which our model predicted the label correctly.
 
 First, you need to create an instance of `CategoricalAccuracy` in your model constructor:
 
@@ -283,9 +283,9 @@ class SimpleClassifier(Model):
 The way metrics work in AllenNLP is that, behind the scenes, each `Metric` instance holds "counts"
 that are necessary and sufficient to compute the metric. For accuracy, these counts are the number
 of total predictions as well as the number of correct predictions. These counts get updated after
-every call to the instance itself, i.e., `accuracy()`. You can pull out the computed metric by
-calling `get_metrics()` with a flag specifying whether to reset the counts. This allows you to
-compute the metric over the entire training or validation dataset.
+every call to the instance itself, i.e., the `self.accuracy(logits, label)` line. You can pull out
+the computed metric by calling `get_metrics()` with a flag specifying whether to reset the counts.
+This allows you to compute the metric over the entire training or validation dataset.
 
 Finally, you need to implement the `get_metrics()` method in your model, which returns a dictionary
 from metric names to their values, as shown below:
@@ -308,7 +308,7 @@ utility function `evaluate()` to run your model and get the metric on the test s
 AllenNLP now shows values for the defined metric as well as the the loss after each batch during
 training and validation.
 
-<codeblock source="part1/training-and-prediction/evaluation" setup="part1/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/evaluation_source" setup="part1/training-and-prediction/evaluation_setup"></codeblock>
 
 When this code snippet finishes running, you should see the evaluation result:
 
@@ -340,19 +340,19 @@ dataset reader we wrote previously. Specifically, we refactor out the logic for 
 
 We are making this piece of code sharable between `DatasetReader` and `Predictor` (which we'll
 discuss in detail below). Why is this a good idea? Here, we are practically building two pipelines,
-i.e., two different "flows" of data—one for training and another for prediction. By factoring out a
-common logic for creating instances and sharing it between two pipelines, we are making the system
-less susceptible to any issues arising from possible discrepancies in how instances are created
-between the two, a problem known as [training-serving
+i.e., two different "flows" of data—one for training and another for prediction. By factoring out
+the common logic for creating instances and sharing it between two pipelines, we are making the
+system less susceptible to any issues arising from possible discrepancies in how instances are
+created between the two, a problem known as [training-serving
 skew](https://developers.google.com/machine-learning/guides/rules-of-ml#training-serving_skew). This
 may not seem too big of a deal in this tiny example, but making the feature extraction code sharable
-between different pipelines is critical in real-world ML applications.
+between different pipelines is critical in real-world ML applications, and makes it very easy to put
+up a demo, such as our [AllenNLP demos](https://demo.allennlp.org).
 
 Note that we are making the `label` parameter of `text_to_instance()` optional. During training and
 evaluation, all the instances were labeled, i.e., they included the `LabelFields` that contain gold
-labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled*
-and do not contain the labels. By making the `label` parameter optional the dataset reader can
-support both cases. 
+labels. However, when you are making predictions for unseen inputs, the instances are *unlabeled*.
+By making the `label` parameter optional the dataset reader can support both cases.
 
 <pre data-line="11-16" class="language-python line-numbers"><code>
 @DatasetReader.register('classification-tsv')
@@ -362,10 +362,11 @@ class ClassificationTsvReader(DatasetReader):
                  tokenizer: Tokenizer = None,
                  token_indexers: Dict[str, TokenIndexer] = None):
         super().__init__(lazy)
-        self.tokenizer = tokenizer or SpacyTokenizer()
+        self.tokenizer = tokenizer or WhitespaceTokenizer()
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
 
-    def text_to_instance(self, tokens: List[Token], label: str = None) -> Instance:
+    def text_to_instance(self, text: str, label: str = None) -> Instance:
+        tokens = self.tokenizer.tokenize(text)
         text_field = TextField(tokens, self.token_indexers)
         fields = {'text': text_field}
         if label:
@@ -376,8 +377,7 @@ class ClassificationTsvReader(DatasetReader):
         with open(file_path, 'r') as lines:
             for line in lines:
                 text, sentiment = line.strip().split('\t')
-                tokens = self.tokenizer.tokenize(text)
-                yield self.text_to_instance(tokens, sentiment)
+                yield self.text_to_instance(text, sentiment)
 </code></pre>
 
 ## Modifying the model
@@ -389,9 +389,9 @@ using those labels. However, during prediction, the instances the model gets are
 prediction.
 
 In order to support prediction, first you need to make the `label` parameter optional by specifying
-its default value (`None`). This will let you feed unlabeled instances to the model. Second, you
-need to compute the loss only when the label is supplied. See the modified version of `forward()`
-below:
+a default value of `None`. This will let you feed unlabeled instances to the model. Second, you need
+to compute the loss and accuracy only when the label is supplied. See the modified version of
+`forward()` below:
 
 <pre data-line="4,16-19" class="language-python line-numbers"><code>
 class SimpleClassifier(Model):
@@ -408,40 +408,35 @@ class SimpleClassifier(Model):
         logits = self.classifier(encoded_text)
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
-        # Shape: (1,)
         output = {'probs': probs}
         if label is not None:
             self.accuracy(logits, label)
+            # Shape: (1,)
             output['loss'] = torch.nn.functional.cross_entropy(logits, label)
         return output
 </code></pre>
 
 ## Writing your predictor
 
-For making predictions, AllenNLP uses `Predictors`, which are a thin wrapper around your trained
-model. A `Predictor`'s main job is to take a JSON representation of an instance, convert it to an
-`Instance` using the dataset reader (the `text_to_instance` mentioned above), pass it through the
-model, and return the prediction in a JSON serializable format.
+For making predictions in a demo setting, AllenNLP uses `Predictors`, which are a thin wrapper
+around your trained model. A `Predictor's` main job is to take a JSON representation of an instance,
+convert it to an `Instance` using the dataset reader (the `text_to_instance` mentioned above), pass
+it through the model, and return the prediction in a JSON serializable format.
 
 In order to build a `Predictor` for your task, you only need to inherit from `Predictor` and
 implement a few methods (see `predict()` and `_json_to_instances()` below)—the rest will be taken
-care of by the base class. 
+care of by the base class.
 
 ```python
 @Predictor.register("sentence_classifier")
 class SentenceClassifierPredictor(Predictor):
-    def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
-        super().__init__(model, dataset_reader)
-        self._tokenizer = SpacyTokenizer()
-
     def predict(self, sentence: str) -> JsonDict:
+        # This method is implemented in the base class.
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         sentence = json_dict["sentence"]
-        tokens = self._tokenizer.tokenize(sentence)
-        return self._dataset_reader.text_to_instance(tokens)
+        return self._dataset_reader.text_to_instance(sentence)
 ```
 
 AllenNLP provides implementations of `Predictors` for common tasks. In fact, it includes
@@ -452,13 +447,12 @@ should always check whether the predictor for your task is already there.
 ## Making predictions
 
 Now, let's put all the pieces together and make predictions for some unseen data.  In the code
-snippet below, you are first training your model using the same configuration as the one we used in
-the previous section, then wrapping the model with a `SentenceClassifierPredictor` to make
-predictions for new instances. Because the returned result (`output['probs']`) is just an array of
-probabilities for class labels, we use `vocab.get_token_from_index()` to convert a label ID back to
-its label string.
+snippet below, you are first training your model as we did above, then wrapping the model with a
+`SentenceClassifierPredictor` to make predictions for new instances. Because the returned result
+(`output['probs']`) is just an array of probabilities for class labels, we use
+`vocab.get_token_from_index()` to convert a label ID back to its label string.
 
-<codeblock source="part1/training-and-prediction/prediction" setup="part1/setup"></codeblock>
+<codeblock source="part1/training-and-prediction/prediction_source" setup="part1/training-and-prediction/prediction_setup"></codeblock>
 
 When you run the code above, you should get results similar to:
 
@@ -471,15 +465,14 @@ This means that at least for these instances your model is making correct predic
 
 ## From command line
 
-In practice, instead of writing code to feed data to a predictor, you'll be using the `allennlp
-predict` command to make predictions. This command is very similar to `allennlp evaluate` (see
-above)—it takes the path to the model archive file created by the `allennlp train` command, along
-with the path to a JSON file containing serialized test instances, and runs the model against these
-instances.
+If you prefer interacting with models from a command line, AllenNLP provides a `predict` command to
+make predictions.  This command is very similar to `allennlp evaluate` (see above)—it takes the path
+to the model archive file created by the `allennlp train` command, along with the path to a JSON
+file containing serialized test instances, and runs the model against these instances.
 
 Overall, assuming that the model, dataset reader, and predictor we built so far are defined in some
-module named `my_text_classifier`, you would use the following AllenNLP commands to first train the
-model, evaluate it, and make predictions for unseen data. Remember that you need to supply
+module named `my_text_classifier`, you would use the following AllenNLP commands to train the model,
+evaluate it, and make predictions for unseen data. Remember that you need to supply
 `--include-package` option so that AllenNLP can find your module. All the example code is set up [in
 this repo](https://github.com/allenai/allennlp-course-examples). You just need to clone it, cd to
 the `quick_start` directory, and run these commands just like this was your own project directory.
@@ -503,7 +496,8 @@ $ allennlp predict \
 ```
 
 And that's it! Though simple, we trained and ran a full-fledged NLP model using AllenNLP in this
-chapter. In the next chapter we'll touch upon some more AllenNLP features.
+chapter. In the next chapter we'll give some pointers to more advanced AllenNLP features, and things
+you might want to try next.
 
 </exercise>
 
