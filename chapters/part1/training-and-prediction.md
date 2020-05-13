@@ -496,8 +496,8 @@ $ allennlp predict \
 ```
 
 And that's it! Though simple, we trained and ran a full-fledged NLP model using AllenNLP in this
-chapter. In the next chapter we'll give some pointers to more advanced AllenNLP features, and things
-you might want to try next.
+chapter. In the next chapter we'll give a preview of some more advanced AllenNLP features, and
+things you might want to try next.
 
 </exercise>
 
