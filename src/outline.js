@@ -35,6 +35,7 @@ export const outline = {
                 '/representing-text-as-features',
                 '/testing',
                 '/using-config-files',
+                '/writing-your-own-script',
             ],
             icon: 'cube',
             color: 'purple'
