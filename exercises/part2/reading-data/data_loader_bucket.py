@@ -14,7 +14,7 @@ data_loader = DataLoader(dataset, batch_sampler=batch_sampler)
 for batch in data_loader:
     print(batch)
 
-print('Using a BucketBatchSampler:')
+print('\nUsing a BucketBatchSampler:')
 # The sorting_keys argument is unnecessary here, because the sampler will
 # automatically detect that 'tokens' is the right sorting key, but we are
 # including it in our example for completeness. You can remove it and see

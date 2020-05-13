@@ -1,9 +1,3 @@
-from allennlp.data.instance import Instance
-from allennlp.data.fields import TextField, LabelField
-from allennlp.data.token_indexers import SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token
-from allennlp.data.vocabulary import Vocabulary
-
 # Create fields and instances
 token_indexers = {'tokens': SingleIdTokenIndexer(namespace='tokens')}
 text_field_pos = TextField(
@@ -28,8 +22,12 @@ vocab = Vocabulary.from_instances(
 print('Created a Vocabulary:', vocab)
 
 
-# Getting the entire mapping for "tokens." Notice only 'movie' is in the vocabulary
-print('index-to-token for "tokens":', vocab.get_index_to_token_vocabulary(namespace='tokens'))
+# Getting the entire mapping for "tokens." Notice only 'movie' is in the
+# vocabulary.
+print('index-to-token for "tokens":',
+      vocab.get_index_to_token_vocabulary(namespace='tokens'))
 
-# Getting the entire mapping for "labels." All the tokens that appeared in the dataset are present
-print('index-to-token for "labels":', vocab.get_index_to_token_vocabulary(namespace='labels'))
+# Getting the entire mapping for "labels." All the tokens that appeared in the
+# dataset are present
+print('index-to-token for "labels":',
+      vocab.get_index_to_token_vocabulary(namespace='labels'))

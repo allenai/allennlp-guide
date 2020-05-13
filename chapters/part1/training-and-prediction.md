@@ -419,7 +419,7 @@ class SimpleClassifier(Model):
 ## Writing your predictor
 
 For making predictions in a demo setting, AllenNLP uses `Predictors`, which are a thin wrapper
-around your trained model. A `Predictor's` main job is to take a JSON representation of an instance,
+around your trained model. A `Predictor`'s main job is to take a JSON representation of an instance,
 convert it to an `Instance` using the dataset reader (the `text_to_instance` mentioned above), pass
 it through the model, and return the prediction in a JSON serializable format.
 
