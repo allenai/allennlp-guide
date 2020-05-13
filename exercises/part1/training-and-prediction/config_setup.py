@@ -16,6 +16,8 @@ from allennlp.training import Trainer
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.metrics import CategoricalAccuracy
 
+
+@DatasetReader.register("classification-tsv")
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
@@ -46,6 +48,7 @@ class ClassificationTsvReader(DatasetReader):
                 yield self.text_to_instance(tokens, sentiment)
 
 
+@Model.register("simple_classifier")
 class SimpleClassifier(Model):
     def __init__(self,
                  vocab: Vocabulary,
@@ -80,26 +83,3 @@ class SimpleClassifier(Model):
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {"accuracy": self.accuracy.get_metric(reset)}
-
-def build_dataset_reader() -> DatasetReader:
-    return ClassificationTsvReader(max_tokens=64)
-
-def read_data(
-    reader: DatasetReader
-) -> Tuple[Iterable[Instance], Iterable[Instance]]:
-    print("Reading data")
-    training_data = dataset_reader.read("quick_start/data/movie_review/train.tsv")
-    validation_data = reader.read("quick_start/data/movie_review/dev.tsv")
-    return training_data, validation_data
-
-def build_vocab(instances: Iterable[Instance]) -> Vocabulary:
-    print("Building the vocabulary")
-    return Vocabulary.from_instances(instances)
-
-def build_model(vocab: Vocabulary) -> Model:
-    print("Building the model")
-    vocab_size = vocab.get_vocab_size("tokens")
-    embedder = BasicTextFieldEmbedder(
-        {"tokens": Embedder(embedding_dim=10, num_embeddings=vocab_size)})
-    encoder = BagOfEmbeddingsEncoder(embedding_dim=10)
-    return SimpleClassifier(vocab, embedder, encoder)

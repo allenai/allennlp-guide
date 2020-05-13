@@ -313,4 +313,6 @@ There is one important caveat here though: you will need to run your allennlp co
 `--include-package=<YOUR_PACKAGE>` flag so that the library can find and register your custom
 classes.
 
+Also plugins.
+
 </exercise>

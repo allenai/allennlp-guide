@@ -14,6 +14,7 @@ from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 
+
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,
@@ -25,20 +26,14 @@ class ClassificationTsvReader(DatasetReader):
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 
-    def text_to_instance(self,
-                         tokens: List[Token],
-                         label: str = None) -> Instance:
-        if self.max_tokens:
-            tokens = tokens[:self.max_tokens]
-        text_field = TextField(tokens, self.token_indexers)
-        fields = {'text': text_field}
-        if label:
-            fields['label'] = LabelField(label)
-        return Instance(fields)
-
     def _read(self, file_path: str) -> Iterable[Instance]:
         with open(file_path, 'r') as lines:
             for line in lines:
                 text, sentiment = line.strip().split('\t')
                 tokens = self.tokenizer.tokenize(text)
-                yield self.text_to_instance(tokens, sentiment)
+                if self.max_tokens:
+                    tokens = tokens[:self.max_tokens]
+                text_field = TextField(tokens, self.token_indexers)
+                label_field = LabelField(sentiment)
+                fields = {'text': text_field, 'label': label_field}
+                yield Instance(fields)

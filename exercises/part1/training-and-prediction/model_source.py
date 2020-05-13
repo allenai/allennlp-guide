@@ -8,11 +8,10 @@ class SimpleClassifier(Model):
         self.encoder = encoder
         num_labels = vocab.get_vocab_size("labels")
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
-        self.accuracy = CategoricalAccuracy()
 
     def forward(self,
                 text: Dict[str, torch.Tensor],
-                label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
+                label: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
         # Shape: (batch_size, num_tokens)
@@ -24,11 +23,8 @@ class SimpleClassifier(Model):
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
         # Shape: (1,)
-        output = {'probs': probs}
-        if label is not None:
-            self.accuracy(logits, label)
-            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
-        return output
+        loss = torch.nn.functional.cross_entropy(logits, label)
+        return {'probs': probs, 'loss': loss}
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {"accuracy": self.accuracy.get_metric(reset)}

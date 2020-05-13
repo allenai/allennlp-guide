@@ -39,8 +39,8 @@ def build_data_loader(
     # Note that DataLoader is imported from allennlp above, *not* torch.
     # We need to get the allennlp-specific collate function, which is
     # what actually does indexing and batching.
-    train_loader = DataLoader(train_data, batch_size=16, shuffle=True)
-    dev_loader = DataLoader(dev_data, batch_size=16, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=8, shuffle=True)
+    dev_loader = DataLoader(dev_data, batch_size=8, shuffle=True)
     return train_loader, dev_loader
 
 def build_trainer(
