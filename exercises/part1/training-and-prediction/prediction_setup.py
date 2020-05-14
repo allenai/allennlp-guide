@@ -105,7 +105,7 @@ def build_model(vocab: Vocabulary) -> Model:
     print("Building the model")
     vocab_size = vocab.get_vocab_size("tokens")
     embedder = BasicTextFieldEmbedder(
-        {"tokens": Embedder(embedding_dim=10, num_embeddings=vocab_size)})
+        {"tokens": Embedding(embedding_dim=10, num_embeddings=vocab_size)})
     encoder = BagOfEmbeddingsEncoder(embedding_dim=10)
     return SimpleClassifier(vocab, embedder, encoder)
 
