@@ -6,7 +6,6 @@ import torch
 from allennlp.common.params import Params
 from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
 from allennlp.data.fields import LabelField, TextField
-from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
 from allennlp.models import Model
