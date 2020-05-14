@@ -5,12 +5,7 @@ description:
 type: chapter
 ---
 
-<textblock>
-
-This chapter has not been written yet.
-
-</textblock>
-
+<textblock>UNDER CONSTRUCTION</textblock>
 
 <exercise id="1" title="A simple training loop with build_* methods">
 </exercise>

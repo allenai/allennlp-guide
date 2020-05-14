@@ -4,6 +4,8 @@ description: 'This chapter gives a deep dive into one of the most important comp
 type: chapter
 ---
 
+<textblock>NOT YET CHECKED, BUT SHOULD BE CLOSE TO READY</textblock>
+
 <textblock>
 
 Models play a central role in AllenNLP and NLP applications in general. They implement the computation performed to transform input to output, and hold parameters that get optimized through training. In this chapter, we'll give a deep dive into inner workings of AllenNLP `Models`, and provide an in-depth guide to building, using, saving and loading your own model.

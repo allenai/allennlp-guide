@@ -5,6 +5,8 @@ description:
 type: chapter
 ---
 
+<textblock>UNDER CONSTRUCTION (some sections finished)</textblock>
+
 <exercise id="1" title="Language to features">
 
 <img src="/part2/representing-text-as-features/overview.svg" alt="Language to features" />

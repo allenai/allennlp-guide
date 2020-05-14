@@ -4,6 +4,8 @@ description: "This chapter describes AllenNLP's simple dependency injection fram
 type: chapter
 ---
 
+<textblock>UNDER CONSTRUCTION (some sections finished)</textblock>
+
 <exercise id="1" title="Motivation: Dependency Injection">
 
 A core motivating principle of AllenNLP (and object-oriented software design generally) is to

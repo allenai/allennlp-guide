@@ -5,8 +5,4 @@ description:
 type: chapter
 ---
 
-<textblock>
-
-This chapter has not been written yet.
-
-</textblock>
+<textblock>UNDER CONSTRUCTION</textblock>

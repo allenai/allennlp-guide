@@ -4,6 +4,8 @@ description: 'In this chapter we build several models for performing zero-shot c
 type: chapter
 ---
 
+<textblock>UNDER CONSTRUCTION</textblock>
+
 <exercise id="1" title="What is zero-shot classification?">
 
 In text classification, we want to assign some kind of label to a given piece of text.  Typically,

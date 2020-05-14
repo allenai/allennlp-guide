@@ -5,7 +5,7 @@ description:
 type: chapter
 ---
 
-TO BE WRITTEN
+<textblock>UNDER CONSTRUCTION</textblock>
 
 <exercise id="1" title="Semantic Parsing">
 

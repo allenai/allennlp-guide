@@ -4,6 +4,8 @@ description: "In this chapter we'll introduce neural architectures and AllenNLP 
 type: chapter
 ---
 
+<textblock>NOT YET CHECKED, BUT SHOULD BE CLOSE TO READY</textblock>
+
 <textblock>
 The main modeling operations done on natural language inputs include summarizing sequences, contextualizing sequences (that is, computing contextualized embeddings from sequences), modeling spans within a longer sequence, and modeling similarities between sequences using attention. In the following sections we'll learn AllenNLP abstractions for these operations.
 </textblock>
