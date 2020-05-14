@@ -45,7 +45,7 @@ dictionaries loaded from a JSON file.  That's it.  Its utility comes from handli
 collections, user-defined types, and polymorphism, and operating recursively.
 
 Under the hood, all that FromParams is doing is constructing arguments for an object from JSON, but,
-one you get the hang of it, this simple functionality enables you to write and modify reproducible
+once you get the hang of it, this simple functionality enables you to write and modify reproducible
 experiments with ease.
 
 To construct a class from a JSON dictionary, it has to inherit from the `FromParams` abstract base
@@ -167,10 +167,10 @@ to correctly construct arguments with most of the type annotations in python's b
 library.  This includes `List` (which is specified in a configuration file as a JSON list), `Union`
 (`FromParams` will try each type in turn with the given parameter dictionary and keep the first one
 that succeeds), and `Dict` (which is specified in a configuration file as a JSON dictionary), among
-others.  Lastly, `FromParams` handles default values for constructor argumnts just fine; when there
-is no correspond key in a parameter dictionary for a particular argument, the default value is used.
-If there is no default value, `FromParams` will crash, complaining that a key was missing in the
-configuration file.  Similarly, if there are _extra_ parameters in a configuration file, where a
+others.  Lastly, `FromParams` handles default values for constructor arguments just fine; when there
+is no corresponding key in a parameter dictionary for a particular argument, the default value is
+used.  If there is no default value, `FromParams` will crash, complaining that a key was missing in
+the configuration file.  Similarly, if there are _extra_ parameters in a configuration file, where a
 provided key does not match the name of a constructor argument, `FromParams` will also crash.
 
 </exercise>
