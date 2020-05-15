@@ -1,14 +1,3 @@
-from allennlp.data.batch import Batch
-from allennlp.data.dataset_readers.dataset_utils.span_utils import enumerate_spans
-from allennlp.data.fields import TextField, ListField, SpanField
-from allennlp.data.instance import Instance
-from allennlp.data.token_indexers import SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token
-from allennlp.data.vocabulary import Vocabulary
-from allennlp.modules.span_extractors import EndpointSpanExtractor
-from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
-from allennlp.modules.token_embedders import Embedding
-
 # Create an instance with multiple spans
 tokens = ['I', 'shot', 'an', 'elephant', 'in', 'my', 'pajamas', '.']
 tokens = [Token(token) for token in tokens]

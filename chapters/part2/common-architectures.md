@@ -9,7 +9,9 @@ type: chapter
 The main modeling operations done on natural language inputs include summarizing sequences,
 contextualizing sequences (that is, computing contextualized embeddings from sequences), modeling
 spans within a longer sequence, and modeling similarities between sequences using attention. In the
-following sections we'll learn AllenNLP abstractions for these operations.
+following sections we'll learn AllenNLP abstractions for these operations.  All of these
+`torch.nn.Modules` can be used in whatever PyTorch code you want, whether or not you use the rest of
+what's in `AllenNLP`.
 
 </textblock>
 
@@ -22,8 +24,8 @@ for this, which is a class of architectures that take a sequence of vectors and 
 single vector of fixed size. It abstracts any operation that takes a tensor of shape `(batch_size,
 sequence_length, input_size)` and produces another of shape `(batch_size, output_size)`. This
 includes a wide range of models, from something very simple (a bag-of-embedding model which simply
-sums up the input embeddings) to something more complicated (a pooling layer of BERT). See the
-following diagram for an illustration:
+sums up the input embeddings) to something more complicated (a CNN, or a pooling layer of BERT). See
+the following diagram for an illustration:
 
 <img src="/part2/common-architectures/seq2vec.svg" alt="Seq2Vec encoder" />
 
@@ -34,7 +36,7 @@ with AllenNLP's `Seq2VecEncoder` interface. In most cases, though, you don't nee
 yourself—wrapped `Seq2VecEncoders` are already defined by AllenNLP as e.g., `LstmSeq2VecEncoder` and
 `GruSeq2VecEncoder`.
 
-Other commonly used `Seq2VecEncoders` include `CnnEncoder`, which is a combinations of convolutional
+Other commonly used `Seq2VecEncoders` include `CnnEncoder`, which is a combination of convolutional
 layers and a pooling layer on top of them, as well as `BertPooler`, which returns the embedding for
 the `[CLS]` token of the BERT model.
 
@@ -83,6 +85,9 @@ A mask is simply a tensor of 0s and 1s that indicate which locations of the batc
 non-padded. We'll discuss padding and masking more in details in [Representing text as
 features](/representing-text-as-features).
 
+You also might be thinking, why use `LstmSeq2VecEncoder` instead of just `torch.nn.LSTM`?  We have a
+note about that at the end of the next section.
+
 </exercise>
 
 
@@ -94,8 +99,8 @@ process a sequence of tokens and obtain another sequence of some embeddings. All
 `Seq2SeqEncoder`, which abstracts any operation that takes a tensor of shape `(batch_size,
 sequence_length, input_dim)` and produces another, modified tensor of shape `(batch_size,
 sequence_length, output_dim)`. This can be something as simple as returning the input tensor
-unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as the
-Transformer Encoder.
+unchanged (which is what the `PassThroughEncoder` does) or something more complicated such as a
+transformer.
 
 <img src="/part2/common-architectures/seq2seq.svg" alt="Seq2Seq encoder" />
 
@@ -119,25 +124,32 @@ statefulness (that is, using the final state of a batch as the inital state of t
 
 <codeblock source="part2/common-architectures/seq2seq"></codeblock>
 
+It's common these days to use *pretrained* contextualizers as your base model input.  Because this
+is typically done as a replacement for an initial embedding layer, AllenNLP implements these
+pretrained contextualizers as `TextFieldEmbedders`, discussed in [the next
+chapter](/representing-text-as-features), instead of `Seq2SeqEncoders`.
+
 ## Why not just use torch.nn.LSTM (or similar) directly?
 
 If this does what you want, go for it, there's nothing wrong with using LSTM modules directly in
-your model.  The reasons you might want to use a `Seq2SeqEncoder` instead are two-fold: first, it
+your model.  The reasons you might want to use a `Seq2SeqEncoder` instead are three-fold: first, it
 encourages you to think at a higher level about what basic operations your model is doing (am I
-contextualizing, summarizing, or both?).  Second, it allows you to do controlled experiments easier,
-if you think you might one day want to try a different contextualizer in your model.  Using an
-abstraction that encapsulates the options you want to experiment with is a powerful way to get very
-easy, controlled experiments.
+contextualizing, summarizing, or both?).  Second, using [dependency
+injection](/using-config-files#1) allows you to do controlled experiments easier, if you think you
+might one day want to try a different contextualizer in your model.  Using an abstraction that
+encapsulates the options you want to experiment with is a powerful way to get very easy, controlled
+experiments.  Lastly, having a collection of models available that are written using higher-level
+abstractions lets component designers easily test their developments on a wide range of models.
+Have a new idea for a way to contextualize sequences?  Just implement it as a `Seq2SeqEncoder` and
+apply it to any model implemented using this abstraction.
 
 Note also that we've now seen two different abstractions for RNNs—RNN for summarizing
 (`Seq2VecEncoder`) and RNN for contextualizing (`Seq2SeqEncoder`). Although they are implemented in
-a very similar way (they both use PyTorch's RNN implementations), they are conceptually different,
-since the class of possible replacements for the former (e.g., CNN) is different from the that for
-the latter (e.g., Transformer encoder). This is one example of how AllenNLP designs
-abstractions—they abstract *what* is done to *what*, instead of *how* it's done.
-
-Some pre-trained contextualizers (including BERT) are implemented as `TokenEmbedders` instead of
-`Seq2SeqEncoders`. We'll cover these [in the next chapter](representing-text-as-features).
+a very similar way (they both use PyTorch's RNN implementations internally), they are conceptually
+different, since the class of possible replacements for the former (e.g., CNN) is different from the
+possible replacements for the latter (e.g., Transformer encoder). This is one example of how
+AllenNLP designs abstractions—we combine modules based on their input/output spec, instead of how
+the underlying computation is performed.
 
 </exercise>
 
@@ -152,29 +164,32 @@ with some utility methods that make it easier to work with spans.
 ## Representing spans
 
 Spans are usually represented as pairs of integers, one for the start and the other for the end
-indices. AllenNLP uses `SpanFields`, which are a type of `Fields`, to represent such pairs. In order
-to instantiate a `SpanField`, you need to provide a start index, an end index, as well as a
-`SequenceField` (such as a `TextField`) that these indices are referring to, which is used to
-validate whether the span is well defined. The start/end indices are inclusive. `SpanFields` are
-converted to a tensor of size `(batch_size, 2)` when batched.
+indices. In data processing code, AllenNLP uses `SpanFields`, which are a type of `Fields`, to
+represent such pairs. In order to instantiate a `SpanField`, you need to provide a start index, an
+end index, as well as a `SequenceField` (such as a `TextField`) that these indices are referring to,
+which is used to validate whether the span is well defined. The start/end indices are inclusive.
+`SpanFields` are converted to a tensor of size `(batch_size, 2)` when batched.
 
 In many cases, however, a single instance can have an arbitrary number of spans. For example, a
 single parse tree can contain multiple spans over the text corresponding to multiple constituents.
 You can use `ListFields`, a type of `Fields` that represent lists of other fields, to put spans
-together into a single field. When batched, these fields are converted to a tensor of size
-`(batch_size, num_spans, 2)`. You can use the utility `enumerate_spans()` method in
+together into a single field.[^1] When batched, these fields are converted to a tensor of size
+`(batch_size, num_spans, 2)`. You can use the utility method `enumerate_spans()` in
 `allennlp.data.dataset_readers.dataset_utils.span_utils` to enumerate all spans up to some fixed
 length. See the code example below for an illustration.
 
-[`PennTreeBankConstituencySpanDatasetReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/penn_tree_bank.py#L40)
+[^1]: Though if you have a large number of spans, more than a hundred or so, doing this will be
+  slow, and you'll be better off just using an `ArrayField`.
+
+[`PennTreeBankConstituencySpanDatasetReader`](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/syntax/constituency_parser/constituency_parser_model.py)
 and
-[`ConllCorefReader`](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/coreference_resolution/conll.py#L19)
+[`ConllCorefReader`](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/coref/coref_model.py)
 are two dataset readers that generate instances with spans.
 
 ## Embedding spans
 
 The next step for modeling spans in sequences is to embed them. This is usually done first by
-contextualizing the input sequence by using e.g., a `Seq2SeqEncoder`, then by applying some
+contextualizing the input sequence by using, e.g., a `Seq2SeqEncoder`, then by applying some
 operation on the embeddings at/between the start and end indices. AllenNLP abstracts this as
 `SpanExtractors`, which take a tensor of shape `(batch_size, sequence_length, embedding_dim)` and a
 span tensor of shape `(batch_size, num_spans, 2)`, and return a tensor of size `(batch_size,
@@ -186,6 +201,7 @@ the spans. The figure below illustrates how `SpanExtractors` work.
 `EndpointSpanExtractors`, the simplest type of `SpanExtractors`, embed spans using a combination of
 the embeddings at the end points, as its name suggests. They take the embeddings of the end points
 and apply some element-wise operation (such as multiplication or subtraction) to them.
+
 `SelfAttentiveSpanExtractors`, another type of `SpanExtractors`, compute span representations first
 by generating unnormalized attention scores for input tokens, then by taking a weighted sum of the
 embeddings inside the span with respected to the normalized scores.
@@ -194,31 +210,34 @@ In the code example below, we first create a toy instance that contains a list o
 compute a span representation using an `EndpointSpanExtractor`. We observe the shapes of the input
 tensors as well as the output when using different operations.
 
-<codeblock source="part2/common-architectures/span"></codeblock>
+<codeblock source="part2/common-architectures/span_source" setup="part2/common-architectures/span_setup"></codeblock>
 
 ## Pruning spans
 
 Many span-based models involve some kind of enumeration of spans and need to consider all possible
-spans in a given sentence or document. The number of possible spans is quadratic (O(n^2)) to the
-length of the input, so in practice it is important to keep only the promising spans by *pruning*
-them.
+spans in a given sentence or document. The number of possible spans is quadratic (O(n<sup>2</sup>))
+to the length of the input, so in practice it is important to keep only the promising spans by
+*pruning* them.
 
 There are many possible ways to prune spans. One (probably the easiest) way is to filter them using
-heuristics in your `DatasetReader`. For example, for the co-reference task, mentions rarely span
-across sentences. In many tasks, it is often practically sufficient to consider spans of length up
-to some small number of tokens. For this, you can use the `enumerate_spans()` utility method
+heuristics in your `DatasetReader`. For example, for the coreference resolution task, mentions
+rarely span across sentences. In many tasks, it is often practically sufficient to consider spans of
+only some small number of tokens. For this, you can use the `enumerate_spans()` utility method
 mentioned above, which lets you enumerate all valid spans by providing a maximum and minimum span
 width, as well as a boolean function to determine if any given span should be included. See the
 example in the code snippet for how to use this method.
 
-However, you cannot prune all the unnecessary spans just by using heuristics in your `DatasetReader`
-this way. A common practice is to score span candidates in your model and only use the top *k* spans
-for loss computation, disregarding the rest. 
+In some cases, you cannot prune all the spans just by using heuristics in your `DatasetReader` this
+way. To continue with the coreference resolution example, the model eventually needs to compare
+*pairs of spans*, which is O(n<sup>4</sup>) without some substantial pruning.  This pruning must be
+done using model predictions of what spans are likely to be coreferent mentions.  The model thus
+computes a score for each span and only uses the top *k* spans for future computation, discarding
+the rest.
 
 You can use a learned function (usually a feedforward network) to score span candidates. After
 feeding the span embeddings to the scoring network and obtaining a score per span, you can use the
 [`masked_topk()`](https://github.com/allenai/allennlp/blob/master/allennlp/nn/util.py#L1705) utility
-method in the `allennlp.nn` module to extract only the top-k items.
+method in the `allennlp.nn.util` module to extract only the top-k items.
 
 </exercise>
 
@@ -229,8 +248,8 @@ Many modern NLP models make use of attention to compute similarities (some sort 
 score) between sequences. For example, Seq2Seq models, for which the attention mechanism was first
 invented, use attention to model similarities between the encoder and the decoder hidden states.
 
-AllenNLP provides two types of abstractions for attention—`Attention` and `MatrixAttention`. We'll
-discuss these two in detail below.
+AllenNLP provides two abstractions for attention—`Attention` and `MatrixAttention`. We'll discuss
+these two in detail below.
 
 ## Attention
 
@@ -238,7 +257,7 @@ AllenNLP's `Attention` modules compute similarities between (each row of) a matr
 `(batch_size, sequence_length, embedding_dim)` and a vector of size `(batch_size, embedding_dim)`
 and return a (typically normalized) similarity vector of size `(batch_size, sequence_length)`. For
 Seq2Seq models, for example, the input matrix is a sequence of encoder hidden states, and the input
-vector is the decoder hidden state. 
+vector is the current decoder hidden state.
 
 There are many ways to compute the similarity between two vectors, and in AllenNLP each similarity
 method has its own subclass of `Attention`. One of the simplest implementations is
@@ -285,14 +304,14 @@ different ways you could decide to normalize the output; it's up to the caller t
 (masked) normalization.
 
 In the following code snippet, we instantiate different types of `Attention` and `MatrixAttention`
-and observe the shapes of the input and the output. 
+and observe the shapes of the input and the output.
 
-<codeblock source="part2/common-architectures/attention"></codeblock>
+<codeblock source="part2/common-architectures/attention_source" setup="part2/common-architectures/attention_setup"></codeblock>
 
 </exercise>
 
 
-<exercise id="5" title="Common neural network techniques">
+<exercise id="5" title="Other common neural network building blocks">
 
 In addition to the modeling operations covered above, AllenNLP provides a variety of other
 convenient abstractions and modules for building your NLP model.
@@ -300,26 +319,26 @@ convenient abstractions and modules for building your NLP model.
 ## FeedForward
 
 The [`FeedForward` module](http://docs.allennlp.org/master/api/modules/feedforward/) is just a
-sequence of linear layers `torch.nn.Linear`. It also supports activations and (optional) dropout in
+sequence of `torch.nn.Linear` layers. It also supports activations and (optional) dropout in
 between layers.
 
 ## GatedSum and Highway layers
 
 Linear combination of multiple components is a common operation used in modern-day neural networks.
-A [highway layer](http://docs.allennlp.org/master/api/modules/highway/) computes a gated sum of the
+A [Highway layer](http://docs.allennlp.org/master/api/modules/highway/) computes a gated sum of the
 original input `x` and its non-linear transformation: `y = g * x + (1 - g) * f(A(x))`, where `A()`
 is a linear transformation and `f` is an element-wise nonlinearity. Highway layers are used e.g., in
 ELMo after a CNN layer.
 
-A somewhat similar operation, [gated sum](http://docs.allennlp.org/master/api/modules/gated_sum/)
+A somewhat similar operation, [GatedSum](http://docs.allennlp.org/master/api/modules/gated_sum/)
 computes a gated sum of two tensors `a` and `b` as in: `f = activation(W [a; b]) out = f * a + (1 -
-f) * b`. 
+f) * b`.
 
 ## TimeDistributed
 
 In some cases you may want to apply the same operation repeatedly over some dimension of a tensor.
 For example, in a sequence labeling task, you might want to apply the same `FeedForward` layer to
-the output vector at every timestep. 
+the output vector at every timestep.
 
 [`TimeDistributed`](http://docs.allennlp.org/master/api/modules/time_distributed/) is a convenient
 module that makes this easier to implement. Given an input of shape `(batch_size, time_steps,
@@ -331,6 +350,25 @@ Besides being used for sequence labeling models, `TimeDistributed` can also be u
 feedforward network to every span representation in span-based models (see above), to encode a list
 of documents using a document-level encoder, or a host of other cases where a collection of things
 should each have the same operation performed on them independently.
+
+## Conditional random field
+
+The (linear-chain) conditional random field (CRF) is a popular model used for sequence labeling in
+NLP. It defines a globally-normalized conditional probability distribution over label sequences
+given an input sequence by considering the dependency between labels (transition probabilities) and
+between the input and the labels (emission probabilities).
+
+AllenNLP's
+[`ConditionalRandomField`](http://docs.allennlp.org/master/api/modules/conditional_random_field/)
+implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes
+the log likelihood of the sequence. The module has transition probabilities as trainable parameters,
+and can find the sequence of most likely tags using the Viterbi algorithm.
+
+A CRF sequential tagger is implemented as the [`CrfTagger`
+module](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/ner/crf_tagger.py).
+It takes a sequence of indexed tokens, embeds them using a `TextFieldEmbedder`, encodes them with a
+`Seq2SeqEncoder`, applies a `TimeDistributed` linear layer, and finally applies a
+`ConditionalRandomField` module.
 
 ## Activations
 
@@ -347,23 +385,5 @@ also do:
 The main place where we'd recommend using this type is as a constructor argument if you're creating
 a module that's similar to `FeedForward`, or you really want to be able to easily swap out
 activation functions in some place in your model.  Otherwise, you can safely ignore this type.
-
-## Conditional random field
-
-The (linear-chain) conditional random field (CRF) is a popular model used for sequence labeling in
-NLP. It defines a globally-normalized conditional probability distribution over label sequences
-given an input sequence by considering the dependency between labels (transition probabilities) and
-between the input and the labels (emission probabilities).
-
-AllenNLP's
-[`ConditionalRandomField`](http://docs.allennlp.org/master/api/modules/conditional_random_field/)
-implements a CRF layer, which, given a sequence of logits and another sequence of labels, computes
-the log likelihood of the sequence. The module has transition probabilities as trainable parameters,
-and can find the sequence of most likely tags using the Viterbi algorithm.
-
-A CRF sequential tagger is implemented as the [`CrfTagger`
-module](http://docs.allennlp.org/master/api/models/crf_tagger/). It takes a sequence of indexed
-tokens, embeds them using a `TextFieldEmbedder`, encodes them with a `Seq2SeqEncoder`, applies a
-`TimeDistributed` linear layer, and finally applies a `ConditionalRandomField` module.
 
 </exercise>

@@ -201,3 +201,9 @@ the huge BERT model, and it will time out.
 </codeblock>
 
 </exercise>
+
+<exercise id="10" title="How padding and masking works">
+</exercise>
+
+<exercise id="10" title="Interacting with TextField outputs in your model code">
+</exercise>
