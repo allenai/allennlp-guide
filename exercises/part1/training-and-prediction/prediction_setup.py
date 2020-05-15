@@ -1,7 +1,9 @@
-from typing import Dict, Iterable, List
+import tempfile
+from typing import Dict, Iterable, List, Tuple
 
 import torch
 
+import allennlp
 from allennlp.common import JsonDict
 from allennlp.data import DataLoader, DatasetReader, Instance
 from allennlp.data import Vocabulary
@@ -16,7 +18,8 @@ from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.predictors import Predictor
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
-from allennlp.training.util import evaluate
+from allennlp.training.trainer import Trainer, GradientDescentTrainer
+from allennlp.training.optimizers import AdamOptimizer
 
 
 class ClassificationTsvReader(DatasetReader):
@@ -87,13 +90,13 @@ class SimpleClassifier(Model):
 
 
 def build_dataset_reader() -> DatasetReader:
-    return ClassificationTsvReader(max_tokens=64)
+    return ClassificationTsvReader()
 
 def read_data(
     reader: DatasetReader
 ) -> Tuple[Iterable[Instance], Iterable[Instance]]:
     print("Reading data")
-    training_data = dataset_reader.read("quick_start/data/movie_review/train.tsv")
+    training_data = reader.read("quick_start/data/movie_review/train.tsv")
     validation_data = reader.read("quick_start/data/movie_review/dev.tsv")
     return training_data, validation_data
 
@@ -109,7 +112,7 @@ def build_model(vocab: Vocabulary) -> Model:
     encoder = BagOfEmbeddingsEncoder(embedding_dim=10)
     return SimpleClassifier(vocab, embedder, encoder)
 
-def build_data_loader(
+def build_data_loaders(
     train_data: torch.utils.data.Dataset,
     dev_data: torch.utils.data.Dataset,
 ) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader]:
@@ -131,7 +134,7 @@ def build_trainer(
         for n, p in model.named_parameters() if p.requires_grad
     ]
     optimizer = AdamOptimizer(parameters)
-    trainer = Trainer(
+    trainer = GradientDescentTrainer(
         model=model,
         serialization_dir=serialization_dir,
         data_loader=train_loader,

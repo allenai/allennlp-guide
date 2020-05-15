@@ -77,7 +77,11 @@ pipeline are doing what they are supposed to do (that is, to minimize the loss).
 
 <codeblock source="part1/training-and-prediction/training_source" setup="part1/training-and-prediction/training_setup"></codeblock>
 
-Congratulations, you just trained your first model using AllenNLP!
+Congratulations, you just trained your first model using AllenNLP!  You probably don't want to
+actually wait for that to finish running in binder, though; it's extremely slow. If you want, you
+can head on over to our [course repository](https://github.com/allenai/allennlp-course-examples) and
+run the code from there on your local machine.  Just run `python quick_start/train.py`; it finishes
+in less than a minute on a Macbook.
 
 </exercise>
 
@@ -192,7 +196,8 @@ For our simple classifier, that configuration file looks like this:
         }
     },
     "data_loader": {
-        "batch_size": 8
+        "batch_size": 8,
+        "shuffle": true
     },
     "trainer": {
         "optimizer": "adam",
@@ -220,6 +225,12 @@ Though you wouldn't typically run the code this way, we're including an example 
 configuration file, so you can play around with it if you want.
 
 <codeblock source="part1/training-and-prediction/config_source" setup="part1/training-and-prediction/config_setup"></codeblock>
+
+Again, you probably don't want to wait for that to finish, but you can run this on your local
+machine by checking out our [course
+repository](https://github.com/allenai/allennlp-course-examples/tree/master/quick_start).  `cd` to
+the `quick_start` directory, then run `allennlp train my_text_classifier.jsonnet -s model
+--include-package my_text_classifier`
 
 There is definitely some overhead in getting used to these configuration files and understanding how
 they work. We think they are useful enough to be worth the learning curve, but if you disagree, you
@@ -315,6 +326,10 @@ When this code snippet finishes running, you should see the evaluation result:
 ```
 {'accuracy': 0.855, 'loss': 0.3686505307257175}
 ```
+
+Though, once again, this is pretty slow to be running in binder.  You can run this from the [course
+repository](https://github.com/allenai/allennlp-course-examples) with `python
+quick_start/evaluate.py`.
 
 As a simple bag-of-embeddings model, this is not a bad start!
 
@@ -500,5 +515,3 @@ chapter. In the next chapter we'll give a preview of some more advanced AllenNLP
 things you might want to try next.
 
 </exercise>
-
-

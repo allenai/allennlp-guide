@@ -25,7 +25,8 @@ config = {
         }
     },
     "data_loader": {
-        "batch_size": 8
+        "batch_size": 8,
+        "shuffle": True
     },
     "trainer": {
         "optimizer": "adam",
@@ -35,9 +36,13 @@ config = {
 
 
 with tempfile.TemporaryDirectory() as serialization_dir:
-    config_file = serialization_dir + "/training_config.json"
-    json.dump(config, config_file)
+    config_filename = serialization_dir + "/training_config.json"
+    with open(config_filename, 'w') as config_file:
+        json.dump(config, config_file)
     from allennlp.commands.train import train_model_from_file
     # Instead of this python code, you would typically just call
     # allennlp train [config_file] -s [serialization_dir]
-    train_model_from_file(config_file, serialization_dir)
+    train_model_from_file(config_filename,
+                          serialization_dir,
+                          file_friendly_logging=True,
+                          force=True)

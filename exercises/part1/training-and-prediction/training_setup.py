@@ -1,17 +1,19 @@
 import tempfile
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Tuple
 
 import allennlp
 import torch
-from allennlp.common.params import Params
 from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
+from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
+from allennlp.modules.token_embedders import Embedding
+from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.nn import util
-from allennlp.training import Trainer
+from allennlp.training.trainer import GradientDescentTrainer, Trainer
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.metrics import CategoricalAccuracy
 
@@ -54,6 +56,7 @@ class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
+        print("In model.forward(); printing here just because binder is so slow")
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
         # Shape: (batch_size, num_tokens)
@@ -63,20 +66,20 @@ class SimpleClassifier(Model):
         # Shape: (batch_size, num_labels)
         logits = self.classifier(encoded_text)
         # Shape: (batch_size, num_labels)
-        probs = torch.nn.functional.softmax(logits)
+        probs = torch.nn.functional.softmax(logits, dim=-1)
         # Shape: (1,)
         loss = torch.nn.functional.cross_entropy(logits, label)
         return {'loss': loss, 'probs': probs}
 
 
 def build_dataset_reader() -> DatasetReader:
-    return ClassificationTsvReader(max_tokens=64)
+    return ClassificationTsvReader()
 
 def read_data(
     reader: DatasetReader
 ) -> Tuple[Iterable[Instance], Iterable[Instance]]:
     print("Reading data")
-    training_data = dataset_reader.read("quick_start/data/movie_review/train.tsv")
+    training_data = reader.read("quick_start/data/movie_review/train.tsv")
     validation_data = reader.read("quick_start/data/movie_review/dev.tsv")
     return training_data, validation_data
 

@@ -1,19 +1,15 @@
 import tempfile
+import json
 from typing import Dict, Iterable, List
 
-import allennlp
 import torch
-from allennlp.common.params import Params
-from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
+from allennlp.data import DatasetReader, Instance, Vocabulary
 from allennlp.data.fields import LabelField, TextField
-from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import Token, Tokenizer, SpacyTokenizer
+from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
-from allennlp.training import Trainer
-from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.metrics import CategoricalAccuracy
 
 
@@ -64,6 +60,7 @@ class SimpleClassifier(Model):
     def forward(self,
                 text: Dict[str, torch.Tensor],
                 label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
+        print("In model.forward(); printing here just because binder is so slow")
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
         # Shape: (batch_size, num_tokens)

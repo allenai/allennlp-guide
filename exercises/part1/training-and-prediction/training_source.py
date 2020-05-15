@@ -28,11 +28,13 @@ def run_training_loop():
             train_loader,
             dev_loader
         )
+        print("Starting training")
         trainer.train()
+        print("Finished training")
 
 # The other `build_*` methods are things we've seen before, so they are
 # in the setup section above.
-def build_data_loader(
+def build_data_loaders(
     train_data: torch.utils.data.Dataset,
     dev_data: torch.utils.data.Dataset,
 ) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader]:
@@ -54,7 +56,7 @@ def build_trainer(
         for n, p in model.named_parameters() if p.requires_grad
     ]
     optimizer = AdamOptimizer(parameters)
-    trainer = Trainer(
+    trainer = GradientDescentTrainer(
         model=model,
         serialization_dir=serialization_dir,
         data_loader=train_loader,
