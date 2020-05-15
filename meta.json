@@ -14,6 +14,6 @@
     },
     "headerLinks": [
         { "text": "AllenNLP Website", "url": "https://allennlp.org/" },
-        { "text": "AllenNLP Docs", "url": "https://allenai.github.io/allennlp-docs/" }
+        { "text": "AllenNLP Docs", "url": "https://docs.allennlp.org/master/" }
     ]
 }
