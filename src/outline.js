@@ -34,6 +34,7 @@ export const outline = {
                 '/common-architectures',
                 '/representing-text-as-features',
                 '/testing',
+                '/demos-and-predictors',
                 '/using-config-files',
                 '/writing-your-own-script',
             ],

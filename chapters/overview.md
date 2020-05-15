@@ -83,7 +83,7 @@ prior knowledge of AllenNLP—the whole point of this course is to provide onboa
   TokenIndexers, and TokenEmbedders
 * Training and evaluating your model (Coming soon)
 * [Testing your code](/testing): Recommendations and utilities for testing NLP code
-* Building a demo (Coming soon)
+* [Building a demo](/demos-and-predictors): Predictors, and designing code with demos in mind
 * Interpreting your model’s predictions (Coming soon)
 * [Using config files](/using-config-files): FromParams and Registrable
 * Writing your own script as an entry point to AllenNLP (Coming soon)

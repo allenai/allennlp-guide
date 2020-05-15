@@ -1,17 +1,16 @@
 import json
 import os
 import tempfile
+from copy import deepcopy
 from typing import Dict, Iterable, List
 
 import torch
 from allennlp.common import JsonDict
 from allennlp.common.params import Params
-from allennlp.data import DatasetReader, Instance
-from allennlp.data import Vocabulary
+from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
 from allennlp.data.fields import LabelField, TextField
-from allennlp.data.iterators import DataIterator
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import SpacyTokenizer
+from allennlp.data.tokenizers import WhitespaceTokenizer
 from allennlp.data.tokenizers import Token, Tokenizer
 from allennlp.models import Model
 from allennlp.models.archival import archive_model, load_archive
@@ -31,11 +30,12 @@ class ClassificationTsvReader(DatasetReader):
                  token_indexers: Dict[str, TokenIndexer] = None,
                  max_tokens: int = None):
         super().__init__(lazy)
-        self.tokenizer = tokenizer or SpacyTokenizer()
+        self.tokenizer = tokenizer or WhitespaceTokenizer()
         self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 
-    def text_to_instance(self, tokens: List[Token], label: str = None) -> Instance:
+    def text_to_instance(self, text: str, label: str = None) -> Instance:
+        tokens = self.tokenizer.tokenize(text)
         if self.max_tokens:
             tokens = tokens[:self.max_tokens]
         text_field = TextField(tokens, self.token_indexers)
@@ -48,8 +48,7 @@ class ClassificationTsvReader(DatasetReader):
         with open(file_path, 'r') as lines:
             for line in lines:
                 text, sentiment = line.strip().split('\t')
-                tokens = self.tokenizer.tokenize(text)
-                yield self.text_to_instance(tokens, sentiment)
+                yield self.text_to_instance(text, sentiment)
 
 
 @Model.register('simple_classifier')
@@ -91,18 +90,13 @@ class SimpleClassifier(Model):
 
 @Predictor.register("sentence_classifier")
 class SentenceClassifierPredictor(Predictor):
-    def __init__(self, model: Model, dataset_reader: DatasetReader) -> None:
-        super().__init__(model, dataset_reader)
-        self._tokenizer = SpacyTokenizer()
-
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
 
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         sentence = json_dict["sentence"]
-        tokens = self._tokenizer.tokenize(sentence)
-        return self._dataset_reader.text_to_instance(tokens)
+        return self._dataset_reader.text_to_instance(sentence)
 
 
 def run_config(config):
@@ -141,41 +135,22 @@ def run_config(config):
     else:
         model = Model.from_params(vocab=vocab, params=params.pop('model'))
 
-        if 'trainer' not in params:
-            if 'iterator' not in params:
-                # 'forward instance' mode — feed instances to the model without training
-                for inst in train_data:
-                    outputs = model.forward_on_instance(inst)
-                    print(outputs)
-            else:
-                # 'forward batch' mode — feed batches to the model without training
-                iterator = DataIterator.from_params(params.pop('iterator'))
-                iterator.index_with(vocab)
+        loader_params = deepcopy(params.pop("data_loader"))
+        train_data_loader = DataLoader.from_params(dataset=train_data,
+                                                   params=loader_params)
+        dev_data_loader = DataLoader.from_params(dataset=validation_data,
+                                                 params=loader_params)
+        iterator.index_with(vocab)
 
-                for batch in iterator(train_data, num_epochs=1):
-                    outputs = model(**batch)
-                    print(outputs)
-        else:
-            # 'train' mode
-            if 'iterator' not in params:
-                raise RuntimeError('iterator is required for training')
-
-            if not validation_data:
-                raise RuntimeError('validation data is required for training')
-
-            iterator = DataIterator.from_params(params.pop('iterator'))
-            iterator.index_with(vocab)
-
-            # set up a temporary, empty directory for serialization
-            with tempfile.TemporaryDirectory() as serialization_dir:
-                trainer = Trainer.from_params(
-                    model=model,
-                    serialization_dir=serialization_dir,
-                    iterator=iterator,
-                    train_data=train_data,
-                    validation_data=validation_data,
-                    params=params.pop('trainer'))
-                trainer.train()
+        # set up a temporary, empty directory for serialization
+        with tempfile.TemporaryDirectory() as serialization_dir:
+            trainer = Trainer.from_params(
+                model=model,
+                serialization_dir=serialization_dir,
+                data_loader=train_data_loader,
+                validation_data_loader=dev_data_loader,
+                params=params.pop('trainer'))
+            trainer.train()
 
     return {
         'params': params_copy,

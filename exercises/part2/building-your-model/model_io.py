@@ -25,8 +25,7 @@ CONFIG = """
             "embedding_dim": 10
         }
     },
-    "iterator": {
-        "type": "basic",
+    "data_loader": {
         "batch_size": 8
     },
     "trainer": {
@@ -51,8 +50,15 @@ def make_predictions(model: Model, dataset_reader: DatasetReader) \
     return predictions
 
 
+# Because we can't use bash to run allennlp commands, and so that we can more
+# easily pull out some pieces to show you how this works, we wrote a simple method
+# that runs a training loop from a configuration file. You can see it in the Setup
+# section above.
 components = run_config(CONFIG)
-params, dataset_reader, vocab, model = components['params'], components['dataset_reader'], components['vocab'], components['model']
+params = components['params']
+dataset_reader = components['dataset_reader']
+vocab = components['vocab']
+model = components['model']
 
 
 original_preds = make_predictions(model, dataset_reader)

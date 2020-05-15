@@ -23,21 +23,24 @@ using `to()` to move it between devices, combining submodules to implement a lar
 on.
 
 There are, however, a few key differences between PyTorch `Modules` and AllenNLP `Models`. The most
-important is the fact that `forward()` returns a dictionary, unlike PyTorch `Modules`, which usually
-return a tensor. AllenNLP `Models` also implement additional features for running and processing
-model predictions, saving and loading models, getting metrics, etc., which we'll elaborate on below.
+important is the fact that `forward()` returns a dictionary, unlike most PyTorch `Modules`, which
+usually return a tensor. AllenNLP `Models` also implement additional features for running and
+processing model predictions, saving and loading models, getting metrics, etc., which we'll
+elaborate on below.
 
-The input/output spec of `Model.forward()` method is somewhat more strictly defined than that of
-PyTorch modules. Its parameters need to match field names in your data code exactly, [as we
-mentioned previously](/reading-data#1). Instances created by the dataset reader are batched and
-converted to a set of tensors by AllenNLP. These batched tensors get passed to `Model.forward()` by
-their original field names. The following figure shows this process:
+The input/output spec of `Model.forward()` is somewhat more strictly defined than that of PyTorch
+modules. Its parameters need to match field names in your [data code](/reading-data#1) exactly.
+Instances created by the dataset reader are batched and converted to a set of tensors by AllenNLP
+(specifically, this part happens in the [`allennlp_collate`
+function](http://docs.allennlp.org/master/api/data/dataloader/#allennlp_collate) that the
+`DataLoader` uses).  Inside our `Trainer`, batched tensors get passed to `Model.forward()` by their
+original field names. The following figure shows this process:
 
 <img src="/part2/building-your-model/forward.svg" alt="Model.forward() and its parameters" />
 
-Note that some fields (for example, training labels) may be absent during prediction. Make sure
-optional `forward()` parameters have default values as shown below, otherwise you'll get a missing
-argument error.
+Note that some fields (for example, training labels) may be absent during prediction, if you want to
+have your model easily made into a demo. Make sure optional `forward()` parameters have default
+values as shown below, otherwise you'll get a missing argument error.
 
 ```python
 class SimpleClassifier(Model):
@@ -81,39 +84,85 @@ Although the `forward()` method is the most important (and often the only) metho
 implement for your model, AllenNLP `Models` also implement other methods that make it easier to
 interact with them.
 
-## Post-processing with decode()
+## Post-processing with make\_output\_human\_readable()
 
-The `decode()` method is one of them. It takes the dictionary returned by the `forward()` method and
-runs whatever post-processing you need for your model. This is often some sort of decoding or
-inference, but not necessarily. In a common scenario, `forward()` returns logits or probabilities,
-then `decode()` takes its result and runs some sort of beam search or constrained inference. The
-method can also reference `Vocabulary` in order to convert indices back to string representations
-(as we'll see shortly).
+The `make_output_human_readable()` method is one of them. `forward()` typically returns tensors and
+is meant for machine consumption.  It runs in the inner loop of a training process, and taking the
+GPU / CPU cycles to convert outputs to human readable format in this method is not a good idea.
+`make_output_human_readable()` does what the name suggests—it takes the dictionary returned by the
+`forward()` method and does whatever you need in order to make the output presentable to a person,
+e.g., in a demo.  Most often this does vocabulary lookups on token or label ids; sometimes it also
+does some kind of decoding or inference.  Our [prediction pipeline](/demos-and-predictors) calls
+this method by default, as does `forward_on_instance`, which we discuss next.
 
 ## Making predictions with forward\_on\_instance(s)
 
 There are two model methods—`forward_on_instance()` and `forward_on_instances()`—that come in handy
 when you run inference using your model. Both take instance(s) instead of batched tensors, convert
-them to indices and batch them on the fly, and run the forward pass (including the `decode()`
-method). Before returning the results, these methods also convert any `torch.Tensors` in the result
-dictionary to numpy arrays and separate the batched tensors into a list of individual dictionaries
-per instance. As you might have guessed, `forward_on_instance()` runs inference on a single
-instance, while `forward_on_instances()` does it with multiple instances by batching them. These
-methods are used by `Predictors`.
+them to indices and batch them on the fly, and run the forward pass (including the
+`make_output_human_readable()` method). Before returning the results, these methods also convert any
+`torch.Tensors` in the result dictionary to numpy arrays and separate the batched tensors into a
+list of individual dictionaries per instance. As you might have guessed, `forward_on_instance()`
+runs inference on a single instance, while `forward_on_instances()` does it with multiple instances
+by batching them. These methods are used by `Predictors`.
 
-<codeblock source="part2/building-your-model/model_predict" setup="part2/building-your-model/setup"></codeblock>
+<codeblock source="part2/building-your-model/model_predict" setup="part2/building-your-model/setup_model_forward"></codeblock>
 
 ## Getting metrics with get_metrics()
 
-[As you learned before](/training-and-prediction#2), `Models` hold `Metrics` objects that keep track
-of related statistics which get updated by every call to the forward method. AllenNLP's `Trainer`
-calls your model's `get_metrics()` method to retrieve the computed metrics for, e.g., monitoring and
-early stopping. The method returns a dictionary of metric values associated with their names. These
-values are usually returned by the `get_metric()` method of your `Metric` objects.
+To keep track of how a model is performing during training and validation, AllenNLP uses `Metrics`.
+`Models` hold `Metric` objects that compute classification accuracy, BLEU score, SQuAD F1, or
+whatever metric your model needs, and get updated at each call to the forward method.  AllenNLP's
+`Trainer` calls your model's `get_metrics()` method to retrieve the computed metrics for, e.g.,
+monitoring and early stopping. The method returns a dictionary of metric values associated with
+their names. These values are usually returned by the `get_metric()` method of your `Metric`
+objects.
 
 The method receives a boolean flag `reset`, which indicates whether to reset the internal
-accumulator of `Metric` objects. This flag is usually set at the end of each epoch, allowing metrics
-to be computed over the entire epoch by accumulating statistics.
+accumulator inside the `Metric` objects. This flag is usually set at the end of each epoch, allowing
+metrics to be computed over the entire epoch by accumulating statistics.
+
+For a quick example of how to use this in your model, we'll repeat some of what we said in the
+[quick start chapter](/training-and-prediction#3).  To integrate with the metrics code in our
+training loop, you'll have to add code in three places.  First, your model constructor must
+instantiate whatever metrics you want to compute:
+
+<pre data-line="5" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
+    def __init__(self, ...):
+        super().__init__(vocab)
+        ...
+        self.accuracy = CategoricalAccuracy()
+</code></pre>
+
+Second, in the forward pass, you need to call the metric, which accumulates statistics for the
+current batch:
+
+<pre data-line="8" class="language-python line-numbers"><code>
+class SimpleClassifier(Model):
+    def forward(self,
+                text: Dict[str, torch.Tensor],
+                label: torch.Tensor) -> Dict[str, torch.Tensor]:
+        ...
+        # Shape: (batch_size, num_labels)
+        logits = self.classifier(encoded_text)
+        self.accuracy(logits, label)
+        ...
+</code></pre>
+
+And lastly, you'll need to implement the `get_metrics` method, which calls `get_metric` on each
+`Metric` object that you are using:
+
+```python
+    def get_metrics(self, reset: bool = False) -> Dict[str, float]:
+        return {"accuracy": self.accuracy.get_metric(reset)}
+```
+
+AllenNLP has a large number of metrics [built
+in](https://docs.allennlp.org/master/api/training/metrics/metric/), and even more in our [model
+library](https://github.com/allenai/allennlp-models).  If you don't see what you need there, you can
+implement your own subclass of `Metric`.
+
 
 </exercise>
 
@@ -122,32 +171,46 @@ to be computed over the entire epoch by accumulating statistics.
 
 ## Saving your model
 
-Oftentimes, you want to save and load trained models on disk. In order to properly serialize and
-restore an AllenNLP model, you need to take care of the following three things:
+Oftentimes, you want to save and load trained models on disk. This is where using AllenNLP's
+configuration files is very useful, because all we need to load a model, including weights,
+configuration, and vocabulary, can be stored in a single tar file.  In this section we will discuss
+saving and loading models that have been trained with configuration files; see our [chapter on
+writing your own scripts](/writing-your-own-script#3) for pointers on how to save and load models if
+you aren't using configuration files.
+
+In order to properly serialize and restore an AllenNLP model, we need three things:
 
 * Model config (specifications used to train the model)
 * Model weights (trained parameters of the model)
 * Vocabulary
 
-In AllenNLP, model config is managed by the `Params` class (which we'll cover more in depth
-[later](/using-config-files)) and can be saved to disk using the `to_file()` method. You can
-retrieve the model weights using `model.state_dict()` and save them to disk using PyTorch's
-`torch.save()`. The `Vocabulary.save_to_files()` method serializes a `Vocabulary` object to a
-directory.
+In AllenNLP, model config is managed by the [`Params` class](/using-config-files) and can be saved
+to disk using the `to_file()` method. You can retrieve the model weights using `model.state_dict()`
+and save them to disk using PyTorch's `torch.save()`. The `Vocabulary.save_to_files()` method
+serializes a `Vocabulary` object to a directory.
 
 Because it is cumbersome to deal with these three elements every time you need to save, load, and
 move around your model, AllenNLP provides utility functions for archiving and unarchiving your model
 files. You can package up the model config, weights, and the vocabulary into a single `tar.gz` file,
-along with any additional supplementary files, using the `archive_model()` method.
+along with any additional supplementary files, using the [`archive_model()`
+method](http://docs.allennlp.org/master/api/models/archival/#archive_model).  This method assumes
+that you trained a model using our training loop, and packages up the files that were saved while
+the training loop was running.  Our training loop also calls this to package up the best model
+weights when training is finished, so it is unlikely that you will need to call this method
+yourself.
 
 ## Loading your model
 
-In order to restore your model from files, you can use the `Model.load()` class method. It takes a
+In order to restore your model from files, you can use the
+[`Model.load()`](http://docs.allennlp.org/master/api/models/model/#load) class method. It takes a
 `Params` object which contains the model config, as well as the directory path where the model
 weights and the vocabulary are serialized. The method also loads and restores the vocabulary.
 
-Alternatively, you can simply use `load_archive()` to restore the model from an archive file. This
-returns an `Archive` object, which contains the config and the model.
+Alternatively, you can simply use
+[`load_archive()`](http://docs.allennlp.org/master/api/models/archival/#load_archive) to restore the
+model from an archive file. This returns an
+[`Archive`](http://docs.allennlp.org/master/api/models/archival/#archive) object, which contains the
+config and the model.
 
 In the example code below, we save and load our model using the two methods explained above, and
 make sure the predictions stay the same before and after the serialization.
@@ -158,6 +221,26 @@ In practice, as long as you use AllenNLP commands (for example, `allennlp train`
 is automatically taken care of. When the training finishes or gets interrupted, the command
 automatically saves the best model to a `model.tar.gz` file. You can also resume training from a
 serialized directory.
+
+## Model.from_archive
+
+In addition to `load_archive()`, AllenNLP provides a convenience method `Model.from_archive()`.
+This basically just calls `load_archive()` under the hood.  Its main purpose is that it is
+registered as a `Model` constructor with type `"from_archive"`, so that you can load a saved model
+from an archive file and continue training it using the `allennlp train` command.  To do this, you
+would put the following snippet in your training configuration file:
+
+
+```js
+{
+    ...
+    "model": {
+        "type": "from_archive",
+        "archive"file": "/path/to/saved/archive/file.tar.gz"
+    }
+    ...
+}
+```
 
 </exercise>
 
@@ -180,11 +263,14 @@ find in `torch.nn.init`) that curry their parameters (like `mean` and `std`), ma
 single-argument functions that are applied to tensors. AllenNLP provides a convenient abstraction
 that allows you to apply them to your whole model.
 
-You can instantiate specific `Initializers` manually, although in reality you rarely need to deal
-with individual `Initializers` yourself. Instead, AllenNLP provides a class called
-`InitializerApplicator` which, given a list of regexes and their corresponding `Initializers`,
-applies initialization based on regex matches on model parameter names. Below is a constructor call
-that instantiates an `InitializerApplicator`:
+You can instantiate specific `Initializers` manually inside a `Model` constructor if you wish,
+though if you are doing that you might as well just call the `torch.nn.init` functions directly.  In
+the spirit of separating code from configuration (as is a [common design principle in
+AllenNLP](/using-config-files#1)), we provide a class called `InitializerApplicator` which, given a
+list of regexes and their corresponding `Initializers`, applies initialization based on regex
+matches on model parameter names. AllenNLP `Models` typically take such an initializer as a
+constructor argument, so that the initialization can be easily configured.  Below is a constructor
+call that instantiates an `InitializerApplicator`:
 
 ```python
 applicator = InitializerApplicator(
@@ -227,12 +313,12 @@ abstraction called `Regularizers`, which are thin wrappers around Python methods
 return the penalty term (a scalar tensor) given model parameters.
 
 In many cases, you may want to apply the penalty only to part of your model (for example, apply an
-L2 penalty only to weights but not to biases). AllenNLP implements the `RegularizerApplicator`
-class, which works in a very similar way to `InitializerApplicator`, except it returns the penalty
-term instead of modifying the model parameters. `RegularizerApplicator`, given a list of regexes and
-their corresponding `Regularizers`, applies regularization based on regex matches on model parameter
-names and returns the sum of all the computed penalties. Below is a constructor call that
-instantiates an `RegularizerApplicator`:
+L2 penalty only to weights but not to biases). AllenNLP contains a `RegularizerApplicator` class,
+which is analogous to `InitializerApplicator`, except it returns the penalty term instead of
+modifying the model parameters. `RegularizerApplicator`, given a list of regexes and their
+corresponding `Regularizers`, applies regularization based on regex matches on model parameter names
+and returns the sum of all the computed penalties. Below is a constructor call that instantiates an
+`RegularizerApplicator`:
 
 ```python
 applicator = RegularizerApplicator(
@@ -250,8 +336,10 @@ loss.
 
 All you need to do to make your model support regularizers is to make sure the model constructor
 takes a `**kwargs` argument and passes it to the superclass by calling `super().__init__(**kwargs)`
-in the constructor. In this way, the `RegularizerApplicator` is automatically passed over to the
-base `Model`, where it is used to compute regularization in `get_regularization_penalty()`.
+in the constructor. Then, when you construct your model (either in python code or through a
+configuration file), pass a `RegularizerApplicater` parameter with the name `regularizer`.  In this
+way, the `RegularizerApplicator` is automatically passed over to the base `Model`, where it is used
+to compute regularization in `get_regularization_penalty()`.
 
 In the following code, we create a toy model and obtain the regularization term in two different
 ways—using individual `Regularizers` and using a `RegularizerApplicator`:

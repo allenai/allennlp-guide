@@ -4,7 +4,8 @@ class ToyModel(Model):
         super().__init__(vocab)
 
     # Note that the signature of forward() needs to match that of field names
-    def forward(self, tokens: TextFieldTensors,
+    def forward(self,
+                tokens: TextFieldTensors,
                 label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
         print('tokens:', tokens)
         print('label:', label)
@@ -26,17 +27,19 @@ label_field_neg = LabelField('neg', label_namespace='labels')
 
 instance_pos = Instance({'tokens': text_field_pos, 'label': label_field_pos})
 instance_neg = Instance({'tokens': text_field_neg, 'label': label_field_neg})
+instances = [instance_pos, instance_neg]
 
 
 # Create a Vocabulary
-vocab = Vocabulary.from_instances([instance_pos, instance_neg])
+vocab = Vocabulary.from_instances(instances)
+
+dataset = AllennlpDataset(instances, vocab)
 
 # Create an iterator that creates batches of size 2
-iterator = BasicIterator(batch_size=2)
-iterator.index_with(vocab)
+data_loader = DataLoader(dataset, batch_size=2)
 
 model = ToyModel(vocab)
 
 # Iterate over batches and pass them to forward()
-for batch in iterator([instance_pos, instance_neg], num_epochs=1):
+for batch in data_loader:
     model(**batch)
