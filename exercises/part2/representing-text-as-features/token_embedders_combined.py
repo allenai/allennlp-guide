@@ -1,5 +1,6 @@
 # This is what gets created by TextField.as_tensor with a SingleIdTokenIndexer
-# and a TokenCharactersIndexer; see the code snippet above.
+# and a TokenCharactersIndexer; see the code snippet above. This time we're using
+# more intuitive names for the indexers and embedders.
 token_tensor = {
     'tokens': {'tokens': torch.LongTensor([[2, 4, 3, 5]])},
     'token_characters': {'token_characters': torch.LongTensor(
@@ -15,8 +16,7 @@ cnn_encoder = CnnEncoder(embedding_dim=3, num_filters=4, ngram_filter_sizes=[3])
 token_encoder = TokenCharactersEncoder(character_embedding, cnn_encoder)
 
 embedder = BasicTextFieldEmbedder(
-    token_embedders={'tokens': embedding,
-                     'token_characters': token_encoder})
+    token_embedders={'tokens': embedding, 'token_characters': token_encoder})
 
 embedded_tokens = embedder(token_tensor)
 print(embedded_tokens)
@@ -32,18 +32,23 @@ token_tensor = {
 }
 
 vocab = Vocabulary()
-vocab.add_tokens_to_namespace(['This', 'is', 'some', 'text', '.'],
-                              namespace='token_vocab')
+vocab.add_tokens_to_namespace(
+    ['This', 'is', 'some', 'text', '.'],
+    namespace='token_vocab')
 vocab.add_tokens_to_namespace(
     ['T', 'h', 'i', 's', ' ', 'o', 'm', 'e', 't', 'x', '.'],
     namespace='character_vocab')
-vocab.add_tokens_to_namespace(['DT', 'VBZ', 'NN', '.'],
-                              namespace='pos_tag_vocab')
+vocab.add_tokens_to_namespace(
+    ['DT', 'VBZ', 'NN', '.'],
+    namespace='pos_tag_vocab')
 
-# Notice below how the 'vocab_namespace' parameter matches the name used above;
-# typically you'll pass that namespace to the `Indexer` class (or use its default),
-# and pass the _same_ value to the embedding class, as shown below.
-# Embedding will get the number of embeddings from vocab.
+# Notice below how the 'vocab_namespace' parameter matches the name used above.
+# We're showing here how the code works when we're constructing the Embedding from
+# a configuration file, where the vocabulary object gets passed in behind the
+# scenes (but the vocab_namespace parameter must be set in the config). If you are
+# using a `build_model` method (see the quick start chapter) or instantiating the
+# Embedding yourself directly, you can just grab the vocab size yourself and pass
+# in num_embeddings, as we do above.
 
 # This is for embedding each token.
 embedding = Embedding(embedding_dim=3, vocab_namespace='token_vocab', vocab=vocab)
