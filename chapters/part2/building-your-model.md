@@ -236,7 +236,7 @@ would put the following snippet in your training configuration file:
     ...
     "model": {
         "type": "from_archive",
-        "archive"file": "/path/to/saved/archive/file.tar.gz"
+        "archive_file": "/path/to/saved/archive/file.tar.gz"
     }
     ...
 }
