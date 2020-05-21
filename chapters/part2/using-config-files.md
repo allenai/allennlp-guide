@@ -265,12 +265,158 @@ configuration files.
 
 </exercise>
 
-<exercise id="4" title="Mixing configured and non-configured objects">
+<exercise id="4" title="Handling runtime and sequential dependencies">
 
-What about objects that aren't constructed using `FromParams`?
+Sometimes arguments can't be constructed just from a configuration file, because they depend on
+objects or data that was obtained at runtime.  There are two main cases where this happens in NLP
+code:
 
-Talk about how `extras` works (no need to use that term).  E.g., this is how `vocab` gets passed
-to the model, where the trainer does `Model.from_params(params=params.pop("model"), vocab=vocab)`.
+* The first case is when data is read from a file, and `Instances` are created from that data.  In
+  order to create a `Vocabulary`, we need to see those `Instances`, but this isn't something that
+  can or should be specified in a configuration file somewhere.
+* The second case is when an object has two dependencies that themselves depend on each other.  For
+  example, our training loop is run by a `TrainModel` object, which takes as constructor parameters
+  both a `Model` and a `Trainer`.  The `Trainer` itself takes the `Model` as a constructor
+  parameter, so the `Model` has to be constructed _before_ the `Trainer` and then passed to the
+  `Trainer`.
+
+Handling these cases is the part of AllenNLP's `FromParams` framework where the most magic happens,
+that is hardest to understand.  We'll try to make it clear in this section.
+
+We'll start with how a `Model` gets its `Vocabulary`.  If you've seen any configuration files for
+AllenNLP models, you'll know that the `"models": {}` section doesn't have a `"vocab"` key, even
+though the `Model`'s constructor takes a `vocab` argument.  For example, the `SimpleClassifier` that
+we built in [part 1 of this course](/your-first-model) had a constructor that looked like this:
+
+```python
+class SimpleClassifier(Model):
+    def __init__(self,
+                 vocab: Vocabulary,
+                 embedder: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder):
+        ...
+```
+
+but the configuration file that we used to train it had a `"model"` section that looked like this:
+
+```js
+{
+    ...
+    "model": {
+        "type": "simple_classifier",
+        "embedder": {
+            "token_embedders": {
+                "tokens": {
+                    "type": "embedding",
+                    "embedding_dim": 10
+                }
+            }
+        },
+        "encoder": {
+            "type": "bag_of_embeddings",
+            "embedding_dim": 10
+        }
+    },
+    ...
+}
+```
+
+In other words, no `"vocab"` key corresponding to the `vocab` constructor argument.  We said
+[earlier](#2) that this mismatch would cause `FromParams` to crash.  The reason that it doesn't
+crash is that we pass in the `vocab` object as a separate parameter when we call
+`Model.from_params` in our training loop.  `.from_params()` accepts arbitrary keyword arguments,
+which are available to the objects that are being constructed.  So the actual call looks something
+like `Model.from_params(params=params, vocab=vocab)`.  The example below lets you see how this works
+in action.
+
+<codeblock source="part2/using-config-files/extras_basic"></codeblock>
+
+A tricky thing is that these objects are available _recursively_, to all objects that are created
+while creating the original object.  In the `SimpleClassifier` that we mentioned above, this lets us
+take the `Vocabulary` as an argument when constructing the `Embedding` layer of a model, which needs
+to know how many embeddings to create.  Here's a toy example showing how this works:
+
+<codeblock source="part2/using-config-files/extras_recursive"></codeblock>
+
+The hard part about this functionality is that you have to know which parameters are passed this way
+in a given training loop, and which ones must be specified in a configuration file.  There is no way
+to programmatically know that, but there is a simple rule of thumb: if the constructor argument was
+already specified higher up in the config file (or is derived from something that was specified
+higher up in the file), then you don't need to repeat it.  So if you start from the top-level object
+that's being constructed (which for `allennlp train` is a [`TrainModel`
+object](https://docs.allennlp.org/master/api/commands/train/#trainmodel-objects)) and work your way
+down, it should be relatively clear which keys are unnecessary.
+
+To make it easier to figure this out, we have additionally tried to make sure our documentation
+clearly states which parameters should not be present in configuration files for our training loop
+(see, e.g., the `vocab` parameter in our [`Model`
+documentation](https://docs.allennlp.org/master/api/models/model/#model-objects)).  If there's a
+place where we failed to document this correctly, PRs to fix it are very welcome!  The major one
+that you will typically worry about is the `vocab` that's passed to the model, but there are also
+several parameters passed to the
+[`Trainer`](https://docs.allennlp.org/master/api/training/trainer/#gradientdescenttrainer-objects)
+that don't get entries in a configuration file.
+
+### How to construct these objects
+
+In the above discussion, we have talked about how these sequential dependencies are handled from the
+perspective of the _object being constructed_—the `Model` that needs to get a `Vocabulary`.  Now we
+move to discussing how these dependencies are handled from the perspective of the _object doing the
+construction_—the `TrainModel` object that needs to pass the `Vocabulary` to the `Model`.
+
+To handle cases where an object has two constructor parameters, where one of them needs to be passed
+to the constructor of the other, AllenNLP introduces a `Lazy` class that gets special treatment in
+`FromParams` when it is used as a type annotation.  `Lazy` has a `construct()` method that will
+accept arbitrary keyword arguments and pass them on to the constructor of the object it's wrapping.
+This means that we can specify _some_ arguments in a configuration file, store them in the `Lazy`
+object, then finish constructing the object with a call to `construct()` later, once the rest of its
+dependencies are created.
+
+This is easiest to see with a simple example, so we'll show some example code here:
+
+<codeblock source="part2/using-config-files/lazy_bad"></codeblock>
+
+What we saw there was the `ModelWithGaussian` constructing a `Vocabulary` object itself, then
+passing it to the lazily-constructed `Gaussian` object, which took some of its constructor
+parameters from a `Params` object, and some from `Lazy.construct()`.
+
+If you actually use `Lazy` as a type annotation in an `__init__` method, you're requiring everyone
+who constructs your objects to wrap those arguments in `Lazy` objects first.  This makes your
+objects pretty annoying to use without configuration files, so we don't recommend actually doing
+this.  Instead, we recommend registering a [separate constructor](#6) that has the `Lazy`
+annotations, keeping the standard `__init__` method free of these lazy objects.  Here's another
+example that's set up in the way that we would actually recommend using `Lazy`:
+
+<codeblock source="part2/using-config-files/lazy_good"></codeblock>
+
+The use of `Lazy` can get arbitrarily nested, to create complex pipelines that are all determined by
+configuration files.  For example, here's part of the
+[`TrainModel`](https://docs.allennlp.org/master/api/commands/train/#trainmodel-objects) constructor:
+
+```python
+  def from_partial_objects(
+      cls,
+      dataset_reader: DatasetReader,
+      train_data_path: str,
+      model: Lazy[Model],
+      data_loader: Lazy[DataLoader],
+      trainer: Lazy[Trainer],
+      vocabulary: Lazy[Vocabulary] = None,
+      ...
+  ):
+```
+
+What the logic inside this constructor does is first create the `DatasetReader`, which needs no
+other dependencies.  It then loads the data in `train_data_path` to create a list of `Instances`,
+which get passed to the `Vocabulary` constructor with `vocab =
+vocabulary.construct(instances=instances)`, and to the `DataLoader` in the same way.  The vocabulary
+then gets passed to the `Model` constructor with `model.construct(vocab=vocab)`, and then the model
+and data loader get similarly passed to the `Trainer`, before calling `trainer.train()`.  You can
+see this logic yourself by looking at [the
+code](https://github.com/allenai/allennlp/blob/master/allennlp/commands/train.py) for this method.
+If you want to implement a similar pipeline yourself, then that class would be a good example.
+Otherwise, you don't need to worry about this, as this is advanced functionality that you typically
+never need to worry about when doing model development.
 
 </exercise>
 
@@ -293,16 +439,7 @@ constructing the object.
 
 </exercise>
 
-<exercise id="7" title="Handling sequential dependencies between constructor arguments with Lazy">
-
-What about sequential dependencies between arguments?
-
-`Lazy` and how it's used.  Mention somewhere in here that `Lazy.construct()` can be called
-multiple times if necessary.
-
-</exercise>
-
-<exercise id="8" title="Including your own registered components">
+<exercise id="7" title="Including your own registered components">
 
 Using these components in your code
 
