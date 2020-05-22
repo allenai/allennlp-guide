@@ -4,8 +4,6 @@ description: "This chapter describes AllenNLP's simple dependency injection fram
 type: chapter
 ---
 
-<textblock>UNDER CONSTRUCTION (some sections finished)</textblock>
-
 <exercise id="1" title="Motivation: Dependency Injection">
 
 A core motivating principle of AllenNLP (and object-oriented software design generally) is to
@@ -34,6 +32,7 @@ built a light-weight dependency injection framework to make this easy.  This cha
 it is and how to use it.
 
 </exercise>
+
 
 <exercise id="2" title="Injecting dependencies with FromParams">
 
@@ -175,6 +174,7 @@ provided key does not match the name of a constructor argument, `FromParams` wil
 
 </exercise>
 
+
 <exercise id="3" title="Handling polymorphism with Registrable">
 
 Another fundamental design principle in AllenNLP is the use of
@@ -264,6 +264,7 @@ Then you could create classes that use `Muppet` as type annotations, and instant
 configuration files.
 
 </exercise>
+
 
 <exercise id="4" title="Handling runtime and sequential dependencies">
 
@@ -416,42 +417,117 @@ see this logic yourself by looking at [the
 code](https://github.com/allenai/allennlp/blob/master/allennlp/commands/train.py) for this method.
 If you want to implement a similar pipeline yourself, then that class would be a good example.
 Otherwise, you don't need to worry about this, as this is advanced functionality that you typically
-never need to worry about when doing model development.
+never need to use when doing model development.
 
 </exercise>
+
 
 <exercise id="5" title="Avoiding duplication of base class parameters">
 
-What about abstract base class parameters?
+When using abstract base classes such as `DatasetReader` and `Model`, it is often convenient to
+provide functionality in the base class, where the functionality requires constructor arguments.
+For example, our `DatasetReader` object has options for laziness, caching, and truncation:
 
-Talk about `**kwargs`, and how we inspect super class constructors to figure out what's available,
-so we can construct those too.  This allows adding parameters to base classes without changing
-subclass code.
+```python
+class DatasetReader(Registrable):
+    def __init__(
+        self,
+        lazy: bool = False,
+        cache_directory: Optional[str] = None,
+        max_instances: Optional[int] = None,
+    ) -> None:
+```
+
+If you want to get this functionality in your `DatasetReader` subclass, you need to pass these
+arguments to the base class, which means you also need to take them as constructor parameters:
+
+```python
+class MyFancyDatasetReader(DatasetReader):
+    def __init__(
+        self,
+        lazy: bool = False,
+        cache_directory: Optional[str] = None,
+        max_instances: Optional[int] = None,
+        my_other_args: SomeType = None,
+        ...
+    ) -> None:
+        super().__init__(lazy, cache_directory, max_instances)
+        ...
+```
+
+If you do this, then you can specify those parameters in a configuration file, just like any other
+constructor parameter.  But, this means that if new functionality ever gets added to the base class,
+your code has to change in order to take advantage of it.  Instead, you could write your constructor
+using `**kwargs` as a parameter, so that you don't have to change your dataset reader code if new
+parameters get added (you would still have to change your object creation code, though):
+
+```python
+class MyFancyDatasetReader(DatasetReader):
+    def __init__(
+        self,
+        my_other_args: SomeType = None,
+        ...
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
+        ...
+```
+
+AllenNLP's `FromParams` logic handles this case, allowing you to construct superclass parameters
+when your constructor takes a `**kwargs` argument.  This is done by inspecting the superclass
+constructor when `**kwargs` is encountered, and adding superclass parameters as additional arguments
+to be constructed from the configuration file.  You can see an example of this in action in the
+following code:
+
+<codeblock source="part2/using-config-files/kwargs"></codeblock>
 
 </exercise>
+
 
 <exercise id="6" title="Allowing multiple constructors for the same object">
 
-What about having multiple ways of constructing an object?
+Occasionally, you want to have multiple ways of constructing the same kind of object, with disjoint
+parameters in each case.  For example, our `Vocabulary` object has many ways in which it can be
+constructed: from a collection of `Instances`, from saved files, from both, or from nothing at all.
+We don't want different `Vocabulary` objects or subclasses for each of these, as the underlying
+object is the same, the only difference is in how the object is constructed.
 
-Talk about `Vocabulary`, how you can register things multiple times with different ways of
-constructing the object.
+To accomplish this, `Registrable` allows specifying a constructor other than `__init__` to use when
+constructing the object.  This currently only works with registered types, however, not with classes
+that inherit directly from `FromParams`.  When registering your type, you include a
+`constructor='some_method_name'` argumnt to the call to `register()`, where `'some_method_name'`
+must be a `@classmethod` that returns an object of the registered type.  Here's a toy example to
+demonstrate how this works:
+
+<codeblock source="part2/using-config-files/multiple_constructors"></codeblock>
+
+The same functionality also works if you want to register a single constructor to use, but have it
+be separate from `__init__`.  You might want to do this if you have sequential dependencies that
+require the use of `Lazy`, as we talked about in a [previous section](#4).
 
 </exercise>
 
+
 <exercise id="7" title="Including your own registered components">
 
-Using these components in your code
+We have several `Registrable` components in AllenNLP which you can write subclasses of.  You can
+also write your own `Registrable` classes.  But in order for `Registrable` to be able to map the
+strings that you use in your call to `@Component.register("registered_name")` to concrete classes to
+construct, that code has to be run before the `FromParams` pipeline tries to construct the object.
+The `register()` call gets run when the module containing it gets imported.  This means that if
+you're using `allennlp train` to train your model, you need to have your modules get imported before
+our main training loop tries to construct all of its required arguments.  There are two ways to do
+this: `--include-package` and `.allennlp_plugins`.
 
-`--include-package` and the plugins stuff.  You can write your own classes that inherit from
-`Registrable` or `FromParams`, adding components or entire new abstractions (you already mentioned
-examples for this).
+Most `allennlp` commands accept an `--include-package` argument.  This is a module name that
+`allennlp` will try to import at the beginning of its execution, so that whatever custom classes you
+have written can register themselves.  You just need to be sure that the module that you're
+importing recursively imports whatever other modules contain the calls to `.register()`.
 
-You can easily write your own classes implementing FromParams and utilize them in AllenNLP configs.
-There is one important caveat here though: you will need to run your allennlp command with the
-`--include-package=<YOUR_PACKAGE>` flag so that the library can find and register your custom
-classes.
-
-Also plugins.
+Because remembering to include the `--include-package` flag for every command can be cumbersome,
+AllenNLP provides an alternate mechanism.  You can write a `.allennlp_plugins` file, with one module
+name per line, and `allennlp` will read that file and try to import all modules specified there,
+just as with `--include-package`.  That file just needs to be present in whatever directory you are
+running the `allennlp` command from.
 
 </exercise>
