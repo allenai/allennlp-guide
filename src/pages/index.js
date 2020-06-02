@@ -25,7 +25,7 @@ export default ({ data }) => {
             </Banner>
             <About>
                 <SectionIntro>
-                    <h2>About this course</h2>
+                    <h2>About this guide</h2>
                     <p>
                         We walk through the basics of using AllenNLP, describing all of the main
                         abstractions used and why we chose them, how to use specific functionality
@@ -49,7 +49,7 @@ export default ({ data }) => {
             </About>
             <Parts>
                 <SectionIntro>
-                    <h2>Explore the course material</h2>
+                    <h2>Explore the guide material</h2>
                 </SectionIntro>
                 {outline.parts.map(
                     part =>
@@ -61,7 +61,7 @@ export default ({ data }) => {
             <Credits>
                 Written by the <Link to={data.site.siteMetadata.siteUrl}>AllenNLP</Link> team at the{' '}
                 <Link to="https://allenai.org/">Allen Institute for AI</Link>.<br />
-                This course was inspired by{' '}
+                This guide was inspired by{' '}
                 <Link to="https://github.com/ines/course-starter-python">
                     Online Course Starter
                 </Link>

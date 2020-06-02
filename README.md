@@ -1,4 +1,4 @@
-# AllenNLP Course
+# AllenNLP Guide
 
 ## Running the app
 
@@ -41,12 +41,12 @@ Unlike most AI2 web apps, package management is handled via [NPM](https://www.np
 
 Read-only code blocks are rendered with [Prism](https://prismjs.com/) and interactive code blocks are rendered with [CodeMirror](https://codemirror.net/).
 
-See [`package.json`](https://github.com/allenai/allennlp-course/blob/master/package.json) for list of all packages used in this app.
+See [`package.json`](https://github.com/allenai/allennlp-guide/blob/master/package.json) for list of all packages used in this app.
 
 ## Static assets
 
 All files added to `/static` will become available at the root of the deployed
-site. For example, `/static/diagram.svg` can be referenced in the course as `/diagram.svg`.
+site. For example, `/static/diagram.svg` can be referenced in the guide as `/diagram.svg`.
 
 ## Chapters
 
@@ -65,7 +65,7 @@ type: chapter # important: this creates a standalone page from the chapter
 
 ### `outline.js` and Chapter Organization
 
-Chapter navigation is rendered programmatically via [`outline.js`](https://github.com/allenai/allennlp-course/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
+Chapter navigation is rendered programmatically via [`outline.js`](https://github.com/allenai/allennlp-guide/blob/master/src/outline.js). Chapters are grouped into "parts," as can be seen in the structure of the outline data object. There is a special chapter called Overview that always appears as the first top-level item in the outline.
 
 Each part supports the following properties:
 
@@ -129,5 +129,5 @@ and build the image.
 
 ---
 
-This course was initially forked from the
+This guide was initially forked from the
 [`course-starter-python`](https://github.com/ines/course-starter-python) template developed by Ines Montani.

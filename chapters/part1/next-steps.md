@@ -127,7 +127,7 @@ architectures (BERT, RoBERTa, XLNet, etc.) is as simple as changing the `model_n
 the config file.
 
 You can find the full config file [in the example
-repo](https://github.com/allenai/allennlp-course-examples/tree/master/quick_start). To train the
+repo](https://github.com/allenai/allennlp-guide-examples/tree/master/quick_start). To train the
 model, you can use the command:
 
 ```

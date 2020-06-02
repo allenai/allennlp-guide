@@ -7,7 +7,7 @@ type: chapter
 
 <textblock>
 
-In this section of the course, we'll give a quick start on one the most basic things you can do with
+In this section of the guide, we'll give a quick start on one the most basic things you can do with
 AllenNLP: text classification.  We give a brief introduction to text classification, then implement
 a simple classifier that decides whether a movie review expresses positive or negative sentiment.
 
@@ -276,7 +276,7 @@ class SimpleClassifier(Model):
 IDs. In our prebuilt training loop, the vocabulary gets created by AllenNLP after reading your
 training data, then passed to the `Model` when it gets constructed. We'll find all tokens and labels
 that you use and assign them all integer IDs in separate namespaces. The way that this happens is
-fully configurable; see the [Vocabulary section of this course](/reading-data#3) for more
+fully configurable; see the [Vocabulary section of this guide](/reading-data#3) for more
 information.
 
 What we did in the `DatasetReader` will put the labels in the default "labels" namespace, and we
@@ -302,7 +302,7 @@ To get an initial word embedding, we'll use AllenNLP's `TextFieldEmbedder`. This
 the tensors created by a `TextField` and embeds each one. This is our most complex abstraction,
 because there are a lot of ways to do this particular operation in NLP, and we want to be able to
 switch between these without changing our code.  We won't go into the details here; we have a whole
-[chapter of this course](/representing-text-as-features) dedicated to diving deep into how this
+[chapter of this guide](/representing-text-as-features) dedicated to diving deep into how this
 abstraction works and how to use it. All you need to know for now is that you apply this to the
 `text` parameter you get in `forward()`, and you get out a tensor that has a single embedding vector
 for each input token, with shape `(batch_size, num_tokens, embedding_dim)`.

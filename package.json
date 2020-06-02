@@ -1,5 +1,5 @@
 {
-    "name": "allennlp-course",
+    "name": "allennlp-guide",
     "private": true,
     "description": "Diving Into Natural Language Processing With AllenNLP",
     "version": "1.0.0",
@@ -67,6 +67,6 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/allenai/allennlp-course"
+        "url": "https://github.com/allenai/allennlp-guide"
     }
 }

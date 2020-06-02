@@ -156,7 +156,7 @@ def run_training_loop():
     train_loader, dev_loader = build_data_loaders(train_data, dev_data)
 
     # You obviously won't want to create a temporary file for your training
-    # results, but for execution in binder for this course, we need to do this.
+    # results, but for execution in binder for this guide, we need to do this.
     with tempfile.TemporaryDirectory() as serialization_dir:
         trainer = build_trainer(
             model,

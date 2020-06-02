@@ -215,7 +215,7 @@ constructor parameter.  This means that all the `Model` has to worry about is th
 `TextFieldEmbedder` to get a vector for each token, and it doesn't have to care about how exactly
 that happens. Because both of the cases above return a single vector per token, the rest of the
 model doesn't care about how it is done, and both cases work just fine without changing any model
-code.  As we'll say repeatedly throughout this course, this is a very important software design
+code.  As we'll say repeatedly throughout this guide, this is a very important software design
 consideration that allows for cleaner and more modular code.  It also helps you think at a higher
 level about the important parts of your model as you're writing your model code.
 

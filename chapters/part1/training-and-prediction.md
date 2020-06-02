@@ -79,7 +79,7 @@ pipeline are doing what they are supposed to do (that is, to minimize the loss).
 
 Congratulations, you just trained your first model using AllenNLP!  You probably don't want to
 actually wait for that to finish running in binder, though; it's extremely slow. If you want, you
-can head on over to our [course repository](https://github.com/allenai/allennlp-course-examples) and
+can head on over to our [guide repository](https://github.com/allenai/allennlp-guide-examples) and
 run the code from there on your local machine.  Just run `python quick_start/train.py`; it finishes
 in less than a minute on a Macbook.
 
@@ -102,10 +102,10 @@ the `build_*` methods that we had above, we write a JSON configuration file spec
 parameters.  Our training script takes those parameters, creates all of the objects in the right
 order, and runs the training loop.
 
-There is an entire [chapter of this course](/using-config-files) dedicated to describing how the
+There is an entire [chapter of this guide](/using-config-files) dedicated to describing how the
 configuration files work; here we'll just give a quick introduction to how to use them.  If you
 decide you prefer writing your own script instead of using these configuration files, that's ok too,
-and we have another [chapter of the course](/writing-your-own-script) that gives pointers on various
+and we have another [chapter of the guide](/writing-your-own-script) that gives pointers on various
 ways to make this easier.
 
 ## Configuration files
@@ -227,8 +227,8 @@ configuration file, so you can play around with it if you want.
 <codeblock source="part1/training-and-prediction/config_source" setup="part1/training-and-prediction/config_setup"></codeblock>
 
 Again, you probably don't want to wait for that to finish, but you can run this on your local
-machine by checking out our [course
-repository](https://github.com/allenai/allennlp-course-examples/tree/master/quick_start).  `cd` to
+machine by checking out our [guide
+repository](https://github.com/allenai/allennlp-guide-examples/tree/master/quick_start).  `cd` to
 the `quick_start` directory, then run `allennlp train my_text_classifier.jsonnet -s model
 --include-package my_text_classifier`
 
@@ -327,8 +327,8 @@ When this code snippet finishes running, you should see the evaluation result:
 {'accuracy': 0.855, 'loss': 0.3686505307257175}
 ```
 
-Though, once again, this is pretty slow to be running in binder.  You can run this from the [course
-repository](https://github.com/allenai/allennlp-course-examples) with `python
+Though, once again, this is pretty slow to be running in binder.  You can run this from the [guide
+repository](https://github.com/allenai/allennlp-guide-examples) with `python
 quick_start/evaluate.py`.
 
 As a simple bag-of-embeddings model, this is not a bad start!
@@ -489,7 +489,7 @@ Overall, assuming that the model, dataset reader, and predictor we built so far 
 module named `my_text_classifier`, you would use the following AllenNLP commands to train the model,
 evaluate it, and make predictions for unseen data. Remember that you need to supply
 `--include-package` option so that AllenNLP can find your module. All the example code is set up [in
-this repo](https://github.com/allenai/allennlp-course-examples). You just need to clone it, cd to
+this repo](https://github.com/allenai/allennlp-guide-examples). You just need to clone it, cd to
 the `quick_start` directory, and run these commands just like this was your own project directory.
 
 ```

@@ -14,6 +14,7 @@ type: chapter
 </exercise>
 
 <exercise id="3" title="What to do about saving, loading, and sharing models?">
+A reasonable default option: just use pickle, or dill.
 </exercise>
 
 <exercise id="4" title="Adding your script as an allennlp command">

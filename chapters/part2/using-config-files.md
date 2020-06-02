@@ -287,7 +287,7 @@ that is hardest to understand.  We'll try to make it clear in this section.
 We'll start with how a `Model` gets its `Vocabulary`.  If you've seen any configuration files for
 AllenNLP models, you'll know that the `"models": {}` section doesn't have a `"vocab"` key, even
 though the `Model`'s constructor takes a `vocab` argument.  For example, the `SimpleClassifier` that
-we built in [part 1 of this course](/your-first-model) had a constructor that looked like this:
+we built in [part 1 of this guide](/your-first-model) had a constructor that looked like this:
 
 ```python
 class SimpleClassifier(Model):

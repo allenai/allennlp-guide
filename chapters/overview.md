@@ -1,7 +1,7 @@
 ---
-title: 'Course overview'
+title: 'Overview'
 description:
-  "This chapter will give an overview of AllenNLP, and will outline the main chapters of this course"
+  "This chapter will give an overview of AllenNLP, and will outline the main chapters of this guide"
 type: chapter
 ---
 
@@ -28,9 +28,9 @@ AllenNLP is used by a large number of organizations and research projects.
 
 </exercise>
 
-<exercise id="2" title="About this course">
+<exercise id="2" title="About this guide">
 
-This course is separated into three parts, with each having a separate audience in mind:
+This guide is separated into three parts, with each having a separate audience in mind:
 
 * In part 1, geared towards someone who is brand new to the library, we give you a quick
   walk-through of main AllenNLP concepts and features. We'll build a complete, working NLP model
@@ -42,19 +42,19 @@ This course is separated into three parts, with each having a separate audience 
   intended for use, e.g., in conjunction with a university course, showing the practical code behind
   the theory that you might get in a lecture, and reinforcing concepts that were taught.
 
-This course contains plenty of code snippets and "hands-on" examples that you can modify and run
+This guide contains plenty of code snippets and "hands-on" examples that you can modify and run
 (powered by [Binder](https://mybinder.org/)). There is also [a companion github
-repository](https://github.com/allenai/allennlp-course-examples) that contains full code needed to
+repository](https://github.com/allenai/allennlp-guide-examples) that contains full code needed to
 train and run the models in your environment.
 
-The entire course is written for AllenNLP version 1.0. AllenNLP 1.0+ is required to run the code
+The entire guide is written for AllenNLP version 1.0. AllenNLP 1.0+ is required to run the code
 snippets and exercises.
 
 </exercise>
 
 <exercise id="3" title="Prerequisites (i.e., things we won't teach you here)">
 
-As a reader of this course, you need to be familiar with the Python programming language. Some
+As a reader of this guide, you need to be familiar with the Python programming language. Some
 familiarity with PyTorch is helpful too—AllenNLP is based on PyTorch and we don't typically explain
 PyTorch concepts and APIs in detail, so you should be at least willing to look them up when
 necessary.
@@ -62,7 +62,7 @@ necessary.
 You may also want to have a good understanding of modern deep NLP models and techniques and machine
 learning topics—we might have a little bit of description of the NLP concepts as we go, but our goal
 is not to teach you NLP, but to teach you how to do NLP using AllenNLP. However, you don't need any
-prior knowledge of AllenNLP—the whole point of this course is to provide onboarding of AllenNLP!
+prior knowledge of AllenNLP—the whole point of this guide is to provide onboarding of AllenNLP!
 
 </exercise>
 
@@ -91,6 +91,7 @@ prior knowledge of AllenNLP—the whole point of this course is to provide onboa
 ## Part 3
 
 * [Zero-shot text classification](/zero-shot-classification)
+* GANs and other alternating losses
 * Sequence labeling (Coming soon)
 * Language modeling (Coming soon)
 * Sentence pair classification (Coming soon)

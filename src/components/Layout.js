@@ -48,7 +48,7 @@ const Layout = ({
                                     <LogoContainer>
                                         <a href="/">
                                             <AllenNLPLogo />
-                                            <span>Course</span>
+                                            <span>Guide</span>
                                         </a>
                                     </LogoContainer>
                                     <nav>
