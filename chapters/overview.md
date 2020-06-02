@@ -90,15 +90,7 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 
 ## Part 3
 
-* [Zero-shot text classification](/zero-shot-classification)
-* GANs and other alternating losses
-* Sequence labeling (Coming soon)
-* Language modeling (Coming soon)
-* Sentence pair classification (Coming soon)
-* Span classification (Coming soon)
-* Syntactic parsing (Coming soon)
-* Reading comprehension (Coming soon)
-* Sequence to sequence models (Coming soon)
-* [Semantic parsing](/semantic-parsing)
+We don't have any chapters for this yet, but we will be adding content to this guide regularly. Let
+us know if there are particular tasks you'd like us to add!
 
 </exercise>

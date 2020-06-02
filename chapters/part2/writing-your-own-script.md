@@ -1,7 +1,7 @@
 ---
 title: 'Writing your own scripts'
 description:
-  "Here we talk about how to easily use allennlp without using our built in commands, if you have more advanced needs or find it easier to reason about python code than configuration files."
+  "(Coming soon) Here we talk about how to easily use allennlp without using our built in commands, if you have more advanced needs or find it easier to reason about python code than configuration files."
 type: chapter
 ---
 
