@@ -51,12 +51,11 @@ local topLevelDomain = '.apps.allenai.org';
 // at this point, as that's all our certmanager can (easily) handle. At one
 // point we may support additional domain names. If you support for this, let
 // us know! https://github.com/allenai/skiff/issues/new
-local hosts = [
+local hosts =
     if env == 'prod' then
-        config.appName + topLevelDomain
+        [ 'guide.allennlp.org', config.appName + topLevelDomain ]
     else
-        config.appName + '.' + env + topLevelDomain
-];
+        [ config.appName + '.' + env + topLevelDomain ];
 
 local replicas = (
     if env == 'prod' then
