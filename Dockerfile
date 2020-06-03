@@ -1,6 +1,7 @@
 FROM node:10.15.2
 
 COPY package.json .
+COPY package-lock.json .
 
 RUN npm install -g npm
 RUN npm install -g gatsby-cli
