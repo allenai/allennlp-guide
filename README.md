@@ -1,5 +1,30 @@
 # AllenNLP Guide
 
+## Contributing
+
+### Fixing chapter content
+
+Pull requests to fix / improve chapter content is welcome! The chapters are written in markdown, and
+you can find them under `chapters/`.  When there's an executable code block, the code for it will be
+found under `exercises/`.  For fixing chapter content, those are the only two directories you should
+need to worry about in here.
+
+### Requesting new chapters
+
+If there's something you'd like to see in the AllenNLP Guide that's not currently there, we'd love
+to hear about it!  Please look at the [currently-open issues for chapter
+requests](https://github.com/allenai/allennlp-guide/labels/Chapter%20Request).  If what you're
+looking for is listed there, please add an emoji reaction to the issue description, so we know what
+to prioritize.  If you would like a chapter that's not listed there, feel free to open a new issue
+describing what you're looking for.
+
+### Adding a new chapter
+
+If you'd like to contribute a chapter, please let us know in the appropriate github issue (mentioned
+above).  Once we've given a green light, just open a PR with a new markdown file under the right
+section in `chapters/`, along with a corresponding entry in `src/outline.js`.  See below for info on
+how to do local development when writing the chapter.
+
 ## Running the app
 
 To start the local development server, install [Gatsby](https://gatsbyjs.org)

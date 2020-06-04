@@ -90,7 +90,7 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 
 ## Part 3
 
-We don't have any chapters for this yet, but we will be adding content to this guide regularly. Let
-us know if there are particular tasks you'd like us to add!
+* [Coming soon!](/coming-soon): A list of what we're working on and how to let us know what you'd
+  like to see.
 
 </exercise>
