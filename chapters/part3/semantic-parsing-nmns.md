@@ -1,7 +1,7 @@
 ---
-title: 'Semantic Parsing'
+title: 'Semantic Parsing: Neural Module Networks'
 description:
-  "We will look at how you can implement executable semantic parsers in AllenNLP."
+  "Our last chapter on semantic parsing describes what to do when you need to learn how to execute programs as well as parse language into them. For this we use a class of models called neural module networks."
 type: chapter
 ---
 
