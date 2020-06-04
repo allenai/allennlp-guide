@@ -31,7 +31,7 @@ These are chapters that we'd like to write soon:
 </exercise>
 
 
-<exercise id="1" title="Coming soon to part 3">
+<exercise id="2" title="Coming soon to part 3">
 
 Is there an NLP task that you would like to do with AllenNLP, but you're not sure how?
 [Let us know!](https://github.com/allenai/allennlp-guide#requesting-new-chapters)
