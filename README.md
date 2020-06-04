@@ -4,7 +4,7 @@
 
 ### Fixing chapter content
 
-Pull requests to fix / improve chapter content is welcome! The chapters are written in markdown, and
+Pull requests to fix / improve chapter content are welcome! The chapters are written in markdown, and
 you can find them under `chapters/`.  When there's an executable code block, the code for it will be
 found under `exercises/`.  For fixing chapter content, those are the only two directories you should
 need to worry about in here.
