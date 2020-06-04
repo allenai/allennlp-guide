@@ -81,12 +81,10 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 * [Common architectures](/common-architectures): Abstractions designed to make model building easy
 * [Representing text as features](/representing-text-as-features): TextFields, Tokenizers,
   TokenIndexers, and TokenEmbedders
-* Training and evaluating your model (Coming soon)
-* [Testing your code](/testing): Recommendations and utilities for testing NLP code
-* [Building a demo](/demos-and-predictors): Predictors, and designing code with demos in mind
-* Interpreting your model’s predictions (Coming soon)
+* [Testing your code](/testing): (Coming soon) Recommendations and utilities for testing NLP code
+* [Building a demo](/demos-and-predictors): (Coming soon) Predictors, and designing code with demos in mind
 * [Using config files](/using-config-files): FromParams and Registrable
-* Writing your own script as an entry point to AllenNLP (Coming soon)
+* [Writing your own script](/writing-your-own-script) as an entry point to AllenNLP (Coming soon)
 
 ## Part 3
 

@@ -14,21 +14,31 @@ Let us know what tasks you'd like to see us write about, and we'll prioritize ac
 <exercise id="1" title="Coming soon to part 2">
 
 Is there a part of AllenNLP that you find confusing, or would like to learn more about, and we don't
-have a chapter on it yet?
+have a chapter on it yet?  [Let us
+know!](https://github.com/allenai/allennlp-guide#requesting-new-chapters)
 
-These are chapters that are on our list for part 2:
+These are chapters that are currently under construction for part 2:
 
-* Training and evaluating your model
-* Interpreting your model’s predictions
+* Testing your code: Recommendations and utilities for testing NLP code
+* Building a demo: Predictors, and designing code with demos in mind
 * Writing your own script as an entry point to AllenNLP
+
+These are chapters that we'd like to write soon:
+
+* Training and evaluating your model (Trainer, Optimizers, and related abstractions)
+* Interpreting your model’s predictions (How to use AllenNLP Interpret)
 
 </exercise>
 
 
 <exercise id="1" title="Coming soon to part 3">
 
-And these are chapters we'd like to write for part 3:
+Is there an NLP task that you would like to do with AllenNLP, but you're not sure how?
+[Let us know!](https://github.com/allenai/allennlp-guide#requesting-new-chapters)
 
+These are some of the things that we could write about for part 3:
+
+* Semantic parsing (in progress)
 * Zero-shot text classification
 * GANs and other alternating losses
 * Sequence labeling
@@ -38,6 +48,8 @@ And these are chapters we'd like to write for part 3:
 * Syntactic parsing
 * Reading comprehension
 * Sequence to sequence models
-* Semantic parsing
+
+If there is one of these that you'd particularly like to see, or one that's not on this list that
+you'd like to have added, we'd like to know about it.
 
 </exercise>
