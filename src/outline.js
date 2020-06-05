@@ -37,6 +37,7 @@ export const outline = {
                 '/demos-and-predictors',
                 '/using-config-files',
                 '/writing-your-own-script',
+                '/debugging',
             ],
             icon: 'cube',
             color: 'purple'

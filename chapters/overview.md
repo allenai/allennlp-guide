@@ -88,6 +88,7 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 * [Building a demo](/demos-and-predictors): (Coming soon) Predictors, and designing code with demos in mind
 * [Using config files](/using-config-files): FromParams and Registrable
 * [Writing your own script](/writing-your-own-script) as an entry point to AllenNLP (Coming soon)
+* [Debugging your code](/debugging) using an IDE debugger
 
 ## Part 3
 
