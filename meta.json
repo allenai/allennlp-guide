@@ -1,6 +1,6 @@
 {
     "courseId": "allennlp-intro-guide",
-    "title": "Diving Into Natural Language Processing With AllenNLP",
+    "title": "A Guide to Natural Language Processing With AllenNLP",
     "description": "In this guide, we'll walk through the basics of using AllenNLP, describing all of the main abstractions used and how to build various kinds of models.",
     "siteUrl": "https://allennlp.org/",
     "twitter": "ai2_allennlp",

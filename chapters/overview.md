@@ -48,7 +48,10 @@ repository](https://github.com/allenai/allennlp-guide-examples) that contains fu
 train and run the models in your environment.
 
 The entire guide is written for AllenNLP version 1.0. AllenNLP 1.0+ is required to run the code
-snippets and exercises.
+snippets and exercises.  If you're using an older version of AllenNLP, much of what's in this guide
+will still apply, though you might want to look at our [github
+history](https://github.com/allenai/allennlp/tree/v0.9.0/tutorials) to find older versions of some
+tutorial content.
 
 </exercise>
 
