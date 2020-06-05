@@ -77,10 +77,37 @@ in the target (programming) language.
 
 <exercise id="4" title="Implementing a seq2seq model">
 
-### Important considerations
+For this, we are literally just taking AllenNLP's existing seq2seq model and using it as-is for
+semantic parsing.  We'll highlight a few relevant points here, but we will defer most details to the
+chapter on general seq2seq models (which isn't currently written).
 
-- Source vs. target vocabularies
-- Padding / masking during decoding
+## DatasetReader
+
+The code example below shows a simplified version of a `DatasetReader` for seq2seq data.  We just
+have two `TextFields` in our `Instance`, one for the input tokens and one for the output tokens.
+There are two important things to notice:
+
+1. We are using different vocabulary namespaces for our input tokens and our output tokens.  The
+   reason we are doing this is becaus this is the easiest way to get a vocabulary for all allowable
+output tokens in the programming language, which we can use in the model's decoder.  This also has
+the side effect of giving a separate embedding for any overlapping tokens in the input and output
+language.  An open parenthesis, or the number 2, will get different embeddings if it's in the input
+or the output.  Depending on your task, this can be a good thing or a bad thing.  There are ways to
+get around this side effect and share your embeddings, but they are more complicated.  Feel free to
+ask a question in our [Discourse forum](https://discourse.allennlp.org) or open an issue on the
+[guide repo](https://github.com/allenai/allennlp-guide) if you would like to see some more detail on
+how to do this.
+2. We're adding special tokens to our output sequence.  In a seq2seq model, you typically give a
+   special input to the model to tell it to start decoding, and it needs to have a way of signaling
+that it is finished decoding.  So, we modify the program tokens to include these signaling tokens.
+
+<codeblock source="part3/semantic-parsing-seq2seq/dataset_reader_source" setup="part3/semantic-parsing-seq2seq/dataset_reader_setup"></codeblock>
+
+It is not shown here, but in AllenNLP's standard training loop, the source and target vocabularies
+will be created by iterating once over the data.  If you have special vocabulary considerations that
+aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#3) of this guide.
+
+## Model
 
 </exercise>
 
