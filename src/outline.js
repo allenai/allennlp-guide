@@ -46,6 +46,7 @@ export const outline = {
             description:
                 'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
             chapterSlugs: [
+                '/semantic-parsing-seq2seq',
                 '/coming-soon'
             ],
             icon: 'tools',
