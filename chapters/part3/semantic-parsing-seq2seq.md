@@ -59,10 +59,28 @@ chapters will leverage the output programming language to build stronger models.
 
 <exercise id="3" title="Semantic parsing as machine translation">
 
+The simplest way to look at the semantic parsing problem is as a
+[typical](https://www.aclweb.org/anthology/N06-1056/)
+[machine](https://www.aclweb.org/anthology/P13-2009/)
+[translation](https://www.aclweb.org/anthology/P16-1002/)
+[problem](https://www.aclweb.org/anthology/P16-1004/).  Instead of translating from one natural
+language to another, we will translate from a natural language to a programming language.  In 2020,
+that means using a seq2seq model to generate a program conditioned on some input utterance.
+
+We don't have a chapter on seq2seq models yet, but
+[here](https://nlp.stanford.edu/~johnhew/public/14-seq2seq.pdf) is a good overview of the concepts
+involved.  We will encode the input utterance using some encoder, then decode a sequence of tokens
+in the target (programming) language.
+
 </exercise>
 
 
 <exercise id="4" title="Implementing a seq2seq model">
+
+### Important considerations
+
+- Source vs. target vocabularies
+- Padding / masking during decoding
 
 </exercise>
 
@@ -79,6 +97,11 @@ chapters will leverage the output programming language to build stronger models.
 
 <exercise id="7" title="Further reading">
 
-Mirella Lapata and students, Jia and Liang, ...
+In [section 3](#3) we gave links to a series of papers that used standard translation techniques at
+the time to approach semantic parsing problems.  There are a lot of variations on standard seq2seq
+approaches for semantic parsing, including [recursive or two-stage
+generation](https://www.aclweb.org/anthology/P18-1068/) and [grammar-based
+decoding](/semantic-parsing-grammar).  AllenNLP has strong support for grammar-based decoding, and
+this is the subject of the next chapter.
 
 </exercise>
