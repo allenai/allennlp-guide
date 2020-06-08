@@ -99,6 +99,14 @@ More formally, we will decide on a prespecified [order of operations](https://en
 to decide the nesting in the targets, and the system we will build for the task will have to learn the precedence
 of operators, i.e., that `seven times three minus two` should be translated to `(- (* 7 3) 2)`, and not `(* 7 (- 3 2))`.
 
+This [script](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/scripts/generate_data.py)
+respects the conventional order of operations and produces natural language arithmetic statements paired with
+corresponding arithmetic expressions, with an arbitrary number of operators per expression. We use it to generate
+[train](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_train.tsv),
+[validation](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_dev.tsv),
+and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
+with 1 to 10 operators in each expression.
+
 </exercise>
 
 
