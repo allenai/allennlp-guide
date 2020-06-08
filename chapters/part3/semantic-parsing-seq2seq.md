@@ -62,13 +62,13 @@ used for a toy semantic parser, we'll look at the task of understanding
 _Natural Language Arithmetic_. That is we will build a system that can translate natural language expressions like
 
 ```
-seven plus six minus nine
+seven times three minus two
 eight over four
 ```
 
 to arithmetic expressions like
 ```
-7 + 6 - 9
+7 * 3 - 2
 8 / 4
 ```
 
@@ -86,12 +86,18 @@ Second, the meaning of your utterances are completely unambiguous in the case of
 When we have expressions with multiple
 operators in them, we have to decide the order in which we should perform those operations since the result of the
 computation depends on the order. For example, the result of ``7 * 3 - 2`` can either be ``19`` or ``7``
-depending on the order of operations. To avoid this ambiguity, we will use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look this this:
+depending on whether we perform the subtraction or the multiplication first. To avoid this ambiguity, we will
+use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look
+like this:
 
 ```
-(- ( + 7 6) 9)
+(- ( * 7 3) 2)
 (/ 8  4)
 ```
+
+More formally, we will decide on a prespecified [order of operations](https://en.wikipedia.org/wiki/Order_of_operations)
+to decide the nesting in the targets, and the system we will build for the task will have to learn the precedence
+of operators, i.e., that `seven times three minus two` should be translated to `(- (* 7 3) 2)`, and not `(* 7 (- 3 2))`.
 
 </exercise>
 
