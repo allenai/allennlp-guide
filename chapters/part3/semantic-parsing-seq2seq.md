@@ -77,7 +77,7 @@ challenges that exist in real-world semantic parsing problems.
 First, the set of symbols here is finite and small. We only have
 ten basic elements (or _entities_): ``zero``, ``one``, ``two``, ..., ``nine``, and four operators:
 ``plus``, ``minus``, ``times``, and ``over``. In real world problems like the ones we discussed at the beginning
-of this Chapter, you will have to deal with a potentially infinite set of entities and operators. For example,
+of this chapter, you will have to deal with a potentially infinite set of entities and operators. For example,
 you will want Alexa to be able to control any voice-enabled device, or be able to build natural language
 interfaces for any table in your database.
 Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, ``seven`` always means ``7``, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
