@@ -84,7 +84,7 @@ Second, the meaning of your utterances are completely unambiguous in the case of
 
 
 When we have expressions with multiple
-operators in them, we have to decide the order in which we should perform those operations since the result of the
+operators in them, we have to decide the order in which we should perform those operations, since the result of the
 computation depends on the order. For example, the result of ``7 * 3 - 2`` can either be ``19`` or ``7``
 depending on whether we perform the subtraction or the multiplication first. To avoid this ambiguity, we will
 use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look
