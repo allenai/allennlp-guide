@@ -52,7 +52,60 @@ chapters will leverage the output programming language to build stronger models.
 </exercise>
 
 
-<exercise id="2" title="Some toy data: natural language arithmetic">
+<exercise id="2" title="A toy task: Natural Language Arithmetic">
+
+Let us now define a toy semantic parsing task. Taking inspiration from
+[Liang and Potts, 2015](https://www.annualreviews.org/doi/pdf/10.1146/annurev-linguist-030514-125312)
+and
+[Bill MacCartney's example](https://nbviewer.jupyter.org/github/wcmac/sippycup/blob/master/sippycup-unit-1.ipynb)
+used for a toy semantic parser, we'll look at the task of understanding
+_Natural Language Arithmetic_. That is we will build a system that can translate natural language expressions like
+
+```
+seven times three minus two
+eight over four
+```
+
+to arithmetic expressions like
+```
+7 * 3 - 2
+8 / 4
+```
+
+A big advantage of working with a toy problem like this is that we do not have to deal with several important
+challenges that exist in real-world semantic parsing problems.
+First, the set of symbols here is finite and small. We only have
+ten basic elements (or _entities_): ``zero``, ``one``, ``two``, ..., ``nine``, and four operators:
+``plus``, ``minus``, ``times``, and ``over``. In real world problems like the ones we discussed at the beginning
+of this chapter, you will have to deal with a potentially infinite set of entities and operators. For example,
+you will want Alexa to be able to control any voice-enabled device, or be able to build natural language
+interfaces for any table in your database.
+Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, ``seven`` always means ``7``, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
+
+
+When we have expressions with multiple
+operators in them, we have to decide the order in which we should perform those operations, since the result of the
+computation depends on the order. For example, the result of ``7 * 3 - 2`` can either be ``19`` or ``7``
+depending on whether we perform the subtraction or the multiplication first. To avoid this ambiguity, we will
+use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look
+like this:
+
+```
+(- ( * 7 3) 2)
+(/ 8  4)
+```
+
+More formally, we will decide on a prespecified [order of operations](https://en.wikipedia.org/wiki/Order_of_operations)
+to decide the nesting in the targets, and the system we will build for the task will have to learn the precedence
+of operators, i.e., that `seven times three minus two` should be translated to `(- (* 7 3) 2)`, and not `(* 7 (- 3 2))`.
+
+This [script](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/scripts/generate_data.py)
+respects the conventional order of operations and produces natural language arithmetic statements paired with
+corresponding arithmetic expressions, with an arbitrary number of operators per expression. We use it to generate
+[train](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_train.tsv),
+[validation](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_dev.tsv),
+and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
+with 1 to 10 operators in each expression.
 
 </exercise>
 
