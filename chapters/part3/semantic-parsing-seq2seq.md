@@ -75,17 +75,17 @@ to arithmetic expressions like
 A big advantage of working with a toy problem like this is that we do not have to deal with several important
 challenges that exist in real-world semantic parsing problems.
 First, the set of symbols here is finite and small. We only have
-ten basic elements (or _entities_): ``zero``, ``one``, ``two``, ..., ``nine``, and four operators:
-``plus``, ``minus``, ``times``, and ``over``. In real world problems like the ones we discussed at the beginning
+ten basic elements (or _entities_): `zero`, `one`, `two`, ..., `nine`, and four operators:
+`plus`, `minus`, `times`, and `over`. In real world problems like the ones we discussed at the beginning
 of this chapter, you will have to deal with a potentially infinite set of entities and operators. For example,
 you will want Alexa to be able to control any voice-enabled device, or be able to build natural language
 interfaces for any table in your database.
-Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, ``seven`` always means ``7``, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
+Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, `seven` always means `7`, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
 
 
 When we have expressions with multiple
 operators in them, we have to decide the order in which we should perform those operations, since the result of the
-computation depends on the order. For example, the result of ``7 * 3 - 2`` can either be ``19`` or ``7``
+computation depends on the order. For example, the result of `7 * 3 - 2` can either be `19` or `7`
 depending on whether we perform the subtraction or the multiplication first. To avoid this ambiguity, we will
 use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look
 like this:
@@ -114,7 +114,7 @@ for the task. We covered defining metrics in [Building your model section](/buil
 
 For Natural Language Arithmetic, we can measure the quality of predictions using two metrics:
 
-1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses. For example, ``( + 2 3 )`` is well-formed, and ``( + 3)`` and ``(+ 2 3`` are not. Note that this metric does not depend on the target.
+1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses. For example, `( + 2 3 )` is well-formed, and `( + 3)` and `(+ 2 3` are not. Note that this metric does not depend on the target.
 2. Sequence accuracy: Measures whether the prediction and target are exactly the same. This is stricter than well-formedness because an accurate sequence is automatically well-formed.
 
 We could have measured just the sequence accuracy alone, but it is useful to know whether the model is producing well-formed outputs
