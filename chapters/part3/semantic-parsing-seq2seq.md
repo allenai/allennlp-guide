@@ -107,6 +107,23 @@ corresponding arithmetic expressions, with an arbitrary number of operators per 
 and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
 with 1 to 10 operators in each expression.
 
+## Defining metrics for the task
+
+Given that we have defined the task, we are ready to specify how we will measure the progress of our models, i.e., the metrics
+for the task. We covered defining metrics in [Building your model section](/building-your-model#2) of this guide.
+
+For Natural Language Arithmetic, we can measure the quality of predictions using two metrics:
+
+1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses. For example, ``( + 2 3 )`` is well-formed, and ``( + 3)`` and ``(+ 2 3`` are not. Note that this metric does not depend on the target.
+2. Sequence accuracy: Measures whether the prediction and target are exactly the same. This is stricter than well-formedness because an accurate sequence is automatically well-formed.
+
+We could have measured just the sequence accuracy alone, but it is useful to know whether the model is producing well-formed outputs
+to check whether it has learned the ordering of operators, numbers and parentheses.
+
+The following code shows an implementation of the metrics, and shows the values of the metrics for example inputs. Feel free to try your own.
+
+<codeblock source="part3/semantic-parsing-seq2seq/metric_source" setup="part3/semantic-parsing-seq2seq/metric_setup"></codeblock>
+
 </exercise>
 
 
@@ -124,6 +141,7 @@ We don't have a chapter on seq2seq models yet, but
 [here](https://nlp.stanford.edu/~johnhew/public/14-seq2seq.pdf) is a good overview of the concepts
 involved.  We will encode the input utterance using some encoder, then decode a sequence of tokens
 in the target (programming) language.
+
 
 </exercise>
 
@@ -161,6 +179,7 @@ will be created by iterating once over the data.  If you have special vocabulary
 aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#3) of this guide.
 
 ## Model
+
 
 </exercise>
 
