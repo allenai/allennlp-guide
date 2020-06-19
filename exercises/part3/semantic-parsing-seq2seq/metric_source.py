@@ -1,4 +1,4 @@
-def evaluate(prediction: str, target: str):
+def evaluate(prediction: str, target: str) -> Dict[str, float]:
     metric = NlaMetric()
     prediction_list = prediction.split(" ")
     target_list = target.split(" ")
