@@ -75,17 +75,17 @@ to arithmetic expressions like
 A big advantage of working with a toy problem like this is that we do not have to deal with several important
 challenges that exist in real-world semantic parsing problems.
 First, the set of symbols here is finite and small. We only have
-ten basic elements (or _entities_): ``zero``, ``one``, ``two``, ..., ``nine``, and four operators:
-``plus``, ``minus``, ``times``, and ``over``. In real world problems like the ones we discussed at the beginning
+ten basic elements (or _entities_): `zero`, `one`, `two`, ..., `nine`, and four operators:
+`plus`, `minus`, `times`, and `over`. In real world problems like the ones we discussed at the beginning
 of this chapter, you will have to deal with a potentially infinite set of entities and operators. For example,
 you will want Alexa to be able to control any voice-enabled device, or be able to build natural language
 interfaces for any table in your database.
-Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, ``seven`` always means ``7``, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
+Second, the meaning of your utterances are completely unambiguous in the case of the toy problem. For example, `seven` always means `7`, whereas, "Turn on the lights" can refer to any set of lights depending on your location when you issue that command.
 
 
 When we have expressions with multiple
 operators in them, we have to decide the order in which we should perform those operations, since the result of the
-computation depends on the order. For example, the result of ``7 * 3 - 2`` can either be ``19`` or ``7``
+computation depends on the order. For example, the result of `7 * 3 - 2` can either be `19` or `7`
 depending on whether we perform the subtraction or the multiplication first. To avoid this ambiguity, we will
 use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation), making our targets look
 like this:
@@ -107,6 +107,23 @@ corresponding arithmetic expressions, with an arbitrary number of operators per 
 and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
 with 1 to 10 operators in each expression.
 
+## Defining metrics for the task
+
+Given that we have defined the task, we are ready to specify how we will measure the progress of our models, i.e., the metrics
+for the task. We covered defining metrics in [Building your model section](/building-your-model#2) of this guide.
+
+For Natural Language Arithmetic, we can measure the quality of predictions using two metrics:
+
+1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses. For example, `( + 2 3 )` is well-formed, and `( + 3)` and `(+ 2 3` are not. Note that this metric does not depend on the target.
+2. Sequence accuracy: Measures whether the prediction and target are exactly the same. This is stricter than well-formedness because an accurate sequence is automatically well-formed.
+
+We could have measured just the sequence accuracy alone, but it is useful to know whether the model is producing well-formed outputs
+to check whether it has learned the ordering of operators, numbers and parentheses.
+
+The following code shows an implementation of the metrics, and shows the values of the metrics for example inputs. Feel free to try your own.
+
+<codeblock source="part3/semantic-parsing-seq2seq/metric_source" setup="part3/semantic-parsing-seq2seq/metric_setup"></codeblock>
+
 </exercise>
 
 
@@ -124,6 +141,7 @@ We don't have a chapter on seq2seq models yet, but
 [here](https://nlp.stanford.edu/~johnhew/public/14-seq2seq.pdf) is a good overview of the concepts
 involved.  We will encode the input utterance using some encoder, then decode a sequence of tokens
 in the target (programming) language.
+
 
 </exercise>
 
@@ -161,6 +179,7 @@ will be created by iterating once over the data.  If you have special vocabulary
 aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#3) of this guide.
 
 ## Model
+
 
 </exercise>
 

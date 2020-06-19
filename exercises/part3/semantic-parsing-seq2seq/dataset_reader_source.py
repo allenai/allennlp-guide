@@ -52,7 +52,7 @@ dataset_reader = Seq2SeqDatasetReader(
     source_token_indexers=source_token_indexers,
     target_token_indexers=target_token_indexers,
 )
-instances = dataset_reader.read("TODO")
+instances = dataset_reader.read("nla_semparse/data/nla_with_meaning_rep_train.tsv")
 
 for instance in instances[:10]:
     print(instance)
