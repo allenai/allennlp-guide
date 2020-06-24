@@ -77,14 +77,14 @@ available for a wide range of NLP tasks, including:
 
 * [Text classification](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/text_classification_json.py)
 * [Sequence labeling](https://github.com/allenai/allennlp/blob/master/allennlp/data/dataset_readers/sequence_tagging.py)
-* [Language modeling](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/lm/simple_language_modeling_reader.py)
-* [Natural language inference](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/nli/snli_reader.py)
-* [Semantic role labeling](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/syntax/srl/srl_reader.py)
-* [Seq2Seq tasks](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/seq2seq/seq2seq_reader.py)
-* [Constituency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/syntax/constituency_parser/penn_tree_bank.py)
+* [Language modeling](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/lm/dataset_readers/simple_language_modeling.py)
+* [Natural language inference](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/pair_classification/dataset_readers/snli.py)
+* [Semantic role labeling](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/srl.py)
+* [Seq2Seq tasks](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/generation/dataset_readers/seq2seq.py)
+* [Constituency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/penn_tree_bank.py)
   and
-  [dependency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/syntax/biaffine_dependency_parser/universal_dependencies_reader.py)
-* [Reading comprehension](https://github.com/allenai/allennlp-models/tree/master/allennlp_models/rc)
+  [dependency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/universal_dependencies.py)
+* [Reading comprehension](https://github.com/allenai/allennlp-models/tree/master/allennlp_models/rc/dataset_readers)
 * [Semantic parsing](https://github.com/allenai/allennlp-semparse)
 
 You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet
