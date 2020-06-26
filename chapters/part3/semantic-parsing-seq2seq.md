@@ -280,7 +280,7 @@ At the end of training, you'll see the following numbers for the validation set 
 You can measure the performance of the model on the test set by running the following command
 
 ```
-allennlp evaluate trained_models/seq2seq_model.tar.gz data/nla_with_meaning_rep_test.tsv --include-package allennlp_models --include-package nla_semparse
+allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.tsv --include-package allennlp_models --include-package nla_semparse
 ```
 
 and it should give you the following numbers
