@@ -152,7 +152,7 @@ For this, we are literally just taking AllenNLP's existing seq2seq model and usi
 semantic parsing.  We'll highlight a few relevant points here, but we will defer most details to the
 chapter on general seq2seq models (which isn't currently written).
 
-## DatasetReader
+## Dataset Reader
 
 The code example below shows a simplified version of a `DatasetReader` for seq2seq data.  We just
 have two `TextFields` in our `Instance`, one for the input tokens and one for the output tokens.
@@ -185,6 +185,135 @@ aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#
 
 
 <exercise id="5" title="Training">
+
+We're now ready to actually train the model. We need to define a configuration to specify the
+attributes of the model, dataset reader, and the trainer and locations of the training and
+validation datasets. See the [chapter on configuration files](/using-config-files) of this guide
+for more details. This is the configuration we'll use:
+
+```
+{
+  "dataset_reader": {
+    "type": "seq2seq",
+    "source_tokenizer": {
+      "type": "spacy"
+    },
+    "target_tokenizer": {
+      "type": "spacy"
+    },
+    "source_token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "namespace": "source_tokens"
+      }
+    },
+    "target_token_indexers": {
+      "tokens": {
+        "namespace": "target_tokens"
+      }
+    }
+  },
+  "train_data_path": "data/nla_with_meaning_rep_train.tsv",
+  "validation_data_path": "data/nla_with_meaning_rep_dev.tsv",
+  "model": {
+    "type": "composed_seq2seq",
+    "source_text_embedder": {
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "vocab_namespace": "source_tokens",
+          "embedding_dim": 100,
+          "trainable": true
+        }
+      }
+    },
+    "encoder": {
+      "type": "lstm",
+      "input_size": 100,
+      "hidden_size": 50,
+      "num_layers": 1
+    },
+    "decoder": {
+      "decoder_net": {
+         "type": "lstm_cell",
+         "decoding_dim": 50,
+         "target_embedding_dim": 50,
+         "attention": {
+           "type": "dot_product"
+         }
+      },
+      "max_decoding_steps": 50,
+      "target_namespace": "target_tokens",
+      "target_embedder": {
+        "vocab_namespace": "target_tokens",
+        "embedding_dim": 50
+      },
+      "scheduled_sampling_ratio": 0.9,
+      "beam_size": 5,
+      "token_based_metric": "nla_metric"
+    }
+  },
+  "data_loader": {
+    "batch_sampler": {
+        "type": "bucket",
+        "batch_size": 10,
+        "padding_noise": 0.0
+    }
+},
+  "trainer": {
+    "num_epochs": 20,
+    "patience": 10,
+    "validation_metric": "+sequence_accuracy",
+    "cuda_device": -1,
+    "optimizer": {
+      "type": "adam",
+      "lr": 0.01
+    }
+  }
+}
+```
+
+You can train the model on your machine by cloning [the examples repository](https://github.com/allenai/allennlp-guide-examples), and
+going to the `nla_semparse` directory.
+
+```
+cd allennlp-guide-examples/nla_semparse
+```
+
+The following line installs `allennlp` and `allennlp_models`.
+```
+pip install -r requirements.txt
+```
+
+And the following line trains the model.
+```
+allennlp train training_config/seq2seq_config.json -s /tmp/nla_seq2seq \
+--include-package allennlp_models --include-package nla_semparse
+```
+
+Training should take roughly one minute per epoch on a Macbook. You'll see in the configuration file that we're tracking the `sequence_accuracy`
+metric, which we discussed earlier, on the validation set for early stopping.
+
+At the end of training, you'll see the following numbers for the validation set for metrics from the best epoch.
+
+```
+"best_validation_well_formedness": 0.453
+"best_validation_sequence_accuracy": 0.366
+```
+
+You can measure the performance of the model on the test set by running the following command
+
+```
+allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.tsv \
+--include-package allennlp_models --include-package nla_semparse
+```
+
+and it should give you the following numbers
+
+```
+"well_formedness": 0.443
+"sequence_accuracy": 0.346
+```
 
 </exercise>
 
