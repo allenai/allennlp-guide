@@ -134,7 +134,7 @@ For this, we are literally just taking AllenNLP's existing seq2seq model and usi
 semantic parsing.  We'll highlight a few relevant points here, but we will defer most details to the
 chapter on general seq2seq models (which isn't currently written).
 
-## DatasetReader
+## Dataset Reader
 
 The code example below shows a simplified version of a `DatasetReader` for seq2seq data.  We just
 have two `TextFields` in our `Instance`, one for the input tokens and one for the output tokens.
@@ -166,7 +166,11 @@ aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#
 
 
 <exercise id="5" title="Training">
-We're now ready to actually train the model. This is the configuration we'll use:
+
+We're now ready to actually train the model. We need to define a configuration to specify the
+attributes of the model, dataset reader, and the trainer and locations of the training and
+validation datasets. See the [chapter on configuration files](/using-config-files) of this guide
+for more details. This is the configuration we'll use:
 
 ```
 {
@@ -264,7 +268,8 @@ pip install -r requirements.txt
 
 And the following line trains the model.
 ```
-allennlp train training_config/seq2seq_config.json -s /tmp/nla_seq2seq --include-package allennlp_models --include-package nla_semparse
+allennlp train training_config/seq2seq_config.json -s /tmp/nla_seq2seq \
+--include-package allennlp_models --include-package nla_semparse
 ```
 
 Training should take roughly one minute per epoch on a Macbook. You'll see in the configuration file that we're tracking the `sequence_accuracy`
@@ -280,7 +285,8 @@ At the end of training, you'll see the following numbers for the validation set 
 You can measure the performance of the model on the test set by running the following command
 
 ```
-allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.tsv --include-package allennlp_models --include-package nla_semparse
+allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.tsv \
+--include-package allennlp_models --include-package nla_semparse
 ```
 
 and it should give you the following numbers
