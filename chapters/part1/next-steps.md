@@ -94,9 +94,9 @@ local bert_model = "bert-base-uncased";
             "requires_grad": false
         }
     },
-    "iterator": {
-        "type": "basic",
-        "batch_size": 8
+    "data_loader": {
+        "batch_size": 8,
+        "shuffle": true
     },
     "trainer": {
         "optimizer": {
