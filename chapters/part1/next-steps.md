@@ -90,8 +90,7 @@ local bert_model = "bert-base-uncased";
         },
         "encoder": {
             "type": "bert_pooler",
-            "pretrained_model": bert_model,
-            "requires_grad": false
+            "pretrained_model": bert_model
         }
     },
     "data_loader": {
