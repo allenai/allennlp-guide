@@ -94,5 +94,7 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 
 * [Coming soon!](/coming-soon): A list of what we're working on and how to let us know what you'd
   like to see.
+* [Hyperparameter Optimization with Optuna](/hyperparameter-optimization-with-optuna):
+  A basic tutorial for hyperparameter optimization using Optuna
 
 </exercise>
