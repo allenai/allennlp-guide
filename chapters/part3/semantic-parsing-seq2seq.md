@@ -320,6 +320,29 @@ and it should give you the following numbers
 
 <exercise id="6" title="Decoding">
 
+Let us now look at what kinds of predictions the model makes. We'll use a `Predictor` to do so. Recall that we covered `Predictor`s in
+[an earlier chapter](/training-and-prediction#4). For our current purpose, we can directly use the
+[`Seq2SeqPredictor`](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/generation/predictors/seq2seq.py) implemented in
+the `allennlp-models` repository, with the model archive we trained on our task.
+
+Let's try it now.
+
+<codeblock source="part3/semantic-parsing-seq2seq/predictor_source_easy" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
+
+Looks like the model's doing pretty well on these inputs. It has clearly learned the mapping from strings to symbols, and the order of operators and their arguments.
+
+Let's try something more interesting now.
+
+<codeblock source="part3/semantic-parsing-seq2seq/predictor_source_medium" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
+
+This is beginning to look impressive. Not only has the model learned basic nesting correctly, it has also learned something about the precedence of operators that was followed in the training data.
+
+Let's push the model harder.
+
+<codeblock source="part3/semantic-parsing-seq2seq/predictor_source_hard" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
+
+Now we see some issues. For both the inputs above, we see that some of the numbers and the operators are not correctly translated. Also, we see an ill-formed subexpressions: `(+ ( / 4 4))` and `(+ (/ ()))`.
+
 </exercise>
 
 
