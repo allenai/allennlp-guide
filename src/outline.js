@@ -47,6 +47,7 @@ export const outline = {
             description:
                 'Part 3 introduces common NLP tasks and how to build models for these tasks using AllenNLP.',
             chapterSlugs: [
+                '/document-ranking',
                 '/coming-soon'
             ],
             icon: 'tools',

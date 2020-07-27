@@ -30,7 +30,7 @@ const Template = ({ data, location }) => {
     const { allMarkdownRemark, markdownRemark, site } = data;
     const { courseId } = site.siteMetadata;
     const { frontmatter, fields, htmlAst } = markdownRemark;
-    const { title, description } = frontmatter;
+    const { title, description, author } = frontmatter;
     const { slug } = fields;
 
     // Build flat list of outline slugs that the prev/next navigation buttons can easily step through
@@ -154,6 +154,7 @@ const Template = ({ data, location }) => {
                                             <span>{title}</span>
                                         </h1>
                                     )}
+                                    {author && <h6>Author: {author}</h6>}
                                     {description && <p>{description}</p>}
                                 </ChapterIntroText>
                             </ChapterIntro>
@@ -210,6 +211,7 @@ export const pageQuery = graphql`
                     frontmatter {
                         title
                         description
+                        author
                     }
                 }
             }
@@ -222,6 +224,7 @@ export const pageQuery = graphql`
             frontmatter {
                 title
                 description
+                author
             }
         }
     }
