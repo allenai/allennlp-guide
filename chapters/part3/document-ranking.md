@@ -31,17 +31,16 @@ the user. This is [used in
 Bing](https://twitter.com/albondarenko2/status/1225802655504781312/photo/1) to help refine search
 results.
 
-| <!-- -->                            | <!-- -->                                                  |
-|-------------------------------------|-----------------------------------------------------------|
-| query                               | headaches                                                 |
-| question                            | What do you want to know about this medical condition?    |
-| candidate answers (options)         | symptom, treatment, causes, diagnosis, diet               |
+| <!-- -->                                | <!-- -->                                                  |
+|-----------------------------------------|-----------------------------------------------------------|
+| **query**                               | headaches                                                 |
+| **question**                            | What do you want to know about this medical condition?    |
+| **candidate answers (options)**         | symptom, treatment, causes, diagnosis, diet               |
 
 Each option will come with its own continuous score; our goal is to predict this score as closely as
 possible, given the query, the question, and the option itself. Since there are no
-training/validation/testing datasets, you can use [this
-script](https://github.com/jacobdanovitch/allenrank/blob/master/scripts/data_split.py) to download
-and split the dataset:
+training/validation/testing datasets provided by the authors, you can use [this
+script](https://github.com/jacobdanovitch/allenrank/blob/master/scripts/data_split.py) to download and split the dataset:
 
 ```shell
 $ python scripts/data_split.py https://github.com/microsoft/MIMICS/blob/master/data/MIMICS-ClickExplore.tsv\?raw\=true
@@ -201,7 +200,8 @@ we'll stick with a very simple one:
 class BertCLS(RelevanceMatcher):
     def __init__(
         self,
-        seq2vec_encoder: Seq2VecEncoder, # should be `cls_pooler`
+        # Use `cls_pooler` for this to get the [CLS] token from BERT
+        seq2vec_encoder: Seq2VecEncoder, 
         **kwargs
     ):
         kwargs['input_dim'] = seq2vec_encoder.get_output_dim()*4
@@ -313,6 +313,7 @@ Now we can use our relevance matcher to score each pair.
             mask,
             options_mask,
         ).squeeze(-1)
+
         probs = torch.sigmoid(scores)
 ```
 
@@ -320,5 +321,30 @@ Now we can use our relevance matcher to score each pair.
 
 
 <exercise id="5" title="Evaluating with custom metrics">
+
+Finally, we'll take a look at how to evaluate our model. First of all, we'll calculate the loss: 
+
+```python
+if labels is not None:
+    label_mask = (labels != -1)
+
+    # Mean-Squared Error (MSE) loss with mask
+    loss = torch.pow(probs - labels, 2)
+    loss = loss.masked_fill(~label_mask, 0).sum()
+    loss = loss / (~label_mask).sum()
+```
+
+Since this is a regression problem, we'll use mean squared error loss, which  encourages the model to predict the score as closely as possible rather than just surpassing a certain threshold as with classification. As for the masking, remember that each instance has at _most_ 5 options; some have less. We set the padding value to be `-1` (as `0` is a valid label and shouldn't be excluded from the loss), we zero out the masked parts of the loss, take the sum, and divide by the number of non-zero elements. This gives us the correct value of the mean.
+
+Next, we need to evaluate the model's performance. There are several metrics commonly used in document ranking, but we'll stick with **Mean Reciprocal Rank** (MRR). To understand how it's calculated, let's consider an example with the following options:
+
+| option         | true score (rank) | predicted score (rank) |
+|----------------|-------------------|------------------------|
+| cookie monster | 0.65 (1)          | 0.25 (2)               |
+| elmo           | 0.4 (2)           | 0.55 (1)               |
+| grover         | 0.1 (3)           | 0.05 (3)               |
+
+The correct option is the cookie monster, but our model only ranked it second. It shouldn't get a complete zero for that, but shouldn't be fully rewarded either. The reciprocal rank would give this a `1/2` for ranking the best option 2nd. More generally, the reciprocal rank score is `1` divided by the position your model ranked the correct option. If it had correctly ranked cookie monster first, its score would be `1/1 = 1`. As the name suggests, we take the mean of all these reciprocal rank scores across our dataset to find the MRR.
+
 
 </exercise>
