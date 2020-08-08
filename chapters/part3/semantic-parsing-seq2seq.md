@@ -196,10 +196,10 @@ for more details. This is the configuration we'll use:
   "dataset_reader": {
     "type": "seq2seq",
     "source_tokenizer": {
-      "type": "spacy"
+      "type": "whitespace"
     },
     "target_tokenizer": {
-      "type": "spacy"
+      "type": "whitespace"
     },
     "source_token_indexers": {
       "tokens": {
@@ -297,8 +297,8 @@ metric, which we discussed earlier, on the validation set for early stopping.
 At the end of training, you'll see the following numbers for the validation set for metrics from the best epoch.
 
 ```
-"best_validation_well_formedness": 0.453
-"best_validation_sequence_accuracy": 0.366
+"best_validation_well_formedness": 0.478
+"best_validation_sequence_accuracy": 0.37
 ```
 
 You can measure the performance of the model on the test set by running the following command
@@ -311,8 +311,8 @@ allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.t
 and it should give you the following numbers
 
 ```
-"well_formedness": 0.443
-"sequence_accuracy": 0.346
+"well_formedness": 0.457
+"sequence_accuracy": 0.356
 ```
 
 </exercise>
@@ -320,14 +320,19 @@ and it should give you the following numbers
 
 <exercise id="6" title="Decoding">
 
-Let us now look at what kinds of predictions the model makes. We'll use a `Predictor` to do so. Recall that we covered `Predictor`s in
-[an earlier chapter](/training-and-prediction#4). For our current purpose, we can directly use the
-[`Seq2SeqPredictor`](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/generation/predictors/seq2seq.py) implemented in
+Let us now look at what kinds of predictions the model makes.
+We'll use a [`Predictor`](/training-and-prediction#4) to do so, and make predictions on various kinds of inputs.
+For our current purpose, we can directly use the
+[`Seq2SeqPredictor`](http://docs.allennlp.org/models/master/models/generation/predictors/seq2seq/) implemented in
 the `allennlp-models` repository, with the model archive we trained on our task.
 
-Let's try it now.
+What that means is we'll load the weights that resulted from the training process, and the task-specific vocabulary from the archive, and instantiate
+a `Seq2Seq` predictor with those weights and vocabulary. The predictor uses the dataset reader we defined for the task, and passes each new NLA
+expression we want to decode through the `text_to_instance` method of our dataset, the output of which will be passed through the `forward` method in
+our model instantiated with the trained weights. The output will be the model's top prediction, i.e., the sequence with the maximum `p(y | x; $\theta$)`, where `y` is an artithmetic expression, `x` is the input NLA expression, and `$\theta$` are the weights of the `Seq2Seq` model. Of course, all of this
+is hidden behind a single `predictor.predict_json()` call below.
 
-<codeblock source="part3/semantic-parsing-seq2seq/predictor_source_easy" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
+<codeblock source="part3/semantic-parsing-seq2seq/predictor_source_easy"></codeblock>
 
 Looks like the model's doing pretty well on these inputs. It has clearly learned the mapping from strings to symbols, and the order of operators and their arguments.
 
@@ -341,7 +346,7 @@ Let's push the model harder.
 
 <codeblock source="part3/semantic-parsing-seq2seq/predictor_source_hard" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
 
-Now we see some issues. For both the inputs above, we see that some of the numbers and the operators are not correctly translated. Also, we see an ill-formed subexpressions: `(+ ( / 4 4))` and `(+ (/ ()))`.
+Now we see some issues. For both the inputs above, we see that some of the numbers and the operators are not correctly translated. Also, we see ill-formed subexpressions: `( * * 2 )`, `( * 8 9 8 9 )`, `( - ( ) ( ) ) ( / 5 )` etc.
 
 </exercise>
 
