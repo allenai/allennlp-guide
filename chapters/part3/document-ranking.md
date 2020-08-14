@@ -348,7 +348,91 @@ Next, we need to evaluate the model's performance. There are several metrics com
 | elmo           | 0.4 (2)           | 0.55 (1)               |
 | grover         | 0.1 (3)           | 0.05 (3)               |
 
-The correct option is the cookie monster, but our model only ranked it second. It shouldn't get a complete zero for that, but shouldn't be fully rewarded either. The reciprocal rank would give this a `1/2` for ranking the best option 2nd. More generally, the reciprocal rank score is `1` divided by the position your model ranked the correct option. If it had correctly ranked cookie monster first, its score would be `1/1 = 1`. As the name suggests, we take the mean of all these reciprocal rank scores across our dataset to find the MRR.
+The correct option is the cookie monster, but our model only ranked it second. It shouldn't get a complete zero for that, but shouldn't be fully rewarded either. The reciprocal rank would give this a `1/2` for ranking the best option 2nd. More generally, the reciprocal rank score is `1` divided by the position your model ranked the correct option. If it had correctly ranked cookie monster first, its score would be `1/1 = 1`. As the name suggests, we take the mean of all these reciprocal rank scores across our dataset to find the MRR. This isn't too hard to implement in Pytorch:
 
+```python
+def first_nonzero(t):
+    idx = torch.arange(t.size(1), 0, -1).type_as(t)
+    indices = torch.argmax(t * idx, 1, keepdim=True)
+    return indices
+
+def mrr(y_pred, y_true, mask):
+    y_pred = y_pred.masked_fill(~mask, -1)
+    y_true = y_true.ge(y_true.max(dim=-1, keepdim=True).values).long()
+
+    _, idx = y_pred.sort(descending=True, dim=-1)
+    gold = torch.arange(y_true.size(-1)).unsqueeze(0).type_as(y_pred)
+    
+    ordered_truth = y_true.gather(1, idx)
+    _mrr = (ordered_truth / (gold + 1)) * mask
+    
+    return _mrr.gather(1, first_nonzero(ordered_truth)).mean()
+
+y_pred = torch.tensor([[0.25, 0.55, 0.05]])
+y_true = torch.tensor([[0.65, 0.4, 0.1]])
+mask = torch.ones_like(yt).bool()
+
+mrr(y_pred, y_true, mask)
+> tensor(0.5000)
+```
+
+We binarize the labels by setting the highest-scored document to have label `1`, and the rest `0` (note that there are other ways you could do this). 
+Then, we sort the labels by our model's predicted scores, and divide by the indicies to get our reciprocal ranks. Taking the mean of the first non-zero
+elements for each batch gives us our mean reciprocal rank for the batch.
+
+Now, we can create a custom metric class to use MRR in an experiment. First we make a generic `RankingMetric` to store the predictions, labels, and
+masks for each batch:
+
+```python
+class RankingMetric(Metric):
+    def __init__(
+        self,
+    ) -> None:
+        self.reset()
+        
+    def __call__(
+            self,
+            predictions: torch.LongTensor,
+            gold_labels: torch.LongTensor,
+            mask: torch.LongTensor = None
+        ):
+        if mask is None:
+            mask = torch.ones_like(gold_labels).bool()
+        
+        self._all_predictions.append(predictions)
+        self._all_gold_labels.append(gold_labels) 
+        self._all_masks.append(mask)
+        
+    def get_metric(self, reset: bool = False):
+        raise NotImplementedError()
+    
+    def reset(self):
+        self._all_predictions = []
+        self._all_gold_labels = []
+        self._all_masks = []
+```
+
+Then we create an `MRR` metric that implements `get_metric` to call our function.
+
+```python
+@Metric.register("mrr")
+class MRR(RankingMetric):
+    def get_metric(self, reset: bool = False):
+        predictions = torch.cat(self._all_predictions, dim=0)
+        labels = torch.cat(self._all_gold_labels, dim=0)
+        masks = torch.cat(self._all_masks, dim=0)
+        
+        score = mrr(predictions, labels, masks).item()
+
+        if reset:
+            self.reset()
+        return score
+```
+
+That wraps it up!
+
+</exercise>
+
+<exercise id="6" title="Conclusion">
 
 </exercise>
