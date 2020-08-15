@@ -354,6 +354,8 @@ dump_best_config("./imdb_optuna.jsonnet", "./best_config.json", study)
 It will create a configuration named `best_config.json`.
 This is helpful to retrain a model with the best hyperparameters.
 
+You can try the example on [colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb).
+
 </exercise>
 
 <exercise id="4" title="Writing your own script with Optuna and Use Pruners">
@@ -411,9 +413,8 @@ study.optimize(objective, n_trials=50)
 ```
 
 That's it. Now you can use Optuna in your AllenNLP code!
-The following script is the full example of the script.
-<!-- [TODO: Installing Optuna is needed for executing this script.] -->
-<codeblock source="part3/optuna/source" setup="part3/optuna/setup"></codeblock>
+
+If you want to run the example, please use [colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
 
 </exercise>
 
