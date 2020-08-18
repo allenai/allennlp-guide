@@ -459,7 +459,7 @@ code below.
 
 <exercise id="10" title="How to upload transformer weights and tokenizers to HuggingFace">
 
-One way AllenNLP is commonly used is for fine-tuning transformer models to specific tasks. We host several of these models on our [demo site](https://demo.allennlp.org/), such as a BERT model applied to the [SQuAD v1.1](https://rajpurkar.github.io/SQuAD-explorer/) question-answer task, and a RoBERTa model applied to the [SNLI](https://nlp.stanford.edu/projects/snli/) textual entailment task.
+One way AllenNLP is commonly used is for fine-tuning transformer models to specific tasks. We host several of these models on our [demo site](https://demo.allennlp.org/), such as a BERT model applied to the [SQuAD v1.1](https://rajpurkar.github.io/SQuAD-explorer/) reading comprehension task, and a RoBERTa model applied to the [SNLI](https://nlp.stanford.edu/projects/snli/) textual entailment task.
 
 *You can find the code and configuration files used to train these models in the [AllenNLP Models](https://github.com/allenai/allennlp-models) repository.*
 
