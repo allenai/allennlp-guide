@@ -467,52 +467,6 @@ This section will show you how to take a fine-tuned transformer model, like one 
 
 *Note that we are talking about uploading only the transformer part of your model, not including any task-specific heads that you’re using.*
 
-First of all, you’ll need to know how a transformer model and tokenizer is actually integrated into an AllenNLP model.
-
-This is usually done by providing your dataset reader with a `PretrainedTransformerTokenizer` and a matching `PretrainedTransformerIndexer`, and then providing your model with the corresponding `PretrainedTransformerEmbedder`.
-
-If your dataset reader and model are already general enough that they can accept any type of tokenizer / token indexer and token embedder, respectively, then the only thing you need to do in order to utilize a pretrained transformer in your model is tweak your training configuration file.
-
-With the RoBERTa SNLI model, for example, the “dataset_reader” part of the config would look like this:
-
-```
-"dataset_reader": {
-  "type": "snli",
-  "tokenizer": {
-    "type": "pretrained_transformer",
-    "model_name": "roberta-large",
-    "add_special_tokens": false
-  },
-  "token_indexers": {
-    "tokens": {
-      "type": "pretrained_transformer",
-      "model_name": "roberta-large",
-      "max_length": 512
-    }
-  }
-}
-```
-
-While the “model” part of the config would look like this:
-
-```
-"model": {
-  "type": "basic_classifier",
-  "text_field_embedder": {
-    "token_embedders": {
-      "tokens": {
-        "type": "pretrained_transformer",
-        "model_name": "roberta-large",
-        "max_length": 512
-      }
-    }
-  },
-  ...
-}
-```
-
-Once you’ve trained your model, just follow these 3 steps to upload the transformer part of your model to HuggingFace.
-
 ## Step 1: Load your tokenizer and your trained model
 
 ```python
