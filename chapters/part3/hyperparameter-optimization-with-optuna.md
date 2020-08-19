@@ -1,6 +1,6 @@
 ---
-title: 'Hyperparameter Optimization with Optuna'
-description: "This chapter gives a basic tutorial for optimizing the hyperparameters of your model."
+title: 'Hyperparameter Optimization'
+description: "This chapter gives a basic tutorial for optimizing the hyperparameters of your model, using Optuna as an example."
 type: chapter
 ---
 
@@ -12,9 +12,9 @@ In this chapter, we'll give a quick tutorial of hyperparameter optimization for 
 
 <exercise id="1" title="Hyperparameters matter!">
 
-The choice of hyperparameters often has a strong impact to the performance of a model.
+The choice of hyperparameters often has a strong impact on the performance of a model.
 Even if you use the same model, performance can drastically change depending on the hyperparameters (e.g. learning rate, dimensionality of word embeddings) you use.
-Following figure shows the performance change with different hyperparameters.
+The following figure shows the performance change with different hyperparameters.
 <img src="/part3/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Hyperparameters matter!" />
 
 A typical process of hyperparameter optimization is based on repeating a step of training/evaluating a model.
@@ -29,7 +29,7 @@ Before going to the next exercise, please run `pip install optuna` if you haven'
 
 </exercise>
 
-<exercise id="2" title="Building your model">
+<exercise id="2" title="First, build a model">
 
 This tutorial works on sentiment analysis, one kind of text classification.
 We use the [IMDb review dataset](https://ai.stanford.edu/~amaas/data/sentiment), which contains 20,000 positive or negative reviews for training and 5,000 reviews for validating the performance of model.
@@ -268,11 +268,15 @@ In each trial step in optimization, the objective function is called and does th
 1. Train a model (`executor.run()`)
 2. Return a target metric on validation data (`executor.run()` returns the specified metric)
 
-Now, we finished defining objective function.
-Let's write Optuna stuff for launching optimization!
+Once we've written an objective function, we can write a script for launching optimization.
 In Optuna, we create a study object and pass the objective function to the `optimize()` method as follows.
-You can specify something; a way to save a result of optimization, a sampler for searching hyperparameters (`TPESampler` is based on Bayesian Optimization),
-direction for optimizing (maximize or minimize), number of jobs for distributed training, or timeout.
+You can specify something a number of parameters for the hyperparameter optimization process:
+- a way to save a result of optimization
+- a sampler for searching hyperparameters (`TPESampler` is based on Bayesian Optimization)
+- direction for optimizing (maximize or minimize)
+- number of jobs for distributed training
+- timeout
+and more.  An example launch script is below.
 
 ```python
 if __name__ == '__main__':
@@ -320,10 +324,10 @@ study.trials_dataframe()
 
 Next, visualize a history of optimization.
 To plot a history of optimization, we can use `optuna.visualization.plot_optimization_history`.
-I also put a validation accuracy of baseline model as a reference.
+We also put the validation accuracy of a baseline model as a reference.
 It shows that Optuna successfully found hyperparameters to achieve better performance.
 Note that this figure shows one result of optimization.
-I performed optimization five times with different random seeds and got the average validation accuracy of 0.909 (±0.002), which outperforms the baseline by a large margin.
+We performed optimization five times with different random seeds and got an average validation accuracy of 0.909 (±0.002), which outperforms the baseline by a large margin.
 
 ```python
 optuna.visualization.plot_optimization_history(study)
@@ -332,7 +336,7 @@ optuna.visualization.plot_optimization_history(study)
 <br>
 <img src="/part3/hyperparameter-optimization-with-optuna/optimization_history.jpg" alt="Plot Optimization History" />
 
-From the recent release of Optuna, we can evaluate parameter importances based on finished trials.
+Optuna also lets you evaluate parameter importances based on finished trials.
 There are two evaluators available: the default [fANOVA](http://proceedings.mlr.press/v32/hutter14.html) and [MDI](https://papers.nips.cc/paper/4928-understanding-variable-importances-in-forests-of-randomized-trees).
 To show importances of hyperparameters, it uses `optuna.visualization.plot_param_importances`:
 
