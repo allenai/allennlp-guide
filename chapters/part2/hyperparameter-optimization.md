@@ -4,12 +4,6 @@ description: "This chapter gives a basic tutorial for optimizing the hyperparame
 type: chapter
 ---
 
-<textblock>
-
-In this chapter, we'll give a quick tutorial of hyperparameter optimization for your AllenNLP model.
-
-</textblock>
-
 <exercise id="1" title="Hyperparameters matter!">
 
 The choice of hyperparameters often has a strong impact on the performance of a model.
