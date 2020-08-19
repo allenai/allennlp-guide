@@ -1,6 +1,7 @@
 ---
 title: 'Hyperparameter Optimization'
 description: "This chapter gives a basic tutorial for optimizing the hyperparameters of your model, using Optuna as an example."
+author: "Makoto Hiramatsu"
 type: chapter
 ---
 
