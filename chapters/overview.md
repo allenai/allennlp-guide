@@ -89,12 +89,11 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 * [Using config files](/using-config-files): FromParams and Registrable
 * [Writing your own script](/writing-your-own-script) as an entry point to AllenNLP (Coming soon)
 * [Debugging your code](/debugging) using an IDE debugger
+* [Hyperparameter Optimization](/hyperparameter-optimization): A basic tutorial for hyperparameter optimization using Optuna
 
 ## Part 3
 
 * [Coming soon!](/coming-soon): A list of what we're working on and how to let us know what you'd
   like to see.
-* [Hyperparameter Optimization](/hyperparameter-optimization):
-  A basic tutorial for hyperparameter optimization, using Optuna
 
 </exercise>

@@ -38,6 +38,7 @@ export const outline = {
                 '/using-config-files',
                 '/writing-your-own-script',
                 '/debugging',
+                '/hyperparameter-optimization',
             ],
             icon: 'cube',
             color: 'purple'

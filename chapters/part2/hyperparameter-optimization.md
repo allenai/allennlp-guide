@@ -15,11 +15,11 @@ In this chapter, we'll give a quick tutorial of hyperparameter optimization for 
 The choice of hyperparameters often has a strong impact on the performance of a model.
 Even if you use the same model, performance can drastically change depending on the hyperparameters (e.g. learning rate, dimensionality of word embeddings) you use.
 The following figure shows the performance change with different hyperparameters.
-<img src="/part3/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Hyperparameters matter!" />
+<img src="/part2/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Hyperparameters matter!" />
 
 A typical process of hyperparameter optimization is based on repeating a step of training/evaluating a model.
 People just repeat this cycle for every hours or even days for finding good hyperparameters.
-<img src="/part3/hyperparameter-optimization-with-optuna/what_is_hyperparameter_optimization.jpg" alt="What is hyperparameter optimization" />
+<img src="/part2/hyperparameter-optimization-with-optuna/what_is_hyperparameter_optimization.jpg" alt="What is hyperparameter optimization" />
 
 <a href="https://optuna.org">Optuna</a> is a library, which allows users to optimize hyperparameters automatically.
 Optuna provides sophisticated algorithms for searching hyperparameters, such as [Tree-structured Parzen Estimator](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) and
@@ -320,7 +320,7 @@ Let's check the results of trials with a `pandas` dataframe.
 study.trials_dataframe()
 ```
 
-<img src="/part3/hyperparameter-optimization-with-optuna/trials_dataframe.jpg" alt="Dataframe">
+<img src="/part2/hyperparameter-optimization-with-optuna/trials_dataframe.jpg" alt="Dataframe">
 
 Next, visualize a history of optimization.
 To plot a history of optimization, we can use `optuna.visualization.plot_optimization_history`.
@@ -334,7 +334,7 @@ optuna.visualization.plot_optimization_history(study)
 ```
 
 <br>
-<img src="/part3/hyperparameter-optimization-with-optuna/optimization_history.jpg" alt="Plot Optimization History" />
+<img src="/part2/hyperparameter-optimization-with-optuna/optimization_history.jpg" alt="Plot Optimization History" />
 
 Optuna also lets you evaluate parameter importances based on finished trials.
 There are two evaluators available: the default [fANOVA](http://proceedings.mlr.press/v32/hutter14.html) and [MDI](https://papers.nips.cc/paper/4928-understanding-variable-importances-in-forests-of-randomized-trees).
@@ -347,7 +347,7 @@ optuna.visualization.plot_param_importances(study)
 In this plot, we can see that `lr` is the most important hyperparameter in this experiment.
 
 <br>
-<img src="/part3/hyperparameter-optimization-with-optuna/hyperparameter_importance.jpg" alt="Plot Hyperparameter Importance" />
+<img src="/part2/hyperparameter-optimization-with-optuna/hyperparameter_importance.jpg" alt="Plot Hyperparameter Importance" />
 
 Additionally, you can export a configuration with optimized hyperparameters.
 
@@ -378,7 +378,7 @@ The following illustration shows an example of pruning.
 Although the final curves at the left side of the picture are not available before finishing hyperparameter optimization,
 a pruner evaluates at each epoch how promising each trial will be and stops if it predicts to be unpromising.
 
-<img src="/part3/hyperparameter-optimization-with-optuna/illustration_of_pruning.jpg" alt="Illustration of Pruning" />
+<img src="/part2/hyperparameter-optimization-with-optuna/illustration_of_pruning.jpg" alt="Illustration of Pruning" />
 
 You can use `AllenNLPPruningCallback` that is the new feature of Optuna, which allows users to prune unpromising trials with algorithms implemented in Optuna.
 `AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms in `GradientDescentTrainer`, which is the standard way to train a model in AllenNLP.
