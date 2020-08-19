@@ -297,8 +297,6 @@ if __name__ == '__main__':
 
 If `study.optimize` successfully runs, `trial.db` would be created in the directory `result`.
 
-[Tip] You can change a names of database file and directory by changing the value of `storage` in `optuna.create_study`.
-
 You can see and analyze a result by passing `study` object to various methods implemented in Optuna.
 If you want to separate an analysis from optimization, you can save the `study` (e.g. RDB) and load it in another script.
 
