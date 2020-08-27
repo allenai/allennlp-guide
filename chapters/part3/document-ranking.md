@@ -380,7 +380,7 @@ def mrr(y_pred, y_true, mask):
     
     # Get the mrr at the first non-zero position for each instance in the batch, and take the mean.
     # Following above example, `first_nonzero(ordered_truth) = 1`, so we grab `mrr[1] = torch.tensor(0.5)`.
-    # Since it's a single element tensor, `torch.tensor(0.5).mean() = torch.tensor(0.5)`.
+    # The example only has one instance, but this works for batched input also.
     return _mrr.gather(-1, first_nonzero(ordered_truth)).mean()
 
 y_pred = torch.tensor([0.25, 0.55, 0.05])
