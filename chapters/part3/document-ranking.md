@@ -1,6 +1,6 @@
 ---
 title: 'Document Ranking'
-description: This chapter shows a practical example of using AllenNLP to do document ranking
+description: A practical example of document ranking with AllenNLP
 author: Jacob Danovitch
 type: chapter
 ---
@@ -43,7 +43,7 @@ training/validation/testing datasets provided by the authors, you can use [this
 script](https://github.com/jacobdanovitch/allenrank/blob/master/scripts/data_split.py) to download and split the dataset:
 
 ```shell
-$ python data_split.py "https://github.com/microsoft/MIMICS/blob/master/data/MIMICS-ClickExplore.tsv\?raw\=true"
+$ python data_split.py "https://github.com/microsoft/MIMICS/raw/master/data/MIMICS-ClickExplore.tsv"
 ```
 
 </exercise>
@@ -444,10 +444,69 @@ class MRR(RankingMetric):
         return score
 ```
 
-That wraps it up!
-
 </exercise>
 
 <exercise id="6" title="Conclusion">
+
+That wraps it up! Now you can try training the model. Here's a sample configuration file to try:
+
+```json
+// mimics.jsonnet
+
+// This is where `data_split.py` will save your data by default
+local DATA_ROOT = "/tmp/allenrank/data/mimics-clickexplore/%s";
+local MODEL_NAME = "google/bert_uncased_L-2_H-128_A-2";
+
+{
+  "dataset_reader": {
+    "type": "mimics",
+    "tokenizer": {
+      "type": "pretrained_transformer",
+      "model_name": MODEL_NAME,
+    },
+    "token_indexers": {
+      "tokens": {
+        "type": "pretrained_transformer",
+        "model_name": MODEL_NAME,
+      }
+    },
+  },
+  "train_data_path": DATA_ROOT % "train.tsv",
+  "validation_data_path": DATA_ROOT % "valid.tsv",
+
+  "model": {
+    "type": "ranker",
+    "dropout": 0.15,
+    "text_field_embedder": {
+      "token_embedders": {
+        "tokens": {
+          "type": "pretrained_transformer",
+          "model_name": MODEL_NAME,
+        }
+      }
+    },
+    "relevance_matcher": {
+      "type": "bert_cls",
+      "input_dim": 128,
+    }
+  },
+  "data_loader": {
+    "type": "default",
+    "batch_size" : 8
+  },
+  "trainer": {
+    "num_epochs": 5,
+    // "cuda_device": 0, //uncomment for CUDA
+    "validation_metric": "+mrr",
+    "optimizer": {
+      "type": "huggingface_adamw",
+      "lr": 0.0001,
+      "weight_decay": 0
+    }
+  }
+}
+```
+
+As usual, you can train the model by running `allennlp train mimics.jsonnet -s <your_output_folder>`. Have fun ranking!
 
 </exercise>
