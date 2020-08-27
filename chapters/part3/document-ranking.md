@@ -375,7 +375,7 @@ def mrr(y_pred, y_true, mask):
     indices = torch.arange(1, binarized_y_true.size(-1) + 1).view_as(y_pred).type_as(y_pred)
 
     # Calculate the reciprocal rank for each position, 0ing-out masked values.
-    # Following above example, `_mrr = [0/1, 1/2 ,0/1] = [0, 0.5, 0]`.
+    # Following above example, `_mrr = [0/1, 1/2 ,0/3] = [0, 0.5, 0]`.
     _mrr = (ordered_truth / indices) * mask
     
     # Get the mrr at the first non-zero position for each instance in the batch, and take the mean.
