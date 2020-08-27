@@ -359,7 +359,7 @@ def first_nonzero(t):
 
 def mrr(y_pred, y_true, mask):
     # Set the largest value in the ground truth to 1, and everything else to 0.
-    # If `y_true = [0.65, 0.4, 0.1]`
+    # If `y_true = [0.65, 0.4, 0.1]`, then `binarized_y_true=[1,0,0]`.
     binarized_y_true = y_true.ge(y_true.max(dim=-1, keepdim=True).values).long()
     y_pred = y_pred.masked_fill(~mask, -1)
 
@@ -470,13 +470,14 @@ local MODEL_NAME = "google/bert_uncased_L-2_H-128_A-2";
         "model_name": MODEL_NAME,
       }
     },
+    "max_instances": 50000 // use a smaller subset for demo purposes
   },
   "train_data_path": DATA_ROOT % "train.tsv",
   "validation_data_path": DATA_ROOT % "valid.tsv",
 
   "model": {
     "type": "ranker",
-    "dropout": 0.15,
+    "dropout": 0.35,
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
@@ -492,21 +493,57 @@ local MODEL_NAME = "google/bert_uncased_L-2_H-128_A-2";
   },
   "data_loader": {
     "type": "default",
-    "batch_size" : 8
+    "batch_size" : 256
   },
   "trainer": {
     "num_epochs": 5,
-    // "cuda_device": 0, //uncomment for CUDA
-    "validation_metric": "+mrr",
+    "validation_metric": "+auc",
     "optimizer": {
-      "type": "huggingface_adamw",
-      "lr": 0.0001,
-      "weight_decay": 0
+      "type": "adam",
+      "lr": 0.0005
+    },
+    "learning_rate_scheduler": {
+        "type": "reduce_on_plateau",
+        "factor": 0.5,
+        "mode": "max",
+        "patience": 0
     }
   }
 }
 ```
 
-As usual, you can train the model by running `allennlp train mimics.jsonnet -s <your_output_folder>`. Have fun ranking!
+As usual, you can train the model by running `allennlp train mimics.jsonnet -s <your_output_folder>`. 
+We're using a very small BERT model here (I ran this on one 4GB GTX 1050), but a larger model would likely perform much better.
+
+```json
+{
+  "best_epoch": 4,
+  "peak_worker_0_memory_MB": 2729.524,
+  "peak_gpu_0_memory_MB": 2529,
+  "training_duration": "0:04:09.899715",
+  "training_start_epoch": 0,
+  "training_epochs": 4,
+  "epoch": 4,
+  "training_auc": 0.6722315767949663,
+  "training_mrr": 0.848150908946991,
+  "training_ndcg": 0.42276182770729065,
+  "training_loss": 0.10509685198871457,
+  "training_reg_loss": 0.0,
+  "training_worker_0_memory_MB": 2729.524,
+  "training_gpu_0_memory_MB": 2529,
+  "validation_auc": 0.6549340144689184,
+  "validation_mrr": 0.8459849953651428,
+  "validation_ndcg": 0.42034712433815,
+  "validation_loss": 0.10829840424240277,
+  "validation_reg_loss": 0.0,
+  "best_validation_auc": 0.6549340144689184,
+  "best_validation_mrr": 0.8459849953651428,
+  "best_validation_ndcg": 0.42034712433815,
+  "best_validation_loss": 0.10829840424240277,
+  "best_validation_reg_loss": 0.0
+}
+```
+
+Have fun ranking!
 
 </exercise>
