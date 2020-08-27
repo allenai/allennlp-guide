@@ -513,7 +513,7 @@ local MODEL_NAME = "google/bert_uncased_L-2_H-128_A-2";
 ```
 
 As usual, you can train the model by running `allennlp train mimics.jsonnet -s <your_output_folder>`. 
-We're using a very small BERT model here (I ran this on one 4GB GTX 1050), but a larger model would likely perform much better.
+We're using a very small BERT model here (I ran this on one 4GB GTX 1050), but a larger model (and better relevance matcher) would likely perform much better.
 
 ```json
 {
