@@ -9,7 +9,8 @@ type: chapter
 <exercise id="1" title="Why hyperparameters matter">
 
 The choice of hyperparameters often has a strong impact on the performance of a model.
-Even if you use the same model, performance can drastically change depending on the hyperparameters (e.g. learning rate, dimensionality of word embeddings) you use.
+Even if you use the same model, performance can drastically change depending on
+the hyperparameters (e.g. learning rate, dimensionality of word embeddings) you use.
 The following figure shows the performance change with different hyperparameters.
 <img src="/part2/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Why hyperparameters matter" />
 
@@ -46,8 +47,9 @@ On the other hand, grid search is a deterministic approach.
 <exercise id="4" title="The CNN classifier to be tuned">
 
 This tutorial works on sentiment analysis, one kind of text classification.
-We use the [IMDb review dataset](https://ai.stanford.edu/~amaas/data/sentiment), which contains 20,000 positive or negative reviews for training and 5,000 reviews for validating the performance of model.
-If you haven't read <a href="https://guide.allennlp.org/your-first-model#1">the tutorial for text classification</a>, that may be helpful.
+We use the [IMDb review dataset](https://ai.stanford.edu/~amaas/data/sentiment),
+which contains 20,000 positive or negative reviews for training and 5,000 reviews for validating the performance of model.
+If you haven't read [the tutorial for text classification](https://guide.allennlp.org/your-first-model#1), that may be helpful.
 
 Below is a sample configuration of a CNN-based classifier.
 
@@ -256,19 +258,23 @@ embedding_dim=128 dropout=0.2 lr=0.1 \
 
 <exercise id="6" title="Running hyperparameter optimization with Optuna">
 
-<a href="https://optuna.org">Optuna</a> is a library, which allows users to optimize hyperparameters automatically.
-Optuna provides sophisticated algorithms for searching hyperparameters, such as [Tree-structured Parzen Estimator](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) and
-[CMA Evolution Strategy](https://arxiv.org/abs/1604.00772), as well as algorithms for pruning unpromising trials, such as [Hyperband](http://jmlr.org/papers/v18/16-558.html).
+[Optuna](https://optuna.org) is a library, which allows users to optimize hyperparameters automatically.
+Optuna provides sophisticated algorithms for searching hyperparameters, such as
+[Tree-structured Parzen Estimator](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) and
+[CMA Evolution Strategy](https://arxiv.org/abs/1604.00772), as well as algorithms for pruning unpromising trials,
+such as [Hyperband](http://jmlr.org/papers/v18/16-558.html).
 Before going to the next exercise, please run `pip install optuna` if you haven't installed Optuna yet.
 
-Optuna offers a integration for AllenNLP, named <a href="https://optuna.readthedocs.io/en/stable/reference/integration.html#optuna.integration.AllenNLPExecutor">`AllenNLPExecutor`</a>.
+Optuna offers a integration for AllenNLP,
+named [AllenNLPExecutor](https://optuna.readthedocs.io/en/stable/reference/integration.html#optuna.integration.AllenNLPExecutor).
 We can use `AllenNLPExecutor` by following steps: `Telling Optuna's hyperparameters` and `Defining search space`.
 
 To use Optuna, we define the hyperparameter search spaces.
 In Optuna, a search space is defined by creating an `objective function`.
 Each hyperparameter search space is declared with `suggest_int` or `suggest_float`.
 For categorical hyperparameters, you can use `suggest_categorical`.
-Please see <a href="https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html#optuna.trial.Trial">Optuna documentation</a> for more information.
+Please see [Optuna documentation](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html#optuna.trial.Trial)
+for more information.
 
 These suggest functions require two kinds of arguments at least.
 The first one is the name of hyperparameter, and the second one is the range of the values.
@@ -297,7 +303,8 @@ def objective(trial: optuna.Trial) -> float:
 ```
 
 After defining search spaces using `trial.suggest_int` and `trial.suggest_float`, the `trial` object should be passed to `AllenNLPExecutor`.
-The `trial` object holds all suggested values after defining search spaces using `trial.suggest_int` and `trial.suggest_float`,  and it should be pass to `AllenNLPExecutor`.
+The `trial` object holds all suggested values after defining search spaces using `trial.suggest_int`
+and `trial.suggest_float`,  and it should be pass to `AllenNLPExecutor`.
 `AllenNLPExecutor` takes four required arguments; `trial` (Optuna's object), `config_file` (path to a model configuration),
 `serialization_dir` (directory for saving model snapshot, log, etc.), and `metrics` you want to optimize.
 In the above example, we create an instance of `AllenNLPExecutor` as `executor`.
@@ -357,7 +364,8 @@ a pruner evaluates at each epoch how promising each trial will be and stops if i
 <img src="/part2/hyperparameter-optimization-with-optuna/illustration_of_pruning.jpg" alt="Illustration of Pruning" />
 
 You can use `AllenNLPPruningCallback` that is the new feature of Optuna, which allows users to prune unpromising trials with algorithms implemented in Optuna.
-`AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms in `GradientDescentTrainer`, which is the standard way to train a model in AllenNLP.
+`AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms in `GradientDescentTrainer`,
+which is the standard way to train a model in AllenNLP.
 To enable a pruning, you must create the AllenNLP callback first. `AllenNLPPruningCallback` needs two arguments: a trial and a target metric.
 In this example, we use `validation_accuracy` for the metric to determine if a trial should be pruned or not.
 Note that `patience` is set to `None` since pruning and built-in early stopping could conflict.
@@ -380,9 +388,11 @@ The objective function looks like following:
 ```
 
 Next, you specify a pruner you want to use.
-In Optuna, some effient algorithms such as [SuccessiveHaving](https://arxiv.org/abs/1502.07943) and [Hyperband](http://jmlr.org/papers/v18/16-558.html) are available.
+In Optuna, some effient algorithms such as [SuccessiveHaving](https://arxiv.org/abs/1502.07943)
+and [Hyperband](http://jmlr.org/papers/v18/16-558.html) are available.
 In this example, we use `Hyperband` as the pruner.
-For more information about pruners of Optuna, please visit <a href="https://optuna.readthedocs.io/en/stable/reference/pruners.html">Optuna documentation</a>.
+For more information about pruners of Optuna,
+please visit [Optuna documentation](https://optuna.readthedocs.io/en/stable/reference/pruners.html).
 
 ```
 study = optuna.create_study(
@@ -394,7 +404,7 @@ study.optimize(objective, n_trials=50)
 
 That's it. Now you can use Optuna in your AllenNLP code!
 
-If you want to run the example, please use [colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
+The full example is available on [Google Colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
 
 </exercise>
 
@@ -426,7 +436,8 @@ To plot a history of optimization, we can use `optuna.visualization.plot_optimiz
 We also put the validation accuracy of a baseline model as a reference.
 It shows that Optuna successfully found hyperparameters to achieve better performance.
 Note that this figure shows one result of optimization.
-We performed optimization five times with different random seeds and got an average validation accuracy of 0.909 (±0.002), which outperforms the baseline by a large margin.
+We performed optimization five times with different random seeds and got an average validation accuracy of 0.909 (±0.002),
+which outperforms the baseline by a large margin.
 
 ```python
 optuna.visualization.plot_optimization_history(study)
@@ -436,7 +447,8 @@ optuna.visualization.plot_optimization_history(study)
 <img src="/part2/hyperparameter-optimization-with-optuna/optimization_history.jpg" alt="Plot Optimization History" />
 
 Optuna also lets you evaluate parameter importances based on finished trials.
-There are two evaluators available: the default [fANOVA](http://proceedings.mlr.press/v32/hutter14.html) and [MDI](https://papers.nips.cc/paper/4928-understanding-variable-importances-in-forests-of-randomized-trees).
+There are two evaluators available: the default [fANOVA](http://proceedings.mlr.press/v32/hutter14.html)
+and [MDI](https://papers.nips.cc/paper/4928-understanding-variable-importances-in-forests-of-randomized-trees).
 To show importances of hyperparameters, it uses `optuna.visualization.plot_param_importances`:
 
 ```python
@@ -457,13 +469,16 @@ dump_best_config("./imdb_optuna.jsonnet", "./best_config.json", study)
 It will create a configuration named `best_config.json`.
 This is helpful to retrain a model with the best hyperparameters.
 
-You can try the example on [colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb).
+You can try the example on [Google Colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb).
 
 </exercise>
 
 <exercise id="9" title="For further information">
 
-That concludes this guide on how to use Optuna for hyperparameter optimization. Hopefully, you've learned how to define AllenNLP hyperparameter search space using Optuna, run the trials for optimization, and then use the results with just a few lines of code.
-For more details about Optuna, please see the <a href="https://optuna.org/">Optuna website</a> or <a href="https://optuna.readthedocs.io/en/stable/">Optuna documentation</a>.
+That concludes this guide on how to use Optuna for hyperparameter optimization.
+Hopefully, you've learned how to define AllenNLP hyperparameter search space using Optuna,
+run the trials for optimization, and then use the results with just a few lines of code.
+For more details about Optuna, please see the [Optuna website](https://optuna.org/)
+or [Optuna documentation](https://optuna.readthedocs.io/en/stable).
 
 </exercise>
