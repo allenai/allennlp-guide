@@ -14,37 +14,38 @@ the hyperparameters (e.g. learning rate, dimensionality of word embeddings) you 
 The following figure shows the performance change with different hyperparameters.
 <img src="/part2/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Why hyperparameters matter" />
 
-</exercise>
-
-
-<exercise id="2" title="Naive way to tune hyperparameters">
-
 A typical process of hyperparameter optimization is based on repeating a step of training/evaluating a model.
 People just repeat this cycle for every hours or even days for finding good hyperparameters.
-
-A typical ways to tune hyperparameters are based on manual search, random search, or grid search.
-Random search is an approach that picks up hyperparameters randomly from a range of values defined in advance.
-In each trial, parameters are sampled independently.
-
-On the other hand, grid search is a deterministic approach.
-
-
-
 <img src="/part2/hyperparameter-optimization-with-optuna/what_is_hyperparameter_optimization.jpg" alt="What is hyperparameter optimization" />
 
-[TODO:himkt]
+</exercise>
+
+<exercise id="2" title="Hyperparameter optimizers">
+
+<img src="/part2/hyperparameter-optimization-with-optuna/automatic_hyperparameter_optimization.jpg" alt="Automatic Hyperparameter Optimization" />
+Automatic hyperparameter optimization is an approach automates this process.
+An optimizer samples hyperparameter from the given search space,
+trains a model using them and evaluates and performance.
+In this chapter, we refer to this process as `trial`.
+After a certain number of trials with different hyperparameters,
+an optimizer reports the best performing hyperparameter combination.
+
+A typical way to tune hyperparameters is random search.
+Random search samples hyperparameter from a search space randomly.
+We also note that random search samples a hyperparameter independently in each trial,
+which means each trial doesn't affect results of other trials.
+Although random search often find good hyperparameters,
+there are some room to utilize the history of the previous truals.
+
+Sequential Model-based Optimization (SMBO) is an approach that iterates between fitting a model
+and using them to make about choices which configuration to investigate in a next trial.
+For example, [Tree-structured Parzen Estimator (TPE)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization)
+was proposed as the one example of SMBO algorithm, which shows the performance over random search.
 
 </exercise>
 
 
-<exercise id="3" title="Hyperparameter optimizers">
-
-[TODO:himkt]
-
-</exercise>
-
-
-<exercise id="4" title="The CNN classifier to be tuned">
+<exercise id="3" title="The CNN classifier to be tuned">
 
 This tutorial works on sentiment analysis, one kind of text classification.
 We use the [IMDb review dataset](https://ai.stanford.edu/~amaas/data/sentiment),
@@ -130,7 +131,7 @@ As the result, the average of validation accuracy was 0.828 (±0.004).
 </exercise>
 
 
-<exercise id="5" title="Selecting and converting the hyperparameters">
+<exercise id="4" title="Selecting and converting the hyperparameters">
 
 Hyperparameters in the configuration are selected based on the standard recommendations.
 Now we select some hyperparameters to be tuned.
@@ -143,7 +144,8 @@ For now, we optimize the following hyperparameters:
 - `num_filters`
 - `output_dim`
 
-First, we replace values of hyperparameters with `std.extVar` so that we can load the values of hyperparameters from environment variables.
+First, we replace values of hyperparameters with `std.extVar` so that
+we can load the values of hyperparameters from environment variables.
 Remember that `std.parseInt` or `std.parseJson` are used for numerical parameters.
 
 ### Before
@@ -256,13 +258,12 @@ embedding_dim=128 dropout=0.2 lr=0.1 \
 </exercise>
 
 
-<exercise id="6" title="Running hyperparameter optimization with Optuna">
+<exercise id="5" title="Running hyperparameter optimization with Optuna">
 
 [Optuna](https://optuna.org) is a library, which allows users to optimize hyperparameters automatically.
 Optuna provides sophisticated algorithms for searching hyperparameters, such as
-[Tree-structured Parzen Estimator](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) and
-[CMA Evolution Strategy](https://arxiv.org/abs/1604.00772), as well as algorithms for pruning unpromising trials,
-such as [Hyperband](http://jmlr.org/papers/v18/16-558.html).
+TPE mentioned in the previous step, and [CMA Evolution Strategy](https://arxiv.org/abs/1604.00772)
+, as well as algorithms for pruning unpromising trials such as [Hyperband](http://jmlr.org/papers/v18/16-558.html).
 Before going to the next exercise, please run `pip install optuna` if you haven't installed Optuna yet.
 
 Optuna offers a integration for AllenNLP,
@@ -345,7 +346,7 @@ if __name__ == '__main__':
 </exercise>
 
 
-<exercise id="7" title="Pruning poor performing trials">
+<exercise id="6" title="Pruning poor performing trials">
 
 Hyperparameter optimization often takes a long time to find good hyperparameters.
 If you can find and stop unpromising trials with bad hyperparameters, you can reduce the time of optimization and get good hyperparameters faster.
@@ -390,7 +391,7 @@ study.optimize(objective, n_trials=50)
 </exercise>
 
 
-<exercise id="8" title="Working with Optuna Outputs">
+<exercise id="7" title="Working with Optuna Outputs">
 
 If `study.optimize` successfully runs, `trial.db` would be created in the directory `result`.
 
@@ -412,7 +413,7 @@ study.trials_dataframe()
 
 <img src="/part2/hyperparameter-optimization-with-optuna/trials_dataframe.jpg" alt="Dataframe">
 
-Next, visualize a history of optimization.
+Next, we show an example of visualization of a optimization history.
 To plot a history of optimization, we can use `optuna.visualization.plot_optimization_history`.
 We also put the validation accuracy of a baseline model as a reference.
 It shows that Optuna successfully found hyperparameters to achieve better performance.
@@ -452,7 +453,7 @@ This is helpful to retrain a model with the best hyperparameters.
 
 </exercise>
 
-<exercise id="9" title="For further information">
+<exercise id="8" title="For further information">
 
 That concludes this guide on how to use Optuna for hyperparameter optimization.
 Hopefully, you've learned how to define AllenNLP hyperparameter search space using Optuna,
