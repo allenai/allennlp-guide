@@ -347,13 +347,6 @@ if __name__ == '__main__':
 
 <exercise id="7" title="Pruning poor performing trials">
 
-Additionally, you can use Optuna when you define the AllenNLP model by writing your script.
-A python code of training a model with AllenNLP typically consists of main three parts: preparing data, building model, and creating trainer.
-In this section, we show the example of AllenNLP+Optuna with writing Python script.
-<!-- We put the python code to use AllenNLP+Optuna at the bottom of this exercise. -->
-
-## Pruning unpromising trials
-
 Hyperparameter optimization often takes a long time to find good hyperparameters.
 If you can find and stop unpromising trials with bad hyperparameters, you can reduce the time of optimization and get good hyperparameters faster.
 Stopping unpromising trials is so-called `pruning`.
@@ -363,31 +356,23 @@ a pruner evaluates at each epoch how promising each trial will be and stops if i
 
 <img src="/part2/hyperparameter-optimization-with-optuna/illustration_of_pruning.jpg" alt="Illustration of Pruning" />
 
-You can use `AllenNLPPruningCallback` that is the new feature of Optuna, which allows users to prune unpromising trials with algorithms implemented in Optuna.
-`AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms in `GradientDescentTrainer`,
-which is the standard way to train a model in AllenNLP.
-To enable a pruning, you must create the AllenNLP callback first. `AllenNLPPruningCallback` needs two arguments: a trial and a target metric.
-In this example, we use `validation_accuracy` for the metric to determine if a trial should be pruned or not.
-Note that `patience` is set to `None` since pruning and built-in early stopping could conflict.
-The objective function looks like following:
+You can use `AllenNLPPruningCallback` that is the new feature of Optuna,
+which allows users to prune unpromising trials with algorithms implemented in Optuna.
+`AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms.
 
-```python
-    def objective(trial):
-        trainer = GradientDescentTrainer(
-            model=model,
-            optimizer=optimizer,
-            data_loader=data_loader,
-            validation_data_loader=validation_data_loader,
-            validation_metric="+accuracy",
-            patience=None,
-            num_epochs=50,
-            cuda_device=CUDA_DEVICE,
-            serialization_dir="result",
-            epoch_callbacks=[AllenNLPPruningCallback(trial, "validation_accuracy")],
-        )
+You can enable a pruning callback by adding `optuner_pruner` to `epoch_callbacks` in your jsonnet configuration.
+A pruner determines whether it prune a training in each epoch,
+based on the `metrics` specified in initializing `AllenNLPExecutor`.
+
+```json
+   epoch_callbacks: [
+    {
+      type: 'optuna_pruner',
+    },
+  ],
 ```
 
-Next, you specify a pruner you want to use.
+After enabling pruning callback, you have to specify a pruner you want to use.
 In Optuna, some effient algorithms such as [SuccessiveHaving](https://arxiv.org/abs/1502.07943)
 and [Hyperband](http://jmlr.org/papers/v18/16-558.html) are available.
 In this example, we use `Hyperband` as the pruner.
@@ -401,10 +386,6 @@ study = optuna.create_study(
 )
 study.optimize(objective, n_trials=50)
 ```
-
-That's it. Now you can use Optuna in your AllenNLP code!
-
-The full example is available on [Google Colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
 
 </exercise>
 
@@ -469,8 +450,6 @@ dump_best_config("./imdb_optuna.jsonnet", "./best_config.json", study)
 It will create a configuration named `best_config.json`.
 This is helpful to retrain a model with the best hyperparameters.
 
-You can try the example on [Google Colab](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb).
-
 </exercise>
 
 <exercise id="9" title="For further information">
@@ -480,5 +459,11 @@ Hopefully, you've learned how to define AllenNLP hyperparameter search space usi
 run the trials for optimization, and then use the results with just a few lines of code.
 For more details about Optuna, please see the [Optuna website](https://optuna.org/)
 or [Optuna documentation](https://optuna.readthedocs.io/en/stable).
+
+You can try the [example](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb)
+of `AllenNLPExecutor` on Google Colab.
+Additionally, you can use Optuna with a AllenNLP model by writing your own Python script.
+If you want to write Python script to tune hyperparameters,
+please refer to the [colab example](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
 
 </exercise>
