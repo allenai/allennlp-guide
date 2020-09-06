@@ -15,7 +15,7 @@ The following figure shows the performance change with different hyperparameters
 <img src="/part2/hyperparameter-optimization-with-optuna/hyperparameter_matters.jpg" alt="Why hyperparameters matter" />
 
 A typical process of hyperparameter optimization is based on repeating a step of training/evaluating a model.
-People just repeat this cycle for every hours or even days for finding good hyperparameters.
+People just repeat this cycle for hours or even days to find good hyperparameters.
 <img src="/part2/hyperparameter-optimization-with-optuna/what_is_hyperparameter_optimization.jpg" alt="What is hyperparameter optimization" />
 
 </exercise>
@@ -23,7 +23,7 @@ People just repeat this cycle for every hours or even days for finding good hype
 <exercise id="2" title="Hyperparameter optimizers">
 
 <img src="/part2/hyperparameter-optimization-with-optuna/automatic_hyperparameter_optimization.jpg" alt="Automatic Hyperparameter Optimization" />
-Automatic hyperparameter optimization is an approach automates this process.
+Automatic hyperparameter optimization is an approach that automates this process.
 An optimizer samples hyperparameter from the given search space,
 trains a model using them and evaluates and performance.
 In this chapter, we refer to this process as `trial`.
@@ -33,12 +33,12 @@ an optimizer reports the best performing hyperparameter combination.
 A typical way to tune hyperparameters is random search.
 Random search samples hyperparameter from a search space randomly.
 We also note that random search samples a hyperparameter independently in each trial,
-which means each trial doesn't affect results of other trials.
+which means each trial doesn't affect the results of other trials.
 Although random search often find good hyperparameters,
-there are some room to utilize the history of the previous truals.
+there is some room to utilize the history of the previous trials.
 
 Sequential Model-based Optimization (SMBO) is an approach that iterates between fitting a model
-and using them to make about choices which configuration to investigate in a next trial.
+and using them to make about choices which configuration to investigate in the next trial.
 For example, [Tree-structured Parzen Estimator (TPE)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization)
 was proposed as the one example of SMBO algorithm, which shows the performance over random search.
 
@@ -359,7 +359,7 @@ a pruner evaluates at each epoch how promising each trial will be and stops if i
 
 You can use `AllenNLPPruningCallback` that is the new feature of Optuna,
 which allows users to prune unpromising trials with algorithms implemented in Optuna.
-`AllenNLPPruningCallback` is the interface to provide the way to use these pruning algorithms.
+`AllenNLPPruningCallback` is the interface to provide a way to use these pruning algorithms.
 
 You can enable a pruning callback by adding `optuner_pruner` to `epoch_callbacks` in your jsonnet configuration.
 A pruner determines whether it prune a training in each epoch,
@@ -463,7 +463,7 @@ or [Optuna documentation](https://optuna.readthedocs.io/en/stable).
 
 You can try the [example](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP.ipynb)
 of `AllenNLPExecutor` on Google Colab.
-Additionally, you can use Optuna with a AllenNLP model by writing your own Python script.
+Additionally, you can use Optuna with an AllenNLP model by writing your own Python script.
 If you want to write Python script to tune hyperparameters,
 please refer to the [colab example](https://colab.research.google.com/github/himkt/optuna-allennlp/blob/master/notebook/Optuna_AllenNLP_Custom_Loop.ipynb).
 
