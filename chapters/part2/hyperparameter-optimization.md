@@ -23,6 +23,7 @@ People just repeat this cycle for hours or even days to find good hyperparameter
 <exercise id="2" title="Hyperparameter optimizers">
 
 <img src="/part2/hyperparameter-optimization-with-optuna/automatic_hyperparameter_optimization.jpg" alt="Automatic Hyperparameter Optimization" />
+
 Automatic hyperparameter optimization is an approach that automates this process.
 An optimizer samples hyperparameter from the given search space,
 trains a model using them and evaluates and performance.
@@ -40,7 +41,7 @@ using the history of previous trials can improve the search.
 Sequential Model-based Optimization (SMBO) is an approach that iterates between fitting a model
 and making choices which configuration to investigate in the next trial.
 For example, [Tree-structured Parzen Estimator (TPE)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization)
-was proposed as the one example of SMBO algorithm, which shows the performance over random search.
+was proposed as an example SMBO algorithm, which shows better performance than random search.
 
 </exercise>
 
@@ -266,7 +267,7 @@ TPE mentioned in the previous step, and [CMA Evolution Strategy](https://arxiv.o
 , as well as algorithms for pruning unpromising trials such as [Hyperband](http://jmlr.org/papers/v18/16-558.html).
 Before going to the next exercise, please run `pip install optuna` if you haven't installed Optuna yet.
 
-Optuna offers a integration for AllenNLP,
+Optuna offers an integration for AllenNLP,
 named [AllenNLPExecutor](https://optuna.readthedocs.io/en/stable/reference/integration.html#optuna.integration.AllenNLPExecutor).
 We can use `AllenNLPExecutor` by following steps: `Telling Optuna's hyperparameters` and `Defining search space`.
 
@@ -277,10 +278,10 @@ For categorical hyperparameters, you can use `suggest_categorical`.
 Please see [Optuna documentation](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html#optuna.trial.Trial)
 for more information.
 
-These suggest functions require two kinds of arguments at least.
-The first one is the name of hyperparameter, and the second one is the range of the values.
+These `suggest` functions require two kinds of arguments at least.
+The first one is the name of the hyperparameter, and the second one is the range of the values.
 Note that the names of the hyperparameters should be the same as those defined in the configuration earlier.
-A typical objective function looks like following:
+A typical objective function looks like the following:
 
 ```python
 import optuna
@@ -317,12 +318,13 @@ In each trial step in optimization, the objective function is called and does th
 
 Once we've written an objective function, we can write a script for launching optimization.
 In Optuna, we create a study object and pass the objective function to the `optimize()` method as follows.
-You can specify something a number of parameters for the hyperparameter optimization process:
+You can specify a number of parameters for the hyperparameter optimization process:
 - a way to save a result of optimization
 - a sampler for searching hyperparameters (`TPESampler` is based on Bayesian Optimization)
 - direction for optimizing (maximize or minimize)
 - number of jobs for distributed training
 - timeout
+
 and more.  An example launch script is below.
 
 ```python
@@ -350,18 +352,18 @@ if __name__ == '__main__':
 
 Hyperparameter optimization often takes a long time to find good hyperparameters.
 If you can find and stop unpromising trials with bad hyperparameters, you can reduce the time of optimization and get good hyperparameters faster.
-Stopping unpromising trials is so-called `pruning`.
+Stopping unpromising trials is called `pruning`.
 The following illustration shows an example of pruning.
 Although the final curves at the left side of the picture are not available before finishing hyperparameter optimization,
-a pruner evaluates at each epoch how promising each trial will be and stops if it predicts to be unpromising.
+a pruner evaluates at each epoch how promising each trial will be and stops if it predicts it to be unpromising.
 
 <img src="/part2/hyperparameter-optimization-with-optuna/illustration_of_pruning.jpg" alt="Illustration of Pruning" />
 
-You can use `AllenNLPPruningCallback` that is the new feature of Optuna,
+Optuna provides an `AllenNLPPruningCallback`
 which allows users to prune unpromising trials with algorithms implemented in Optuna.
-`AllenNLPPruningCallback` is the interface to provide a way to use these pruning algorithms.
 
-You can enable a pruning callback by adding `optuner_pruner` to `epoch_callbacks` in your jsonnet configuration.
+You can enable a pruning callback by adding `optuner_pruner` to `epoch_callbacks` in
+your jsonnet configuration (inside the `trainer` parameters).
 A pruner determines whether it prune a training in each epoch,
 based on the `metrics` specified in initializing `AllenNLPExecutor`.
 
@@ -374,7 +376,7 @@ based on the `metrics` specified in initializing `AllenNLPExecutor`.
 ```
 
 After enabling pruning callback, you have to specify a pruner you want to use.
-In Optuna, some effient algorithms such as [SuccessiveHaving](https://arxiv.org/abs/1502.07943)
+In Optuna, some effient algorithms such as [SuccessiveHalving](https://arxiv.org/abs/1502.07943)
 and [Hyperband](http://jmlr.org/papers/v18/16-558.html) are available.
 In this example, we use `Hyperband` as the pruner.
 For more information about pruners of Optuna,
