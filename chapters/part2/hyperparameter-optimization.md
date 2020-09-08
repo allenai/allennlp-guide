@@ -34,11 +34,11 @@ A typical way to tune hyperparameters is random search.
 Random search samples hyperparameter from a search space randomly.
 We also note that random search samples a hyperparameter independently in each trial,
 which means each trial doesn't affect the results of other trials.
-Although random search often find good hyperparameters,
-there is some room to utilize the history of the previous trials.
+Although random search often finds good hyperparameters,
+using the history of previous trials can improve the search.
 
 Sequential Model-based Optimization (SMBO) is an approach that iterates between fitting a model
-and using them to make about choices which configuration to investigate in the next trial.
+and making choices which configuration to investigate in the next trial.
 For example, [Tree-structured Parzen Estimator (TPE)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization)
 was proposed as the one example of SMBO algorithm, which shows the performance over random search.
 
