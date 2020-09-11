@@ -90,13 +90,12 @@ local bert_model = "bert-base-uncased";
         },
         "encoder": {
             "type": "bert_pooler",
-            "pretrained_model": bert_model,
-            "requires_grad": false
+            "pretrained_model": bert_model
         }
     },
-    "iterator": {
-        "type": "basic",
-        "batch_size": 8
+    "data_loader": {
+        "batch_size": 8,
+        "shuffle": true
     },
     "trainer": {
         "optimizer": {

@@ -365,7 +365,7 @@ the log likelihood of the sequence. The module has transition probabilities as t
 and can find the sequence of most likely tags using the Viterbi algorithm.
 
 A CRF sequential tagger is implemented as the [`CrfTagger`
-module](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/ner/crf_tagger.py).
+model](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/tagging/models/crf_tagger.py).
 It takes a sequence of indexed tokens, embeds them using a `TextFieldEmbedder`, encodes them with a
 `Seq2SeqEncoder`, applies a `TimeDistributed` linear layer, and finally applies a
 `ConditionalRandomField` module.

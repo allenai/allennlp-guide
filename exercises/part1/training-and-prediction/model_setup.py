@@ -15,6 +15,12 @@ from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 
 
+# There's a warning when you call `forward_on_instances` that you don't need
+# to worry about right now, so we silence it.
+import warnings
+warnings.filterwarnings("ignore")
+
+
 class ClassificationTsvReader(DatasetReader):
     def __init__(self,
                  lazy: bool = False,

@@ -455,3 +455,62 @@ code below.
 <codeblock source="part2/representing-text-as-features/interacting_with_tensors" setup="part2/representing-text-as-features/setup"></codeblock>
 
 </exercise>
+
+
+<exercise id="10" title="How to upload transformer weights and tokenizers to HuggingFace">
+
+One way AllenNLP is commonly used is for fine-tuning transformer models to specific tasks. We host several of these models on our [demo site](https://demo.allennlp.org/), such as a BERT model applied to the [SQuAD v1.1](https://rajpurkar.github.io/SQuAD-explorer/) reading comprehension task, and a RoBERTa model applied to the [SNLI](https://nlp.stanford.edu/projects/snli/) textual entailment task.
+
+*You can find the code and configuration files used to train these models in the [AllenNLP Models](https://github.com/allenai/allennlp-models) repository.*
+
+This section will show you how to take a fine-tuned transformer model, like one of these, and upload the weights and/or the tokenizer to [HuggingFace’s model hub](https://huggingface.co/models).
+
+*Note that we are talking about uploading only the transformer part of your model, not including any task-specific heads that you’re using.*
+
+## Step 1: Load your tokenizer and your trained model
+
+```python
+from allennlp.common.params import Params
+from allennlp.common.plugins import import_plugins
+from allennlp.data.tokenizers import Tokenizer, PretrainedTransformerTokenizer
+from allennlp.models import load_archive
+from allennlp.modules.token_embedders import PretrainedTransformerEmbedder
+
+# Change this to your serialization directory.
+serialization_dir = "~/my-trained-model"
+
+# Make sure all of the classes our model and tokenizer use are registered.
+import_plugins()
+
+# Load the archive from the serialization directory, which contains the trained
+# model and the params.
+archive = load_archive(serialization_dir + "/model.tar.gz")
+
+# Pull out just the PretrainedTransformerEmbedder part of the model.
+# You may need to adjust this line slightly depending on how your model is set up.
+transformer_embedder: PretrainedTransformerEmbedder = \
+    archive.model._source_embedder._token_embedders["tokens"]
+
+# Now load the corresponding tokenizer.
+# Again, you may need to adjust this line depending on how your config is set up.
+tokenizer: PretrainedTransformerTokenizer = Tokenizer.from_params(
+    archive.config["dataset_reader"]["source_tokenizer"]
+)
+```
+
+If you get a `ConfigurationError` during this step that says something like “foo is not a registered name for bar”, that just means you need to import any other classes that your model or dataset reader use so they get registered.
+
+## Step 2: Serialize your tokenizer and just the transformer part of your model using the HuggingFace transformers API.
+
+```python
+transformer_dir = "~/my-cool-transformer"
+
+transformer_embedder.transformer_model.save_pretrained(transformer_dir)
+tokenizer.tokenizer.save_pretrained(transformer_dir)
+```
+
+## Step 3: Upload the serialized tokenizer and transformer to the HuggingFace model hub.
+
+Finally, just follow the steps from HuggingFace’s documentation to upload your new cool transformer with their CLI.
+
+</exercise>
