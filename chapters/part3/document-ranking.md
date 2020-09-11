@@ -10,7 +10,7 @@ type: chapter
 This chapter provides an example of how to perform document ranking with AllenNLP. We'll take a look
 at more advanced features such as different kinds of fields, the `TimeDistributed` module, and
 making our own metrics. The full code for this guide can be found
-[here](https://github.com/jacobdanovitch/allenrank).
+[here](https://github.com/jacobdanovitch/allennlp_ranking_guide).
 
 </textblock>
 
@@ -40,7 +40,7 @@ This is [used in Bing](https://twitter.com/albondarenko2/status/1225802655504781
 Each option will come with its own continuous score; our goal is to predict this score as closely as
 possible, given the query, the question, and the option itself. Since there are no
 training/validation/testing datasets provided by the authors, you can use [this
-script](https://github.com/jacobdanovitch/allenrank/blob/master/scripts/data_split.py) to download and split the dataset:
+script](https://github.com/jacobdanovitch/allennlp_ranking_guide/blob/master/scripts/data_split.py) to download and split the dataset:
 
 ```shell
 $ python data_split.py "https://github.com/microsoft/MIMICS/raw/master/data/MIMICS-ClickExplore.tsv"
