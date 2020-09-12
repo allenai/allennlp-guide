@@ -100,6 +100,12 @@ const Head = ({ title, description }) => (
                             gtag('config', '${gaId}');
                         `}</script>
                     )}
+                    <script
+                        src="https://stats.allenai.org/init.min.js"
+                        data-spa="true"
+                        data-app-name="allennlp-guide"
+                        async
+                    />
                 </Helmet>
             );
         }}
