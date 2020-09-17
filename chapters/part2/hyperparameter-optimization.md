@@ -350,6 +350,13 @@ if __name__ == '__main__':
 
 <exercise id="6" title="Pruning poor performing trials">
 
+### Attention!
+
+The pruning integration for AllenNLP is a new feature and not released yet.
+Please install Optuna from the master branch to try this feature in your environment.
+
+`pip install git+https://github.com/optuna/optuna.git@master`
+
 Hyperparameter optimization often takes a long time to find good hyperparameters.
 If you can find and stop unpromising trials with bad hyperparameters, you can reduce the time of optimization and get good hyperparameters faster.
 Stopping unpromising trials is called `pruning`.
