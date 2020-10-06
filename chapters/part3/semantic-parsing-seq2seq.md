@@ -91,7 +91,7 @@ use a bracketed [prefix notation](https://en.wikipedia.org/wiki/Polish_notation)
 like this:
 
 ```
-(- ( * 7 3) 2)
+(- (* 7 3) 2)
 (/ 8  4)
 ```
 
@@ -101,7 +101,17 @@ of operators, i.e., that `seven times three minus two` should be translated to `
 
 This [script](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/scripts/generate_data.py)
 respects the conventional order of operations and produces natural language arithmetic statements paired with
-corresponding arithmetic expressions, with an arbitrary number of operators per expression. We use it to generate
+corresponding arithmetic expressions, with an arbitrary number of operators per expression. Instead of using arithmetic symbols
+like `+`, `-`, the script uses operator names like `add` and `subtract` to be able to define them as Python functions. Making
+these Python functions is desirable since we'll use the typing information to instantiate a grammar from these functions later.
+We'll cover those details later, but all you need to know is that the targets look like the following:
+
+```
+(subtract (multiply 7 3) 2)
+(divide 8 4)
+```
+
+We use the script to generate
 [train](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_train.tsv),
 [validation](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_dev.tsv),
 and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
@@ -114,7 +124,8 @@ for the task. We covered defining metrics in [Building your model section](/buil
 
 For Natural Language Arithmetic, we can measure the quality of predictions using two metrics:
 
-1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses. For example, `( + 2 3 )` is well-formed, and `( + 3)` and `(+ 2 3` are not. Note that this metric does not depend on the target.
+1. Well-formedness: Measures whether a given prediction has a sensisble order of operators and their arguments, and balanced parentheses.
+For example, `(add 2 3)` is well-formed, and `(add 3)` and `(add 2 3 ` are not. Note that this metric does not depend on the target.
 2. Sequence accuracy: Measures whether the prediction and target are exactly the same. This is stricter than well-formedness because an accurate sequence is automatically well-formed.
 
 We could have measured just the sequence accuracy alone, but it is useful to know whether the model is producing well-formed outputs
@@ -159,7 +170,7 @@ have two `TextFields` in our `Instance`, one for the input tokens and one for th
 There are two important things to notice:
 
 1. We are using different vocabulary namespaces for our input tokens and our output tokens.  The
-   reason we are doing this is becaus this is the easiest way to get a vocabulary for all allowable
+   reason we are doing this is because this is the easiest way to get a vocabulary for all allowable
 output tokens in the programming language, which we can use in the model's decoder.  This also has
 the side effect of giving a separate embedding for any overlapping tokens in the input and output
 language.  An open parenthesis, or the number 2, will get different embeddings if it's in the input
@@ -179,6 +190,35 @@ will be created by iterating once over the data.  If you have special vocabulary
 aren't handled nicely in this way, see the [`Vocabulary` section](/reading-data#3) of this guide.
 
 ## Model
+
+Let us now look at the key parts of the `Seq2seq` model. A Seq2seq model typically involves two sequential modules,
+like recurrent neural networks with LSTM cells, one that processes the input sequence one token at a time, and another
+that outputs a predicted output sequence, one token at a time. These two modules are usually called encoder and decoder respectively.
+The following is a high-level gist of how a Seq2seq model is trained (with two caveats):
+
+1. We embed the source tokens and encode the sequence using a sequence encoder.
+2. We initialize a sequence decoder with the final state of the encoder and use the decoder to run the following steps as many
+times as we want the maximum length of the output sequence to be:
+    - 2a. Embed the token output by the decoder from the previous step.
+    - 2b. Decode (or more precisely, encode with the decoder) the embedded output.
+    - 2c. Classify the decoded output to predict an index into the target vocabulary. The predicted index indicates the output
+that will be embedded in the next decoding step.
+3. We compute a loss by comparing the predicted sequence of tokens against the target tokens.
+
+Now for the caveats. In practice, to make this process work, two modifications are typically made.
+
+### Attention
+
+In the process described above, the only information the decoder gets about the input sequence is in the form of the final state
+of the encoder after it processes the input sequence. Decoding the entire output sequence from just this information can be very difficult.
+To make it easier, Seq2seq models use a so called [attention](https://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf)
+mechanism that lets the decoder access a summary of the outputs of the encoder after processing each input token. The summary itself is computed
+based on the current state of the decoder. (TODO: pointers to code)
+
+If using attention, we instead decode a concatenation of the embedded output, and a summary of the enoded source sequence.
+
+### Scheduled Sampling
+
 
 
 </exercise>
@@ -248,8 +288,8 @@ for more details. This is the configuration we'll use:
         "vocab_namespace": "target_tokens",
         "embedding_dim": 50
       },
-      "scheduled_sampling_ratio": 0.9,
-      "beam_size": 5,
+      "scheduled_sampling_ratio": 0.5,
+      "beam_size": 10,
       "token_based_metric": "nla_metric"
     }
   },
@@ -297,8 +337,8 @@ metric, which we discussed earlier, on the validation set for early stopping.
 At the end of training, you'll see the following numbers for the validation set for metrics from the best epoch.
 
 ```
-"best_validation_well_formedness": 0.478
-"best_validation_sequence_accuracy": 0.37
+"best_validation_well_formedness": 0.581
+"best_validation_sequence_accuracy": 0.242
 ```
 
 You can measure the performance of the model on the test set by running the following command
@@ -311,8 +351,8 @@ allennlp evaluate /tmp/nla_seq2seq/model.tar.gz data/nla_with_meaning_rep_test.t
 and it should give you the following numbers
 
 ```
-"well_formedness": 0.457
-"sequence_accuracy": 0.356
+"well_formedness": 0.602
+"sequence_accuracy": 0.245
 ```
 
 </exercise>
@@ -346,7 +386,20 @@ Let's push the model harder.
 
 <codeblock source="part3/semantic-parsing-seq2seq/predictor_source_hard" setup="part3/semantic-parsing-seq2seq/predictor_setup"></codeblock>
 
-Now we see some issues. For both the inputs above, we see that some of the numbers and the operators are not correctly translated. Also, we see ill-formed subexpressions: `( * * 2 )`, `( * 8 9 8 9 )`, `( - ( ) ( ) ) ( / 5 )` etc.
+Now we see some problems. Both the predicted expressions are ill-formed. These may be a little hard to read, but the first prediction is essentially
+`(subtract (multiply ..) (add ..)) 1)`, with a lone `1)` at the end of a complete expression, and the second from last `add` in the second prediction
+does not have a second argument.
+
+Recall that the `well_formedness` measure on the test set for this model was `0.602`, meaning that about `40%` of the predictions made by
+this model on expressions with 1 to 10 operators (which was how generated this dataset) are expected to be ill-formed. It looks like the model struggles
+particularly with expressions having more operators.
+
+How can we fix this issue? One way is to increase the capacity of the model (by adding more parameters), and/or train it longer. But that still
+does not guarantee that the model produces well-formed outputs with a much larger number of operators. Let's consider another option.
+
+Note that at every step while producing the output sequence, the `Seq2Seq` model chooses between tokens like `(`, `add`, `7` etc. Many of these options
+are illegal according our rules of Natural Language Arithmetic. For example, after producing a `(`, the model does not need to even consider the
+option of producing a number, since any valid expression will only have an operator in that position. We will explore this option in the next chapter.
 
 </exercise>
 
