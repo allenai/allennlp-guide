@@ -419,11 +419,11 @@ the predicted sequence will be adversely affected because the decoder gets input
 targets at training time (often referred to as **teacher forcing**) is hence suboptimal. If we didn't use the target sequences as inputs at training time, and
 only used the predicted inputs, to match the test time setup, the model may not learn anything at all due to the lack of sufficient supervision.
 
-A solution that is the use of
+A solution is to use
 [Scheduled Sampling](https://www.semanticscholar.org/paper/Scheduled-Sampling-for-Sequence-Prediction-with-Bengio-Vinyals/df137487e20ba7c6e1e2b9a1e749f2a578b5ad99)
 where we randomly use the predicted tokens as inputs at training time with a specific probability. The other times, we use the target tokens as inputs.
-This trick works well in practice. The scheduled sampling ratio (i.e. the probability of using predicted tokens as inputs) is a hyperparameter that needs to be tuned
-for the task being modeled. 
+This trick works well in practice, and has been shown to provide sufficient training signals to the model while making it robust to unseen inputs.
+The scheduled sampling ratio (i.e. the probability of using predicted tokens as inputs) is a hyperparameter that needs to be tuned for the task being modeled. 
 
 The following is a snippet from our `AutoRegressiveSeqDecoder` class that shows how probabilities of output tokens are computed with and without scheduled sampling.
 
