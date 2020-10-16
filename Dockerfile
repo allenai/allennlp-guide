@@ -21,4 +21,4 @@ COPY exercises/ exercises/
 RUN npm run build
 
 EXPOSE 8000
-CMD ["gatsby", "serve", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["npm", "run", "start" ]

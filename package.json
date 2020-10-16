@@ -54,6 +54,7 @@
         "styled-components": "^4.4.1"
     },
     "scripts": {
+        "start": "gatsby serve --port 8000 --host 0.0.0.0",
         "build": "gatsby build",
         "dev": "gatsby develop",
         "lint": "eslint '**/*.{js,ts,tsx,json}'",
