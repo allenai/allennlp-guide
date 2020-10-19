@@ -208,7 +208,7 @@ label, which will give us a categorical probability distribution over our label 
 
 <img src="/part1/your-first-model/allennlp-model.svg" alt="AllenNLP model" />
 
-Now that we now what our model is going to do, we need to implement it. First, we'll say a few words
+Now that we know what our model is going to do, we need to implement it. First, we'll say a few words
 about how `Models` work in AllenNLP:
 
 * An AllenNLP `Model` is just a PyTorch `Module`
