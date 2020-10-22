@@ -1,5 +1,5 @@
-inputs = ['seven times two plus three minus six over two plus four',
-          'eight over nine times six minus three plus seven over five minus one']
+inputs = ['eight over nine times six minus three plus seven over five minus one',
+          'seven times eight plus five minus six plus one plus three plus two over seven']
 
 
 for nla_input in inputs:

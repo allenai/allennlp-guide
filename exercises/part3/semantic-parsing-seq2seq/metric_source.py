@@ -1,17 +1,15 @@
 def evaluate(prediction: str, target: str) -> Dict[str, float]:
     metric = NlaMetric()
-    prediction_list = prediction.split(" ")
-    target_list = target.split(" ")
-    metric([prediction_list], [target_list])
+    metric([prediction], [target])
     return  metric.get_metric(reset=True)
 
 
-target = '( - ( * 7 3 ) 2 )'
+target = '(subtract (multiply 7 3) 2)'
 
 predictions = [
-    '( - ( * 7 3 ) 2 )',
-    '( - ( * 6 4 ) 5 )',
-    '- ( ) + /',
+    '(subtract (multiply 7 3) 2)',
+    '(subtract (multiply 6 4) 5)',
+    'subtract () add divide',
 ]
 
 for prediction in predictions:
