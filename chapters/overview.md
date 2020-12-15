@@ -93,6 +93,10 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 
 ## Part 3
 
+* [Semantic parsing: Intro and Seq2Seq model](/semantic-parsing-seq2seq)
+* [Semantic parsing: Grammar-based decoding](/semantic-parsing-grammar)
+* [Semantic parsing: Weak supervision](/semantic-parsing-weakly-supervised)
+* [Semantic parsing: Neural module networks](/semantic-parsing-nmns)
 * [Coming soon!](/coming-soon): A list of what we're working on and how to let us know what you'd
   like to see.
 
