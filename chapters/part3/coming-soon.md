@@ -33,12 +33,18 @@ These are chapters that we'd like to write soon:
 
 <exercise id="2" title="Coming soon to part 3">
 
+We are currently working on a series of Semantic Parsing chapters. The
+[introduction chapter](/semantic-parsing-seq2seq) is already out. The ones coming out soon are
+
+* Grammar-constrained decoding for semantic parsing
+* Weakly supervised semantic parsing
+* Neural module networks for semantic parsing
+
 Is there an NLP task that you would like to do with AllenNLP, but you're not sure how?
 [Let us know!](https://github.com/allenai/allennlp-guide#requesting-new-chapters)
 
-These are some of the things that we could write about for part 3:
+These are some of the other things that we could write about for part 3:
 
-* Semantic parsing (in progress)
 * Zero-shot text classification
 * GANs and other alternating losses
 * Sequence labeling

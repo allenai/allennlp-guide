@@ -93,6 +93,8 @@ prior knowledge of AllenNLP—the whole point of this guide is to provide onboar
 
 ## Part 3
 
+* [Semantic parsing: Intro and Seq2Seq model](/semantic-parsing-seq2seq): Introduction to semantic parsing 
+  and building a Seq2seq semantic parser for a toy task
 * [Coming soon!](/coming-soon): A list of what we're working on and how to let us know what you'd
   like to see.
 
