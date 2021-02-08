@@ -4,9 +4,9 @@
 model, dataset_reader = run_training_loop()
 
 # Now we can evaluate the model on a new dataset.
-test_data = dataset_reader.read('quick_start/data/movie_review/test.tsv')
-test_data.index_with(model.vocab)
-data_loader = DataLoader(test_data, batch_size=8)
+test_data = list(dataset_reader.read("quick_start/data/movie_review/test.tsv"))
+data_loader = SimpleDataLoader(test_data, batch_size=8)
+data_loader.index_with(model.vocab)
 
 results = evaluate(model, data_loader)
 print(results)

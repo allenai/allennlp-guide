@@ -15,41 +15,40 @@ from allennlp.training.metrics import CategoricalAccuracy
 
 @DatasetReader.register("classification-tsv")
 class ClassificationTsvReader(DatasetReader):
-    def __init__(self,
-                 lazy: bool = False,
-                 tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None,
-                 max_tokens: int = None):
-        super().__init__(lazy)
+    def __init__(
+        self,
+        tokenizer: Tokenizer = None,
+        token_indexers: Dict[str, TokenIndexer] = None,
+        max_tokens: int = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
         self.tokenizer = tokenizer or WhitespaceTokenizer()
-        self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
+        self.token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 
-    def text_to_instance(self,
-                         tokens: List[Token],
-                         label: str = None) -> Instance:
+    def text_to_instance(self, tokens: List[Token], label: str = None) -> Instance:
         if self.max_tokens:
-            tokens = tokens[:self.max_tokens]
+            tokens = tokens[: self.max_tokens]
         text_field = TextField(tokens, self.token_indexers)
-        fields = {'text': text_field}
+        fields = {"text": text_field}
         if label:
-            fields['label'] = LabelField(label)
+            fields["label"] = LabelField(label)
         return Instance(fields)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
-        with open(file_path, 'r') as lines:
+        with open(file_path, "r") as lines:
             for line in lines:
-                text, sentiment = line.strip().split('\t')
+                text, sentiment = line.strip().split("\t")
                 tokens = self.tokenizer.tokenize(text)
                 yield self.text_to_instance(tokens, sentiment)
 
 
 @Model.register("simple_classifier")
 class SimpleClassifier(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 embedder: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder):
+    def __init__(
+        self, vocab: Vocabulary, embedder: TextFieldEmbedder, encoder: Seq2VecEncoder
+    ):
         super().__init__(vocab)
         self.embedder = embedder
         self.encoder = encoder
@@ -57,9 +56,9 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
         self.accuracy = CategoricalAccuracy()
 
-    def forward(self,
-                text: Dict[str, torch.Tensor],
-                label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
+    def forward(
+        self, text: Dict[str, torch.Tensor], label: torch.Tensor = None
+    ) -> Dict[str, torch.Tensor]:
         print("In model.forward(); printing here just because binder is so slow")
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -72,10 +71,10 @@ class SimpleClassifier(Model):
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
         # Shape: (1,)
-        output = {'probs': probs}
+        output = {"probs": probs}
         if label is not None:
             self.accuracy(logits, label)
-            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
+            output["loss"] = torch.nn.functional.cross_entropy(logits, label)
         return output
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
