@@ -3,7 +3,13 @@ from typing import Dict, Iterable, List, Tuple
 
 import allennlp
 import torch
-from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
+from allennlp.data import (
+    DataLoader,
+    DatasetReader,
+    Instance,
+    Vocabulary,
+    TextFieldTensors,
+)
 from allennlp.data.data_loaders import SimpleDataLoader
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
@@ -41,8 +47,7 @@ class ClassificationTsvReader(DatasetReader):
                     tokens = tokens[: self.max_tokens]
                 text_field = TextField(tokens, self.token_indexers)
                 label_field = LabelField(sentiment)
-                fields = {"text": text_field, "label": label_field}
-                yield Instance(fields)
+                yield Instance({"text": text_field, "label": label_field})
 
 
 class SimpleClassifier(Model):
@@ -56,7 +61,7 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
 
     def forward(
-        self, text: Dict[str, torch.Tensor], label: torch.Tensor
+        self, text: TextFieldTensors, label: torch.Tensor
     ) -> Dict[str, torch.Tensor]:
         print("In model.forward(); printing here just because binder is so slow")
         # Shape: (batch_size, num_tokens, embedding_dim)

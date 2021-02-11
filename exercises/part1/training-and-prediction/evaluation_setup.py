@@ -3,7 +3,13 @@ from typing import Dict, Iterable, List, Tuple
 
 import torch
 
-from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
+from allennlp.data import (
+    DataLoader,
+    DatasetReader,
+    Instance,
+    Vocabulary,
+    TextFieldTensors,
+)
 from allennlp.data.data_loaders import SimpleDataLoader
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
@@ -42,8 +48,7 @@ class ClassificationTsvReader(DatasetReader):
                     tokens = tokens[: self.max_tokens]
                 text_field = TextField(tokens, self.token_indexers)
                 label_field = LabelField(sentiment)
-                fields = {"text": text_field, "label": label_field}
-                yield Instance(fields)
+                yield Instance({"text": text_field, "label": label_field})
 
 
 class SimpleClassifier(Model):
@@ -58,7 +63,7 @@ class SimpleClassifier(Model):
         self.accuracy = CategoricalAccuracy()
 
     def forward(
-        self, text: Dict[str, torch.Tensor], label: torch.Tensor
+        self, text: TextFieldTensors, label: torch.Tensor
     ) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -121,8 +126,8 @@ def build_trainer(
     train_loader: DataLoader,
     dev_loader: DataLoader,
 ) -> Trainer:
-    parameters = [[n, p] for n, p in model.named_parameters() if p.requires_grad]
-    optimizer = AdamOptimizer(parameters)
+    parameters = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
+    optimizer = AdamOptimizer(parameters)  # type: ignore
     trainer = GradientDescentTrainer(
         model=model,
         serialization_dir=serialization_dir,

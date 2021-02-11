@@ -3,10 +3,10 @@
 # should use the same tokenizer that was used with ELMo, which is an older version
 # of spacy.  We're using a whitespace tokenizer here for ease of demonstration
 # with binder.
-tokenizer = WhitespaceTokenizer()
+tokenizer: Tokenizer = WhitespaceTokenizer()
 
 # Represents each token with an array of characters in a way that ELMo expects.
-token_indexer = ELMoTokenCharactersIndexer()
+token_indexer: TokenIndexer = ELMoTokenCharactersIndexer()
 
 # Both ELMo and BERT do their own thing with vocabularies, so we don't need to add
 # anything, but we do need to construct the vocab object so we can use it below.
@@ -18,7 +18,7 @@ text = "This is some text ."
 tokens = tokenizer.tokenize(text)
 print("ELMo tokens:", tokens)
 
-text_field = TextField(tokens, {'elmo_tokens': token_indexer})
+text_field = TextField(tokens, {"elmo_tokens": token_indexer})
 text_field.index(vocab)
 
 # We typically batch things together when making tensors, which requires some
@@ -31,7 +31,7 @@ print("ELMo tensors:", tensor_dict)
 # Any transformer model name that huggingface's transformers library supports will
 # work here.  Under the hood, we're grabbing pieces from huggingface for this
 # part.
-transformer_model = 'bert-base-cased'
+transformer_model = "bert-base-cased"
 
 # To do modeling with BERT correctly, we can't use just any tokenizer; we need to
 # use BERT's tokenizer.
@@ -44,7 +44,7 @@ text = "Some text with an extraordinarily long identifier."
 tokens = tokenizer.tokenize(text)
 print("BERT tokens:", tokens)
 
-text_field = TextField(tokens, {'bert_tokens': token_indexer})
+text_field = TextField(tokens, {"bert_tokens": token_indexer})
 text_field.index(vocab)
 
 tensor_dict = text_field.as_tensor(text_field.get_padding_lengths())
@@ -72,7 +72,7 @@ print("Question tokens:", question_tokens)
 combined_tokens = tokenizer.add_special_tokens(context_tokens, question_tokens)
 print("Combined tokens:", combined_tokens)
 
-text_field = TextField(combined_tokens, {'bert_tokens': token_indexer})
+text_field = TextField(combined_tokens, {"bert_tokens": token_indexer})
 text_field.index(vocab)
 
 tensor_dict = text_field.as_tensor(text_field.get_padding_lengths())

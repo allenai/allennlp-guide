@@ -18,21 +18,21 @@ class ModelWithGaussian(Registrable):
         self.gaussian = gaussian
 
     @classmethod
-    def from_lazy_objects(cls, gaussian: Lazy[Gaussian]) -> 'ModelWithGaussian':
+    def from_lazy_objects(cls, gaussian: Lazy[Gaussian]) -> "ModelWithGaussian":
         # Pretend that we needed to do some non-trivial processing / reading from
         # disk in order to construct this object.
         vocab = Vocabulary()
         gaussian_ = gaussian.construct(vocab=vocab)
         return cls(vocab=vocab, gaussian=gaussian_)
 
+
 # In order to use a constructor other than __init__, we need to inherit from
 # Registrable, not just FromParams, and register the class with the separate
 # constructor.  And because we're registering the Registrable class itself, we
 # can't do this as a decorator, like we typically do.
-ModelWithGaussian.register(
-    "default",
-    constructor="from_lazy_objects"
-)(ModelWithGaussian)
+ModelWithGaussian.register("default", constructor="from_lazy_objects")(
+    ModelWithGaussian
+)
 ModelWithGaussian.default_implementation = "default"
 
 

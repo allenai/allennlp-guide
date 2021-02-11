@@ -9,7 +9,7 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
 
     def forward(
-        self, text: Dict[str, torch.Tensor], label: torch.Tensor
+        self, text: TextFieldTensors, label: torch.Tensor
     ) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)

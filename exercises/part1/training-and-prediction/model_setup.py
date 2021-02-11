@@ -1,8 +1,7 @@
 from typing import Dict, Iterable, List
 
 import torch
-from allennlp.data import DatasetReader, Instance
-from allennlp.data import Vocabulary
+from allennlp.data import DatasetReader, Instance, Vocabulary, TextFieldTensors
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
@@ -44,5 +43,4 @@ class ClassificationTsvReader(DatasetReader):
                     tokens = tokens[: self.max_tokens]
                 text_field = TextField(tokens, self.token_indexers)
                 label_field = LabelField(sentiment)
-                fields = {"text": text_field, "label": label_field}
-                yield Instance(fields)
+                yield Instance({"text": text_field, "label": label_field})

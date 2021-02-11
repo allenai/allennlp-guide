@@ -1,15 +1,14 @@
 # To create fields, simply pass the data to constructor.
 # NOTE: Don't worry about the token_indexers too much for now. We have a whole
 # chapter on why TextFields are set up this way, and how they work.
-tokens = [Token('The'), Token('best'), Token('movie'), Token('ever'), Token('!')]
-token_indexers = {'tokens': SingleIdTokenIndexer()}
+tokens = [Token("The"), Token("best"), Token("movie"), Token("ever"), Token("!")]
+token_indexers: Dict[str, TokenIndexer] = {"tokens": SingleIdTokenIndexer()}
 text_field = TextField(tokens, token_indexers=token_indexers)
 
-label_field = LabelField('pos')
+label_field = LabelField("pos")
 
 sequence_label_field = SequenceLabelField(
-    ['DET', 'ADJ', 'NOUN', 'ADV', 'PUNKT'],
-    text_field
+    ["DET", "ADJ", "NOUN", "ADV", "PUNKT"], text_field
 )
 
 # You can use print() fields to see their content
@@ -59,7 +58,7 @@ print(sequence_label_field.as_tensor(padding_lengths))
 # Fields know how to batch tensors
 tensor1 = label_field.as_tensor(label_field.get_padding_lengths())
 
-label_field2 = LabelField('pos')
+label_field2 = LabelField("pos")
 label_field2.index(vocab)
 tensor2 = label_field2.as_tensor(label_field2.get_padding_lengths())
 

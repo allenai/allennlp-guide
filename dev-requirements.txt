@@ -1,0 +1,4 @@
+# Checks style, syntax, and other useful errors.
+flake8
+mypy==0.800
+black==20.8b1

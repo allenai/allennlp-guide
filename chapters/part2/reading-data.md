@@ -83,13 +83,13 @@ available for a wide range of NLP tasks, including:
 * [Seq2Seq tasks](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/generation/dataset_readers/seq2seq.py)
 * [Constituency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/penn_tree_bank.py)
   and
-  [dependency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/universal_dependencies.py)
+  [Dependency parsing](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/structured_prediction/dataset_readers/universal_dependencies.py)
 * [Reading comprehension](https://github.com/allenai/allennlp-models/tree/master/allennlp_models/rc/dataset_readers)
 * [Semantic parsing](https://github.com/allenai/allennlp-semparse)
 
 You can implement your own dataset reader by subclassing the `DatsetReader` class. The code snippet
 below is the dataset reader we implemented in [Your first model](/your-first-model). The returned
-dataset is a list of `Instances` by default.
+dataset is an iterable of `Instances`.
 
 <codeblock source="part2/reading-data/dataset_reader_basic_source" setup="part2/reading-data/dataset_reader_basic_setup"></codeblock>
 
@@ -109,9 +109,7 @@ instance = reader.text_to_instance(text, label)
 
 `DatasetReaders` have two methods—`_read()` and `read()`. `_read()` is defined as an abstract
 method, and you must override and implement your own when building a `DatasetReader` subclass for
-your dataset. `read()` is the main method called by clients of the dataset reader. It implements
-extra functionality such as caching and lazy loading, and calls `_read()` internally. Both methods
-return an iterable of `Instances`.
+your dataset. `read()` is the main method called by clients of the dataset reader. It basically just wraps `_read()` with some extra internal functionality. Both methods return an iterable of `Instances`.
 
 The main method, `read()`, takes a filename as its parameter. This separates the parameterization of
 the `DatasetReader` (which happens in the constructor) from the data that the reader is applied to.
@@ -139,50 +137,6 @@ from allennlp.common.file_utils import cached_path
         with open(cached_path(file_path), 'r') as lines:
             for line in lines:
 ```
-
-## Lazy mode
-
-Dataset readers also support reading data in a lazy manner, where a  `DatasetReader` yields
-instances as needed rather than returning a list of all instances at once. This comes in handy when
-your dataset is too big to fit into memory or you want to start training your model immediately. The
-lazy mode can also be used if you want different behavior at each epoch, for example, in order to do
-some sort of sampling.
-
-When `lazy=True` is passed to a dataset reader's constructor, its `read()` method returns a
-`LazyInstances` object (instead of a list of `Instances`), which is a wrapper around an iterator
-that internally calls `_read()`.
-
-<codeblock source="part2/reading-data/dataset_reader_lazy"></codeblock>
-
-In order for this to work, your `DatasetReader` must do two things.  First, it must take a `lazy`
-argument to its constructor, and pass it on to the super class.  We handle this in our dataset
-reader by taking `**kwargs` and passing it along (which also future-proofs our code, if AllenNLP
-ever adds new functionality to the base class).
-
-Second, the `DatasetReader` must use `yield` statements in `_read` instead of simply returning a
-list of `Instances`.  Otherwise, the whole list will be brought into memory at the same time, and
-using `lazy` will be pointless.  This is why AllenNLP code typically uses `yield` in a dataset
-reader—it lets you be flexible about whether you want to lazily load your data.
-
-# Caching instances
-
-Reading and preprocessing large datasets can take a very long time. `DatasetReaders` can cache
-datasets by serializing created instances and writing them to disk. The next time the same file is
-requested the instances are deserialized from the disk instead of being created from the file.
-
-<codeblock source="part2/reading-data/dataset_reader_cache"></codeblock>
-
-Instances are serialized by `jsonpickle` by default, although you can override this behavior if you
-want.  To do this, either override the `serialize_instance` and `deserialize_instance` methods in
-your `DatasetReader` (if you one a one-instance-per-line serialization), or the
-`_instances_to_cache_file` and `_instances_from_cache_file` methods (if you want something that is
-more efficient to store and read).
-
-The objects that get stored can be pretty large, so this is often only useful if you have
-particularly slow preprocessing.
-
-</exercise>
-
 
 <exercise id="3" title="Vocabulary">
 
@@ -263,41 +217,17 @@ class SimpleClassifier(Model):
 
 <exercise id="4" title="Datasets, the dataset loader, and samplers">
 
-AllenNLP heavily relies on PyTorch's data loading utilities. The most important component is the
-[`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/), which, given a `Dataset`,
-provides a Python iterable over the (possibly batched) instances.
+AllenNLP turns `Instance` objects into batches of tensors through a [`DataLoader`](http://docs.allennlp.org/main/api/data/data_loaders/data_loader/#dataloader).
 
-Datasets are represented as `AllennlpDataset` objects, which are a thin wrapper around a collection
-of `Instances` and are basically identical to PyTorch's `Dataset` except that they support some
-extra features such as indexing with vocabulary. AllenNLP's `DatasetReaders` all return an
-`AllennlpDataset` when they finish reading a dataset.
+For most scenarios, the [`MultiProcessDataLoader`](http://docs.allennlp.org/main/api/data/data_loaders/multiprocess_data_loader/#multiprocessdataloader) is the implementation you'll want to use. This `DataLoader` takes a `DatasetReader` along with a `path` to feed to the `DatasetReader` and produces an iterable of batched tensor dictionaries.
 
-[`DataLoader`](http://docs.allennlp.org/master/api/data/dataloader/) takes a `Dataset` and produces
-an iterable over the dataset. By default, it yields single instances in the original order, but you
-can give various options to `DatasetLoader` to customize how it iterates over, samples, and/or
-batches the instances. For example, if you give the `batch_size` argument, it will yield batches of
-the specified size. You can also shuffle the dataset by providing `shuffle=True`.
-
-AllenNLP's `DataLoader` is a very simple subclass of PyTorch's `DataLoader`, with the main difference
-being a custom `collate` function, which is how PyTorch takes instances and batches them together.
-In our `collate` function, we create a `Batch` of `Instances` and convert it into a dictionary of
-tensors with the proper padding applied:
-
-```python
-def allennlp_collate(instances: List[Instance]) -> TensorDict:
-    batch = Batch(instances)
-    return batch.as_tensor_dict(batch.get_padding_lengths())
-```
-
-You can give a `Sampler` to the `DatasetLoader`'s `batch` argument in order to further customize its
-behavior. `Samplers` specify how to iterate over the instances in the given dataset. A
-`SequentialSampler`, for example, samples instances sequentially in the original order. A
-`RandomSampler` samples instances randomly, with or without replacement. A `BatchSampler` wraps
-another `Sampler` and yields mini-batches of instances produced by the underlying sampler.
+In the simplest use case, you can just supply the `batch_size` parameter and it will batch instances together in groups of `batch_size` in the order that it gets them from the `DatasetReader`.
 
 <codeblock source="part2/reading-data/data_loader_basic" setup="part2/reading-data/data_loader_setup"></codeblock>
 
-`BucketBatchSampler` is the most important `Sampler` in practice and is a major feature of AllenNLP.
+You can easily customize how the `DataLoader` iterates over, samples, and/or batches the instances by specifying a [`BatchSampler`](http://docs.allennlp.org/main/api/data/samplers/batch_sampler/#batchsampler).
+
+The [`BucketBatchSampler`](http://docs.allennlp.org/main/api/data/samplers/bucket_batch_sampler/#bucketbatchsampler) is the most important `BatchSampler` in practice and is a major feature of AllenNLP.
 It sorts the instances by the length of their longest `Field` (or by any sorting keys you specify)
 and automatically groups them so that instances of similar lengths get batched together. This helps
 minimize the amount of padding and makes training more efficient. `Fields` all implement `__len__`,

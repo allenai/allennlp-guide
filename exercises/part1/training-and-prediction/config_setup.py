@@ -3,8 +3,8 @@ import json
 from typing import Dict, Iterable, List
 
 import torch
-from allennlp.data import DatasetReader, Instance, Vocabulary
-from allennlp.data.fields import LabelField, TextField
+from allennlp.data import DatasetReader, Instance, Vocabulary, TextFieldTensors
+from allennlp.data.fields import LabelField, TextField, Field
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
 from allennlp.models import Model
@@ -31,7 +31,7 @@ class ClassificationTsvReader(DatasetReader):
         if self.max_tokens:
             tokens = tokens[: self.max_tokens]
         text_field = TextField(tokens, self.token_indexers)
-        fields = {"text": text_field}
+        fields: Dict[str, Field] = {"text": text_field}
         if label:
             fields["label"] = LabelField(label)
         return Instance(fields)
@@ -57,7 +57,7 @@ class SimpleClassifier(Model):
         self.accuracy = CategoricalAccuracy()
 
     def forward(
-        self, text: Dict[str, torch.Tensor], label: torch.Tensor = None
+        self, text: TextFieldTensors, label: torch.Tensor = None
     ) -> Dict[str, torch.Tensor]:
         print("In model.forward(); printing here just because binder is so slow")
         # Shape: (batch_size, num_tokens, embedding_dim)

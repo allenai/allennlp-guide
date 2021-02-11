@@ -20,12 +20,12 @@ class ClassificationTsvReader(DatasetReader):
                     tokens = tokens[: self.max_tokens]
                 text_field = TextField(tokens, self.token_indexers)
                 label_field = LabelField(sentiment)
-                fields = {"text": text_field, "label": label_field}
+                fields: Dict[str, Field] = {"text": text_field, "label": label_field}
                 yield Instance(fields)
 
 
 dataset_reader = ClassificationTsvReader(max_tokens=64)
-instances = dataset_reader.read("quick_start/data/movie_review/train.tsv")
+instances = list(dataset_reader.read("quick_start/data/movie_review/train.tsv"))
 
 for instance in instances[:10]:
     print(instance)

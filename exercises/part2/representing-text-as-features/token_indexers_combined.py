@@ -1,20 +1,20 @@
 # Splits text into words (instead of wordpieces or characters).
-tokenizer = WhitespaceTokenizer()
+tokenizer: Tokenizer = WhitespaceTokenizer()
 
 # Represents each token with both an id from a vocabulary and a sequence of
 # characters.
-token_indexers = {
-    'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
-    'token_characters': TokenCharactersIndexer(namespace='character_vocab')
+token_indexers: Dict[str, TokenIndexer] = {
+    "tokens": SingleIdTokenIndexer(namespace="token_vocab"),
+    "token_characters": TokenCharactersIndexer(namespace="character_vocab"),
 }
 
 vocab = Vocabulary()
 vocab.add_tokens_to_namespace(
-    ['This', 'is', 'some', 'text', '.'],
-    namespace='token_vocab')
+    ["This", "is", "some", "text", "."], namespace="token_vocab"
+)
 vocab.add_tokens_to_namespace(
-    ['T', 'h', 'i', 's', ' ', 'o', 'm', 'e', 't', 'x', '.'],
-    namespace='character_vocab')
+    ["T", "h", "i", "s", " ", "o", "m", "e", "t", "x", "."], namespace="character_vocab"
+)
 
 text = "This is some text ."
 tokens = tokenizer.tokenize(text)
@@ -33,16 +33,14 @@ print("Combined tensor dictionary:", tensor_dict)
 # This will result in the `tag_` variable being set on each `Token` object, which
 # we will read in the indexer.
 tokenizer = SpacyTokenizer(pos_tags=True)
-vocab.add_tokens_to_namespace(['DT', 'VBZ', 'NN', '.'],
-                              namespace='pos_tag_vocab')
+vocab.add_tokens_to_namespace(["DT", "VBZ", "NN", "."], namespace="pos_tag_vocab")
 
 # Represents each token with (1) an id from a vocabulary, (2) a sequence of
 # characters, and (3) part of speech tag ids.
 token_indexers = {
-    'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
-    'token_characters': TokenCharactersIndexer(namespace='character_vocab'),
-    'pos_tags': SingleIdTokenIndexer(namespace='pos_tag_vocab',
-                                     feature_name='tag_'),
+    "tokens": SingleIdTokenIndexer(namespace="token_vocab"),
+    "token_characters": TokenCharactersIndexer(namespace="character_vocab"),
+    "pos_tags": SingleIdTokenIndexer(namespace="pos_tag_vocab", feature_name="tag_"),
 }
 
 tokens = tokenizer.tokenize(text)

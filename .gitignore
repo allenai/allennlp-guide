@@ -69,3 +69,6 @@ yarn-error.log
 .pnp.js
 # Yarn Integrity file
 .yarn-integrity
+
+# Testing
+_exercises_test

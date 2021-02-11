@@ -14,9 +14,17 @@ model, dataset_reader = run_training_loop()
 vocab = model.vocab
 predictor = SentenceClassifierPredictor(model, dataset_reader)
 
-output = predictor.predict('A good movie!')
-print([(vocab.get_token_from_index(label_id, 'labels'), prob)
-       for label_id, prob in enumerate(output['probs'])])
-output = predictor.predict('This was a monstrous waste of time.')
-print([(vocab.get_token_from_index(label_id, 'labels'), prob)
-       for label_id, prob in enumerate(output['probs'])])
+output = predictor.predict("A good movie!")
+print(
+    [
+        (vocab.get_token_from_index(label_id, "labels"), prob)
+        for label_id, prob in enumerate(output["probs"])
+    ]
+)
+output = predictor.predict("This was a monstrous waste of time.")
+print(
+    [
+        (vocab.get_token_from_index(label_id, "labels"), prob)
+        for label_id, prob in enumerate(output["probs"])
+    ]
+)

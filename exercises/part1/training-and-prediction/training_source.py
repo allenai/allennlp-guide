@@ -36,8 +36,8 @@ def build_trainer(
     train_loader: DataLoader,
     dev_loader: DataLoader,
 ) -> Trainer:
-    parameters = [[n, p] for n, p in model.named_parameters() if p.requires_grad]
-    optimizer = AdamOptimizer(parameters)
+    parameters = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
+    optimizer = AdamOptimizer(parameters)  # type: ignore
     trainer = GradientDescentTrainer(
         model=model,
         serialization_dir=serialization_dir,

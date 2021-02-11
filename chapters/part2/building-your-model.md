@@ -106,7 +106,7 @@ list of individual dictionaries per instance. As you might have guessed, `forwar
 runs inference on a single instance, while `forward_on_instances()` does it with multiple instances
 by batching them. These methods are used by `Predictors`.
 
-<codeblock source="part2/building-your-model/model_predict" setup="part2/building-your-model/setup_model_forward"></codeblock>
+<codeblock source="part2/building-your-model/model_prediction" setup="part2/building-your-model/setup_model_forward"></codeblock>
 
 ## Getting metrics with get_metrics()
 
