@@ -16,7 +16,8 @@ class CodeExercise:
 
 
 def find_code_exercises() -> Iterator[CodeExercise]:
-    for filepath in glob.glob("./chapters/**/*.md"):
+    # sort to ensure the order is deterministic.
+    for filepath in sorted(glob.glob("./chapters/**/*.md")):
         with open(filepath) as f:
             text = f.read()
         for (source, _, setup) in CODEBLOCK_RE.findall(text):
