@@ -1,4 +1,3 @@
-
 # This pattern is typically used in cases where your input data is already
 # tokenized, so we're showing that here.
 text_tokens = ["This", "is", "some", "frandibulous", "text", "."]
@@ -7,7 +6,7 @@ print(tokens)
 
 # We're using a very small transformer here so that it runs quickly in binder. You
 # can change this to any transformer model name supported by Hugging Face.
-transformer_model = 'google/reformer-crime-and-punishment'
+transformer_model = "google/reformer-crime-and-punishment"
 
 # Represents the list of word tokens with a sequences of wordpieces as determined
 # by the transformer's tokenizer.  This actually results in a pretty complex data
@@ -16,7 +15,7 @@ transformer_model = 'google/reformer-crime-and-punishment'
 # transformer.
 indexer = PretrainedTransformerMismatchedIndexer(model_name=transformer_model)
 
-text_field = TextField(tokens, {'transformer': indexer})
+text_field = TextField(tokens, {"transformer": indexer})
 text_field.index(Vocabulary())
 token_tensor = text_field.as_tensor(text_field.get_padding_lengths())
 
@@ -30,7 +29,7 @@ print("Indexed tensors:", token_tensor)
 
 embedding = PretrainedTransformerMismatchedEmbedder(model_name=transformer_model)
 
-embedder = BasicTextFieldEmbedder(token_embedders={'transformer': embedding})
+embedder = BasicTextFieldEmbedder(token_embedders={"transformer": embedding})
 
 tensor_dict = text_field.batch_tensors([token_tensor])
 embedded_tokens = embedder(tensor_dict)

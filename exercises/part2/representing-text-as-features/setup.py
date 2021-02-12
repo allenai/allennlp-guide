@@ -1,5 +1,8 @@
+import warnings
+from typing import Dict
+
 import torch
-from allennlp.data import Token, Vocabulary
+from allennlp.data import Token, Vocabulary, TokenIndexer, Tokenizer
 from allennlp.data.fields import ListField, TextField
 from allennlp.data.token_indexers import (
     SingleIdTokenIndexer,
@@ -25,5 +28,4 @@ from allennlp.modules.token_embedders import (
 )
 from allennlp.nn import util as nn_util
 
-import warnings
 warnings.filterwarnings("ignore")

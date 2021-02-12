@@ -2,6 +2,7 @@ import json
 from typing import List
 from allennlp.common import Registrable, Params
 
+
 class Count(Registrable):
     def __init__(self, count: int):
         self.count = count

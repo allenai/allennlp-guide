@@ -1,24 +1,23 @@
 # Create Fields
-tokens = [Token('The'), Token('best'), Token('movie'), Token('ever'), Token('!')]
-token_indexers = {'tokens': SingleIdTokenIndexer()}
+tokens = [Token("The"), Token("best"), Token("movie"), Token("ever"), Token("!")]
+token_indexers: Dict[str, TokenIndexer] = {"tokens": SingleIdTokenIndexer()}
 text_field = TextField(tokens, token_indexers=token_indexers)
 
-label_field = LabelField('pos')
+label_field = LabelField("pos")
 
 sequence_label_field = SequenceLabelField(
-    ['DET', 'ADJ', 'NOUN', 'ADV', 'PUNKT'],
-    text_field
+    ["DET", "ADJ", "NOUN", "ADV", "PUNKT"], text_field
 )
 
 # Create an Instance
-fields = {
-    'tokens': text_field,
-    'label': label_field,
+fields: Dict[str, Field] = {
+    "tokens": text_field,
+    "label": label_field,
 }
 instance = Instance(fields)
 
 # You can add fields later
-instance.add_field('label_seq', sequence_label_field)
+instance.add_field("label_seq", sequence_label_field)
 
 # You can simply use print() to see the instance's content
 print(instance)

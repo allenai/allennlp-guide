@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+
+jobs:
+  check_exercises:
+    name: Check Exercises
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.8']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('binder/requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+
+    - name: Install requirements
+      run: |
+        pip install -r binder/requirements.txt -r dev-requirements.txt
+
+    - name: Debug info
+      run: |
+        pip freeze
+
+    - name: Check exercises
+      if: always()
+      run: |
+        make exercises-test

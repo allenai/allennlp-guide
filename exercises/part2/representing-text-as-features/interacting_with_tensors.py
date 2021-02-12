@@ -4,13 +4,12 @@ tokenizer = SpacyTokenizer(pos_tags=True)
 
 vocab = Vocabulary()
 vocab.add_tokens_to_namespace(
-    ['This', 'is', 'some', 'text', '.'],
-    namespace='token_vocab')
+    ["This", "is", "some", "text", "."], namespace="token_vocab"
+)
 vocab.add_tokens_to_namespace(
-    ['T', 'h', 'i', 's', ' ', 'o', 'm', 'e', 't', 'x', '.'],
-    namespace='character_vocab')
-vocab.add_tokens_to_namespace(['DT', 'VBZ', 'NN', '.'],
-                              namespace='pos_tag_vocab')
+    ["T", "h", "i", "s", " ", "o", "m", "e", "t", "x", "."], namespace="character_vocab"
+)
+vocab.add_tokens_to_namespace(["DT", "VBZ", "NN", "."], namespace="pos_tag_vocab")
 
 text = "This is some text."
 text2 = "This is some text with more tokens."
@@ -23,10 +22,9 @@ print("Tokens 2:", tokens2)
 # Represents each token with (1) an id from a vocabulary, (2) a sequence of
 # characters, and (3) part of speech tag ids.
 token_indexers = {
-    'tokens': SingleIdTokenIndexer(namespace='token_vocab'),
-    'token_characters': TokenCharactersIndexer(namespace='character_vocab'),
-    'pos_tags': SingleIdTokenIndexer(namespace='pos_tag_vocab',
-                                     feature_name='tag_'),
+    "tokens": SingleIdTokenIndexer(namespace="token_vocab"),
+    "token_characters": TokenCharactersIndexer(namespace="character_vocab"),
+    "pos_tags": SingleIdTokenIndexer(namespace="pos_tag_vocab", feature_name="tag_"),
 }
 
 text_field = TextField(tokens, token_indexers)

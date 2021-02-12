@@ -7,7 +7,14 @@ from typing import Dict, Iterable, List
 import torch
 from allennlp.common import JsonDict
 from allennlp.common.params import Params
-from allennlp.data import DataLoader, DatasetReader, Instance, Vocabulary
+from allennlp.data import (
+    Field,
+    DataLoader,
+    DatasetReader,
+    Instance,
+    Vocabulary,
+    TextFieldTensors,
+)
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 from allennlp.data.tokenizers import WhitespaceTokenizer
@@ -22,41 +29,42 @@ from allennlp.training.metrics import CategoricalAccuracy
 from overrides import overrides
 
 
-@DatasetReader.register('classification-tsv')
+@DatasetReader.register("classification-tsv")
 class ClassificationTsvReader(DatasetReader):
-    def __init__(self,
-                 lazy: bool = False,
-                 tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None,
-                 max_tokens: int = None):
+    def __init__(
+        self,
+        lazy: bool = False,
+        tokenizer: Tokenizer = None,
+        token_indexers: Dict[str, TokenIndexer] = None,
+        max_tokens: int = None,
+    ):
         super().__init__(lazy)
         self.tokenizer = tokenizer or WhitespaceTokenizer()
-        self.token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
+        self.token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 
     def text_to_instance(self, text: str, label: str = None) -> Instance:
         tokens = self.tokenizer.tokenize(text)
         if self.max_tokens:
-            tokens = tokens[:self.max_tokens]
+            tokens = tokens[: self.max_tokens]
         text_field = TextField(tokens, self.token_indexers)
-        fields = {'text': text_field}
+        fields: Dict[str, Field] = {"text": text_field}
         if label:
-            fields['label'] = LabelField(label)
+            fields["label"] = LabelField(label)
         return Instance(fields)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
-        with open(file_path, 'r') as lines:
+        with open(file_path, "r") as lines:
             for line in lines:
-                text, sentiment = line.strip().split('\t')
+                text, sentiment = line.strip().split("\t")
                 yield self.text_to_instance(text, sentiment)
 
 
-@Model.register('simple_classifier')
+@Model.register("simple_classifier")
 class SimpleClassifier(Model):
-    def __init__(self,
-                 vocab: Vocabulary,
-                 embedder: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder):
+    def __init__(
+        self, vocab: Vocabulary, embedder: TextFieldEmbedder, encoder: Seq2VecEncoder
+    ):
         super().__init__(vocab)
         self.embedder = embedder
         self.encoder = encoder
@@ -64,9 +72,9 @@ class SimpleClassifier(Model):
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
         self.accuracy = CategoricalAccuracy()
 
-    def forward(self,
-                text: Dict[str, torch.Tensor],
-                label: torch.Tensor = None) -> Dict[str, torch.Tensor]:
+    def forward(
+        self, text: TextFieldTensors, label: torch.Tensor = None
+    ) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
         # Shape: (batch_size, num_tokens)
@@ -78,10 +86,10 @@ class SimpleClassifier(Model):
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
         # Shape: (1,)
-        output = {'probs': probs}
+        output = {"probs": probs}
         if label is not None:
             self.accuracy(logits, label)
-            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
+            output["loss"] = torch.nn.functional.cross_entropy(logits, label)
         return output
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
@@ -103,59 +111,52 @@ def run_config(config):
     params = Params(json.loads(config))
     params_copy = params.duplicate()
 
-    if 'dataset_reader' in params:
-        reader = DatasetReader.from_params(params.pop('dataset_reader'))
+    if "dataset_reader" in params:
+        reader = DatasetReader.from_params(params.pop("dataset_reader"))
     else:
-        raise RuntimeError('`dataset_reader` section is required')
+        raise RuntimeError("`dataset_reader` section is required")
 
-    all_instances = []
-    if 'train_data_path' in params:
-        print('Reading the training data...')
-        train_data = reader.read(params.pop('train_data_path'))
-        all_instances.extend(train_data)
-    else:
-        raise RuntimeError('`train_data_path` section is required')
+    loader_params = params.pop("data_loader")
+    train_data_loader = DataLoader.from_params(
+        reader=reader,
+        data_path=params.pop("train_data_path"),
+        params=loader_params.duplicate(),
+    )
+    dev_data_loader = DataLoader.from_params(
+        reader=reader,
+        data_path=params.pop("validation_data_path"),
+        params=loader_params,
+    )
 
-    validation_data = None
-    if 'validation_data_path' in params:
-        print('Reading the validation data...')
-        validation_data = reader.read(params.pop('validation_data_path'))
-        all_instances.extend(validation_data)
+    print("Building the vocabulary...")
+    vocab = Vocabulary.from_instances(train_data_loader.iter_instances())
 
-    print('Building the vocabulary...')
-    vocab = Vocabulary.from_instances(all_instances)
-
-    model = None
-    iterator = None
-    if 'model' not in params:
+    if "model" not in params:
         # 'dataset' mode — just preview the (first 10) instances
-        print('Showing the first 10 instances:')
-        for inst in all_instances[:10]:
+        print("Showing the first 10 instances:")
+        for inst in train_data_loader.iter_instances():
             print(inst)
-    else:
-        model = Model.from_params(vocab=vocab, params=params.pop('model'))
+            return None
 
-        loader_params = deepcopy(params.pop("data_loader"))
-        train_data_loader = DataLoader.from_params(dataset=train_data,
-                                                   params=loader_params)
-        dev_data_loader = DataLoader.from_params(dataset=validation_data,
-                                                 params=loader_params)
-        iterator.index_with(vocab)
+    model = Model.from_params(vocab=vocab, params=params.pop("model"))
 
-        # set up a temporary, empty directory for serialization
-        with tempfile.TemporaryDirectory() as serialization_dir:
-            trainer = Trainer.from_params(
-                model=model,
-                serialization_dir=serialization_dir,
-                data_loader=train_data_loader,
-                validation_data_loader=dev_data_loader,
-                params=params.pop('trainer'))
-            trainer.train()
+    train_data_loader.index_with(vocab)
+    dev_data_loader.index_with(vocab)
+
+    # set up a temporary, empty directory for serialization
+    with tempfile.TemporaryDirectory() as serialization_dir:
+        trainer = Trainer.from_params(
+            model=model,
+            serialization_dir=serialization_dir,
+            data_loader=train_data_loader,
+            validation_data_loader=dev_data_loader,
+            params=params.pop("trainer"),
+        )
+        trainer.train()
 
     return {
-        'params': params_copy,
-        'dataset_reader': reader,
-        'vocab': vocab,
-        'iterator': iterator,
-        'model': model
+        "params": params_copy,
+        "dataset_reader": reader,
+        "vocab": vocab,
+        "model": model,
     }

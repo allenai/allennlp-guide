@@ -19,6 +19,7 @@ class ModelWithGaussian(FromParams):
         self.gaussian = gaussian
         print(f"ModelWithGaussian got vocab with object id: {id(vocab)}")
 
+
 param_str = """{"gaussian": {"mean": 0.0, "variance": 1.0}}"""
 params = Params(json.loads(param_str))
 try:

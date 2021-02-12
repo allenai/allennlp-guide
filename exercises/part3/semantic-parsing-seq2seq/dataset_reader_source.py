@@ -10,14 +10,16 @@ class Seq2SeqDatasetReader(DatasetReader):
         super().__init__(**kwargs)
         self._source_tokenizer = source_tokenizer or WhitespaceTokenizer()
         self._target_tokenizer = target_tokenizer or self._source_tokenizer
-        self._source_token_indexers = (source_token_indexers
-                                       or {"tokens": SingleIdTokenIndexer()})
-        self._target_token_indexers = (target_token_indexers
-                                       or self._source_token_indexers)
+        self._source_token_indexers = source_token_indexers or {
+            "tokens": SingleIdTokenIndexer()
+        }
+        self._target_token_indexers = (
+            target_token_indexers or self._source_token_indexers
+        )
 
     def _read(self, file_path: str):
         with open(cached_path(file_path), "r") as data_file:
-            for line_num, row in enumerate(csv.reader(data_file, delimiter='\t')):
+            for line_num, row in enumerate(csv.reader(data_file, delimiter="\t")):
                 source_sequence, target_sequence = row
                 yield self.text_to_instance(source_sequence, target_sequence)
 
@@ -31,28 +33,21 @@ class Seq2SeqDatasetReader(DatasetReader):
             tokenized_target = self._target_tokenizer.tokenize(target_string)
             tokenized_target.insert(0, Token(START_SYMBOL))
             tokenized_target.append(Token(END_SYMBOL))
-            target_field = TextField(
-                tokenized_target,
-                self._target_token_indexers
+            target_field = TextField(tokenized_target, self._target_token_indexers)
+            return Instance(
+                {"source_tokens": source_field, "target_tokens": target_field}
             )
-            return Instance({
-                "source_tokens": source_field,
-                "target_tokens": target_field
-            })
         else:
             return Instance({"source_tokens": source_field})
 
-source_token_indexers = {
-    "tokens": SingleIdTokenIndexer(namespace="source_tokens")
-}
-target_token_indexers = {
-    "tokens": SingleIdTokenIndexer(namespace="target_tokens")
-}
+
 dataset_reader = Seq2SeqDatasetReader(
-    source_token_indexers=source_token_indexers,
-    target_token_indexers=target_token_indexers,
+    source_token_indexers={"tokens": SingleIdTokenIndexer(namespace="source_tokens")},
+    target_token_indexers={"tokens": SingleIdTokenIndexer(namespace="target_tokens")},
 )
-instances = dataset_reader.read("nla_semparse/data/nla_with_meaning_rep_train.tsv")
+instances = list(
+    dataset_reader.read("nla_semparse/data/nla_with_meaning_rep_train.tsv")
+)
 
 for instance in instances[:10]:
     print(instance)
