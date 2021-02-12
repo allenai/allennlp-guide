@@ -19,7 +19,7 @@ class ToyModel(Model):
         # Take the logits from the forward pass, and compute the label
         # IDs for maximum values
         logits = output_dict["logits"].cpu().data.numpy()
-        predicted_id = numpy.argmax(logits, axis=-1)
+        predicted_id: numpy.ndarray = numpy.argmax(logits, axis=-1)  # type: ignore
         # Convert these IDs back to label strings using vocab
         output_dict["label"] = [  # type: ignore
             self.vocab.get_token_from_index(x, namespace="labels") for x in predicted_id
