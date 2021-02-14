@@ -345,6 +345,79 @@ if __name__ == '__main__':
     )
 ```
 
+You can also use [`allennlp-optuna`](https://github.com/himkt/allennlp-optuna) for optimization.
+To use `allennlp-optuna`, you need to define a search space for hyperparameters in JSON.
+
+```json
+[
+  {
+    "type": "int",
+    "attributes": {
+      "name": "embedding_dim",
+      "low": 32,
+      "high": 256
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "max_filter_size",
+      "low": 2,
+      "high": 6
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "num_filters",
+      "low": 32,
+      "high": 256
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "output_dim",
+      "low": 32,
+      "high": 256
+    }
+  },
+  {
+    "type": "float",
+    "attributes": {
+      "name": "dropout",
+      "low": 0.0,
+      "high": 0.8
+    }
+  },
+  {
+    "type": "float",
+    "attributes": {
+      "name": "lr",
+      "low": 5e-3,
+      "high": 5e-1,
+      "log": true
+    }
+  }
+]
+```
+
+After installing `allennlp-optuna`, you can launch optimization by the following command:
+
+```bash
+allennlp tune \
+    config/imdb_optuna.jsonnet # allennlp config file \
+    config/hparams.json # search space defined above  \
+    --serialization-dir result/optuna \
+    --study-name allennlp-optuna_demo \
+    --timeout 36000 \
+    --direction maximize
+```
+
+For more information about `allennlp-optuna` (including an installation instruction),
+please check [README](https://github.com/himkt/allennlp-optuna) of `allennlp-optuna` on GitHub.
+
+
 </exercise>
 
 
