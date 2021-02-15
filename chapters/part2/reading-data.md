@@ -138,6 +138,8 @@ from allennlp.common.file_utils import cached_path
             for line in lines:
 ```
 
+</exercise>
+
 <exercise id="3" title="Vocabulary">
 
 `Vocabulary` is an important component in AllenNLP, touching on and used by many other abstractions
