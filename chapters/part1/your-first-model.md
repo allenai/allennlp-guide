@@ -397,7 +397,7 @@ it to train the parameters.
 ```python
 class SimpleClassifier(Model):
     def forward(self,
-                text: Dict[str, torch.Tensor],
+                text: TextFieldTensors,
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -454,7 +454,7 @@ this type of object as input and will return an embedded tensor as output.
 <pre data-line="5-6" class="language-python line-numbers"><code>
 class SimpleClassifier(Model):
     def forward(self,
-                text: Dict[str, torch.Tensor],
+                text: TextFieldTensors,
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -482,7 +482,7 @@ flexible later, changing between various kinds of embedding methods or pretraine
 <pre data-line="7-10" class="language-python line-numbers"><code>
 class SimpleClassifier(Model):
     def forward(self,
-                text: Dict[str, torch.Tensor],
+                text: TextFieldTensors,
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -513,7 +513,7 @@ At the end of these lines, we have a single vector for each instance in the batc
 <pre data-line="11-16" class="language-python line-numbers"><code>
 class SimpleClassifier(Model):
     def forward(self,
-                text: Dict[str, torch.Tensor],
+                text: TextFieldTensors,
                 label: torch.Tensor) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
