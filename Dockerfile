@@ -7,7 +7,6 @@ RUN npm install -g npm
 RUN npm install -g gatsby-cli
 RUN npm install
 
-COPY binder/ binder/
 COPY src/ src/
 COPY gatsby-browser.js .
 COPY gatsby-config.js .
