@@ -99,7 +99,7 @@ More formally, we will decide on a prespecified [order of operations](https://en
 to decide the nesting in the targets, and the system we will build for the task will have to learn the precedence
 of operators, i.e., that `seven times three minus two` should be translated to `(- (* 7 3) 2)`, and not `(* 7 (- 3 2))`.
 
-This [script](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/scripts/generate_data.py)
+This [script](https://github.com/allenai/allennlp-guide/blob/master/nla_semparse/scripts/generate_data.py)
 respects the conventional order of operations and produces natural language arithmetic statements paired with
 corresponding arithmetic expressions, with an arbitrary number of operators per expression. Instead of using arithmetic symbols
 like `+`, `-`, the script uses operator names like `add` and `subtract` to be able to define them as Python functions. Making
@@ -112,9 +112,9 @@ We'll cover those details later, but all you need to know is that the targets lo
 ```
 
 We use the script to generate
-[train](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_train.tsv),
-[validation](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_dev.tsv),
-and [test](https://github.com/allenai/allennlp-guide-examples/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
+[train](https://github.com/allenai/allennlp-guide/blob/master/nla_semparse/data/nla_with_meaning_rep_train.tsv),
+[validation](https://github.com/allenai/allennlp-guide/blob/master/nla_semparse/data/nla_with_meaning_rep_dev.tsv),
+and [test](https://github.com/allenai/allennlp-guide/blob/master/nla_semparse/data/nla_with_meaning_rep_test.tsv) splits
 with 1 to 10 operators in each expression.
 
 ## Defining metrics for the task
@@ -569,11 +569,11 @@ for more details. This is the configuration we'll use:
 }
 ```
 
-You can train the model on your machine by cloning [the examples repository](https://github.com/allenai/allennlp-guide-examples), and
+You can train the model on your machine by cloning [the GitHub repository](https://github.com/allenai/allennlp-guide), and
 going to the `nla_semparse` directory.
 
 ```
-cd allennlp-guide-examples/nla_semparse
+cd allennlp-guide/nla_semparse
 ```
 
 The following line installs `allennlp` and `allennlp_models`.

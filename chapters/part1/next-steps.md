@@ -125,9 +125,8 @@ library](https://github.com/huggingface/transformers), so switching between diff
 architectures (BERT, RoBERTa, XLNet, etc.) is as simple as changing the `model_name` parameter in
 the config file.
 
-You can find the full config file [in the example
-repo](https://github.com/allenai/allennlp-guide-examples/tree/master/quick_start). To train the
-model, you can use the command:
+You can find the full config file [in the GitHub repo](https://github.com/allenai/allennlp-guide/tree/master/quick_start).
+To train the model, you can use the command:
 
 ```
 $ allennlp train \

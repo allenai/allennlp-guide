@@ -27,17 +27,32 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('binder/requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Install requirements
       run: |
-        pip install -r binder/requirements.txt -r dev-requirements.txt
+        pip install -r requirements.txt -r dev-requirements.txt
 
     - name: Debug info
       run: |
         pip freeze
 
-    - name: Check exercises
+    - name: Build exercises
+      run: |
+        mkdir _exercises_test
+        python scripts/build_exercise_tests.py
+        black _exercises_test/*.py
+
+    - name: Check formatting
+      run: |
+        black --check .
+
+    - name: Lint
       if: always()
       run: |
-        make exercises-test
+        flake8 .
+
+    - name: Type check
+      if: always()
+      run: |
+        mypy .

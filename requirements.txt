@@ -1,0 +1,4 @@
+wasabi>=0.2.1,<1.1.0
+allennlp>=2.0,<3.0
+allennlp-models>=2.0,<3.0
+allennlp-semparse==0.0.3

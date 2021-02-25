@@ -5,3 +5,16 @@ ignore =
     E203  # whitespace before :
     W503  # line break before binary operator
     F401  # unused imports
+
+per-file-ignores =
+    */__init__.py:F401,F403
+    */**/**/__init__.py:F401,E501,F403
+	nla_semparse/scripts/generate_data.py:E402
+	nla_semparse/tests/nla_metric_test.py:E402
+
+exclude =
+    exercises/**
+    src/**
+    node_modules/**
+    chapters/**
+    static/**
