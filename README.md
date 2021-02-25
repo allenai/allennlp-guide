@@ -141,7 +141,7 @@ Content goes here...
 
 ## Setting up Binder
 
-The [`requirements.txt`](binder/requirements.txt) in the repository defines the
+The [`requirements.txt`](requirements.txt) in the repository defines the
 packages that are installed when building it with Binder. You can specify the
 binder settings like repo, branch and kernel type in the `"juniper"` section of
 the `meta.json`. If modifying these fields, it is recommended that you run the very
