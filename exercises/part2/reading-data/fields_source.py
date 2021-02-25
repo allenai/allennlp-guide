@@ -26,7 +26,7 @@ print(label_field.empty_field())
 print(sequence_label_field.empty_field())
 
 # You can count vocabulary items in fields
-counter = defaultdict(Counter)
+counter: Dict[str, Dict[str, int]] = defaultdict(Counter)
 text_field.count_vocab_items(counter)
 print(counter)
 
