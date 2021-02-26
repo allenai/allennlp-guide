@@ -27,11 +27,11 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
+        key: ${{ runner.os }}-pydeps-${{ env.pythonLocation }}-${{ hashFiles('binder/requirements.txt') }}-${{ hashFiles('dev-requirements.txt') }}
 
     - name: Install requirements
       run: |
-        pip install -r requirements.txt -r dev-requirements.txt
+        pip install -r binder/requirements.txt -r dev-requirements.txt
 
     - name: Debug info
       run: |
