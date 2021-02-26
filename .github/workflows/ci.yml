@@ -37,7 +37,22 @@ jobs:
       run: |
         pip freeze
 
-    - name: Check exercises
+    - name: Build exercises
+      run: |
+        mkdir _exercises_test
+        python scripts/build_exercise_tests.py
+        black _exercises_test/*.py
+
+    - name: Check formatting
+      run: |
+        black --check .
+
+    - name: Lint
       if: always()
       run: |
-        make exercises-test
+        flake8
+
+    - name: Type check
+      if: always()
+      run: |
+        mypy . _exercises_test/*.py

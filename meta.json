@@ -6,7 +6,7 @@
     "twitter": "ai2_allennlp",
     "googleAnalyticsId": "UA-105970043-4",
     "juniper": {
-        "repo": "allenai/allennlp-guide-examples",
+        "repo": "allenai/allennlp-guide",
         "branch": "master",
         "lang": "python",
         "kernelType": "python3",

@@ -23,7 +23,7 @@ instance.add_field("label_seq", sequence_label_field)
 print(instance)
 
 # Create a Vocabulary
-counter = defaultdict(Counter)
+counter: Dict[str, Dict[str, int]] = defaultdict(Counter)
 instance.count_vocab_items(counter)
 vocab = Vocabulary(counter)
 
