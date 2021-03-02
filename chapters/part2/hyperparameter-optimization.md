@@ -406,8 +406,8 @@ You can then launch optimization with the following command:
 
 ```bash
 allennlp tune \
-    config/imdb_optuna.jsonnet # allennlp config file \
-    config/hparams.json # search space defined above  \
+    config/imdb_optuna.jsonnet \
+    config/hparams.json \
     --serialization-dir result/optuna \
     --study-name allennlp-optuna_demo \
     --timeout 36000 \
