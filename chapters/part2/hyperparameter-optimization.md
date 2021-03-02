@@ -345,8 +345,8 @@ if __name__ == '__main__':
     )
 ```
 
-You can also use [`allennlp-optuna`](https://github.com/himkt/allennlp-optuna) for optimization.
-To use `allennlp-optuna`, you need to define a search space for hyperparameters in JSON.
+You can also use [`allennlp-optuna`](https://github.com/himkt/allennlp-optuna) for hyperparameter optimization.
+After installing `allennlp-optuna`, you need to define a search space for hyperparameters in JSON:
 
 ```json
 [
@@ -402,7 +402,7 @@ To use `allennlp-optuna`, you need to define a search space for hyperparameters 
 ]
 ```
 
-After installing `allennlp-optuna`, you can launch optimization by the following command:
+You can then launch optimization with the following command:
 
 ```bash
 allennlp tune \
@@ -414,8 +414,8 @@ allennlp tune \
     --direction maximize
 ```
 
-For more information about `allennlp-optuna` (including an installation instruction),
-please check [README](https://github.com/himkt/allennlp-optuna) of `allennlp-optuna` on GitHub.
+For more information about `allennlp-optuna` (including installation instructions),
+please see the [README](https://github.com/himkt/allennlp-optuna) on GitHub.
 
 
 </exercise>
