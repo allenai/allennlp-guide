@@ -32,7 +32,7 @@ The input/output spec of `Model.forward()` is somewhat more strictly defined tha
 modules. Its parameters need to match field names in your [data code](/reading-data#1) exactly.
 Instances created by the dataset reader are batched and converted to a set of tensors by AllenNLP
 (specifically, this part happens in the [`allennlp_collate`
-function](http://docs.allennlp.org/master/api/data/dataloader/#allennlp_collate) that the
+function](http://docs.allennlp.org/main/api/data/data_loaders/data_loader/#allennlp_collate) that the
 `DataLoader` uses).  Inside our `Trainer`, batched tensors get passed to `Model.forward()` by their
 original field names. The following figure shows this process:
 
@@ -159,7 +159,7 @@ And lastly, you'll need to implement the `get_metrics` method, which calls `get_
 ```
 
 AllenNLP has a large number of metrics [built
-in](https://docs.allennlp.org/master/api/training/metrics/metric/), and even more in our [model
+in](https://docs.allennlp.org/main/api/training/metrics/metric/), and even more in our [model
 library](https://github.com/allenai/allennlp-models).  If you don't see what you need there, you can
 implement your own subclass of `Metric`.
 
@@ -193,7 +193,7 @@ Because it is cumbersome to deal with these three elements every time you need t
 move around your model, AllenNLP provides utility functions for archiving and unarchiving your model
 files. You can package up the model config, weights, and the vocabulary into a single `tar.gz` file,
 along with any additional supplementary files, using the [`archive_model()`
-method](http://docs.allennlp.org/master/api/models/archival/#archive_model).  This method assumes
+method](http://docs.allennlp.org/main/api/models/archival/#archive_model).  This method assumes
 that you trained a model using our training loop, and packages up the files that were saved while
 the training loop was running.  Our training loop also calls this to package up the best model
 weights when training is finished, so it is unlikely that you will need to call this method
@@ -202,14 +202,14 @@ yourself.
 ## Loading your model
 
 In order to restore your model from files, you can use the
-[`Model.load()`](http://docs.allennlp.org/master/api/models/model/#load) class method. It takes a
+[`Model.load()`](http://docs.allennlp.org/main/api/models/model/#load) class method. It takes a
 `Params` object which contains the model config, as well as the directory path where the model
 weights and the vocabulary are serialized. The method also loads and restores the vocabulary.
 
 Alternatively, you can simply use
-[`load_archive()`](http://docs.allennlp.org/master/api/models/archival/#load_archive) to restore the
+[`load_archive()`](http://docs.allennlp.org/main/api/models/archival/#load_archive) to restore the
 model from an archive file. This returns an
-[`Archive`](http://docs.allennlp.org/master/api/models/archival/#archive) object, which contains the
+[`Archive`](http://docs.allennlp.org/main/api/models/archival/#archive) object, which contains the
 config and the model.
 
 In the example code below, we save and load our model using the two methods explained above, and
