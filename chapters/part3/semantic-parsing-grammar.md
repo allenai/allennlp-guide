@@ -25,15 +25,28 @@ Based on this view, we trained a `Seq2seq` model for the task. Towards the end o
 illegal outputs, particularly when the inputs are long with more than five operators.
 
 We suggested that this issue can be fixed by placing constraints on the output based on the rules of the target programming language. This idea
-is based on a key insight. We are using modeling techniques inspired by machine translation, but there is an important difference between machine
+is based on the following insight.
+
+We are using modeling techniques inspired by machine translation, but there is an important difference between machine
 translation and semantic parsing: since the target languages in semantic parsing are not natural, they obey certain prespecified rules without
-exceptions. The idea here is to leverage those rules to disallow invalid outputs. Note that the same cannot be done in the case of generating
-natural languages, because no matter how complex you make the rules, there are bound to be exceptions due to the nature of those languages.
+exceptions.
+
+The idea here is to leverage those rules to disallow invalid outputs. Note that the same cannot be done in the case of generating
+natural languages, because no matter how complex you make the rules, there are bound to be exceptions due to the nature of human languages.
 
 </exercise>
 
 
-<exercise id="2" title="Grammar-based decoding">
+<exercise id="2" title="Constraints as a grammar">
+
+Let us think about what kind of expressions should be _allowed_ in our language. Here is the complete set of rules:
+
+1. Any digit (`0` - `9`)
+2. Bracketed list of an operator followed by two _expressions_, where the operator has to be `add`, `subtract`, `multiply`, or `divide`.
+
+Note that the second rule for valid expressions itself refers to expressions, allowing for recursion in our language.
+
+Expressed as a [context free grammar](https://en.wikipedia.org/wiki/Context-free_grammar), these rules look as follows:
 
 ```
 S -> val
