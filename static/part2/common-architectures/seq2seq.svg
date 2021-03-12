@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="700px" height="214px" viewBox="0 0 700 214" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
     <title>Slice</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="path-1" x="0" y="0" width="137" height="95" rx="4"></rect>
         <filter x="-8.8%" y="-12.6%" width="120.4%" height="129.5%" filterUnits="objectBoundingBox" id="filter-2">
@@ -86,8 +84,8 @@
             <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
             <use stroke="#47515C" stroke-width="2" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-5"></use>
         </g>
-        <text id="Seq2Vec-Encoder" font-family="Helvetica" font-size="20" font-weight="normal" fill="#596676">
-            <tspan x="309.414062" y="102">Seq2Vec</tspan>
+        <text id="Seq2Seq-Encoder" font-family="Helvetica" font-size="20" font-weight="normal" fill="#596676">
+            <tspan x="308.852539" y="102">Seq2Seq</tspan>
             <tspan x="312.753906" y="126">Encoder</tspan>
         </text>
         <text id="Input" font-family="Helvetica" font-size="20" font-weight="normal" fill="#586676">
