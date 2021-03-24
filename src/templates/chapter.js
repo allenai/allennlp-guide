@@ -7,6 +7,8 @@ import 'prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.js';
 import 'prismjs/plugins/line-highlight/prism-line-highlight.css';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
+import "katex/dist/katex.min.css"
+
 import React, { useState, useEffect } from 'react';
 import { graphql, navigate } from 'gatsby';
 import useLocalStorage from '@illinois/react-use-local-storage';
