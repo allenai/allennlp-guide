@@ -172,25 +172,13 @@ we could have different methods --- **Vanilla Gradient** (`SimpleGradient`), **I
 **To swap different methods, simply replacing the class name will achieve what you want**.
  Now the code is written as follows.
 
+<codeblock source="part3/interpret/saliency_source" setup="part3/interpret/saliency_setup"></codeblock>
 
+`load_archive()` accepts any our public models archive url, or your serialization directory after using `allennlp train` 
+or equivalent code to train a model with AllenNLP. 
 
-```python
-from allennlp.interpret.saliency_interpreters import SimpleGradient
-from allennlp.predictors import Predictor, TextClassifierPredictor
-from allennlp.models.archival import load_archive
-
-inputs = {"sentence": "It was the ending that I hated"}
-archive = load_archive("path/to/your/model.tar.gz")
-predictor = Predictor.from_archive(archive)
-interpreter = SimpleGradient(predictor)
-interpretation = interpreter.saliency_interpret_from_json(inputs)
-```
-
-`path/to/your/model.tar.gz` is usually self-explainatory after you use `allennlp train` or 
-equivalent code to train a model with AllenNLP. It is simply the archive file that you get after training.
-
-If you are interested in experimenting with one of the models supported by `allennlp-models`, 
-please replace the code above related to `archive` and `predictor` with the following.
+Or, if you are interested in experimenting with one of the models supported by `allennlp-models`, 
+please load model as follows.
 
 ```python
 from allennlp_models.pretrained import load_predictor
@@ -352,21 +340,15 @@ Depending on various way to "change inputs", we have two different attackers
 
 The way to use our attackers is still fairly simple. 
 
+<codeblock source="part3/interpret/attacker_source" setup="part3/interpret/attacker_setup"></codeblock>
 
 ```python
-from allennlp.models.archival import load_archive
-from allennlp.predictors import Predictor
-from allennlp.interpret.attackers import InputReduction
 
-inputs = {"sentence": "It was the ending that I hated"}
-archive = load_archive("path/to/your/model.tar.gz")
-predictor = Predictor.from_archive(archive)
-reducer = InputReduction(predictor) # or Hotflip(predictor)
-# if it is Hotflip, we need an extra step: reducer.initialize()
-reduced = reducer.attack_from_json(inputs, "tokens", "grad_input_1")
+
+
 ```
 
-`path/to/your/model.tar.gz` is your serialization directory after using `allennlp train` 
+`load_archive()` accepts any our public models archive url, or your serialization directory after using `allennlp train` 
 or equivalent code to train a model with AllenNLP. 
 
 We want to further note the usage of `attck_from_json`. 
@@ -506,9 +488,9 @@ from allennlp_models.pair_classification.predictors.textual_entailment import (
 )
 from allennlp.models.archival import load_archive
 
-archive_file = "../allennlp-models/mnli_bert_output/model.tar.gz"
-train_file = "../allennlp-models/data/multinli_1.0_train.jsonl"
-test_file = "../allennlp-models/data/multinli_1.0_dev_mismatched.jsonl"
+archive_file = "mnli_bert_output/model.tar.gz"
+train_file = "data/multinli_1.0_train.jsonl"
+test_file = "data/multinli_1.0_dev_mismatched.jsonl"
 
 archive = load_archive(archive_file)
 predictor = Predictor.from_archive(archive)
@@ -516,11 +498,10 @@ dataset_reader = roberta_nli_predictor._dataset_reader
 simple_if = SimpleInfluence(
     predictor,
     train_file,
-    test_file,
     dataset_reader,
   	k=20
 )
-simple_if.calculate_inflence_and_save("path/to/your/output.jsonl")
+simple_if.interpret_and_save(test_file, "data/interpret_output.jsonl")
 ```
 
 For memory-efficient reason, we made the decision to only save training examples with $k$ **highest** and 
