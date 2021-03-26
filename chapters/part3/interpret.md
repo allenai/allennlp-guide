@@ -1,6 +1,6 @@
 ---
 title: 'Interpret Module'
-description: A practical guid into AllenNLP Interpret Module
+description: A practical guide into the AllenNLP Interpret module
 author: Zeyu Liu 
 type: chapter
 ---
