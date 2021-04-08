@@ -443,7 +443,7 @@ based on the `metrics` specified in initializing `AllenNLPExecutor`.
 ```json
    callbacks: [  // note that you have to specify `epoch_callbacks` instead if you use AllenNLP<2.0.0
     {
-      type: 'optuna_pruner',
+      "type": "optuna_pruner",
     },
   ],
 ```
