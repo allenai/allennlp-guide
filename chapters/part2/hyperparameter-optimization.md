@@ -435,15 +435,15 @@ a pruner evaluates at each epoch how promising each trial will be and stops if i
 Optuna provides an `AllenNLPPruningCallback`
 which allows users to prune unpromising trials with algorithms implemented in Optuna.
 
-You can enable a pruning callback by adding `optuner_pruner` to `epoch_callbacks` in
+You can enable a pruning callback by adding `optuner_pruner` to `callbacks` in
 your jsonnet configuration (inside the `trainer` parameters).
 A pruner determines whether it prune a training in each epoch,
 based on the `metrics` specified in initializing `AllenNLPExecutor`.
 
 ```json
-   epoch_callbacks: [
+   callbacks: [  // note that you have to specify `epoch_callbacks` instead if you use AllenNLP<2.0.0
     {
-      type: 'optuna_pruner',
+      "type": "optuna_pruner",
     },
   ],
 ```
