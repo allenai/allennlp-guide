@@ -119,7 +119,7 @@ your parameters.
 You can also design a dataset reader that handles more complex data setups. For example, you can
 write one that takes a directory as its constructor parameter and takes a simple key such as `train`
 and `dev` as a parameter to `read()`.  The
-[`TriviaQaReader`](https://github.com/allenai/allennlp-models/blob/master/allennlp_models/rc/other/triviaqa_reader.py),
+[`TriviaQaReader`](https://github.com/allenai/allennlp-models/blob/main/allennlp_models/rc/dataset_readers/triviaqa.py#L21),
 for example, is designed to work this way.
 
 Dataset readers are designed to read data from a local file, although in some cases you may want to
