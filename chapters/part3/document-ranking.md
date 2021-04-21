@@ -1,6 +1,6 @@
 ---
 title: 'Document Ranking'
-description: A practical example of document ranking with AllenNLP
+description: A practical example of document ranking with AllenNLP.
 author: Jacob Danovitch
 type: chapter
 ---

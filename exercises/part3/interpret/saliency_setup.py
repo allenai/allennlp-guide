@@ -1,0 +1,2 @@
+from allennlp.interpret.saliency_interpreters import SimpleGradient
+from allennlp.predictors import Predictor
