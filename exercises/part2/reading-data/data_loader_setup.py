@@ -5,7 +5,7 @@ from allennlp.data.data_loaders import MultiProcessDataLoader
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.tokenizers import Token
 from allennlp.data.token_indexers import SingleIdTokenIndexer
-from allennlp.data.batch_samplers import BucketBatchSampler
+from allennlp.data.samplers.bucket_batch_sampler import BucketBatchSampler
 from allennlp.data.vocabulary import Vocabulary
 
 
