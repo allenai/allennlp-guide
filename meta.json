@@ -13,6 +13,7 @@
         "debug": true
     },
     "headerLinks": [
+        { "text": "Edit on GitHub", "url": "https://github.com/allenai/allennlp-guide" },
         { "text": "AllenNLP Website", "url": "https://allennlp.org/" },
         { "text": "AllenNLP Docs", "url": "https://docs.allennlp.org/master/" }
     ]
