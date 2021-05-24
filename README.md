@@ -29,7 +29,10 @@ how to do local development when writing the chapter.
 
 To start the local development server, install [Gatsby](https://gatsbyjs.org)
 and then all other dependencies. This should serve up the app on
-`localhost:8000`.
+`localhost:8000`. Please note that the guide is not compatible with the latest
+version of Node.js. Currently, the guide requires the Node.js version included
+in the [Dockerfile](https://github.com/allenai/allennlp-guide/blob/main/Dockerfile.webapp).
+On a Mac, installing `node@10` with Homebrew will work.
 
 ```bash
 npm install -g gatsby-cli  # Install Gatsby globally
