@@ -51,6 +51,7 @@ export const outline = {
                 '/document-ranking',
                 '/semantic-parsing-seq2seq',
                 '/interpret',
+                '/fairness',
                 '/coming-soon'
             ],
             icon: 'tools',
