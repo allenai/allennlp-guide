@@ -384,7 +384,7 @@ You can run this config file with the following CLI command: `allennlp train con
 
 3. After just two epochs of finetuning, we can observe a considerable reduction in gender bias with respect to occupations, as measured by the `NaturalLanguageInference` bias metric on a [large dataset of neutrally-constructed textual entailment sentence pairs](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl). Even better, this comes without a noticeable difference in performance on the test set!
 
-To thoroughly evaluate the reduction in binary gender bias with respect to occupations, we will write the [`EvaluateBiasMitigation` subcommand](https://github.com/allenai/allennlp/blob/main/allennlp/fairness/evaluate_bias_mitigation.py):
+To thoroughly evaluate the reduction in binary gender bias with respect to occupations, we will write an `EvaluateBiasMitigation` subcommand:
 
 ```python
 """
