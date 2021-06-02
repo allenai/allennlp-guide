@@ -13,7 +13,8 @@ We hope <code>allennlp.fairness</code> empowers everyone in NLP to combat algori
 </textblock>
 
 <exercise id="1" title="Why do we need fairness and bias mitigation tools?">
-This section only provides a high-level overview of fairness and how NLP models can <em>encode</em> and <em>amplify</em> biases. We highly encourage readers to consult the works of leading scholars (particularly Black women) to dive further into this field. Some excellent papers <em>in the NLP domain</em> with which to begin your journey include:
+
+This section provides a high-level overview of fairness and how NLP models can <em>encode</em> and <em>amplify</em> biases.  Readers are encouraged to engage with original research on fairness and biases; we recommend the following papers:
 
 1. Blodgett, S.L., Barocas, S., Daumé, H., & Wallach, H. (2020). Language (Technology) is Power: [A Critical Survey of "Bias" in NLP](https://api.semanticscholar.org/CorpusID:218971825). ACL.
 
@@ -31,19 +32,19 @@ In the rest of this section, we motivate the need for fairness and bias mitigati
 
 ## Biases in Data
 
-We are all aware that large language models are hungry for text data, and these data greatly influence the word and sentence-level representations the models learn. NLP researchers and pratictioners often scrape data from the Internet, which include news articles, Wikipedia pages, and even patents! But, how representative are the text in these data of the real-world frequences of different words or groups of people? The answer is **not at all**.
+We are all aware that large language models are hungry for text data, and these data greatly influence the word and sentence-level representations the models learn. NLP researchers and pratictioners often scrape data from the Internet, which include news articles, Wikipedia pages, and even patents! But, how representative are the text in these data of the real-world frequences of words among different groups of people? The answer is **not at all**.
 <br>
 <br>
-This is the result of <em>reporting bias</em>, in which the "frequency with which people write about actions, outcomes, or properties is not a reflection of real-world frequencies or the degree to which a property is characteristic of a class of individuals" [2]. For instance, "murdered" occurs with a much higher frequency than does "blinked" in text corpuses because journalists usually report about murders rather than blinking, ironically as a result of the relative rarity of murders [2].
+This is the result of <em>reporting bias</em>, in which the "frequency with which people write about actions, outcomes, or properties is not a reflection of real-world frequencies or the degree to which a property is characteristic of a class of individuals" [2]. For instance, "murdered" occurs with a much higher frequency than does "blinked" in text corpuses because journalists usually report about murders rather than blinking, as a result of the relative rarity of murders [2].
 
 There are many other biases in data that affect language models [2]:
-1. **Selection bias:** Data selection does not reflect a random sample, e.g. English language data are not representative of every dialect of English, Wikipedia pages overrepresent men 
+1. **Selection bias:** Data selection does not reflect a random sample, e.g. English language data do not represent every dialect of English, Wikipedia pages overrepresent men
 
-2. **Out-group homogeneity bias:** People tend to see outgroup members as more alike than ingroup members when comparing attitudes, values, personality traits, and other characteristics, e.g. researchers incorrectly treat "non-binary" as a single, cohesive gender
+2. **Out-group homogeneity bias:** People tend to see outgroup members as more alike than ingroup members when comparing attitudes, values, personality traits, and other characteristics, e.g. [researchers incorrectly treat "non-binary" as a single, cohesive gender](https://venturebeat.com/2020/07/14/study-describes-facial-recognition-system-designed-to-identify-non-binary-people/)
 
-3. **Biased data representation:** Even with an appropriate amount of data for every group, some groups are represented less positively than others, e.g. Wikipedia pages exhibit serious biases against women
+3. **Biased data representation:** Even with an appropriate amount of data for every group, some groups are represented less positively than others, e.g. [Wikipedia pages exhibit serious biases against women](https://wikimediafoundation.org/news/2018/10/18/wikipedia-mirror-world-gender-biases/)
 
-4. **Biased labels:** Annotations in dataset reflect the worldviews of annotators, e.g. annotators prescribe incorrect labels due to an unawareness of non-Western cultures and traditions
+4. **Biased labels:** Annotations in dataset reflect the worldviews of annotators, e.g. [annotators do not add wedding-related labels to images of wedding traditions from different parts of the world, due to an unawareness of non-Western cultures and traditions](https://ai.googleblog.com/2018/09/introducing-inclusive-images-competition.html)
 
 Barocas and Selbst, in their 2016 paper "[Big Data's Disparate Impact](https://api.semanticscholar.org/CorpusID:143133374)," also broke down biases in data into the following categories (which overlap with the categories above) [3]:
 
@@ -57,27 +58,25 @@ Barocas and Selbst, in their 2016 paper "[Big Data's Disparate Impact](https://a
 
 5. **Proxies:** Even after the removal of a feature which a model should not consider (e.g. race), there exist other features with a high correlation with the undesirable feature that the model can (unfairly) leverage (e.g. zip code)
 
-Please note that every dataset is biased, and it is <em>impossible</em> to fully remove biases from datasets; even though it may be relatively easy to identify and remove explicit social biases, it is difficult to eliminate skewed samples and proxies that could reinforce these biases. That being said, it's still a great idea to create [datasheets for your datasets](https://api.semanticscholar.org/CorpusID:4421027).
+Please note that every dataset is biased, and it is <em>impossible</em> to fully remove biases from datasets; even though it may be relatively easy to identify and remove explicit social biases, it is difficult to eliminate skewed samples and proxies that could reinforce these biases. That being said, it's important to be cognizant of and transparent about the biases your datasets could have as a first step towards controlling them. Hence, it's a great idea to create [datasheets for your datasets](https://api.semanticscholar.org/CorpusID:4421027).
 
 ## Biases in Models
 
-You may often hear, in the context of biases, "It's not the model, it's the data!" This is far from the truth. Models are excellent at <em>encoding</em> and <em>amplifying</em> biases. 
+You may often hear, in the context of biases, "It's not the model, it's the data!" In fact, models are excellent at <em>encoding</em> and <em>amplifying</em> biases.
 
-1. **Imbalanced datasets:** Model performance inherently favors groups with rich features and a large, diverse sample, thereby marginalizing groups with limited features and a poor sample size. 
+1. **Imbalanced datasets:** Model performance inherently favors groups with rich features and a large, diverse sample, thereby marginalizing groups with limited features and a poor sample size.
 
-2. **Spurious correlations:** Models learn complex, non-linear and spurious correlations between features and annotations that often reflect social biases and are difficult to detect and eliminate. For example, [Wang et al.](https://api.semanticscholar.org/CorpusID:195847929) discovered that even after removing subjects from images, a model could still easily predict the gender of subjects because women were photographed overwhelmingly frequently in the kitchen, that is, the model leveraged the existence of a kitchen in the image as a proxy for gender.
+2. **Spurious correlations:** Models learn complex, non-linear and spurious correlations between features and annotations that often reflect social biases and are difficult to detect and eliminate. For example, [Wang et al.](https://api.semanticscholar.org/CorpusID:195847929) discovered that even after removing subjects from images in a binary gender-balanced dataset, a model could still easily predict the gender of subjects because women were photographed overwhelmingly frequently in the kitchen, that is, the model leveraged the existence of a kitchen in the image as a proxy for gender. Clearly, balanced datasets alone are not effective at taming bias amplification.
 
 3. **Contextualization:** LSTMs and attention-based models, through contextualization, allow for biases to be propagated across words in a sentence.
-
-Balanced datasets are not effective at taming bias amplification because of latent variables.
 
 ## Biases in Interpretation
 
 Beyond biases in data and models, there also exist biases in interpretation [2]:
 
-1. **Confirmation bias:** The tendency to search for, interpret, favor, recall information in a way that confirms preexisting beliefs, e.g. researchers misconstrue the ability of a model to predict binary gender as the non-existence of non-binary genders
+1. **Confirmation bias:** The tendency to search for, interpret, favor, recall information in a way that confirms preexisting beliefs, e.g. a company misconstrues its automated resume screening system's identification of women as unfit for engineering roles (because of the company's poor track record of hiring women) as evidence that women are unfit for engineering
 
-2. **Overgeneralization:** Coming to conclusions based on information that is too general, e.g. researchers conclude that a model works well for everyone based on its overall accuracy on data containing mostly white people
+2. **Overgeneralization:** Coming to conclusions based on information that is too general, e.g. researchers conclude that a facial recognition model works well for everyone based on its overall accuracy on data containing mostly white people
 
 3. **Correlation fallacy:** Confusing correlation with causation
 
@@ -87,16 +86,14 @@ Biases in interpretation truly necessitate the creation and usage of metrics tha
 
 ## Call to Action
 
-Why should we care about fairness and biases? Because ensuring fairness and mitigating biases are inherently normative [1]. As language models become more prevalent in critical decision-making systems, their unfair encoding and amplification of biases can pose serious harms for already-marginalized communities. In NLP literature, harms are often categorized into the following (Barocas and Selbst, 2016):
+Why should we care about fairness and biases? Language models are increasingly used throughout everyday life, and as they become more prevalent in critical decision-making systems which impact people, their unfair encoding and amplification of biases can pose serious harms for already-marginalized communities. In NLP literature, harms are often categorized into the following (Barocas and Selbst, 2016):
 
 1. **Representational harms:** when systems reinforce the subordination of some groups along the lines of identity
 2. **Allocational harms:** when a system allocates or withholds a certain opportunity or resource
 
-It is important to ensure fairness and mitigate bias even for seemingly trivial NLP tasks, such as named entity recognition, as these are often used as building blocks for more complex downstream applications like text summarization and even identity verification!
+It is important to ensure fairness and mitigate biases even for seemingly trivial NLP tasks, such as named entity recognition, as these are often used as building blocks for more complex downstream applications like text summarization and even identity verification. This is one of many reasons to use [model cards for model reporting](https://dl.acm.org/doi/10.1145/3287560.3287596).
 
-This is one of many reasons to use [model cards for model reporting](https://dl.acm.org/doi/10.1145/3287560.3287596).
-
-Can biases be removed? No. However, they can be reduced and controlled. Completely removing biases is difficult, especially with large language models, because of contextualization, spurious correlations, and latent variables.
+Can biases be removed? No, [completely removing biases is difficult](https://api.semanticscholar.org/CorpusID:73729169), especially with large language models, because of contextualization, spurious correlations, and latent variables. However, biases can be reduced and controlled. There doesn't exist a universal point at which to stop mitigating biases; bias mitigation must go hand-in-hand with the auditing of real-world model performance to ensure that humans are not unfairly impacted by the model's decisions.
 
 </exercise>
 
@@ -106,11 +103,11 @@ Can biases be removed? No. However, they can be reduced and controlled. Complete
 
 Let `C` represent our `predicted_labels`, `A` represent our `protected_variable_labels`, and `Y` represent our `gold_labels`.
 
-1. **[Independence](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#independence)** measures the statistical independence of a protected variable from predictions. It has been explored through many equivalent terms or variants, such as demographic parity, statistical parity, group fairness, and disparate impact. Formally, `Independence` measures how much `P(C | A)` diverges from `P(C)`.
+1. **[Independence](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#independence)** measures the statistical independence of a protected variable from predictions. It has been explored through many equivalent terms or variants, such as demographic parity, statistical parity, group fairness, and disparate impact. Informally, `Independence` measures how much `P(C | A)` diverges from `P(C)`.
 
-2. **[Separation](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#separation)** allows correlation between the predictions and a protected variable to the extent that it is justified by the gold labels. Formally, `Separation` measures how much `P(C | A, Y)` diverges from `P(C | Y)`.
+2. **[Separation](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#separation)** allows correlation between the predictions and a protected variable to the extent that it is justified by the gold labels. Informally, `Separation` measures how much `P(C | A, Y)` diverges from `P(C | Y)`.
 
-3. **[Sufficiency](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#sufficiency)** is satisfied by the predictions when the protected variable and gold labels are clear from context. Formally, `Sufficiency` measures how much `P(Y | A, C)` diverges from `P(Y | C)`.
+3. **[Sufficiency](http://docs.allennlp.org/main/api/fairness/fairness_metrics/#sufficiency)** is satisfied by the predictions when the protected variable and gold labels are clear from context. Informally, `Sufficiency` measures how much `P(Y | A, C)` diverges from `P(Y | C)`.
 
 All these fairness metrics can be used like any other `Metric` in the library, and they are supported in distributed settings. Here is an example code snippet for using these metrics with your own models:
 
@@ -170,7 +167,7 @@ Please refer to the [documentation](http://docs.allennlp.org/main/api/fairness/f
 
 ![inlp_bias_mitigator](/part3/fairness/inlp-debiasing.png) 
 
-4. **[OSCaRBiasMitigator](http://docs.allennlp.org/main/api/fairness/bias_mitigators/#oscarbiasmitigator)** mitigates biases in embeddings by disassociating concept subspaces through subspace orthogonalization. Formally, OSCaR applies a graded rotation on the embedding space to rectify two ideally-independent concept subspaces (e.g. `gender` and `occupation`) so that they become orthogonal.
+4. **[OSCaRBiasMitigator](http://docs.allennlp.org/main/api/fairness/bias_mitigators/#oscarbiasmitigator)** mitigates biases in embeddings by disassociating concept subspaces through subspace orthogonalization. Informally, OSCaR applies a graded rotation on the embedding space to rectify two ideally-independent concept subspaces (e.g. `gender` and `occupation`) so that they become orthogonal.
 
 ![oscar_bias_mitigator](/part3/fairness/oscar-debiasing.png)
 
@@ -204,7 +201,7 @@ Many of the above bias mitigators require a <em>predetermined bias direction</em
 
 **Note:** In the examples below, we treat gender identity as binary, which does not accurately characterize gender in real life. 
 
-1. **[WordEmbeddingAssociationTest](http://docs.allennlp.org/main/api/fairness/bias_metrics/#wordembeddingassociationtest)** measures the unlikelihood there is no difference between two sets of target words in terms of their relative similarity to two sets of attribute words by computing the probability that a random permutation of attribute words would produce the observed (or greater) difference in sample means. Typical values are around [-1, 1], with values closer to 0 indicating less biased associations. It is the analog of the Implicit Association Test from psychology for <em>static</em> word embeddings.
+1. **[WordEmbeddingAssociationTest](http://docs.allennlp.org/main/api/fairness/bias_metrics/#wordembeddingassociationtest)** measures the likelihood there is no difference between two sets of target words in terms of their relative similarity to two sets of attribute words by computing the probability that a random permutation of attribute words would produce the observed (or greater) difference in sample means. Typical values are around [-1, 1], with values closer to 0 indicating less biased associations. It is the analog of the Implicit Association Test from psychology for <em>static</em> word embeddings.
 
 ```python
 import torch
@@ -312,7 +309,7 @@ Fortunately, `allennlp.fairness` provides a `Model` wrapper called [`BiasMitigat
 
 2. `BiasMitigatorApplicator` works by applying a bias mitigator of your choice directly after the static embedding layer of the pretrained RoBERTA model during finetuning and evaluation. This reduces the model's ability to propagate gender biases across words in input sentences through contextualization. In a simplistic sense, the mitigator implicitly functions as a linear adversary that forces the model to discover alternate latent variables or features besides gender that it can use to perform well on SNLI.
 
-`BiasMitigatorApplicator` works with any Transformer model that has a static embedding layer. However, the relationships between (1) the number of epochs of finetuning, (2) the number of layers in the model, (3) the type of bias mitigator and bias direction used, and the efficacy of bias mitigation is not well-studied and a promising direction for future research. While finetuning for more epochs with the bias mitigator might push the model to depend less on gender, it could also cause the model to overfit to spurious correlations and/or discover proxies for gender that are not contained within the gender bias subspace of the mitigator. Furthermore, it is likely harder to mitigate biases for models with a larger number of layers, as they are capable of learning extremely complex mappings. And, how well a particular type of bias mitigator and bias direction work strongly depends on the finetuning data and model architecture. Fortunately, [empirical studies]((https://api.semanticscholar.org/CorpusID:201670701) have demonstrated that model performance on the evaluation set is not compromised by bias mitigation.
+`BiasMitigatorApplicator` works with any Transformer model that has a static embedding layer. However, the relationships between (1) the number of epochs of finetuning, (2) the number of layers in the model, (3) the type of bias mitigator and bias direction used, and the efficacy of bias mitigation is not well-studied and a promising direction for future research. While finetuning for more epochs with the bias mitigator might push the model to depend less on gender, it could also cause the model to overfit to spurious correlations and/or discover proxies for gender that are not contained within the gender bias subspace of the mitigator. Furthermore, it is likely harder to mitigate biases for models with a larger number of layers, as they are capable of learning extremely complex mappings. And, how well a particular type of bias mitigator and bias direction work strongly depends on the finetuning data and model architecture. You should not assume that using a `BiasMitigator` resolves any particular bias issue in a model. There is [published literature](https://api.semanticscholar.org/CorpusID:201670701) suggesting that these techniques should help (without noticeably compromising model performance on the test set), but that needs to be evaluated for any actual downstream use.
 
 Below is an [example config file](https://github.com/allenai/allennlp-models/blob/main/training_config/pair_classification/binary_gender_bias_mitigated_snli_roberta.jsonnet) for finetuning a pretrained RoBERTA model for SNLI using `BiasMitigatorApplicator` with linear bias mitigation and a two-means bias direction. As mentioned previously, `BiasMitigatorApplicator` simply wraps the pretrained model. `two_means` requires a `seed_word_pairs_file` and tokenizer to tokenize the words in said file. `seed_word_pairs_file` must follow the format in the example: `[["woman", "man"], ["girl", "boy"], ["she", "he"], ...]`. And that's it!
 
@@ -727,7 +724,7 @@ We have made the [bias-mitigated, finetuned large RoBERTA model for SNLI](https:
 
 <exercise id="6" title="Next Steps">
 
-**Friendly reminder:** While the fairness and bias mitigation tools provided by `allennlp.fairness` help reduce and control biases and increase how equitably models perform, they do <em>not</em> by any means remove biases or make models entirely fair.
+**Friendly reminder:** While the fairness and bias mitigation tools provided by `allennlp.fairness` help reduce and control biases and increase how equitably models perform, they do <em>not</em> completely remove biases or make models entirely fair. Bias mitigation must go hand-in-hand with the auditing of real-world model performance to ensure that humans are not unfairly impacted by the model's decisions.
 
 We're excited to see your contributions to the Fairness module!
 </exercise>
