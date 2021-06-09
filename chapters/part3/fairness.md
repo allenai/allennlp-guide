@@ -718,7 +718,7 @@ The `NaturalLanguageInference` scores for the bias-mitigated, finetuned model ar
 }
 ```
 
-We have made the [bias-mitigated, finetuned large RoBERTA model for SNLI](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-roberta.2021-05-20.tar.gz) publicly available with a [model card](https://github.com/allenai/allennlp-models/blob/main/allennlp_models/modelcards/pair-classification-binary-gender-bias-mitigated-roberta-snli.json).
+We have made the [bias-mitigated, finetuned large RoBERTA model for SNLI](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-roberta.2021-05-20.tar.gz) publicly available with a [model card](https://github.com/allenai/allennlp-models/blob/main/allennlp_models/modelcards/pair-classification-binary-gender-bias-mitigated-roberta-snli.json). The model is also available on the [AllenNLP demo](https://demo.allennlp.org/textual-entailment/bin-gender-bias-mitigated-roberta-snli).
 
 </exercise>
 
