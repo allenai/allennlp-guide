@@ -756,74 +756,35 @@ We achieve this non-traditional parameter update scheme in AllenNLP using an [`o
 We provide the [`AdversarialBiasMitigatorBackwardCallback`](http://docs.allennlp.org/main/api/fairness/adversarial_bias_mitigator/#adversarialbiasmitigatorbackwardcallback) to perform the non-traditional parameter updates required by adversarial bias mitigation.
 
 ```python
-@TrainerCallback.register("adversarial_bias_mitigator_backward")
-class AdversarialBiasMitigatorBackwardCallback(TrainerCallback):
-    """
-    Performs backpropagation for adversarial bias mitigation.
-    While the adversary's parameter updates are computed normally,
-    the predictor's parameters are updated such that the predictor
-    will not aid the adversary and will make it more difficult
-    for the adversary to recover protected variables.
+trainer.optimizer.zero_grad()
+# `retain_graph=True` prevents computation graph from being erased
+batch_outputs["adversary_loss"].backward(retain_graph=True)
+# trainer.model is expected to have `predictor` and `adversary` data members
+adversary_loss_grad = {
+    name: param.grad.clone()
+    for name, param in trainer.model.predictor.named_parameters()
+    if param.grad is not None
+}
 
-    !!! Note
-        Intended to be used with `AdversarialBiasMitigator`.
-        trainer.model is expected to have `predictor` and `adversary` data members.
+trainer.model.predictor.zero_grad()
+batch_outputs["loss"].backward()
 
-    # Parameters
-
-    adversary_loss_weight : `float`, optional (default = `1.0`)
-        Quantifies how difficult predictor makes it for adversary to recover protected variables.
-    """
-
-    def __init__(self, serialization_dir: str, adversary_loss_weight: float = 1.0) -> None:
-        super().__init__(serialization_dir)
-        self.adversary_loss_weight = adversary_loss_weight
-
-    def on_backward(
-        self,
-        trainer: GradientDescentTrainer,
-        batch_outputs: Dict[str, torch.Tensor],
-        backward_called: bool,
-        **kwargs,
-    ) -> bool:
-        if backward_called:
-            raise OnBackwardException()
-
-        if not hasattr(trainer.model, "predictor") or not hasattr(trainer.model, "adversary"):
-            raise ConfigurationError(
-                "Model is expected to have `predictor` and `adversary` data members."
+with torch.no_grad():
+    for name, param in trainer.model.predictor.named_parameters():
+        if param.grad is not None:
+            unit_adversary_loss_grad = adversary_loss_grad[name] / torch.linalg.norm(
+                adversary_loss_grad[name]
             )
+            # prevent predictor from accidentally aiding adversary
+            # by removing projection of predictor loss grad onto adversary loss grad
+            param.grad -= (
+                (param.grad * unit_adversary_loss_grad) * unit_adversary_loss_grad
+            ).sum()
+            # make it difficult for adversary to recover protected variables
+            param.grad -= self.adversary_loss_weight * adversary_loss_grad[name]
 
-        trainer.optimizer.zero_grad()
-        # `retain_graph=True` prevents computation graph from being erased
-        batch_outputs["adversary_loss"].backward(retain_graph=True)
-        # trainer.model is expected to have `predictor` and `adversary` data members
-        adversary_loss_grad = {
-            name: param.grad.clone()
-            for name, param in trainer.model.predictor.named_parameters()
-            if param.grad is not None
-        }
-
-        trainer.model.predictor.zero_grad()
-        batch_outputs["loss"].backward()
-
-        with torch.no_grad():
-            for name, param in trainer.model.predictor.named_parameters():
-                if param.grad is not None:
-                    unit_adversary_loss_grad = adversary_loss_grad[name] / torch.linalg.norm(
-                        adversary_loss_grad[name]
-                    )
-                    # prevent predictor from accidentally aiding adversary
-                    # by removing projection of predictor loss grad onto adversary loss grad
-                    param.grad -= (
-                        (param.grad * unit_adversary_loss_grad) * unit_adversary_loss_grad
-                    ).sum()
-                    # make it difficult for adversary to recover protected variables
-                    param.grad -= self.adversary_loss_weight * adversary_loss_grad[name]
-
-        # remove adversary_loss from computation graph
-        batch_outputs["adversary_loss"] = batch_outputs["adversary_loss"].detach()
-        return True
+# remove adversary_loss from computation graph
+batch_outputs["adversary_loss"] = batch_outputs["adversary_loss"].detach()
 ```
 
 Below is an [example config file](https://github.com/allenai/allennlp-models/blob/main/training_config/pair_classification/adversarial_binary_gender_bias_mitigated_snli_roberta.jsonnet) for finetuning a pretrained RoBERTA model for SNLI using `AdversarialBiasMitigator` with a two-means bias direction. As mentioned previously, `AdversarialBiasMitigator` simply wraps the predictor and adversary. `two_means` requires a `seed_word_pairs_file` and tokenizer to tokenize the words in said file. `seed_word_pairs_file` must follow the format in the example: `[["woman", "man"], ["girl", "boy"], ["she", "he"], ...]`. And that's it!
@@ -987,7 +948,7 @@ We have made the [adversarial-bias-mitigated, finetuned large RoBERTA model for 
 
 ## Pitfalls of Adversarial Bias Mitigation
 
-Adversarial bias mitigation does have some pitfalls. For one, both the predictor and adversary are black boxes, which makes it uninterpretable in contrast to the bias mitigators described in previous sections. Furthermore, while [1] derives theoretical guarantees for adversarial bias mitigation, the proof relies on the strong, and impractical, assumption that the loss functions of the predictor and adversary are convex with respect to their parameters. Finally, achieving convergence in adversarial networks is tricky in practice, especially for large, contextual language models; some tips for training adversarial networks include to [2]:
+Adversarial bias mitigation does have some pitfalls. For one, both the predictor and adversary are black boxes, which makes it uninterpretable in contrast to the bias mitigators described in previous sections. Furthermore, while [1] derives theoretical guarantees for adversarial bias mitigation, the proof relies on the strong, and impractical, assumption that the loss functions of the predictor and adversary are convex with respect to their parameters. Finally, achieving convergence in adversarial networks is tricky in practice, especially for large, contextual language models; **some tips for training adversarial networks** include to [2]:
 
 1. lower the step size of both the predictor and adversary to train both models slowly to avoid parameters diverging,
 
