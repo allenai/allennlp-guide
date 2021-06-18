@@ -32,7 +32,7 @@ In the rest of this section, we motivate the need for fairness and bias mitigati
 
 ## Biases in Data
 
-We are all aware that large language models are hungry for text data, and these data greatly influence the word and sentence-level representations the models learn. NLP researchers and pratictioners often scrape data from the Internet, which include news articles, Wikipedia pages, and even patents! But, how representative are the text in these data of the real-world frequences of words among different groups of people? The answer is **not at all**.
+We are all aware that large language models are hungry for text data, and these data greatly influence the word and sentence-level representations the models learn. NLP researchers and practitioners often scrape data from the Internet, which include news articles, Wikipedia pages, and even patents! But, how representative are the text in these data of the real-world frequencies of words among different groups of people? The answer is **not at all**.
 <br>
 <br>
 This is the result of <em>reporting bias</em>, in which the "frequency with which people write about actions, outcomes, or properties is not a reflection of real-world frequencies or the degree to which a property is characteristic of a class of individuals" [2]. For instance, "murdered" occurs with a much higher frequency than does "blinked" in text corpuses because journalists usually report about murders rather than blinking, as a result of the relative rarity of murders [2].
@@ -381,7 +381,7 @@ local transformer_dim = 1024;
 
 You can run this config file with the following CLI command: `allennlp train config.jsonnet --include-package allennlp_models -s /tmp/snli`.
 
-3. After just two epochs of finetuning, we can observe a considerable reduction in gender bias with respect to occupations, as measured by the `NaturalLanguageInference` bias metric on a [large dataset of neutrally-constructed textual entailment sentence pairs](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl). Even better, this comes without a noticeable difference in performance on the test set!
+3. After just two epochs of finetuning (we chose model with highest accuracy on validation set), we can observe a considerable reduction in binary gender bias with respect to occupations, as measured by the `NaturalLanguageInference` bias metric on a [large dataset of neutrally-constructed textual entailment sentence pairs](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl). Even better, this comes without a noticeable difference in performance on the test set!
 
 To thoroughly evaluate the reduction in binary gender bias with respect to occupations, we will write an `EvaluateBiasMitigation` subcommand:
 
@@ -722,7 +722,263 @@ We have made the [bias-mitigated, finetuned large RoBERTA model for SNLI](https:
 
 </exercise>
 
-<exercise id="6" title="Next Steps">
+<exercise id="6" title="Adversarial Bias Mitigation">
+
+In recent years, adversarial networks have become a popular strategy for bias mitigation. This section explores how to adversarially mitigate biases in models using the [`AdversarialBiasMitigator`](http://docs.allennlp.org/main/api/fairness/adversarial_bias_mitigator/#adversarialbiasmitigator) wrapper provided by `allennlp.fairness`. The discussion below draws from: 
+
+1. Zhang, B.H., Lemoine, B., & Mitchell, M. (2018). [Mitigating Unwanted Biases with Adversarial Learning](https://api.semanticscholar.org/CorpusID:9424845). Proceedings of the 2018 AAAI/ACM Conference on AI, Ethics, and Society.
+
+2. Zaldivar, A., Hutchinson, B., Lemoine, B., Zhang, B.H., & Mitchell, M. (2018). [Mitigating Unwanted Biases in Word Embeddings with Adversarial Learning](https://colab.research.google.com/notebooks/ml_fairness/adversarial_debiasing.ipynb) colab notebook.
+
+Adversarial networks mitigate biases based on the idea that predicting an outcome Y given an input X should ideally be independent of some protected variable Z. Informally, "knowing Y would not help
+you predict Z any better than chance" [2]. This can be achieved using two networks in a series, where the first (known as the predictor) attempts to predict Y using X as input, and the second (known as the adversary) attempts to use the predicted value of Y to recover Z. Please refer to Figure 1 from [Mitigating Unwanted Biases with Adversarial Learning](https://api.semanticscholar.org/CorpusID:9424845) for a diagram of the setup. Ideally, we would like the predictor to predict Y without permitting the adversary to predict Z any better than chance.
+
+![adversarial_figure_1](/part3/fairness/adversarial_figure_1.png)
+
+For common NLP tasks, it's usually clear what X and Y are, but Z is not always available. However, we can construct our own Z by [2]:
+
+1. computing a bias direction (e.g. for binary gender)
+
+2. computing the inner product of static sentence embeddings (mean pooling of static word embeddings) and the bias direction
+
+Like in the previous section, we detail how to apply `AdversarialBiasMitigator` to reduce binary gender bias in [AllenNLP's public large RoBERTA model for SNLI](https://storage.googleapis.com/allennlp-public-models/snli-roberta.2021-03-11.tar.gz), directly from a config file.
+
+1. `AdversarialBiasMitigator` works by chaining an adversary of your choice to the pretrained RoBERTA model, i.e. the predictor, during finetuning. In our example, we use a simple, linear [`FeedForwardRegressionAdversary`](http://docs.allennlp.org/main/api/fairness/adversarial_bias_mitigator/#feedforwardregressionadversary). The adversary takes the predictor's predictions (that is, probabilities of entailment, contradiction, neutrality) as input and attempts to recover the coefficient of the static embedding of the predictor's input sentences in a binary gender [bias direction](http://docs.allennlp.org/main/api/fairness/bias_direction/) of your choice. 
+
+`AdversarialBiasMitigator` works with any Transformer predictor that has a static embedding layer. The relationships between (1) the number of epochs of finetuning, (2) the number of layers in the predictor, (3) the type of bias direction used, and the efficacy of bias mitigation is a promising direction for future research. While finetuning for more epochs with `AdversarialBiasMitigator` might push the predictor to depend less on gender, it could also cause the predictor to overfit to spurious correlations and/or discover proxies for gender that are not contained within the gender bias direction. Furthermore, it is likely harder to mitigate biases for predictors with a larger number of layers, as they are capable of learning extremely complex mappings and achieving convergence in large adversarial networks is tricky (this is further discussed in <b>Pitfalls of Adversarial Bias Mitigation</b> below). Finally, how well `AdversarialBiasMitigator` works strongly depends on the finetuning data and predictor architecture. You should not assume that using a `AdversarialBiasMitigator` resolves any particular bias issue in a predictor. There is published literature suggesting that it should help (without noticeably compromising predictor performance on the test set), but that needs to be evaluated for any actual downstream use.
+
+2. While the adversary's parameters are updated normally during finetuning, the predictor's parameters are updated such that the predictor will not aid the adversary and will make it more difficult for the adversary to recover binary gender bias. Formally, we update the predictor's parameters according to Equation 1 from [Mitigating Unwanted Biases with Adversarial Learning](https://api.semanticscholar.org/CorpusID:9424845). The projection term in Equation 1 ensures that the predictor doesn't accidentally aid the adversary and the final term in Equation 1 serves to update the predictor's parameters to increase the adversary's loss.
+
+![adversarial_equation_1](/part3/fairness/adversarial_equation_1.png)
+
+We achieve this non-traditional parameter update scheme in AllenNLP using an [`on_backward`](http://docs.allennlp.org/main/api/training/callbacks/callback/#on_backward) trainer callback. An [`on_backward`](http://docs.allennlp.org/main/api/training/callbacks/backward/) trainer callback performs custom backpropagation and allows for gradient manipulation; `on_backward` callback(s) will be executed in lieu of the default `loss.backward()` called by `GradientDescentTrainer`.
+
+We provide the [`AdversarialBiasMitigatorBackwardCallback`](http://docs.allennlp.org/main/api/fairness/adversarial_bias_mitigator/#adversarialbiasmitigatorbackwardcallback) to perform the non-traditional parameter updates required by adversarial bias mitigation.
+
+```python
+@TrainerCallback.register("adversarial_bias_mitigator_backward")
+class AdversarialBiasMitigatorBackwardCallback(TrainerCallback):
+    """
+    Performs backpropagation for adversarial bias mitigation.
+    While the adversary's parameter updates are computed normally,
+    the predictor's parameters are updated such that the predictor
+    will not aid the adversary and will make it more difficult
+    for the adversary to recover protected variables.
+
+    !!! Note
+        Intended to be used with `AdversarialBiasMitigator`.
+        trainer.model is expected to have `predictor` and `adversary` data members.
+
+    # Parameters
+
+    adversary_loss_weight : `float`, optional (default = `1.0`)
+        Quantifies how difficult predictor makes it for adversary to recover protected variables.
+    """
+
+    def __init__(self, serialization_dir: str, adversary_loss_weight: float = 1.0) -> None:
+        super().__init__(serialization_dir)
+        self.adversary_loss_weight = adversary_loss_weight
+
+    def on_backward(
+        self,
+        trainer: GradientDescentTrainer,
+        batch_outputs: Dict[str, torch.Tensor],
+        backward_called: bool,
+        **kwargs,
+    ) -> bool:
+        if backward_called:
+            raise OnBackwardException()
+
+        if not hasattr(trainer.model, "predictor") or not hasattr(trainer.model, "adversary"):
+            raise ConfigurationError(
+                "Model is expected to have `predictor` and `adversary` data members."
+            )
+
+        trainer.optimizer.zero_grad()
+        # `retain_graph=True` prevents computation graph from being erased
+        batch_outputs["adversary_loss"].backward(retain_graph=True)
+        # trainer.model is expected to have `predictor` and `adversary` data members
+        adversary_loss_grad = {
+            name: param.grad.clone()
+            for name, param in trainer.model.predictor.named_parameters()
+            if param.grad is not None
+        }
+
+        trainer.model.predictor.zero_grad()
+        batch_outputs["loss"].backward()
+
+        with torch.no_grad():
+            for name, param in trainer.model.predictor.named_parameters():
+                if param.grad is not None:
+                    unit_adversary_loss_grad = adversary_loss_grad[name] / torch.linalg.norm(
+                        adversary_loss_grad[name]
+                    )
+                    # prevent predictor from accidentally aiding adversary
+                    # by removing projection of predictor loss grad onto adversary loss grad
+                    param.grad -= (
+                        (param.grad * unit_adversary_loss_grad) * unit_adversary_loss_grad
+                    ).sum()
+                    # make it difficult for adversary to recover protected variables
+                    param.grad -= self.adversary_loss_weight * adversary_loss_grad[name]
+
+        # remove adversary_loss from computation graph
+        batch_outputs["adversary_loss"] = batch_outputs["adversary_loss"].detach()
+        return True
+```
+
+Below is an [example config file](https://github.com/allenai/allennlp-models/blob/main/training_config/pair_classification/adversarial_binary_gender_bias_mitigated_snli_roberta.jsonnet) for finetuning a pretrained RoBERTA model for SNLI using `AdversarialBiasMitigator` with a two-means bias direction. As mentioned previously, `AdversarialBiasMitigator` simply wraps the predictor and adversary. `two_means` requires a `seed_word_pairs_file` and tokenizer to tokenize the words in said file. `seed_word_pairs_file` must follow the format in the example: `[["woman", "man"], ["girl", "boy"], ["she", "he"], ...]`. And that's it!
+
+```python
+local transformer_model = "roberta-large";
+local transformer_dim = 1024;
+
+{
+  "dataset_reader": {
+    "type": "snli",
+    "tokenizer": {
+      "type": "pretrained_transformer",
+      "model_name": transformer_model,
+      "add_special_tokens": false
+    },
+    "token_indexers": {
+      "tokens": {
+        "type": "pretrained_transformer",
+        "model_name": transformer_model,
+        "max_length": 512
+      }
+    }
+  },
+  "train_data_path": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_train.jsonl",
+  "validation_data_path": "https://allennlp.s3.amazonaws.com/datasets/snli/snli_1.0_dev.jsonl",
+  "model": {
+    "type": "adversarial_bias_mitigator",
+    "predictor": {
+      "_pretrained": {
+        "archive_file": "https://storage.googleapis.com/allennlp-public-models/snli-roberta.2021-03-11.tar.gz",
+        "module_path": "",
+        "freeze": false
+      }
+    },
+    "adversary": {
+        "type": "feedforward_regression_adversary",
+        "feedforward": {
+            "input_dim": 3,
+            "num_layers": 1,
+            "hidden_dims": 1,
+            "activations": "linear"
+        }
+    },
+    "bias_direction": {
+        "type": "two_means",
+        "seed_word_pairs_file": "https://raw.githubusercontent.com/tolga-b/debiaswe/4c3fa843ffff45115c43fe112d4283c91d225c09/data/definitional_pairs.json",
+        "tokenizer": {
+          "type": "pretrained_transformer",
+          "model_name": transformer_model,
+          "max_length": 512
+        }
+    },
+    "predictor_output_key": "probs"
+  },
+  "data_loader": {
+    "batch_sampler": {
+      "type": "bucket",
+      "batch_size" : 32
+    }
+  },
+  "trainer": {
+    "num_epochs": 10,
+    "validation_metric": "+accuracy",
+    "callbacks": [
+        "adversarial_bias_mitigator_backward"
+    ],
+    "optimizer": {
+        "type": "multi",
+        "optimizers": {
+            "predictor": {
+                "type": "adam",
+                "lr": 1e-5
+            },
+            "adversary": {
+                "type": "adam",
+                "lr": 1e-5
+            },
+            "default": {
+                "type": "adam",
+                "lr": 1e-5
+            }
+        },
+        "parameter_groups": [
+            [
+                [
+                    "^predictor"
+                ],
+                {
+                    "optimizer_name": "predictor"
+                }
+            ],
+            [
+                [
+                    "^adversary"
+                ],
+                {
+                    "optimizer_name": "adversary"
+                }
+            ]
+        ]
+    }
+  }
+}
+```
+
+You can run this config file with the following CLI command: `allennlp train config.jsonnet --include-package allennlp_models -s /tmp/snli`.
+
+3. After ten epochs of finetuning, we can observe a considerable reduction in binary gender bias with respect to occupations, as measured by the `NaturalLanguageInference` bias metric on a [large dataset of neutrally-constructed textual entailment sentence pairs](https://storage.googleapis.com/allennlp-public-models/binary-gender-bias-mitigated-snli-dataset.jsonl). Even better, this comes without a noticeable difference in performance on the test set!
+
+4. Using the `EvaluateBiasMitigation` subcommand written in the previous section, we can compare the `NaturalLanguageInference` scores for the adversarial-bias-mitigated, finetuned predictor and baseline, pretrained predictor, after 1 and 10 epochs of finetuning:
+
+After 1 epoch of finetuning:
+```python
+"adversarial_bias_mitigated_predictor_metrics": {
+    [TODO]
+},
+"baseline_predictor_metrics": {
+    [TODO]
+}
+```
+
+After 10 epochs of finetuning:
+```python
+"adversarial_bias_mitigated_predictor_metrics": {
+    [TODO]
+},
+"baseline_predictor_metrics": {
+    [TODO]
+}
+```
+
+The `NaturalLanguageInference` scores for the adversarial-bias-mitigated, 10-epoch-finetuned predictor are much closer to 1 than they are for the 1-epoch-finetuned predictor, the bias-mitigated, finetuned model from the previous section, or the baseline, pretrained predictor. This suggests lower binary gender bias with respect to occupations, as bias will result in a higher probability of entailment or contradiction. `diff.txt` allows us to see specific examples for which the adversarial-bias-mitigated, 10-epoch-finetuned predictor chose neutral but the baseline, pretrained model didn't:
+
+```python
+[TODO]
+```
+
+We have made the [adversarial-bias-mitigated, finetuned large RoBERTA model for SNLI](https://storage.googleapis.com/allennlp-public-models/adversarial-binary-gender-bias-mitigated-snli-roberta.2021-06-17.tar.gz) publicly available with a [model card](https://github.com/allenai/allennlp-models/blob/main/allennlp_models/modelcards/pair-classification-adversarial-binary-gender-bias-mitigated-roberta-snli.json). You can play around with the model on the [AllenNLP demo](https://demo.allennlp.org/textual-entailment/adv-bin-gen-bias-mitigated-roberta-snli).
+
+## Pitfalls of Adversarial Bias Mitigation
+
+Adversarial bias mitigation does have some pitfalls. For one, both the predictor and adversary are black boxes, which makes it uninterpretable in contrast to the bias mitigators described in previous sections. Furthermore, while [1] derives theoretical guarantees for adversarial bias mitigation, the proof relies on the strong, and impractical, assumption that the loss functions of the predictor and adversary are convex with respect to their parameters. Finally, achieving convergence in adversarial networks is tricky in practice, especially for large, contextual language models; some tips for training adversarial networks include to [2]:
+
+1. lower the step size of both the predictor and adversary to train both models slowly to avoid parameters diverging,
+
+2. initialize the parameters of the adversary to be small to avoid the predictor overfitting against a sub-optimal adversary,
+
+3. increase the adversary’s learning rate to prevent divergence if the predictor is too good at hiding the protected variable from the adversary,
+
+4. use a pretrained predictor to increase the likelihood of convergence. 
+
+</exercise>
+
+<exercise id="7" title="Next Steps">
 
 **Friendly reminder:** While the fairness and bias mitigation tools provided by `allennlp.fairness` help reduce and control biases and increase how equitably models perform, they do <em>not</em> completely remove biases or make models entirely fair. Bias mitigation must go hand-in-hand with the auditing of real-world model performance to ensure that humans are not unfairly impacted by the model's decisions.
 
