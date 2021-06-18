@@ -1006,4 +1006,5 @@ Adversarial bias mitigation does have some pitfalls. For one, both the predictor
 We're excited to see your contributions to the Fairness module! Some great additions would be:
 - [dataset and model bias amplification metrics](https://api.semanticscholar.org/CorpusID:195847929)
 - training-time and post-processing algorithms for fairness without demographics, e.g. [Fairness Without Demographics in Repeated Loss Minimization](https://api.semanticscholar.org/CorpusID:49343170), [Fairness without Demographics through Adversarially Reweighted Learning](https://api.semanticscholar.org/CorpusID:219980622)
+- [perturbation sensitivity analysis to detect unintended model biases](https://api.semanticscholar.org/CorpusID:203078302)
 </exercise>
