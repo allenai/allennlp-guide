@@ -364,7 +364,7 @@ local transformer_dim = 1024;
     }
   },
   "trainer": {
-    "num_epochs": 2,
+    "num_epochs": 10,
     "validation_metric": "+accuracy",
     "learning_rate_scheduler": {
       "type": "slanted_triangular",
@@ -936,30 +936,51 @@ You can run this config file with the following CLI command: `allennlp train con
 
 4. Using the `EvaluateBiasMitigation` subcommand written in the previous section, we can compare the `NaturalLanguageInference` scores for the adversarial-bias-mitigated, finetuned predictor and baseline, pretrained predictor, after 1 and 10 epochs of finetuning:
 
-After 1 epoch of finetuning:
+After 1 epoch of finetuning (model with highest accuracy on validation set):
 ```python
 "adversarial_bias_mitigated_predictor_metrics": {
-    [TODO]
+    "net_neutral": 0.4410316309540555,
+    "fraction_neutral": 0.4481893218322427,
+    "threshold_0.5": 0.4315516764161544,
+    "threshold_0.7": 0.3035287155463018
+
 },
 "baseline_predictor_metrics": {
-    [TODO]
+    "net_neutral": 0.49562667062645066,
+    "fraction_neutral": 0.506870600337101,
+    "threshold_0.5": 0.47600531264458984,
+    "threshold_0.7": 0.30368001850750215
 }
 ```
 
 After 10 epochs of finetuning:
 ```python
 "adversarial_bias_mitigated_predictor_metrics": {
-    [TODO]
+    "net_neutral": 0.613096454815352,
+    "fraction_neutral": 0.6704967487937075,
+    "threshold_0.5": 0.6637061892722586,
+    "threshold_0.7": 0.49490217463150243
 },
 "baseline_predictor_metrics": {
-    [TODO]
+    "net_neutral": 0.49562667062645066,
+    "fraction_neutral": 0.506870600337101,
+    "threshold_0.5": 0.47600531264458984,
+    "threshold_0.7": 0.30368001850750215
 }
 ```
 
-The `NaturalLanguageInference` scores for the adversarial-bias-mitigated, 10-epoch-finetuned predictor are much closer to 1 than they are for the 1-epoch-finetuned predictor, the bias-mitigated, finetuned model from the previous section, or the baseline, pretrained predictor. This suggests lower binary gender bias with respect to occupations, as bias will result in a higher probability of entailment or contradiction. `diff.txt` allows us to see specific examples for which the adversarial-bias-mitigated, 10-epoch-finetuned predictor chose neutral but the baseline, pretrained model didn't:
+The `NaturalLanguageInference` scores for the adversarial-bias-mitigated, 10-epoch-finetuned predictor are much closer to 1 than they are for the 1-epoch-finetuned predictor and the baseline, pretrained predictor. This suggests lower binary gender bias with respect to occupations, as bias will result in a higher probability of entailment or contradiction. However, the bias-mitigated, finetuned model from the previous section boasts slightly higher `NaturalLanguageInference` scores for this downstream task.
+
+Unlike for the bias-mitigated model from the previous section, the adversarial-bias-mitigated predictor with the highest validation accuracy (in this case, 1 epoch of finetuning) does not demonstrate a significant reduction in binary gender bias, and the adversarial-bias-mitigated predictor seems to benefit from more epochs of finetuning. 
+
+`diff.txt` allows us to see specific examples for which the adversarial-bias-mitigated, 10-epoch-finetuned predictor chose neutral but the baseline, pretrained model didn't:
 
 ```python
-[TODO]
+{
+    "sentence_pair": "<s>A zoologist spoke to an adult.</s></s>A woman spoke to an adult.</s><pad><pad><pad><pad>",
+    "adversarial_bias_mitigated_label": "neutral",
+    "baseline_label": "entailment"
+}
 ```
 
 We have made the [adversarial-bias-mitigated, finetuned large RoBERTA model for SNLI](https://storage.googleapis.com/allennlp-public-models/adversarial-binary-gender-bias-mitigated-snli-roberta.2021-06-17.tar.gz) publicly available with a [model card](https://github.com/allenai/allennlp-models/blob/main/allennlp_models/modelcards/pair-classification-adversarial-binary-gender-bias-mitigated-roberta-snli.json). You can play around with the model on the [AllenNLP demo](https://demo.allennlp.org/textual-entailment/adv-bin-gen-bias-mitigated-roberta-snli).
@@ -982,5 +1003,7 @@ Adversarial bias mitigation does have some pitfalls. For one, both the predictor
 
 **Friendly reminder:** While the fairness and bias mitigation tools provided by `allennlp.fairness` help reduce and control biases and increase how equitably models perform, they do <em>not</em> completely remove biases or make models entirely fair. Bias mitigation must go hand-in-hand with the auditing of real-world model performance to ensure that humans are not unfairly impacted by the model's decisions.
 
-We're excited to see your contributions to the Fairness module!
+We're excited to see your contributions to the Fairness module! Some great additions would be:
+- [dataset and model bias amplification metrics](https://api.semanticscholar.org/CorpusID:195847929)
+- training-time and post-processing algorithms for fairness without demographics, e.g. [Fairness Without Demographics in Repeated Loss Minimization](https://api.semanticscholar.org/CorpusID:49343170), [Fairness without Demographics through Adversarially Reweighted Learning](https://api.semanticscholar.org/CorpusID:219980622)
 </exercise>
