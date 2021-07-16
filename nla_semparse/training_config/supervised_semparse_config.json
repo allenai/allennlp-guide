@@ -1,0 +1,61 @@
+{
+  "dataset_reader": {
+    "type": "nla",
+    "tokenizer": {
+      "type": "whitespace"
+    },
+    "input_token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "namespace": "input_tokens"
+      }
+    }
+  },
+  "train_data_path": "data/nla_with_meaning_rep_train.tsv",
+  "validation_data_path": "data/nla_with_meaning_rep_dev.tsv",
+  "model": {
+    "type": "nla-supervised",
+    "input_embedder": {
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "vocab_namespace": "input_tokens",
+          "embedding_dim": 100,
+          "trainable": true
+        }
+      }
+    },
+    "encoder": {
+      "type": "lstm",
+      "input_size": 100,
+      "hidden_size": 50,
+      "num_layers": 1
+    },
+    "action_embedding_dim": 50,
+    "max_decoding_steps": 50,
+    "attention": {
+      "type": "dot_product"
+    },
+    "decoder_beam_search": {
+      "beam_size": 10
+    },
+    "dropout": 0.0
+  },
+  "data_loader": {
+    "batch_sampler": {
+        "type": "bucket",
+        "batch_size": 10,
+        "padding_noise": 0.0
+    }
+},
+  "trainer": {
+    "num_epochs": 20,
+    "patience": 10,
+    "validation_metric": "+sequence_accuracy",
+    "cuda_device": -1,
+    "optimizer": {
+      "type": "adam",
+      "lr": 0.01
+    }
+  }
+}
