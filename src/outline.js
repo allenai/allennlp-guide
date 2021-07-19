@@ -50,8 +50,9 @@ export const outline = {
             chapterSlugs: [
                 '/document-ranking',
                 '/semantic-parsing-seq2seq',
-                '/interpret',
                 '/semantic-parsing-grammar',
+                '/interpret',
+                '/fairness',
                 '/coming-soon'
             ],
             icon: 'tools',
