@@ -52,7 +52,7 @@ class ClassificationTsvReader(DatasetReader):
         return Instance(fields)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
-        with open(file_path, 'r') as lines:
+        with open(file_path, "r") as lines:
             for line in lines:
                 text, sentiment = line.strip().split('\t')
                 yield self.text_to_instance(text, sentiment)
@@ -99,8 +99,8 @@ def build_dataset_reader() -> DatasetReader:
 
 def read_data(reader: DatasetReader) -> Tuple[List[Instance], List[Instance]]:
     print("Reading data")
-    training_data = list(reader.read("data/movie_review/train.tsv"))
-    validation_data = list(reader.read("data/movie_review/dev.tsv"))
+    training_data = list(reader.read("quick_start/data/movie_review/train.tsv"))
+    validation_data = list(reader.read("quick_start/data/movie_review/dev.tsv"))
     return training_data, validation_data
 
 
