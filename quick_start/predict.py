@@ -41,16 +41,21 @@ class ClassificationTsvReader(DatasetReader):
         self.token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
 
+    def text_to_instance(self, text: str, label: str = None) -> Instance:
+        tokens = self.tokenizer.tokenize(text)
+        if self.max_tokens:
+            tokens = tokens[: self.max_tokens]
+        text_field = TextField(tokens, self.token_indexers)
+        fields = {'text': text_field}
+        if label:
+            fields['label'] = LabelField(label)
+        return Instance(fields)
+
     def _read(self, file_path: str) -> Iterable[Instance]:
-        with open(file_path, "r") as lines:
+        with open(file_path, 'r') as lines:
             for line in lines:
-                text, sentiment = line.strip().split("\t")
-                tokens = self.tokenizer.tokenize(text)
-                if self.max_tokens:
-                    tokens = tokens[: self.max_tokens]
-                text_field = TextField(tokens, self.token_indexers)
-                label_field = LabelField(sentiment)
-                yield Instance({"text": text_field, "label": label_field})
+                text, sentiment = line.strip().split('\t')
+                yield self.text_to_instance(text, sentiment)
 
 
 class SimpleClassifier(Model):
@@ -65,7 +70,7 @@ class SimpleClassifier(Model):
         self.accuracy = CategoricalAccuracy()
 
     def forward(
-        self, text: TextFieldTensors, label: torch.Tensor
+        self, text: TextFieldTensors, label: torch.Tensor = None
     ) -> Dict[str, torch.Tensor]:
         # Shape: (batch_size, num_tokens, embedding_dim)
         embedded_text = self.embedder(text)
@@ -77,10 +82,11 @@ class SimpleClassifier(Model):
         logits = self.classifier(encoded_text)
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
-        # Shape: (1,)
-        loss = torch.nn.functional.cross_entropy(logits, label)
-        self.accuracy(logits, label)
-        output = {"loss": loss, "probs": probs}
+        output = {'probs': probs}
+        if label is not None:
+            self.accuracy(logits, label)
+            # Shape: (1,)
+            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
         return output
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
@@ -93,8 +99,8 @@ def build_dataset_reader() -> DatasetReader:
 
 def read_data(reader: DatasetReader) -> Tuple[List[Instance], List[Instance]]:
     print("Reading data")
-    training_data = list(reader.read("quick_start/data/movie_review/train.tsv"))
-    validation_data = list(reader.read("quick_start/data/movie_review/dev.tsv"))
+    training_data = list(reader.read("data/movie_review/train.tsv"))
+    validation_data = list(reader.read("data/movie_review/dev.tsv"))
     return training_data, validation_data
 
 
