@@ -46,15 +46,15 @@ class ClassificationTsvReader(DatasetReader):
         if self.max_tokens:
             tokens = tokens[: self.max_tokens]
         text_field = TextField(tokens, self.token_indexers)
-        fields = {'text': text_field}
+        fields = {"text": text_field}
         if label:
-            fields['label'] = LabelField(label)
+            fields["label"] = LabelField(label)
         return Instance(fields)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
         with open(file_path, "r") as lines:
             for line in lines:
-                text, sentiment = line.strip().split('\t')
+                text, sentiment = line.strip().split("\t")
                 yield self.text_to_instance(text, sentiment)
 
 
@@ -82,11 +82,11 @@ class SimpleClassifier(Model):
         logits = self.classifier(encoded_text)
         # Shape: (batch_size, num_labels)
         probs = torch.nn.functional.softmax(logits)
-        output = {'probs': probs}
+        output = {"probs": probs}
         if label is not None:
             self.accuracy(logits, label)
             # Shape: (1,)
-            output['loss'] = torch.nn.functional.cross_entropy(logits, label)
+            output["loss"] = torch.nn.functional.cross_entropy(logits, label)
         return output
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
