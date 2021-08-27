@@ -20,9 +20,9 @@ from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.modules.token_embedders import Embedding
 from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import util
+from allennlp.training import Trainer, GradientDescentTrainer
 from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.optimizers import AdamOptimizer
-from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
 
 
