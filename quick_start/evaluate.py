@@ -22,7 +22,8 @@ from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import util
 from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.optimizers import AdamOptimizer
-from allennlp.training.trainer import Trainer, GradientDescentTrainer
+from allennlp.training.trainer import Trainer
+from allennlp.training.gradient_descent_trainer import GradientDescentTrainer
 from allennlp.training.util import evaluate
 
 
