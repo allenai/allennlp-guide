@@ -210,7 +210,7 @@ You can see entries there for all of the things we had `build_*` methods for (ex
 which we omit because we are just using default parameters for that).  The configuration file is
 read by matching keys in the JSON object by name with constructor parameters.  For the training
 loop, the object we're constructing is called `TrainModel`, and you can see its constructor
-[here](http://docs.allennlp.org/master/api/commands/train/#from_partial_objects).  The keys here
+[here](http://docs.allennlp.org/main/api/commands/train/#from_partial_objects).  The keys here
 must exactly match those parameters, otherwise you get a `ConfigurationError`.
 
 With this configuration file, we can train the model by running `allennlp train [config.json] -s
