@@ -44,7 +44,7 @@
         "gatsby-transformer-sharp": "^2.1.17",
         "juniper-js": "^0.1.0",
         "katex": "^0.13.0",
-        "prismjs": "^1.25.0",
+        "prismjs": "^1.27.0",
         "react": "^16.8.2",
         "react-animate-height": "^2.0.20",
         "react-dom": "^16.8.2",
