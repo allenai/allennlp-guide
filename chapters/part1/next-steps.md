@@ -210,7 +210,7 @@ If you have multiple GPUs, you can do distributed training by specify a list of 
 
 This will use PyTorch's DistributedDataParallel to aggregate losses and synchronize parameter
 updates across multiple GPUs. The speedup you get, however, might not be exactly proportional to the
-number of GPUs due to due to synchronization and overhead.
+number of GPUs due to synchronization and overhead.
 
 When you are evaluating and making predictions with your model, you can specify the `--cuda-device`
 option from the command line to make your model run on GPUs.
