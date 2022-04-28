@@ -227,7 +227,7 @@ In the simplest use case, you can just supply the `batch_size` parameter and it 
 
 <codeblock source="part2/reading-data/data_loader_basic" setup="part2/reading-data/data_loader_setup"></codeblock>
 
-You can easily customize how the `DataLoader` iterates over, samples, and/or batches the instances by specifying a [`BatchSampler`](http://docs.allennlp.org/main/api/data/samplers/batch_sampler/#batchsampler).
+You can easily customize how the `DataLoader` iterates over samples, and/or batches the instances by specifying a [`BatchSampler`](http://docs.allennlp.org/main/api/data/samplers/batch_sampler/#batchsampler).
 
 The [`BucketBatchSampler`](http://docs.allennlp.org/main/api/data/samplers/bucket_batch_sampler/#bucketbatchsampler) is the most important `BatchSampler` in practice and is a major feature of AllenNLP.
 It sorts the instances by the length of their longest `Field` (or by any sorting keys you specify)
