@@ -1,7 +1,6 @@
 from typing import Dict, List, Optional
-from overrides import overrides
-from allennlp.training.metrics.metric import Metric
 
+from allennlp.training.metrics.metric import Metric
 from allennlp_semparse.domain_languages.domain_language import ExecutionError
 
 from .nla_language import NlaLanguage
@@ -23,7 +22,6 @@ class NlaMetric(Metric):
         self._num_same_sequence = 0
         self._num_all_sequences = 0
 
-    @overrides
     def __call__(self, predictions, targets) -> None:
         for prediction, target in zip(predictions, targets):
             if isinstance(prediction, list):
@@ -49,7 +47,6 @@ class NlaMetric(Metric):
                 self._num_same_sequence += 1
             self._num_all_sequences += 1
 
-    @overrides
     def get_metric(self, reset: bool = False) -> Dict[str, float]:
         if self._num_all_sequences == 0:
             metrics = {
@@ -68,7 +65,6 @@ class NlaMetric(Metric):
             self.reset()
         return metrics
 
-    @overrides
     def reset(self):
         self._num_well_formed = 0
         self._num_same_sequence = 0

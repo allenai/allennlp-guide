@@ -399,7 +399,6 @@ import argparse
 import json
 import logging
 from typing import Any, Dict, Tuple
-from overrides import overrides
 import tempfile
 import torch
 import os
@@ -417,7 +416,6 @@ logger = logging.getLogger(__name__)
 
 @Subcommand.register("evaluate-bias-mitigation")
 class EvaluateBiasMitigation(Subcommand):
-    @overrides
     def add_subparser(self, parser: argparse._SubParsersAction) -> argparse.ArgumentParser:
         description = """Evaluate bias mitigation"""
         subparser = parser.add_parser(
