@@ -7,8 +7,14 @@ from typing import Dict, Iterable, List
 import torch
 from allennlp.common import JsonDict
 from allennlp.common.params import Params
-from allennlp.data import (DataLoader, DatasetReader, Field, Instance,
-                           TextFieldTensors, Vocabulary)
+from allennlp.data import (
+    DataLoader,
+    DatasetReader,
+    Field,
+    Instance,
+    TextFieldTensors,
+    Vocabulary,
+)
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
