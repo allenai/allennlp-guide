@@ -96,7 +96,6 @@ full dataset reader, which will iterate over the file and call `text_to_instance
 
 ```python
 
-    @overrides
     def text_to_instance(
         self,
         query: str,

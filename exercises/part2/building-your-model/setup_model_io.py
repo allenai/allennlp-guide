@@ -8,25 +8,23 @@ import torch
 from allennlp.common import JsonDict
 from allennlp.common.params import Params
 from allennlp.data import (
-    Field,
     DataLoader,
     DatasetReader,
+    Field,
     Instance,
-    Vocabulary,
     TextFieldTensors,
+    Vocabulary,
 )
 from allennlp.data.fields import LabelField, TextField
-from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
-from allennlp.data.tokenizers import WhitespaceTokenizer
-from allennlp.data.tokenizers import Token, Tokenizer
+from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
+from allennlp.data.tokenizers import Token, Tokenizer, WhitespaceTokenizer
 from allennlp.models import Model
 from allennlp.models.archival import archive_model, load_archive
-from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
+from allennlp.modules import Seq2VecEncoder, TextFieldEmbedder
 from allennlp.nn import util
 from allennlp.predictors import Predictor
 from allennlp.training import Trainer
 from allennlp.training.metrics import CategoricalAccuracy
-from overrides import overrides
 
 
 @DatasetReader.register("classification-tsv")
@@ -101,7 +99,6 @@ class SentenceClassifierPredictor(Predictor):
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         sentence = json_dict["sentence"]
         return self._dataset_reader.text_to_instance(sentence)
