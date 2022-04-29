@@ -477,12 +477,7 @@ When you run the code above, you should get results similar to:
 ```
 
 This means that at least for these instances your model is making correct predictions!
-However, your model can produce incorrect predictions like:
-```
-[('neg', 0.6124489307403564), ('pos', 0.38755106925964355)]
-[('neg', 0.7158600687980652), ('pos', 0.2841399013996124)]
-```
-It could be explained by different initialisation of weights of the neural model.
+But don't be surprised if your model get those predictions wrong. That could happen because of random differences in your model's initialization and the training procedure.
 
 ## From command line
 
