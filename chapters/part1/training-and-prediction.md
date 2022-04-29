@@ -477,6 +477,7 @@ When you run the code above, you should get results similar to:
 ```
 
 This means that at least for these instances your model is making correct predictions!
+But don't be surprised if your model get those predictions wrong. That could happen because of random differences in your model's initialization and the training procedure.
 
 ## From command line
 
