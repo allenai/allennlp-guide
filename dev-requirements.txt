@@ -1,4 +1,4 @@
 # Checks style, syntax, and other useful errors.
 flake8
-mypy==0.971
+mypy==0.981
 black==22.3.0
