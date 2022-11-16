@@ -55,4 +55,4 @@ jobs:
     - name: Type check
       if: always()
       run: |
-        mypy . _exercises_test/*.py
+        mypy --explicit-package-bases --implicit-optional . _exercises_test/*.py
