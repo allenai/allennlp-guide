@@ -7,8 +7,8 @@
     "dependencies": {
         "@allenai/varnish": "0.8.11",
         "@illinois/react-use-local-storage": "^1.1.0",
-        "@jupyterlab/outputarea": "^0.19.1",
-        "@jupyterlab/rendermime": "^0.19.1",
+        "@jupyterlab/outputarea": "^3.4.5",
+        "@jupyterlab/rendermime": "^3.4.5",
         "@phosphor/widgets": "^1.6.0",
         "antd": "^3.26.7",
         "autoprefixer": "^9.4.7",
